@@ -7,71 +7,61 @@ const App = () => {
   return (
     <div>
       <Header />
-      <main>
+      <main> 
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
         <h2>Welcome to My Website</h2>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p><p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
-        <p>This is a simple example of a header and footer in React.</p>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>ммм<h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>м<h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2><h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+        <h2>Welcome to My Website</h2>
+
       </main>
       <Footer />
     </div>
