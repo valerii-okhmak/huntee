@@ -1,0 +1,10 @@
+.welcome {
+    background: url(../../img/image.png) cover no-repeat;
+    height: 100vh;
+}
+.container {
+    position: relative;
+}
+.line {
+    position: absolute;
+}

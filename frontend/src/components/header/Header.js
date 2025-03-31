@@ -1,6 +1,6 @@
 import React from "react";
-import "../styless/Header.css";
-import logo from "../img/logo.png"; // Імпортуємо PNG-логотип
+import "./Header.css";
+import logo from "../../img/logo.png"; // Імпортуємо PNG-логотип
 
 const Header = () => {
   return (

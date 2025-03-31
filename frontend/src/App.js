@@ -1,38 +1,17 @@
 import React from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
 import './styless/app.css';
+import Welcome from './components/welcome/Welcome';
+import welcome_img from './img/image.png'
 
 const App = () => {
   return (
-    <div className='container'>
+    <div className='page'>
+      <img alt='welcome' src={welcome_img} className='welcome__img'></img>
       <Header />
       <main> 
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-        <h2>Welcome to My Website</h2>
-
+        <Welcome></Welcome>
       </main>
       <Footer />
     </div>
