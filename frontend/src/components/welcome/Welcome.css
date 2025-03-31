@@ -8,3 +8,20 @@
 .line {
     position: absolute;
 }
+
+@font-face {
+    font-family: 'MyFont';
+    src: url('../../fonts/ExtraBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.text {
+    line-height: 1.1;
+    font-size: 73px;
+    font-family: 'MyFont', sans-serif;
+    font-weight: bold;
+    background: linear-gradient(0deg, #0059FF, #D6CF14);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

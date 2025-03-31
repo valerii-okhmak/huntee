@@ -6,9 +6,8 @@ const Welcome = () => {
     <div className='welcome'>
         <div className='container'>
             <div className='line'>
-                
             </div>
-            <p className='text'>DUDE, THIS IS YOUR FUTURE</p>
+            <p className='text'>DUDE,<br/>THIS<br/>IS<br/>YOUR<br/>FUTURE</p>
         </div>
     </div>
   )
