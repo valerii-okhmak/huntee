@@ -5,7 +5,7 @@ import './styless/app.css';
 
 const App = () => {
   return (
-    <div>
+    <div className='container'>
       <Header />
       <main> 
         <h2>Welcome to My Website</h2>
