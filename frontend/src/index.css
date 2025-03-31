@@ -28,6 +28,7 @@ body {
 
 main {
   flex: 1 1 auto;
+  padding: 0;
 }
 
 .welcome__img{
@@ -39,6 +40,6 @@ main {
 }
 
 .container {
-  max-width: 1200px;
+  width: 75%;
   margin: 0 auto;
 }

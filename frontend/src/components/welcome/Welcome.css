@@ -1,12 +1,16 @@
 .welcome {
     background: url(../../img/image.png) cover no-repeat;
-    height: 100vh;
+    height: calc(75vh - 78px - 40px);
 }
 .container {
     position: relative;
+    height: 100%;
 }
 .line {
     position: absolute;
+    width: 75px;
+    background: #000;
+    height: 100%;
 }
 
 @font-face {
@@ -21,7 +25,20 @@
     font-size: 73px;
     font-family: 'MyFont', sans-serif;
     font-weight: bold;
-    background: linear-gradient(0deg, #0059FF, #D6CF14);
+    background: linear-gradient(45deg, #274fbd, #01d8fd, #14dfea, #3fc12a, #f9ac07, #5406d9, #e912a3, #7a3bca, #f9ac07, #7a3bca);
+    background-size: 400% 400%; /* Розширюємо градієнт для ефекту руху */
     background-clip: text;
+    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    animation: gradientAnimation 20s infinite linear;
+    position: relative;
+    z-index: 2;
+    margin-left: 10px;
+    padding-top: 20px;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
