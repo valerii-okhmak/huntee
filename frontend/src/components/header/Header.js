@@ -10,6 +10,7 @@ const Header = () => {
       </div>
       <nav className="nav">
         <ul>
+          <li><a href="#footer"><div className="set">Найближчі набори</div></a></li> 
           <li><a href="#footer"><img src="/headerIcons/contacts.png" alt="Контакти" /></a></li>
           <li><a href="#about"><img src="/headerIcons/authorization.png" alt="Авторизація" /></a></li>
           <li><a href="#contact"><img src="/headerIcons/burger.png" alt="Бургер меню" /></a></li>

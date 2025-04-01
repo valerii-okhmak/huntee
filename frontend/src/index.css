@@ -33,9 +33,10 @@ main {
 
 .welcome__img{
   position: absolute;
+  object-fit: cover;
   top: 0;
   left: 0;
-  height: 70vh;
+  height: 75vh;
   width: 100%;
 }
 

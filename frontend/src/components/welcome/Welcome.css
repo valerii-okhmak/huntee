@@ -1,6 +1,6 @@
 .welcome {
     background: url(../../img/image.png) cover no-repeat;
-    height: calc(75vh - 78px - 40px);
+    height: calc(75vh - 65px);
 }
 .container {
     position: relative;
