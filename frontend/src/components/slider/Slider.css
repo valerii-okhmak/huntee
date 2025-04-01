@@ -1,0 +1,83 @@
+/* Контейнер слайдера */
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;  /* Контейнер залишаємо максимальний */
+    margin: auto;
+    overflow: hidden;
+    margin-top: -10vh;
+}
+
+/* Стиль для слайду */
+.slider {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 100%;  /* Тепер слайдер займає всю ширину контейнера */
+    margin: 0 auto;
+}
+
+.slider2 {
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* Кожен слайд */
+.slide {
+    height: 20vh;
+    min-width: 100%; /* Слайди займають лише 80% ширини контейнера */
+    box-sizing: border-box;
+    background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
+    background-size: 400% 400%; 
+    animation: gradientAnimation 20s infinite linear;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'MyFont', sans-serif;
+    font-size: 34px;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Стилі для кнопок */
+.prev, .next {
+    position: absolute;
+    height: 60px;
+    width: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 1);
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 2; /* Зробимо кнопки поверх слайдів */
+    transition: 0.3s;
+    border: 0.1px solid rgb(192, 192, 192);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev:hover,.next:hover {
+    opacity: 0.7;
+}
+
+
+/* Позиціюємо кнопки ліворуч та праворуч */
+.prev {
+    left: 4px;  /* розташування лівої кнопки */
+}
+
+.next {
+    right: 4px; /* розташування правої кнопки */
+}
+
+.next img {
+    transform: rotate(180deg);
+}

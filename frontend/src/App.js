@@ -4,6 +4,7 @@ import Footer from './components/footer/Footer';
 import './styless/app.css';
 import Welcome from './components/welcome/Welcome';
 import welcome_img from './img/image.png'
+import Slider from './components/slider/Slider';
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Header />
       <main> 
         <Welcome></Welcome>
+        <Slider></Slider>
       </main>
       <Footer />
     </div>
