@@ -25,7 +25,7 @@
     font-size: 73px;
     font-family: 'MyFont', sans-serif;
     font-weight: bold;
-    background: linear-gradient(45deg, #274fbd, #01d8fd, #14dfea, #3fc12a, #f9ac07, #5406d9, #e912a3, #7a3bca, #f9ac07, #7a3bca);
+    background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
     background-size: 400% 400%; /* Розширюємо градієнт для ефекту руху */
     background-clip: text;
     -webkit-background-clip: text;
