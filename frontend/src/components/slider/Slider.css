@@ -2,7 +2,7 @@
 .slider-container {
     position: relative;
     width: 100%;
-    max-width: 600px;  /* Контейнер залишаємо максимальний */
+    max-width: 600px;  
     margin: auto;
     overflow: hidden;
     margin-top: -10vh;
@@ -12,7 +12,7 @@
 .slider {
     display: flex;
     transition: transform 0.5s ease;
-    width: 100%;  /* Тепер слайдер займає всю ширину контейнера */
+    width: 100%;  
     margin: 0 auto;
 }
 
@@ -80,4 +80,21 @@
 
 .next img {
     transform: rotate(180deg);
+}
+
+
+@media screen and (max-width: 768px) {
+    .slider-container {
+        max-width: 80%; 
+        margin-top: -7vh;
+    }
+    .slide {
+        font-size: 20px;
+    }
+    .prev, .next {
+        height: 40px;
+        width: 50px;
+        font-size: 16px;
+    }
+    
 }

@@ -1,8 +1,11 @@
 .welcome {
+    display: flex;
+    justify-items: space-between;
     background: url(../../img/image.png) cover no-repeat;
     height: calc(75vh - 65px);
 }
 .container {
+    margin-left: 12.5%;
     position: relative;
     height: 100%;
 }
@@ -19,14 +22,21 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'MyFont1';
+    src: url('../../fonts/Black.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
 .text {
-    line-height: 1.1;
-    font-size: 73px;
-    font-family: 'MyFont', sans-serif;
-    font-weight: bold;
+
+    line-height: 90px;
+    font-size: 100px;
+    font-family: 'MyFont1', sans-serif;
+    font-weight: 900;
     background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
-    background-size: 400% 400%; /* Розширюємо градієнт для ефекту руху */
+    background-size: 400% 400%; 
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -38,8 +48,40 @@
     user-select: none;
 }
 
+
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .line{
+        display: none;
+    }
+    .text {
+        line-height: 78px;
+        font-size: 10vh;
+        box-shadow: #000;
+    }
+
+    .container {
+        width: 100%;
+        margin: 0 0;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .text {
+        font-size: 17vw;
+        line-height: 13vw;
+    }
+}
+@media screen and (max-width: 475px) {
+    .text {
+        font-size: 22vw;
+        line-height: 18vw;
+    }
 }

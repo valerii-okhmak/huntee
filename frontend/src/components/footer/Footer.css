@@ -44,3 +44,34 @@
     background: white;
   }
   
+
+
+@media screen and (max-width: 768px) {
+    .footer {
+      margin-top: 10%;
+    }
+  
+    .footer p {
+      margin-left: 10px;
+    }
+  
+    .social-links a {
+      margin: 0 5px;
+    }
+  
+    .footer-title {
+      margin-left: 10px;
+      font-size: 30px;
+    }
+  
+    .footer-line {
+      margin-left: 10px;
+      width: 50%;
+    }
+  
+}
+
+@media screen and (max-width: 500px) {
+
+  
+}
