@@ -10,7 +10,6 @@ const Slider = () => {
   ];
   const totalSlides = slides.length;
 
-  // Функція для перемикання слайдів
   const showSlide = useCallback((index) => {
     if (index >= totalSlides) {
       setCurrentSlide(0);
@@ -21,20 +20,18 @@ const Slider = () => {
     }
   }, [totalSlides]);
 
-  // Функції для кнопок
   const nextSlide = () => {
-    showSlide(currentSlide + 1); // використовуємо showSlide
+    showSlide(currentSlide + 1); 
   };
 
   const prevSlide = () => {
-    showSlide(currentSlide - 1); // використовуємо showSlide
+    showSlide(currentSlide - 1); 
   };
 
-  // Автоматичний перехід до наступного слайду
   useEffect(() => {
-    const interval = setInterval(() => showSlide(currentSlide + 1), 3000); // використовуємо showSlide для автоматичного переходу
-    return () => clearInterval(interval); // очищаємо інтервал при демонтіванні компонента
-  }, [currentSlide, showSlide]); // додали showSlide до залежностей
+    const interval = setInterval(() => showSlide(currentSlide + 1), 3000); 
+    return () => clearInterval(interval); 
+  }, [currentSlide, showSlide]); 
 
   return (
     <div className="slider-container">
