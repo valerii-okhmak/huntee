@@ -1,0 +1,90 @@
+.main_start{
+    height: 101vh;
+    background: linear-gradient(45deg, #4a0b7e, #423bce, #17868b, #b3b012,#c7c676);
+    background-size: 400% 400%; 
+    animation: gradientAnimation 20s infinite linear;
+    
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.main_start__container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.main_start__container h1{
+    padding-left: 5%;
+    padding-top: 2%;
+    font-family: 'MyFont1', sans-serif; 
+    line-height: 8rem;
+    font-weight: 900;
+    font-size: 10rem;
+    color: #fff;
+    margin: 0;
+}
+.main_start__container h2{
+    padding-left: 5%;
+
+    font-weight: 600;
+    font-size: 2rem;
+    color: #fff;
+    margin: 0;
+    text-decoration: none;
+}
+
+.main_start__buttons{
+    height: 100%;
+    align-self: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    margin-top: 8%;
+    gap: 20%;
+}
+
+.button{
+    width: 300px;
+    height: 120px;
+    font-family: 'MyFont1', sans-serif; 
+    font-weight: 900;
+    font-size: 2rem;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+@media screen and (max-width: 890px) {
+    .main_start__buttons{
+        padding-top: 10%;
+        gap: 5%;
+        width: 300px;
+        height: 120px;
+        font-weight: 300;
+        font-size: 1.5rem;
+    }
+    .main_start__container h1{
+        padding-left: 5%;
+        padding-top: 15%;
+        line-height: 5rem;
+        font-size: 5.5rem;
+    }
+}
+
+
+@media screen and (max-width: 500px) {
+    .main_start__container h1{
+        word-spacing: 1000px;
+        line-height: 5rem;
+        font-size: 4rem;
+    }
+}
