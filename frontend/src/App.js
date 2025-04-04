@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styless/app.css';
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
+import RegPage from './pages/RegPage';
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/reg" element={<RegPage />} />
       </Routes>
     </div>
     </Router>
