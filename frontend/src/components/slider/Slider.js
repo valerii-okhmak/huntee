@@ -11,14 +11,18 @@ const Slider = () => {
   const totalSlides = slides.length;
 
   const showSlide = useCallback((index) => {
-    if (index >= totalSlides) {
-      setCurrentSlide(0);
-    } else if (index < 0) {
-      setCurrentSlide(totalSlides - 1);
-    } else {
-      setCurrentSlide(index);
+    switch (true) {
+      case index >= totalSlides:
+        setCurrentSlide(0);
+        break;
+      case index < 0:
+        setCurrentSlide(totalSlides - 1);
+        break;
+      default:
+        setCurrentSlide(index);
     }
   }, [totalSlides]);
+  
 
   const nextSlide = () => {
     showSlide(currentSlide + 1); 
