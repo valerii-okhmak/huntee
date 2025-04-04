@@ -4,9 +4,10 @@ import './Slider.css';  // Підключаємо CSS
 const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
-    { id: 1, text: 'похуй шо'},
-    { id: 2, text: 'похуй як'},
-    { id: 3, text: 'похуй коли'},
+    { id: 1, text: 'Слайд 1'},
+    { id: 2, text: 'Слайд 2'},
+    { id: 3, text: 'Слайд 3'},
+    { id: 4, text: 'Слайд 4'},
   ];
   const totalSlides = slides.length;
 
