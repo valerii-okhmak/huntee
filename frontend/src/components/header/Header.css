@@ -5,7 +5,9 @@
     padding: 0px;
     padding-left: 0;
     width: 100%;
-    z-index: 10; 
+    z-index: 10;
+    position: fixed;
+    background-color: rgb(255, 255, 255);
   }
   
 .header .logo h1 {
@@ -19,7 +21,13 @@
 .logo img {
   height: 34px; 
 }
-  
+ 
+.headermenu {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
   
 .nav ul {
   list-style-type: none;
@@ -35,20 +43,22 @@
   margin: 0 15px;
 }
 
-
-  
 .nav a {
   color: rgb(0, 0, 0);
   text-decoration: none;
   font-size: 16px;
 }
   
-nav ul li a img{
+.burger{
+  z-index: 99;
+  position: relative;
+}
+.headermenu img{
   width: 30px;
   height: 30px;
 }
 
-nav ul li a img:hover{
+.headermenu img:hover{
   transform: scale(1.1);
 }
 
@@ -76,7 +86,6 @@ nav ul li a img:hover{
     padding: 0px;
     padding-left: 0;
     background-color: rgba(51, 51, 51, 0); 
-    color: rgb(243, 21, 21);
     width: 100%;
     z-index: 10; 
   }
@@ -112,19 +121,17 @@ nav ul li a img:hover{
     color: rgb(0, 0, 0);
     text-decoration: none;
     font-size: 16px;
-    
   }
   
-  nav ul li a img{
+  .headermenu img{
     width:20px;
     height: 20px;
   }
   
-  nav ul li a img:hover{
+  .headermenu img:hover{
     transform: scale(1.1);
   }
 
-  
   .set {
     font-family: 'MyFont', sans-serif;
     font-size: 9px;
@@ -146,12 +153,6 @@ nav ul li a img:hover{
   .set{
     display: none;
   }
-
-}
-
-@media screen and (max-width: 260px) {
-
-  
 
 }
 
