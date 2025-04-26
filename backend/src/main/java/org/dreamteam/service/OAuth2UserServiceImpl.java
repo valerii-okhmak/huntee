@@ -1,5 +1,5 @@
 package org.dreamteam.service;
 
-public class OAuthService {
+public class OAuth2UserServiceImpl {
     
 }
