@@ -4,6 +4,7 @@ import './styless/app.css';
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
 import RegPage from './pages/RegPage';
+import TestPage from './pages/TestPage';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/reg" element={<RegPage />} />
+        <Route path="/testpage" element={<TestPage />} />
       </Routes>
     </div>
     </Router>
