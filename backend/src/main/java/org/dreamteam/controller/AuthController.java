@@ -54,14 +54,16 @@ public class AuthController {
         );
         pendingUsers.put(signUpRequest.getEmail(), tempUser);
 
+        // Викликаємо метод для надсилання красивого листа
         emailService.sendEmail(
                 signUpRequest.getEmail(),
                 "Confirmation Code",
-                "Your confirmation code is: " + verificationCode
+                verificationCode  // Передаємо лише сам код підтвердження
         );
 
         return ResponseEntity.ok(Map.of("message", "Confirmation code sent to your email."));
     }
+
 
     @Operation(summary = "Confirm registration", description = "Confirm user registration with the code sent to email")
     @ApiResponse(responseCode = "200", description = "User registered successfully")
