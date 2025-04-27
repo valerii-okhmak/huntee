@@ -10,6 +10,8 @@ import org.dreamteam.model.User;
 import org.dreamteam.repository.UserRepository;
 import org.dreamteam.service.EmailService;
 import org.dreamteam.service.JwtTokenProvider;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,10 +35,13 @@ public class AuthController {
 
     @Operation(summary = "Register user", description = "Register a user and send confirmation code to email")
     @ApiResponse(responseCode = "200", description = "Confirmation code sent")
+    @ApiResponse(responseCode = "409", description = "Email already taken")
     @PostMapping("/register")
-    public String registerUser(@RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
         if (userRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
-            return "Email already taken!";
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "Email already taken!"));
         }
 
         String verificationCode = String.format("%06d", random.nextInt(999999));
@@ -49,23 +54,32 @@ public class AuthController {
         );
         pendingUsers.put(signUpRequest.getEmail(), tempUser);
 
-        emailService.sendEmail(signUpRequest.getEmail(), "Confirmation Code", "Your confirmation code is: " + verificationCode);
+        emailService.sendEmail(
+                signUpRequest.getEmail(),
+                "Confirmation Code",
+                "Your confirmation code is: " + verificationCode
+        );
 
-        return "Confirmation code sent to your email.";
+        return ResponseEntity.ok(Map.of("message", "Confirmation code sent to your email."));
     }
 
     @Operation(summary = "Confirm registration", description = "Confirm user registration with the code sent to email")
     @ApiResponse(responseCode = "200", description = "User registered successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid confirmation code or email")
     @PostMapping("/confirm")
-    public String confirmUser(@RequestBody ConfirmRequest confirmRequest) {
+    public ResponseEntity<?> confirmUser(@RequestBody ConfirmRequest confirmRequest) {
         TempUser tempUser = pendingUsers.get(confirmRequest.getEmail());
 
         if (tempUser == null) {
-            return "No pending registration found for this email!";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "No pending registration found for this email!"));
         }
 
         if (!tempUser.getVerificationCode().equals(confirmRequest.getCode())) {
-            return "Invalid confirmation code!";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Invalid confirmation code!"));
         }
 
         User user = new User();
@@ -78,22 +92,31 @@ public class AuthController {
 
         pendingUsers.remove(confirmRequest.getEmail());
 
-        return "User registered successfully!";
+        return ResponseEntity.ok(Map.of("message", "User registered successfully!"));
     }
 
     @Operation(summary = "Login", description = "Authenticate user and get JWT token")
     @ApiResponse(responseCode = "200", description = "User authenticated")
+    @ApiResponse(responseCode = "400", description = "Invalid credentials or user not found")
     @PostMapping("/login")
-    public AuthResponse authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "User not found!"));
+        }
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials!");
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Invalid credentials!"));
         }
 
         String token = tokenProvider.generateToken(user.getEmail());
-        return new AuthResponse(token);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     private static class TempUser {
