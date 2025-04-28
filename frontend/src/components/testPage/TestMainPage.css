@@ -1,0 +1,186 @@
+.test-main-page {
+    font-family: 'MyFont', sans-serif;
+    color: #000;
+    background-color: #f1f1f1;
+    margin-top: 50px;
+  }
+  
+  /* Верхня секція */
+  .top-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 50px;
+  }
+  
+  .top-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .location, .date-time {
+    display: flex;
+    align-items: center; /* Іконка + текст вирівнюються по центру по вертикалі */
+    gap: 8px; /* Відстань між іконкою і текстом */
+    font-size: 25px;
+  }
+
+  .location {
+    color: rgb(0, 0, 0, 0.3);
+  }
+  
+  .icon img {
+    width: 20px; /* або 16px якщо хочеш менші */
+    height: 20px;
+    object-fit: contain;
+  }
+  
+  .category {
+    font-size: 25px;
+    color: rgb(0, 0, 0);
+    text-align: left;
+  }
+  
+  .logo img {
+    height: 45px; /* або який потрібно розмір */
+    object-fit: contain;
+  }
+  
+  
+  .title {
+    font-size: 45px;
+    font-weight: bold;
+  }
+  
+  .company-info {
+    display: block;
+    width: 86%;
+    height: 320px; /* фіксована висота */
+    margin: 100px auto 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    text-align: left;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* тінь */
+    overflow: auto; /* якщо тексту більше — з'явиться прокрутка */
+  }
+  
+  
+  .company-info p {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .details-button {
+    display: inline-block;
+    margin-top: -40px;
+    float: right;
+  }
+  
+  .details-button button {
+    background-color: #000000;
+    font-family: 'MyFont', sans-serif;
+    color: white;
+    padding: 20px 40px;
+    font-size: 40px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    text-align: center;
+    margin-right: 50px;
+  }
+  
+  
+  .details-button:hover button {
+    background-color: #a3a3a3;
+    color: black;
+  }
+  
+  /* About Work секція */
+  .about-work {
+    background: linear-gradient(to right, #001aff, #5f77ff);
+    padding: 70px;
+    margin: 167px auto 70px auto;
+    color: white;
+    width: 100%;
+    height: 768px;
+  }
+  
+  .about-work h2 {
+    font-size: 100px;
+    font-weight: bold;
+    color: rgb(255, 255, 255, 0.7);
+  }
+  
+  .about-text {
+    background: white;
+    color: black;
+    padding: 20px;
+    height: 80%;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  
+  .about-text p {
+    margin-bottom: 15px;
+    font-size: 25px;
+  }
+  
+  .signature {
+    text-align: right;
+    font-weight: bold;
+  }
+  
+  /* Обов'язки */
+  .responsibilities {
+    padding: 20px 100px;
+  }
+  
+  .responsibilities h3 {
+    margin-bottom: 15px;
+    font-size: 30px;
+  }
+  
+  .responsibilities ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .responsibilities li {
+    margin-bottom: 30px;
+    font-size: 25px;
+  }
+
+  .reg-button {
+    display: inline-block;
+    margin: 40px auto;
+    float: right;
+
+  }
+  
+  .reg-button button {
+    background-color: #000000;
+    font-family: 'MyFont', sans-serif;
+    color: white;
+    padding: 20px 40px;
+    font-size: 40px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    text-align: center;
+    margin-right: 50px;
+  }
+  
+  
+  .reg-button:hover button {
+    background-color: #a3a3a3;
+    color: black;
+  }
+  

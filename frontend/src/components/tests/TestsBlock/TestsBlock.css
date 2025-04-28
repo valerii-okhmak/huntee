@@ -1,0 +1,29 @@
+.testsBlock {
+    margin-bottom: 50px;
+    flex: 1 1 auto;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: #FFFBFB;
+    border: 1px solid #e0e0e0;
+    padding: 0px 12px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.search-container input {
+    border: none;
+    outline: none;
+    background: transparent;
+    margin-left: 8px;
+    font-size: 18px;
+    color: #8F8D8D;
+    width: 100%;
+}
+
+.search_icon {
+    width: 18px;
+    height: 18px;
+}

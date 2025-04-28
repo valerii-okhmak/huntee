@@ -35,6 +35,96 @@
     clip-path: polygon(0 0, 100% 0,100% 20%, 0 80%);
     z-index: 1; /* Встановлюємо на задній план */
   }
+
+
+  /* Звичайне поле */
+input {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  outline: none;
+}
+
+/* Коли є помилка */
+input.error {
+  border-color: red;
+}
+
+/* Текст помилки під полем */
+.error-text {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* Загальна помилка */
+.general-error {
+  color: red;
+  font-size: 1rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.code-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.code-input {
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  text-align: center;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.code-input:focus {
+  border-color: #007bff;
+}
+
+.confirm-text {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.back-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+}
+
+.back-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.submit-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
     
   @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
