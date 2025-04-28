@@ -1,0 +1,39 @@
+.filter {
+    width: 100%;
+}
+
+.filer_name {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #E1DEDE;
+}
+
+.filter_title {
+    text-transform: uppercase;
+    font-family: 'MyFont1', sans-serif;
+    font-size: 16px;
+}
+
+.filter_button {
+    width: 30px;
+    height: 3px;
+    background: #000;
+}
+
+.filter_section {
+    padding: 20px 20px 1px;
+    background: #fff;  
+}
+
+.option {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.input {
+    margin-right: 10px;
+}
