@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap');
+
+.test {
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 35px;
+    margin-top: 25px;
+    font-family: "Kantumruy Pro", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.top_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.type {
+    color: #000;
+    font-size: 18px;
+}
+
+.logo {
+    height: 40px;
+}
+
+.title {
+    font-weight: bold;
+    color: #000;
+    font-size: 30px;
+    margin-top: 5px;
+    text-decoration: none;
+}
+.title:hover {
+    text-decoration: underline; 
+}
+
+.bottom_row {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.location {
+    color: #848282;
+    font-size: 18px;
+}
+
+.location_icon {
+    height: 30px;
+}
+
+.date {
+    color: #848282;
+    font-size: 18px;
+    display: flex;
+}
+
+.time {
+    margin-left: 15px;
+}
