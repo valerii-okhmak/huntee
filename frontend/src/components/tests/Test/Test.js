@@ -10,7 +10,7 @@ const Test = () => {
         <p className='type'>Data Science</p>
         <img alt='logo' className='logo' src={softserve}/>
       </div>
-      <a href='' className='title'>JUNIOR DATA SCIENTIST</a>
+      <a href='/testpage' className='title'>JUNIOR DATA SCIENTIST</a>
       <div className='bottom_row'>
         <div className='location'>
           <img alt='map' className='location_icon' src={location_icon} />

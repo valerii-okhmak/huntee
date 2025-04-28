@@ -9,7 +9,7 @@ const Main_start = () => {
             <h2>Тести створені щоб допомогти студентам знайти свою карєру в IT</h2>
 
             <div className="main_start__buttons">
-              <a href="/" className="button">Активні тести</a>
+              <a href="/alltests" className="button">Активні тести</a>
               <a href="/" className="button">Пробний тест</a>
             </div>
         </div>
