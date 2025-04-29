@@ -1,15 +1,20 @@
-import React from 'react'
-import "./Welcome.css"
+import React from 'react';
+import './Welcome.css';
+import backgroundVideo from '../../video/welcomevideo.mp4'; // ⚠️ вкажи правильний шлях до відео
 
 const Welcome = () => {
   return (
-    <div className='welcome'>
-        <div className='container'>
-            <div className='line'></div>
-            <p className='text'>DUDE,<br/>THIS<br/>IS<br/>YOUR<br/>FUTURE</p>
-        </div>
-    </div>
-  )
-}
+    <div className="welcome">
+      <video className="background-video" autoPlay loop muted>
+        <source src={backgroundVideo} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
 
-export default Welcome
+      <div className="container">
+        <p className="text">DUDE, THIS IS<br/>YOUR FUTURE</p>
+      </div>
+    </div>
+  );
+};
+
+export default Welcome;

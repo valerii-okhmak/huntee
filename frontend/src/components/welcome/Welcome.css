@@ -1,19 +1,27 @@
 .welcome {
-    display: flex;
-    justify-items: space-between;
-    background: url(../../img/image.png) cover no-repeat;
+    position: relative;
     height: calc(75vh);
+    overflow: hidden;
     padding-top: 65px;
 }
-.container {
-    margin-left: 12.5%;
-    position: relative;
-    height: 100%;
-}
-.line {
+
+.background-video {
     position: absolute;
-    width: 75px;
-    background: #000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    margin-left: 12.5%;
     height: 100%;
 }
 
@@ -31,9 +39,9 @@
 }
 
 .text {
-
-    line-height: 90px;
-    font-size: 100px;
+    text-align: center;
+    line-height: 110px;
+    font-size: 124px;
     font-family: 'MyFont1', sans-serif;
     font-weight: 900;
     background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
@@ -44,8 +52,7 @@
     animation: gradientAnimation 20s infinite linear;
     position: relative;
     z-index: 2;
-    margin-left: 10px;
-    padding-top: 20px;
+
     user-select: none;
 }
 
