@@ -6,12 +6,11 @@ const burgerMenu = () => {
   return (
         <div className='burger-container'>
             <div className='burger-menu'>
-            <h2>МЕНЮ</h2>
                 <div className='burger-line'></div>
                 <ul className='burger-list'>
-                    <li><Link to="/" className='link'>1</Link></li>
-                    <li><Link to="/auth" className='link'>2</Link></li>
-                    <li><Link to="#footer" className='link'>3</Link></li>
+                    <li><Link to="/profile" className='link'><span className='digit'>1</span><span className='burger-text'>Мій аккаунт</span></Link></li>
+                    <li><Link to="/alltests" className='link'><span className='digit'>2</span><span className='burger-text'>Активні тести</span></Link></li>
+                    <li><Link to="#footer" className='link'><span className='digit'>3</span><span className='burger-text'>Пробні тести</span></Link></li>
                 </ul>
             </div>    
         </div>

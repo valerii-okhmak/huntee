@@ -3,12 +3,11 @@
     position: absolute;
     top: 0; 
     right: 0;
-    width: 30%;
+    width: 40%;
     min-height: 100vh;
-    background-color: #ffffff;
+    background-color: rgb(255, 255, 255, 0.9);
     z-index: 98;
     padding: 10px 50px;
-    border: 3px solid rgb(0, 0, 0);
   }
 
   .active {
@@ -21,15 +20,49 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 40px;
     font-size: 20px;
     font-weight: 600;
     margin-top: 20px;  
   }
 
- .link{
+  @keyframes fadeInLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .link {
+    display: flex;
+    align-items: center;
     text-decoration: none;
-    font-size: 48px;
+    animation: fadeInLeft 0.8s ease forwards;
+    opacity: 0; /* щоб було приховано до анімації */
+  }
+  
+  /* Затримка появи кожного пункту меню */
+  .burger-list li:nth-child(1) .link {
+    animation-delay: 0.1s;
+  }
+  
+  .burger-list li:nth-child(2) .link {
+    animation-delay: 0.3s;
+  }
+  
+  .burger-list li:nth-child(3) .link {
+    animation-delay: 0.5s;
+  }
+  
+  
+  .digit {
+    width: 50px; /* або більше, щоб усі цифри були однакової ширини */
+    text-align: center;
+    font-size: 60px;
     font-family: 'MyFont1', sans-serif;
     font-weight: 900;
     background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
@@ -39,9 +72,28 @@
     -webkit-text-fill-color: transparent;
     animation: gradientAnimation 20s infinite linear;
   }
+  
+  .burger-text {
+    color: black;
+    font-family: 'MyFont1', sans-serif;
+    font-size: 25px;
+    text-decoration: none;
+    margin-left: 20px; /* менш агресивне зміщення */
+    text-transform: uppercase;
+
+  }
 
   @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+.burger-text:hover {
+  background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
+  background-size: 200% 200%; 
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 20s infinite linear;
 }
