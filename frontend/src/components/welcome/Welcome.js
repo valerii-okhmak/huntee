@@ -10,7 +10,7 @@ const Welcome = () => {
         Your browser does not support the video tag.
       </video>
 
-      <div className="container">
+      <div className="container welcome_container">
         <p className="text">DUDE, THIS IS<br/>YOUR FUTURE</p>
       </div>
     </div>
