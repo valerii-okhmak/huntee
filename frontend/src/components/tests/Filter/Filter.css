@@ -21,11 +21,18 @@
     font-size: 16px;
 }
 
+.filter_action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    cursor: pointer;
+}
+
 .filter_button {
     width: 20px;
     height: 3px;
     background: #000;
-    cursor: pointer;
 }
 
 .plus {
