@@ -4,7 +4,7 @@ Huntee provides IT companies with a powerful toolkit for effective candidate pre
 
 ## Key Features:
 
-- **Test Creation**: Administrators can create tests with various question types (multiple choice, open-ended, coding tasks, etc.), set time limits, and define passing criteria. *See more in [Test Format](docs.eng/test-format.md#1-question-types)*
+- **Test Creation**: Administrators can create tests with various question types (multiple choice, open-ended, coding tasks, etc.), set time limits, and define passing criteria. *See more in [Test Format](READMEFILES/end/test-format.md#1-question-types)*
 
 - **Role-based Personalization**: Ability to create test templates tailored to specific job positions (e.g., "Junior Java Developer").
 
@@ -14,7 +14,7 @@ Huntee provides IT companies with a powerful toolkit for effective candidate pre
 
 - **Performance Analysis**: Candidate ranking, group-based analytics, and test history tracking.
 
-- **Security**: Integrity monitoring tools (e.g., eye tracking). *See more in [Anti-cheating Mechanisms](docs.eng/test-format.md#3-anti-cheating-mechanisms)*
+- **Security**: Integrity monitoring tools (e.g., eye tracking). *See more in [Anti-cheating Mechanisms](READMEFILES/eng/test-format.md#3-anti-cheating-mechanisms)*
 
 - **Result Export**: Export test reports in CSV/Excel formats.
 
