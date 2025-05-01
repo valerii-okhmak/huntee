@@ -8,11 +8,14 @@ import TestPage from './pages/TestPage';
 import AllTestsPage from './pages/AllTestsPage';
 import ProfilePage from './pages/ProfilePage'
 import TrialTest from './pages/TrialTestPage';
+import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
 
 const App = () => {
   return (
     <Router>
     <div className="App">
+      <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/auth" element={<AuthPage />} />
@@ -22,6 +25,7 @@ const App = () => {
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/trialtest' element={<TrialTest />} />
       </Routes>
+      <Footer />
     </div>
     </Router>
   );
