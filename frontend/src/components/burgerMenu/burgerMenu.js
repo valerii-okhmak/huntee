@@ -10,7 +10,7 @@ const burgerMenu = () => {
                 <ul className='burger-list'>
                     <li><Link to="/profile" className='link'><span className='digit'>1</span><span className='burger-text'>Мій аккаунт</span></Link></li>
                     <li><Link to="/alltests" className='link'><span className='digit'>2</span><span className='burger-text'>Активні тести</span></Link></li>
-                    <li><Link to="#footer" className='link'><span className='digit'>3</span><span className='burger-text'>Пробні тести</span></Link></li>
+                    <li><Link to="/trialtest" className='link'><span className='digit'>3</span><span className='burger-text'>Пробні тести</span></Link></li>
                 </ul>
             </div>    
         </div>
