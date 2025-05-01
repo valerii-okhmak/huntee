@@ -64,5 +64,13 @@ API буде доступне за адресою: http://localhost:8080
 huntee/
 ├── backend/         # Серверна частина 
 ├── frontend/        # Клієнтська частина 
-└── README.md        # Основна документація
+└── READMEFILESua    # Документація
+    ├── README.md       
+    └── docs.ua/
+        ├── companies.md
+        ├── setup.md
+        ├── students.md
+        ├── technologies.md
+        └── test-format.md
+
 ```
