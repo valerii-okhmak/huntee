@@ -1,11 +1,13 @@
 package org.dreamteam.dto;
 
+
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class SignupRequest {
+@Builder
+public class ProfileResponse {
     private String firstName;
     private String lastName;
-    private String email;
-    private String password;
+    private String profileImage;
 }
