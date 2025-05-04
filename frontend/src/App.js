@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage'
 import TrialTest from './pages/TrialTestPage';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return (
@@ -18,12 +19,16 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/login" element={<AuthPage />} />
         <Route path="/reg" element={<RegPage />} />
-        <Route path="/profile" element={<ProfilePage/>} />
         <Route path="/testpage" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/trialtest' element={<TrialTest />} />
+
+        {/* Protected routes*/}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
       </Routes>
       <Footer />
     </div>
