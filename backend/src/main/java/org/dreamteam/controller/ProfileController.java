@@ -4,6 +4,7 @@ package org.dreamteam.controller;
 import lombok.RequiredArgsConstructor;
 
 import org.dreamteam.Entity.Profile;
+import org.dreamteam.dto.ProfileRequest;
 import org.dreamteam.dto.ProfileResponse;
 import org.dreamteam.security.CustomUserDetails;
 import org.dreamteam.security.CustomUserDetailsService;
@@ -29,25 +30,52 @@ public class ProfileController {
         @Parameter(description = "JWT token", required = true, example = "eyJ...")
         @RequestParam("token") String token 
     ) {
-        // Перевірка формату токену (якщо він починається з 'Bearer ', видаляємо це слово)
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-
-
-        // Витягуємо email з токену
         String email = jwtService.extractUsername(token);
 
-        // Завантажуємо користувача по email
         CustomUserDetails userDetails = (CustomUserDetails) userService.loadUserByUsername(email);
 
-        // Перевіряємо профіль користувача
         Profile profile = userDetails.getProfile();
         if (profile == null) {
             throw new IllegalStateException("Profile is not initialized for the current user");
         }
+        
+        return ProfileResponse.builder()
+                .firstName(profile.getFirstName())
+                .lastName(profile.getLastName())
+                .profileImage(profile.getProfileImageUrl())
+                .build();
+    }
 
-        // Повертаємо відповідь
+
+    @PostMapping
+    public ProfileResponse updateProfile(
+        @Parameter(description = "JWT token", required = true, example = "Bearer eyJ...")
+        @RequestParam("token") String token,
+        @RequestBody ProfileRequest profileRequest
+    ) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+    
+        String email = jwtService.extractUsername(token);
+        CustomUserDetails userDetails = (CustomUserDetails) userService.loadUserByUsername(email);
+        Profile profile = userDetails.getProfile();
+    
+        if (profile == null) {
+            profile = new Profile();
+            userDetails.setProfile(profile);
+        }
+    
+        profile.setFirstName(profileRequest.getFirstName());
+        profile.setLastName(profileRequest.getLastName());
+        profile.setProfileImageUrl(profileRequest.getProfileImageUrl());
+    
+        // Якщо використовуєте JPA, то збережіть оновлення у базу:
+        userService.saveProfile(profile); // реалізуй цей метод у CustomUserDetailsService
+    
         return ProfileResponse.builder()
                 .firstName(profile.getFirstName())
                 .lastName(profile.getLastName())

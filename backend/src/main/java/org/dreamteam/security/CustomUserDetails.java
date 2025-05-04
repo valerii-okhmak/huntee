@@ -21,7 +21,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public Profile getProfile() {
-        return user.getProfile(); // Це повинно повертати непорожній Profile
+        return user.getProfile(); 
     }
 
 
@@ -58,6 +58,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.getIsVerified();
+    }
+
+    public void setProfile(Profile profile) {
+        user.setProfile(profile);
     }
 
     

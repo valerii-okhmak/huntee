@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
+import axios from 'axios';
 import './Profile.css';
 import AdditionalInfoModal from './AdditionalInfoModal';
 import CoursesModal from './CoursesModal';
@@ -8,6 +9,24 @@ import editIcon from '../../img/pen.png';
 import linkIcon from '../../img/link.png';
 
 const Profile = () => {
+
+  const [profileData, setProfileData] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(`http://localhost:8080/api/profile/me`, {
+          params: { token: `Bearer ${token}` },
+        });
+        setProfileData(response.data);
+      } catch (error) {
+        console.error('Помилка при завантаженні профілю:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const [isAdditionalInfoModalOpen, setIsAdditionalInfoModalOpen] = useState(false);
   const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
@@ -65,8 +84,14 @@ const Profile = () => {
                 Особиста інформація
                 <img src={editIcon} alt="Edit" className="edit-icon" />
               </h3>
-              <div className="profile-avatar"></div>
-              <h2 className="profile-name">Петрикович Антоніна Юріївна</h2>
+              <div className="profile-avatar">
+                {profileData?.profileImage && (
+                  <img src={profileData.profileImage} alt="Аватар" className="avatar-img" />
+                )}
+              </div>
+              <h2 className="profile-name">
+                {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+              </h2>
               <button 
                   id="link-information" 
                   className="profile-edit-btn">Поділитись посиланням

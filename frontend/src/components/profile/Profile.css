@@ -341,9 +341,9 @@
   .modal-button {
     padding: 0.5rem 1rem;
     border-radius: 5px;
-    font-size: 16px; /* Приблизно відповідає 51px висоти */
+    font-size: 16px; 
     cursor: pointer;
-    width: 206px; /* Приблизно половина від 424px, з урахуванням gap */
+    width: 206px;
   }
   
   .modal-button-cancel {
@@ -365,3 +365,12 @@
   .modal-button-submit:hover {
     background: #0056b3;
   }
+
+
+  .avatar-img {
+    width: 193px;
+    height: 190px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
