@@ -46,8 +46,7 @@ public class AuthService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email вже зареєстровано");
         }
 
-        UserType userType = userTypeRepository.findByName(request.getUserType().toUpperCase())
-                .orElseThrow(() -> new ResourceNotFoundException("Невірний тип користувача"));
+        UserType userType = new UserType(1 , "USER");
 
         String verificationCode = generateVerificationCode();
 

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
+import { saveTokens } from '../../utils/auth'; 
+import { login } from '../../services/authService'; 
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -7,34 +9,18 @@ const AuthForm = () => {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Не даємо формі перезавантажувати сторінку
-
-    const credentials = { email, password };
+    e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Збереження токена та даних користувача в localStorage
-        localStorage.setItem('authToken', data.token); 
-        localStorage.setItem('userData', JSON.stringify(data.user));  
-
-        window.location.href = '/'; 
+      const response = await login({ email, password });
+      saveTokens(response.data);
+      window.location.href = '/';
+    } catch (err) {
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
       } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Щось пішло не так');
+        setError('Помилка підключення до сервера');
       }
-    } catch (error) {
-      console.error('Error during login:', error);
-      setError('Помилка підключення до сервера');
     }
   };
 
@@ -71,15 +57,15 @@ const AuthForm = () => {
           </button>
         </form>
         <div className="social-login">
-          <button className="social-btn google-btn">
+          <button className="social-btn google-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}>
             <img src="https://www.google.com/favicon.ico" alt="Google" />
             Авторизація через Google
           </button>
-          <button className="social-btn linkedin-btn">
+          <button className="social-btn linkedin-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/linkedin'}>
             <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
             Авторизація через LinkedIn
           </button>
-          <button className="social-btn facebook-btn">
+          <button className="social-btn facebook-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/facebook'}>
             <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
             Авторизація через Facebook
           </button>
