@@ -44,7 +44,7 @@ const Header = () => {
               </a>
             </li>
           )}
-          <li><a href="#footer" className="headermenu"><img src="/headerIcons/contacts.png" alt="Контакти" /></a></li>
+          <li><a href="/messages" className="headermenu"><img src="/headerIcons/contacts.png" alt="Контакти" /></a></li>
           <li><a href="/profile" className="headermenu"><img src="/headerIcons/authorization.png" alt="profile" /></a></li>
           <li><button onClick={menuBtn} className="headermenu burger"><img src="/headerIcons/burger.png" alt="Бургер меню" /></button></li>
         </ul>

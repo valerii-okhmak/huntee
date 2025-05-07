@@ -7,7 +7,7 @@ const MessageItem = ({logo ,testname, read }) => {
       <div className="message-logo">
         <img src={logo} alt="Фото компанії" />
       </div>
-      <a href='' className="message-testname">{testname}</a>
+      <a href='/' className="message-testname">{testname}</a>
 
       {!read && <div className='unread-message'></div>}
     </div>

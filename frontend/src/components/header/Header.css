@@ -73,7 +73,7 @@
 .set {
   font-family: 'MyFont', sans-serif;
   font-size: 20px;
-  background-color: rgba(226, 206, 139, 0.7);
+  background-color: rgb(73, 168, 209);
   padding: 20px;
   transition: 0.3s;
   transition: border 0.1s ease, box-shadow, background-color 0.1s ease;
