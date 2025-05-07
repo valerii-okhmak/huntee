@@ -1,0 +1,12 @@
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 25px 25px;
+    background-color: white;
+    border-radius: 8px;
+    flex: 1 1 auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    max-height: 550px;
+    overflow: scroll;
+}

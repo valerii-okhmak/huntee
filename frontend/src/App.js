@@ -11,6 +11,7 @@ import TrialTest from './pages/TrialTestPage';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import MessagePage from './pages/MessagePage';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/testpage" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/trialtest' element={<TrialTest />} />
+        <Route path="/messages" element={<MessagePage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
