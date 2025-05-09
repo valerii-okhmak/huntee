@@ -1,0 +1,66 @@
+.choose-your-future {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: linear-gradient(to bottom right, #001aff 60%, #ffffff 100%);
+    background-size: 400% 400%; 
+    animation: gradientAnimation 20s infinite linear;
+    color: white;
+    position: relative;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.choose-your-future h2 {
+    font-family: 'MyFont1', sans-serif; 
+    color: white;
+    font-size: 110px;
+    margin: 25px 45px 45px 45px;
+}
+
+.chs-your-future-container {
+    background: white;
+    width: 80%;
+    height: 500px;
+    overflow-y: auto; 
+    box-shadow: 0 0 70px rgba(0, 0, 0, 0.7);
+    margin: 0 auto 100px auto;
+}
+
+.browser-top-block {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 10px 0 10px 5px;
+    gap: 10px;
+  }
+  
+  .browser-image img {
+    height: 40px;
+  }
+  
+  .vertical-line {
+    width: 1px;
+    background-color: #898787;
+  }
+  
+  
+  .horizontal-line {
+    height: 2px;
+    width: 100%;
+    background-color: #898787;
+  }
+  
+  .browser-bottom-block {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 25px;       
+    margin-top: 20px;
+    padding: 10px 0;
+  }
+  

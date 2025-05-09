@@ -1,6 +1,6 @@
 import React from 'react';
 import './TestMainPage.css';
-import logo from "../../img/softserve.png"; // Імпортуємо PNG-логотип
+import logo from "../../img/softserve.png"; 
 
 const TestMainPage = () => {
   return (

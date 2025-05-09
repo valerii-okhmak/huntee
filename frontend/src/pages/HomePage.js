@@ -5,6 +5,7 @@ import Slider from '../components/slider/Slider';
 import Main_start from '../components/main_start/main_start';
 import TrialTesting from '../components/trial_testing/TrialTesting';
 import '../index.css';
+import ChooseYourFuture from '../components/chs_your_future/ChooseYourFuture';
 
 const HomePage = () => {
   return (
@@ -15,6 +16,7 @@ const HomePage = () => {
       </div>
       <Main_start></Main_start>
       <TrialTesting></TrialTesting>
+      <ChooseYourFuture></ChooseYourFuture>
     </div>
   );
 };
