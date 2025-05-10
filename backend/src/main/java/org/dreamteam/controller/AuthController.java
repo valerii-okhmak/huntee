@@ -82,4 +82,20 @@ public class AuthController {
         return authService.refreshToken(request);
     }
 
+
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleOAuthRequest request) {
+        return authService.processOAuthLogin(
+                "google",
+                request.getProviderUserId(),
+                request.getEmail(),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getImageUrl(),
+                request.getAccessToken(),
+                request.getRefreshToken(),
+                request.getExpiresAt()
+        );
+    }
+
 }
