@@ -87,8 +87,8 @@
 
     -- 2. Truncate tables in the correct order
     TRUNCATE TABLE users;
-    TRUNCATE TABLE user_types;
-    TRUNCATE TABLE auth_providers;
+    TRUNCATE TABLE oauth_identities;
+    TRUNCATE TABLE profiles;
 
     -- 3. Re-enable foreign key checks
     SET FOREIGN_KEY_CHECKS = 1;

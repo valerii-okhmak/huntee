@@ -88,8 +88,8 @@
 
     -- 2. Очистити таблиці в правильному порядку
     TRUNCATE TABLE users;
-    TRUNCATE TABLE user_types;
-    TRUNCATE TABLE auth_providers;
+    TRUNCATE TABLE oauth_identities;
+    TRUNCATE TABLE profiles;
 
     -- 3. Увімкнути перевірку назад
     SET FOREIGN_KEY_CHECKS = 1;
