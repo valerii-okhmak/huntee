@@ -7,6 +7,7 @@ import EducationModal from './EducationModal';
 import ExperienceModal from './ExpirienceModal';
 import editIcon from '../../img/pen.png';
 import linkIcon from '../../img/link.png';
+import { getAccessToken } from '../../utils/auth';
 
 const Profile = () => {
 
@@ -15,7 +16,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
+        const token = getAccessToken();
         const response = await axios.get(`http://localhost:8080/api/profile/me`, {
           params: { token: `Bearer ${token}` },
         });
