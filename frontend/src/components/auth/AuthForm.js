@@ -10,19 +10,32 @@ const AuthForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setError('');
+  
     try {
       const response = await login({ email, password });
       saveTokens(response.data);
       window.location.href = '/';
     } catch (err) {
-      if (err.response?.data?.message) {
-        setError(err.response.data.message);
-      } else {
-        setError('Помилка підключення до сервера');
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+  
+      switch (status) {
+        case 400:
+          setError(message || 'Некоректні дані. Перевірте введене.');
+          break;
+        case 401:
+          setError(message || 'Невірна електронна пошта або пароль.');
+          break;
+        case 500:
+          setError('Помилка сервера. Спробуйте пізніше.');
+          break;
+        default:
+          setError('Сталася невідома помилка. Спробуйте ще раз.');
       }
     }
   };
+  
 
   return (
     <div className="auth-main">

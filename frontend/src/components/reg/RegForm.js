@@ -19,10 +19,25 @@ const RegForm = () => {
       await register({ firstName, lastName, email, password });
       setConfirmationStep(true);
     } catch (err) {
-      const msg = err.response?.data?.message || 'Помилка підключення до сервера';
-      setError(msg);
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+  
+      switch (status) {
+        case 400:
+          setError(message || 'Некоректні дані. Перевірте всі поля.');
+          break;
+        case 409:
+          setError(message || 'Користувач з такою поштою вже зареєстрований.');
+          break;
+        case 500:
+          setError('Помилка сервера. Спробуйте пізніше.');
+          break;
+        default:
+          setError('Невідома помилка. Спробуйте ще раз.');
+      }
     }
   };
+  
 
   const handleConfirm = async (e) => {
     e.preventDefault();
@@ -32,10 +47,22 @@ const RegForm = () => {
       await verifyEmail({ email, code });
       window.location.href = '/';
     } catch (err) {
-      const msg = err.response?.data?.message || 'Невірний код або помилка сервера';
-      setError(msg);
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+  
+      switch (status) {
+        case 400:
+          setError(message || 'Невірний код підтвердження або електронна пошта.');
+          break;
+        case 500:
+          setError('Помилка сервера. Спробуйте ще раз пізніше.');
+          break;
+        default:
+          setError('Помилка підтвердження. Спробуйте знову.');
+      }
     }
   };
+  
 
   const handleChange = (e, index) => {
     const value = e.target.value.replace(/\D/g, '');
