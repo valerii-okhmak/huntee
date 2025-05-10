@@ -1,5 +1,9 @@
 .message-type {
+    width: 10%;
     flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 .message-type__container {
     display: flex;
