@@ -15,6 +15,9 @@ const CoursesModal = ({ isOpen, onClose }) => {
         <textarea className="modal-textarea" placeholder="Опис"></textarea>
       </div>
       <div className="modal-buttons">
+      <button className="modal-button modal-button-cancel" onClick={onClose}>
+          Скасувати
+        </button>
         <button className="modal-button modal-button-submit">
           Додати
         </button>

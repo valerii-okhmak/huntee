@@ -27,10 +27,10 @@
     -- Таблиця для профілів користувачів (один до одного з таблицею users)
     CREATE TABLE profiles (
         user_id INT PRIMARY KEY,
-        profile_image_url VARCHAR(255),
+        profile_image_url TEXT,
         first_name VARCHAR(100) not NULL,
         last_name VARCHAR(100),
-
+        about TEXT;
     
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -62,7 +62,52 @@
     -- Індексів для оптимізації пошуку 
     CREATE INDEX idx_users_email ON users (email);
     CREATE INDEX idx_oauth_identities_user_id ON oauth_identities (user_id);
-    CREATE INDEX idx_oauth_identities_provider_user_id ON oauth_identities (provider_user_id);
+    CREATE INDEX idx_oauth_identities_provider_user_id ON oauth_identities (provider_user_id);\
+
+
+        -- Таблиця додаткових посилань
+    CREATE TABLE profile_links (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        type VARCHAR(50), -- Наприклад: github, linkedin
+        url VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    -- Таблиця освіти
+    CREATE TABLE education (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        institution VARCHAR(255) NOT NULL,
+        specialities TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    -- Таблиця курсів
+    CREATE TABLE courses (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        certificate_url VARCHAR(255),
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    -- Таблиця досвіду
+    CREATE TABLE experiences (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        certificate_url VARCHAR(255),
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
 ```
 
 

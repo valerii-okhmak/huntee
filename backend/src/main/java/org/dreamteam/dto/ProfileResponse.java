@@ -10,4 +10,5 @@ public class ProfileResponse {
     private String firstName;
     private String lastName;
     private String profileImage;
+    private String about;
 }
