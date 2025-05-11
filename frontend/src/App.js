@@ -12,10 +12,12 @@ import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import MessagePage from './pages/MessagePage';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const App = () => {
   return (
     <Router>
+    <GoogleOAuthProvider clientId="1081513846462-lhcffrki4nfgq2imdr4qdkfg9dgrmhh1.apps.googleusercontent.com">
     <div className="App">
       <Header />
       <Routes>
@@ -34,6 +36,7 @@ const App = () => {
       </Routes>
       <Footer />
     </div>
+    </GoogleOAuthProvider>
     </Router>
   );
 };

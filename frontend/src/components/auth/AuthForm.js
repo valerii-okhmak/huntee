@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
-import { saveTokens } from '../../utils/auth'; 
-import { login } from '../../services/authService'; 
+import { saveTokens } from '../../utils/auth';
+import { login } from '../../services/authService';
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from 'jwt-decode';
+import axios from 'axios';
+import SocialLogin from '../SocialLogin/SocialLogin';
+
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +16,7 @@ const AuthForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-  
+
     try {
       const response = await login({ email, password });
       saveTokens(response.data);
@@ -19,7 +24,7 @@ const AuthForm = () => {
     } catch (err) {
       const status = err.response?.status;
       const message = err.response?.data?.message;
-  
+
       switch (status) {
         case 400:
           setError(message || 'Некоректні дані. Перевірте введене.');
@@ -35,7 +40,30 @@ const AuthForm = () => {
       }
     }
   };
-  
+
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      const credential = credentialResponse.credential;
+      const decoded = jwtDecode(credential);
+
+      const response = await axios.post('http://localhost:8080/api/auth/google', {
+        providerUserId: decoded.sub,
+        email: decoded.email,
+        firstName: decoded.given_name,
+        lastName: decoded.family_name,
+        profileImageUrl: decoded.picture,
+        accessToken: credential,
+        refreshToken: null,
+        expiresAt: null
+      });
+
+      saveTokens(response.data);
+      window.location.href = '/';
+    } catch (err) {
+      console.error('Google авторизація не вдалася:', err);
+      setError('Не вдалося увійти через Google.');
+    }
+  };
 
   return (
     <div className="auth-main">
@@ -69,20 +97,9 @@ const AuthForm = () => {
             Увійти
           </button>
         </form>
-        <div className="social-login">
-          <button className="social-btn google-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}>
-            <img src="https://www.google.com/favicon.ico" alt="Google" />
-            Авторизація через Google
-          </button>
-          <button className="social-btn linkedin-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/linkedin'}>
-            <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
-            Авторизація через LinkedIn
-          </button>
-          <button className="social-btn facebook-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/facebook'}>
-            <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
-            Авторизація через Facebook
-          </button>
-        </div>
+
+        <SocialLogin setError={setError} />
+
         <p className="auth-footer">
           Вперше у нас? <a href="/reg">Зареєструватися</a>
         </p>
@@ -92,3 +109,5 @@ const AuthForm = () => {
 };
 
 export default AuthForm;
+
+

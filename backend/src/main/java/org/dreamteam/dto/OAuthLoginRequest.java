@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class OAuthLoginRequest {
-    private String provider;
+    private String providerName;
     private String providerUserId;
     private String email;
     private String firstName;

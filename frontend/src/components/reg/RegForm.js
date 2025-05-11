@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import './RegForm.css';
 import { register, verifyEmail } from '../../services/authService';
+import SocialLogin from '../SocialLogin/SocialLogin';
 
 const RegForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -144,20 +145,7 @@ const RegForm = () => {
               </button>
             </form>
 
-            <div className="social-login">
-              <button className="social-btn google-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}>
-                <img src="https://www.google.com/favicon.ico" alt="Google" />
-                Реєстрація через Google
-              </button>
-              <button className="social-btn linkedin-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/linkedin'}>
-                <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
-                Реєстрація через LinkedIn
-              </button>
-              <button className="social-btn facebook-btn" onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/facebook'}>
-                <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
-                Реєстрація через Facebook
-              </button>
-            </div>
+            <SocialLogin setError={setError} />
           </>
         ) : (
           <form className="reg-form" onSubmit={handleConfirm}>

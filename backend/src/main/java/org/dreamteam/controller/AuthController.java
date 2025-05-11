@@ -58,10 +58,10 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid provider or user data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping("/oauth2/login")
+    @PostMapping("/oauth-login")
     public ResponseEntity<?> oauthLogin(@RequestBody OAuthLoginRequest request) {
         return authService.processOAuthLogin(
-                request.getProvider(),
+                request.getProviderName(),
                 request.getProviderUserId(),
                 request.getEmail(),
                 request.getFirstName(),
@@ -97,5 +97,6 @@ public class AuthController {
                 request.getExpiresAt()
         );
     }
+    
 
 }
