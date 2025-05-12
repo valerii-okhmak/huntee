@@ -1,72 +1,107 @@
 .footer {
-    width: 100%;
-    height: 20;
-    margin-bottom: 0;
-    bottom: 0;
-    padding: 20px;
-    background-color: #000000;
-    color: white;
-  }
-  
-  .footer p {
-    margin-top: 10px;
-    margin-left: 100px;
-  }
-  
-  .social-links a {
-    color: white;
-    margin: 0 10px;
-    text-decoration: none;
-  }
-  
-  .social-links a:hover {
-    text-decoration: underline;
-  }
+  font-family: 'MyFont', sans-serif;
+  width: 100%;
+  padding: 40px 20px;
+  background-color: #000000;
+  color: white;
+  box-sizing: border-box;
+}
 
+.footer-title {
+  font-size: 40px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-left: 100px;
+  margin-bottom: 10px;
+}
 
+.footer-line {
+  margin-left: 100px;
+  margin-bottom: 20px;
+  width: 25%;
+  height: 1px;
+  background: white;
+}
 
-  .footer-title {
-    margin-left: 100px;
-    font-size: 40px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
+.footer-box {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: -10px 50px;
+  border: 1px solid #888;
+  padding: 20px;
+  gap: 20px;
+}
 
-  .footer-line {
-    margin-left: 100px;
-    margin-bottom: 10px;
-    width: 25%;
-    height: 2px;
-    background: white;
-  }
-  
+.footer-block {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.copy-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.copy-icon {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.view-map-link {
+  display: inline-block;
+  margin-left: 100px;
+  margin-top: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+.view-map-link:hover {
+  text-decoration: underline;
+}
+
+.email-link {
+  color: white;
+  text-decoration: none;
+}
+
+.email-link:hover {
+  text-decoration: underline;
+}
+
+.phone-link {
+  color: white;
+  text-decoration: none;
+}
+
+.phone-link:hover {
+  text-decoration: underline;
+}
+
+.adress-label, .email-link, .phone-link{ 
+  opacity: 0.7;
+}
 
 
 @media screen and (max-width: 768px) {
-  
-    .footer p {
-      margin-left: 10px;
-    }
-  
-    .social-links a {
-      margin: 0 5px;
-    }
-  
-    .footer-title {
-      margin-left: 10px;
-      font-size: 30px;
-    }
-  
-    .footer-line {
-      margin-left: 10px;
-      width: 50%;
-    }
-  
-}
+  .footer-title, .footer-line, .footer-box, .view-map-link {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 
-@media screen and (max-width: 500px) {
+  .footer-title {
+    font-size: 30px;
+  }
 
-  
+  .footer-line {
+    width: 50%;
+  }
 }
