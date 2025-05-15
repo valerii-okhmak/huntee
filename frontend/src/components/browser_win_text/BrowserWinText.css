@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Cousine:ital,wght@0,400;0,700;1,400;1,700&family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap');
+
+.browser-text-title {
+    font-family: "Cousine", monospace;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.browser-text-content {
+    font-size: 18px;
+    font-family: "Cousine", monospace;
+}
+
+.browser-text-company {
+    font-family: "Cousine", monospace;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: right;
+    margin-right: 50px;
+}
+
+.browser-text-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 30px;
+}
