@@ -1,11 +1,19 @@
 import React from 'react';
-import TopTrial from '../components/trialTest/top/top';
 import TrialMain from '../components/trialTest/main/main';
+import CustomTitle from '../components/custom_title/CustomTitle';
 
 const TestPage = () => {
+
+  const object = {
+    logo: null,
+    line: true,
+    strong: 'Дізнайся як проходять тести!',
+    p: null
+  }
+
   return (
     <div className="page">
-        <TopTrial />
+        <CustomTitle title='Пройди пробне тестування' data={object} />
         <div className="trialMain">
             <TrialMain />
         </div>

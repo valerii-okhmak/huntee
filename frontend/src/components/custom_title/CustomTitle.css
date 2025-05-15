@@ -18,12 +18,12 @@
     top: 0;
     left: 0;
     width: 130px;
-    height: 190px;
+    height: 170px;
     background-color: #000;
 }
 
 .addtitle {
-    font-size: 80px;
+    font-size: 70px;
     position: absolute;
     left: 16px;
     z-index: 5;
@@ -45,11 +45,11 @@
     position: relative;
 }
 
-.additionalTrial {
+.additional {
     color: #000;
-    font-size: 25px;
+    font-size: 18px;
     position: absolute;
-    bottom: 0px;
+    bottom: -25px;
     left: 160px;
     font-family: "Kantumruy Pro", sans-serif;
     font-optical-sizing: auto;
@@ -57,13 +57,7 @@
     font-style: normal;
 }
 
-.addline {
-    width: 500px;
-    height: 2px;
-    background-color: #000;
-    margin-bottom: 10px;
-}
-
-.additional strong {
-    font-size: 25px;
+.additional_logo {
+    height: 80px;
+    margin-left: -40px;
 }

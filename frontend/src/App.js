@@ -12,6 +12,7 @@ import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import MessagePage from './pages/MessagePage';
+import MessageTextPage from './pages/MessageTextPage';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/trialtest' element={<TrialTest />} />
         <Route path="/messages" element={<MessagePage />} />
+        <Route path="/message" element={<MessageTextPage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
