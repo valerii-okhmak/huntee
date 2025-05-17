@@ -1,0 +1,44 @@
+  .company-info {
+    display: block;
+    width: 86%;
+    height: 320px; /* фіксована висота */
+    margin: 100px auto 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    text-align: left;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* тінь */
+    overflow: auto; /* якщо тексту більше — з'явиться прокрутка */
+  }
+  
+  
+  .company-info p {
+    font-size: 28px;
+    color: #333;
+    line-height: 1.2;
+  }
+  
+  .details-button {
+    display: inline-block;
+    margin-top: -40px;
+    float: right;
+  }
+  
+  .details-button button {
+    background-color: #000000;
+    font-family: 'MyFont', sans-serif;
+    color: white;
+    padding: 20px 40px;
+    font-size: 40px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    text-align: center;
+    margin-right: 50px;
+  }
+  
+  
+  .details-button:hover button {
+    background-color: #a3a3a3;
+    color: black;
+  }
