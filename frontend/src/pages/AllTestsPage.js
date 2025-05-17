@@ -1,5 +1,4 @@
 import React from 'react';
-import TestsTop from '../components/tests/TestsTop/TestsTop';
 import Filters from '../components/tests/Filters/Filters';
 import TestsBlock from '../components/tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';

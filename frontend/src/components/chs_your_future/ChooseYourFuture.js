@@ -1,6 +1,5 @@
 import React from 'react';
 import './ChooseYourFuture.css';
-import browser_nav from "../../img/browser_nav.png"; 
 import ChooseYourFutureItem from './ChooseYourFutureItem';
 import BrowserWindow from '../browser_window/BrowserWindow';
 
