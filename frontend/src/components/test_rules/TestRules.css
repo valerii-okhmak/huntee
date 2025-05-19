@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.test-rules-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #F5F5F5;
+  position: relative;
+}
+
+.test-rules-container {
+  position: relative;
+  z-index: 2; 
+  padding: 20px 50px;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 1px 8px 7px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  margin: 20px;
+}
+
+.test-rules-main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
+  background-size: 200% 200%;
+  animation: gradientAnimation 20s infinite linear;
+  clip-path: polygon(0 0, 100% 0,100% 20%, 0 80%);
+  z-index: 1; 
+}
+
+.test-rules-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 40px;
+  font-family: 'MyFont', sans-serif;
+}
+
+.test-rules-container p {
+  text-align: left;
+  font-size: 24px;
+  margin-bottom: 15px;
+  font-family: 'MyFont', sans-serif;
+}
+
+.test-rules-container ul {
+  text-align: left;
+  padding-left: 20px;
+  font-size: 22px;
+  margin: 0;
+   font-family: "Montserrat", sans-serif;
+}
+
+.test-rules-container li {
+  margin-bottom: 15px;
+  list-style-type: none;
+}
+
+.test-rules-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.test-rules-button button {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 25px;
+  margin: 30px 0;
+  font-size: 16px;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  font-family: 'MyFont', sans-serif;
+}
+
+.test-rules-button button:hover {
+  background-color: #000000;
+    color: white;
+}

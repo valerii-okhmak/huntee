@@ -26,7 +26,7 @@ const Footer = () => {
         <div className="footer-block">
           <p className="footer-label">E-mail</p>
           <p className="copy-line">
-            <a href="mailto:pohuysho@gmail.com" className="email-link">pohuysho@gmail.com</a>
+            <a href="mailto:pohuysho@gmail.com" className="email-link">huntee@gmail.com</a>
           </p>
         </div>
       </div>
