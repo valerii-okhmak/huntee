@@ -15,6 +15,7 @@ import MessagePage from './pages/MessagePage';
 import MessageTextPage from './pages/MessageTextPage';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import TestRulesPage from './pages/TestRulesPage';
+import FullTest from './components/FullTest/FullTest';
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/messages" element={<MessagePage />} />
         <Route path="/message" element={<MessageTextPage />} />
         <Route path="/testrules" element={<TestRulesPage />} />
+        <Route path="/test" element={<FullTest/>} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
