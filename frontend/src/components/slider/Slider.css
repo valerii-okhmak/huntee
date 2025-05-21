@@ -2,7 +2,7 @@
 .slider-container {
     position: relative;
     width: 100%;
-    max-width: 600px;  
+    max-width: 650px;  
     margin: -10vh auto 0 ;
     overflow: hidden;
 }
@@ -23,17 +23,23 @@
 
 /* Кожен слайд */
 .slide {
+    position: relative;
     height: 20vh;
     min-width: 100%; /* Слайди займають лише 80% ширини контейнера */
     box-sizing: border-box;
-    background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
+    background: linear-gradient(45deg, #0582F8, #00FFF2, #ad0fbb, #0dc56f,#d6960a);
     background-size: 400% 400%; 
     animation: gradientAnimation 20s infinite linear;
     display: flex;
-    justify-content: center;
-    align-items: center;
     font-family: 'MyFont', sans-serif;
     font-size: 34px;
+    color: white;
+}
+
+.slide h2 {
+    padding: 20px 0 0 50px;
+    font-size: 2rem;
+    margin: 0;
 }
 
 @keyframes gradientAnimation {
@@ -80,6 +86,21 @@
 .next img {
     transform: rotate(180deg);
 }
+
+.learn-more-btn {
+    color: white;
+    position: absolute;
+    bottom: 20px;
+    padding-left: 50px;
+    background-color: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1;
+    text-decoration: none;
+}
+
+
 
 
 @media screen and (max-width: 768px) {

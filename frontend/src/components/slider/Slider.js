@@ -4,10 +4,9 @@ import './Slider.css';  // Підключаємо CSS
 const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
-    { id: 1, text: 'Слайд 1'},
-    { id: 2, text: 'Слайд 2'},
-    { id: 3, text: 'Слайд 3'},
-    { id: 4, text: 'Слайд 4'},
+    { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/test'},
+    { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/test'},
+    { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/test' },
   ];
   const totalSlides = slides.length;
 
@@ -43,14 +42,16 @@ const Slider = () => {
       <div className="slider2">
         <div className="slider" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
             {slides.map((slide) => (
-            <div key={slide.id} className="slide">
+              <div key={slide.id} className="slide">
                 <h2>{slide.text}</h2>
-            </div>
+                <a href={slide.link} className="learn-more-btn">Дізнатися більше</a>
+              </div>
             ))}
         </div>
       </div>
       <button className="prev" onClick={prevSlide}><img src="/mainPagePhoto/arrow.png" alt="Стрілка"></img></button>
       <button className="next" onClick={nextSlide}><img src="/mainPagePhoto/arrow.png" alt="Стрілка"></img></button>
+
     </div>
   );
 };
