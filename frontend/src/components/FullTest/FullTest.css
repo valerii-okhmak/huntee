@@ -1,18 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .FullTest {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* min-height: 100vh; */
   background-color: #F5F5F5;
   position: relative;
 }
 
 
 .header-bar {
-  padding-top: 60px;
-  padding-bottom: 100px;
-  height: 100px;
+  padding: 80px 0 30px;
   display: flex;
   justify-content: space-between;
   
@@ -58,20 +58,23 @@
 .Num {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin: 1rem 0;
   gap: 0.5rem;
 }
 .Num button {
   padding: 0.5rem 0.8rem;
-  background-color: #F5F5F5;
+  background: none;
   border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 100;
   font: 2em sans-serif;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  color: grey;
 }
-.Num button button.active {
-  background-color: #4ade80;
-  color: white;
+.Num button.active {
+  font-weight: 800;
+  color: black;
 }
 
 .test-title {
@@ -90,15 +93,21 @@
 
 
 .next-button {
-  margin-top: 1.5rem;
-  float: right;
-  background-color: #4ade80;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 25px;
+  font-size: 16px;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 5px;
   cursor: pointer;
-  font-weight: bold;
-  color: #fff;
+  transition: 0.3s ease;
+  font-family: 'MyFont', sans-serif;
+  float: right;
+}
+.next-button:hover {
+  background-color: #000000;
+    color: white;
 }
 
 
@@ -112,6 +121,8 @@
   border-radius: 20px;
   background: #f9f9f9;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
   .question {
     font-size: 1.2rem;
@@ -123,22 +134,77 @@
     padding: 10px;
     font-size: 1rem;
   }
-  .choices label {
+
+  .choices {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .custom-radio {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    cursor: pointer;
+    font-size: 20px;
+    user-select: none;
+  }
+  
+  .custom-radio input[type="radio"] {
+    display: none;
+  }
+  
+  .radio-square {
     display: block;
-    margin: 8px 0;
+    width: 28px;
+    height: 28px;
+    background-color: #D9D9D9;
+    margin-right: 10px;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  
+  .custom-radio input[type="radio"]:checked + .radio-square::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 20px;
+    height: 20px;
+    background-color: black;
   }
 
   .result {
     font-weight: bold;
     font-size: 1.3rem;
-    margin-top: 1rem;
   }
   .note {
     font-size: 0.9rem;
     color: #666;
   }
-  
 
+  .question-with-image {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 15px;
+  }
+  
+  .question-image {
+    object-fit: contain;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .question-content {
+    flex: 1;
+    height: 100%;
+  }
+  
+.answer {
+  flex: 1;
+}
 
 
 .FullTest::before {
@@ -165,7 +231,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 30px;
   z-index: 3;
 }
 
@@ -194,7 +259,7 @@
   }
   
   .category {
-    font-size: 25px;
+    font-size: 20px;
     color: rgb(0, 0, 0);
     text-align: left;
   }
@@ -205,7 +270,17 @@
   }
   
   
-  .title {
-    font-size: 45px;
+  .fulltest-title {
+    font-size: 35px;
     font-weight: bold;
+    color: #000;
+  }
+
+  .finish-button {
+    background: #000;
+    color: #fff;
+  }
+  .finish-button:hover {
+    background-color: #fff;
+    color: #000;
   }
