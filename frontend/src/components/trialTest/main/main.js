@@ -6,7 +6,7 @@ const main = () => {
     <div className='TrialMain'>
         <h2>Пробне тестування створене для попереднього розуміння формату екзамену. 
         Воно не впливає на Ваш прогрес та не містить питань з реальних тестів. </h2>
-        <button className='trialStart_button'>Пройти пробне тестування</button>
+        <button className='trialStart_button' onClick={() => window.location.href = '/test'}>Пройти пробне тестування</button>
     </div>
   )
 }
