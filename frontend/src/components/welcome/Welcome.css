@@ -64,7 +64,11 @@
     100% { background-position: 0% 50%; }
 }
 
-
+@media (max-width: 1128px) and (min-width: 769px) {
+  .text {
+    font-size: 84px;
+  }
+}
 
 @media screen and (max-width: 768px) {
     .line{

@@ -19,7 +19,7 @@
     width: 70%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    margin-left: 50px;
     align-items: center;
   }
   
@@ -31,27 +31,43 @@
     align-items: center; 
   }
   
-  .join-to-us-text {
-    font-family: 'MyFont1', sans-serif;
-    font-size: 95px;
-    color: #fff;
-    margin: 0;
-    user-select: none;
-    text-transform: uppercase;
-    text-align: left; 
-  }
-  
-  .join-to-us-btn .join-button {
-    padding: 25px 110px;
-    font-size: 45px;
-    font-family: 'MyFont1', sans-serif;
-    color: white;
-    border: 1px solid white;
-    border-radius: 10px;
-    text-decoration: none;
-    background: transparent;
-    transition: all 0.3s ease;
-  }
+.join-to-us-text {
+  font-family: 'MyFont1', sans-serif;
+  font-size: clamp(16px, 6vw, 95px); /* адаптивний розмір */
+  color: #fff;
+  margin: 0;
+  user-select: none;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.join-to-us-btn .join-button {
+  padding: clamp(4px, 2vw, 25px) clamp(14px, 6vw, 110px); /* зменшено мінімум */
+  font-size: clamp(8px, 3vw, 45px); /* зменшено мінімальний розмір шрифту */
+  font-family: 'MyFont1', sans-serif;
+  color: white;
+  border: 1px solid white;
+  border-radius: 10px;
+  text-decoration: none;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.lets-start-together-now-text {
+  font-size: clamp(36px, 8vw, 120px); /* адаптивний розмір */
+  font-weight: bold;
+  text-align: left;
+  background: linear-gradient(0deg, #FF8EF0, #ffffff);
+  background-size: 400% 400%; 
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 20s infinite linear;
+  font-family: 'MyFont1', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+}
+
   
   .join-to-us-btn .join-button:hover {
     background: white;
@@ -77,22 +93,6 @@
     position: relative;
     overflow: hidden;    
   }
-  
-  .lets-start-together-now-text {
-    font-size: 120px;
-    font-weight: bold;
-    text-align: left;
-    background: linear-gradient(0deg, #FF8EF0, #ffffff);
-    background-size: 400% 400%; 
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientAnimation 20s infinite linear;
-    font-family: 'MyFont1', sans-serif;
-    text-transform: uppercase;
-    margin: 0;
-  }
-  
 
   @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
@@ -100,3 +100,11 @@
     100% { background-position: 0% 50%; }
 }
   
+@media (max-width: 768px) {
+  .join-to-us-container {
+    height: 30vh; 
+  }
+    .lets-start-together-now-container {
+    height: 70vh; 
+  }
+}

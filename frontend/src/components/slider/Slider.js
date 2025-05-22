@@ -49,9 +49,19 @@ const Slider = () => {
             ))}
         </div>
       </div>
-      <button className="prev" onClick={prevSlide}><img src="/mainPagePhoto/arrow.png" alt="Стрілка"></img></button>
-      <button className="next" onClick={nextSlide}><img src="/mainPagePhoto/arrow.png" alt="Стрілка"></img></button>
+      <button className="prev" onClick={prevSlide}>
+        <svg width="28" height="20" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg">
+          <line x1="2" y1="10" x2="26" y2="10" stroke="black" strokeWidth="3"/>
+          <polyline points="10,3 2,10 10,17" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
 
+      <button className="next" onClick={nextSlide}>
+        <svg width="28" height="20" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg">
+          <line x1="2" y1="10" x2="26" y2="10" stroke="black" strokeWidth="3"/>
+          <polyline points="18,3 26,10 18,17" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
     </div>
   );
 };

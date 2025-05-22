@@ -18,3 +18,15 @@
     font-size: 40px;
     font-family: 'MyFont', sans-serif;
 }
+
+@media (max-width: 768px) {
+  .chs-your-future-item {
+    padding: 10px 15px;
+    margin: 0 10px;
+    min-width: 150px;
+  }
+
+  .chs-your-future-testname {
+    font-size: 24px;
+  }
+}
