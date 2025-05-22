@@ -19,8 +19,8 @@
 .choose-your-future h2 {
     font-family: 'MyFont1', sans-serif; 
     color: white;
-    font-size: 110px;
-    margin: 25px 45px 45px 45px;
+    font-size: clamp(32px, 8vw, 110px);
+    margin: 25px 45px 10px 45px;
 }
 
 .choose-your-future .browser-bottom-block {

@@ -83,10 +83,6 @@
     right: 4px; /* розташування правої кнопки */
 }
 
-.next img {
-    transform: rotate(180deg);
-}
-
 .learn-more-btn {
     color: white;
     position: absolute;
