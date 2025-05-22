@@ -17,8 +17,8 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = getAccessToken();
-        const response = await axios.get(`http://localhost:8080/api/profile/me`, {
-          params: { token: `Bearer ${token}` },
+        const response = await axios.get(`https://java-application-latest-mlfc.onrender.com/api/profile/me`, {
+          params: { token: `${token}` },
         });
         setProfileData(response.data);
       } catch (error) {
