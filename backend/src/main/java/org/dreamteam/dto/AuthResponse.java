@@ -1,16 +1,23 @@
 package org.dreamteam.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthResponse {
     private String accessToken;
-    private String tokenType = "Bearer";
-
-    public AuthResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    private String refreshToken;
+    @Builder.Default
+    private final String tokenType = "Bearer";
+    private String userType;
+    private Integer userId;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String profileImage;
 }

@@ -1,0 +1,31 @@
+.choose-your-future {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: linear-gradient(to bottom right, #001aff 60%, #ffffff 100%);
+    background-size: 400% 400%; 
+    animation: gradientAnimation 20s infinite linear;
+    color: white;
+    position: relative;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.choose-your-future h2 {
+    font-family: 'MyFont1', sans-serif; 
+    color: white;
+    font-size: 110px;
+    margin: 25px 45px 45px 45px;
+}
+
+.choose-your-future .browser-bottom-block {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 25px;     
+}
+

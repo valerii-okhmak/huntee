@@ -1,0 +1,32 @@
+.message-item {
+    background-color: #F1F1F1;
+    padding: 20px 15px 40px 15px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.message-logo img {
+    height: 45px; /* або який потрібно розмір */
+    object-fit: contain;
+}
+
+.message-testname {
+color: black;
+font-family: 'MyFont', sans-serif;
+font-size: 30px;   
+text-decoration: none;
+}
+
+.message-testname:hover {
+    text-decoration: underline;
+}
+
+.unread-message {
+    border-radius: 50%;
+    background-color: #0096F3;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}

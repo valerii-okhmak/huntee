@@ -15,7 +15,9 @@ const Filter = () => {
     <div className='filter'>
       <div className='filer_name'>
         <h2 className='filter_title'>ЛОКАЦІЯ</h2>
-        <div className='filter_button' onClick={hideFilter}></div>
+        <div className='filter_action' onClick={hideFilter}>
+            <div className='filter_button'></div>
+        </div>
       </div>
       <div className='filter_section'>
         <div className='option'>

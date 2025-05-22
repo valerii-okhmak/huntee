@@ -1,0 +1,129 @@
+[
+    {
+      "id": 0,
+      "type": "choice",
+      "question": "Яка столиця Франції?",
+      "options": [
+        "\"Count inside setInterval: 0\" кожну секунду,незалежно від натискання кнопки.",
+        "\"Count inside setInterval:\" буде оновлюватисьвідповідно до зміни стану count.",
+        "\"Count inside setInterval:\" не буде виводитися взагалі.",
+        "\"Count inside setInterval: 1, 2, 3, ...\" (буде збільшуватися при кожному натисканні)."
+      ],
+      "correctAnswer": 0,
+      "image": "https://cdn.discordapp.com/attachments/1350224486586126389/1374821624150364240/image_23.jpg"
+    },
+    {
+      "id": 1,
+      "type": "text",
+      "question": "Хто написав «Кобзар»?",
+      "correctAnswer": "Тарас Шевченко",
+      "image": "https://media.discordapp.net/attachments/1350224486586126389/1374815431365496903/image.png"
+    },
+    {
+      "id": 2,
+      "type": "code",
+      "question": "Напиши функцію, яка повертає суму двох чисел (a, b). Виведи результат функції з аргументами (2, 3).",
+      "language_id": 71,
+      "expectedOutput": "5\n"
+    },
+  
+    {
+      "id": 3,
+      "type": "choice",
+      "question": "Що таке Virtual DOM у React?",
+      "options": [
+        "Реальний DOM браузера",
+        "Швидка віртуалізація DOM API",
+        "Копія DOM, яка зберігається в памʼяті для оптимізації оновлень",
+        "DOM, що працює лише у Node.js"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "id": 4,
+      "type": "choice",
+      "question": "Який hook використовується для виклику побічних ефектів у React?",
+      "options": ["useRef", "useContext", "useMemo", "useEffect"],
+      "correctAnswer": 3
+    },
+    {
+      "id": 5,
+      "type": "choice",
+      "question": "Яка команда створює новий React-проєкт?",
+      "options": [
+        "npx create-react-project",
+        "npx create-react-app my-app",
+        "npm init react",
+        "create-react-app start"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": 6,
+      "type": "text",
+      "question": "Як називається основний принцип React, що дозволяє компоненти перевикористовувати?",
+      "correctAnswer": "Компонентність"
+    },
+    {
+      "id": 7,
+      "type": "code",
+      "question": "Напиши React-компонент, який рендерить кнопку і при кліку збільшує лічильник на 1.",
+      "language_id": 93,
+      "expectedOutput": ""
+    },
+    {
+      "id": 8,
+      "type": "choice",
+      "question": "Що таке JSX?",
+      "options": [
+        "Шаблон HTML у JavaScript",
+        "Мова розмітки для Node.js",
+        "Мова стилів для React",
+        "Інтерпретатор JavaScript"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "id": 9,
+      "type": "choice",
+      "question": "Для чого використовується `useState` у React?",
+      "options": [
+        "Для створення маршрутизації",
+        "Для управління станом компонента",
+        "Для виклику API",
+        "Для використання класів"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": 10,
+      "type": "choice",
+      "question": "Що повертає функція useState?",
+      "options": [
+        "Тільки значення",
+        "Тільки функцію зміни стану",
+        "Масив зі значенням і функцією зміни",
+        "Об'єкт з полями state і setState"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "id": 11,
+      "type": "text",
+      "question": "Який атрибут використовується в JSX для задання CSS-класу?",
+      "correctAnswer": "className"
+    },
+    {
+      "id": 12,
+      "type": "choice",
+      "question": "Що таке пропси (props) у React?",
+      "options": [
+        "Стан компонента",
+        "Зовнішні дані, що передаються в компонент",
+        "Внутрішні змінні функції",
+        "Обробники подій"
+      ],
+      "correctAnswer": 1
+    }
+]
+  

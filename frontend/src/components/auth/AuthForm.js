@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
+import { saveTokens } from '../../utils/auth';
+import { login } from '../../services/authService';
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from 'jwt-decode';
+import axios from 'axios';
+import SocialLogin from '../SocialLogin/SocialLogin';
+
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -7,34 +14,54 @@ const AuthForm = () => {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Не даємо формі перезавантажувати сторінку
-
-    const credentials = { email, password };
+    e.preventDefault();
+    setError('');
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
+      const response = await login({ email, password });
+      saveTokens(response.data);
+      window.location.href = '/';
+    } catch (err) {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+
+      switch (status) {
+        case 400:
+          setError(message || 'Некоректні дані. Перевірте введене.');
+          break;
+        case 401:
+          setError(message || 'Невірна електронна пошта або пароль.');
+          break;
+        case 500:
+          setError('Помилка сервера. Спробуйте пізніше.');
+          break;
+        default:
+          setError('Сталася невідома помилка. Спробуйте ще раз.');
+      }
+    }
+  };
+
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      const credential = credentialResponse.credential;
+      const decoded = jwtDecode(credential);
+
+      const response = await axios.post('http://localhost:8080/api/auth/google', {
+        providerUserId: decoded.sub,
+        email: decoded.email,
+        firstName: decoded.given_name,
+        lastName: decoded.family_name,
+        profileImageUrl: decoded.picture,
+        accessToken: credential,
+        refreshToken: null,
+        expiresAt: null
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Збереження токена та даних користувача в localStorage
-        localStorage.setItem('authToken', data.token); 
-        localStorage.setItem('userData', JSON.stringify(data.user));  
-
-        window.location.href = '/'; 
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Щось пішло не так');
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      setError('Помилка підключення до сервера');
+      saveTokens(response.data);
+      window.location.href = '/';
+    } catch (err) {
+      console.error('Google авторизація не вдалася:', err);
+      setError('Не вдалося увійти через Google.');
     }
   };
 
@@ -70,20 +97,9 @@ const AuthForm = () => {
             Увійти
           </button>
         </form>
-        <div className="social-login">
-          <button className="social-btn google-btn">
-            <img src="https://www.google.com/favicon.ico" alt="Google" />
-            Авторизація через Google
-          </button>
-          <button className="social-btn linkedin-btn">
-            <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
-            Авторизація через LinkedIn
-          </button>
-          <button className="social-btn facebook-btn">
-            <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
-            Авторизація через Facebook
-          </button>
-        </div>
+
+        <SocialLogin setError={setError} />
+
         <p className="auth-footer">
           Вперше у нас? <a href="/reg">Зареєструватися</a>
         </p>
@@ -93,3 +109,5 @@ const AuthForm = () => {
 };
 
 export default AuthForm;
+
+

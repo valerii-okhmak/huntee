@@ -97,3 +97,7 @@
   -webkit-text-fill-color: transparent;
   animation: gradientAnimation 20s infinite linear;
 }
+
+.burger-list li:nth-child(4) .link {
+  animation-delay: 0.7s;
+}

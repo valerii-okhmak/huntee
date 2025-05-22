@@ -1,0 +1,36 @@
+package org.dreamteam.security;
+
+import org.dreamteam.Entity.Profile;
+import org.dreamteam.Entity.User;
+import org.dreamteam.repository.ProfileRepository;
+import org.dreamteam.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (user.getProfile() == null) {
+            throw new IllegalStateException("User has no profile");
+        }
+
+        return new CustomUserDetails(user);
+    }
+
+    public void saveProfile(Profile profile) {
+        profileRepository.save(profile);
+    }
+}

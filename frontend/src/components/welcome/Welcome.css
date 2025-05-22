@@ -15,7 +15,7 @@
     z-index: 0;
 }
 
-.container {
+.welcome_container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,6 +31,7 @@
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'MyFont1';
     src: url('../../fonts/Black.woff') format('woff');
@@ -75,7 +76,7 @@
         box-shadow: #000;
     }
 
-    .container {
+    .welcome_container {
         width: 100%;
         margin: 0 0;
     }

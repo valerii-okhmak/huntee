@@ -1,0 +1,18 @@
+  /* About Work секція */
+  .about-work {
+    min-height: 100vh;
+    background: linear-gradient(to right, #001aff, #5f77ff);
+    padding: 70px;
+    color: white;
+    width: 100%;
+  }
+
+  .about-work-title h2 {
+    font-size: 100px;
+    font-weight: bold;
+    color: rgb(255, 255, 255, 0.7);
+  }
+
+  .about-work-text {
+    color: black;
+  }

@@ -1,10 +1,12 @@
 package org.dreamteam.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.mail.javamail.JavaMailSender;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,39 +15,31 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendEmail(String to, String subject, String verificationCode) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // Встановлюємо UTF-8 кодування
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
-            helper.setFrom("huntee.project@gmail.com");
-            helper.setTo(to);
-            helper.setSubject(subject);
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
-            // HTML контент для красивого листа з UTF-8 кодуванням
-            String emailContent = "<html>"
-                                + "<body style='font-family: Arial, sans-serif;'>"
-                                + "<div style='text-align: center; padding: 20px;'>"
-                                + "<img src='http://localhost:8080/images/logo.png' alt='Logo' style='width: 150px; margin-bottom: 20px;' />"  // URL логотипу
-                                + "<h2 style='color: #333;'>Вітаємо! Ваш код підтвердження</h2>"
-                                + "<p style='font-size: 16px; color: #333;'>Ваш код підтвердження: </p>"
-                                + "<h1 style='font-size: 48px; color: #FF5733; font-weight: bold; text-align: center;'>"
-                                + verificationCode  // Вставляємо код підтвердження
-                                + "</h1>"
-                                + "<p style='font-size: 16px; color: #333;'>Цей код дійсний протягом 10 хвилин.</p>"
-                                + "<p style='font-size: 14px; color: #555; text-align: center;'>"
-                                + "<strong>Будь ласка, не передавайте цей код нікому!</strong><br/>"
-                                + "Якщо ви не реєструвалися на нашому сайті, будь ласка, проігноруйте цей лист."
-                                + "</p>"
-                                + "</div>"
-                                + "</body>"
-                                + "</html>";
-
-            // Встановлюємо HTML контент в лист
-            helper.setText(emailContent, true);
-            mailSender.send(message);  // Надсилаємо лист
-        } catch (MessagingException e) {
-            throw new RuntimeException("Не вдалося надіслати лист", e);
-        }
+    @Async
+    public void sendVerificationEmail(String to, String verificationCode) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        
+        helper.setFrom(fromEmail);
+        helper.setTo(to);
+        helper.setSubject("Email Verification");
+        
+        String content = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>"
+                + "<h2 style='color: #333;'>Welcome to Huntee!</h2>"
+                + "<p>Thank you for registering. Please use the following verification code to complete your registration:</p>"
+                + "<h1 style='color: #007bff; font-size: 32px; letter-spacing: 2px;'>" + verificationCode + "</h1>"
+                + "<p>This code will expire in 60 minutes.</p>"
+                + "<p>If you didn't request this verification, please ignore this email.</p>"
+                + "<p>Best regards,<br>The Huntee Team</p>"
+                + "</div>";
+        
+        helper.setText(content, true);
+        mailSender.send(message);
     }
 }

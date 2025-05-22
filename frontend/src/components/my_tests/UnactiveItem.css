@@ -1,0 +1,63 @@
+.unactive-item {
+  background-color: #E8E8E8;
+  padding: 20px 24px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+  width: fit-content;
+  font-family: 'MyFont',sans-serif;
+  position: relative;
+  max-width: 300px;
+}
+
+.unactive-item__logo {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  width: 90px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.unactive-item__category {
+  font-size: 16px;
+  color:#606060;
+  margin: 0;
+}
+
+.unactive-item__vacancy {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 8px 0;
+  color:#606060;
+}
+
+.unactive-item__datetime {
+  font-size: 14px;
+  color: #848282;
+  margin: 0;
+}
+
+.unread-unactive-message {
+    border-radius: 50%;
+    background-color: #0096F3;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+}
+
+.unactive-item__result {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.unactive-item__result.low {
+  color: #AE0000; /* червоний */
+}
+
+.unactive-item__result.high {
+  color: #1DAD00; /* зелений */
+}

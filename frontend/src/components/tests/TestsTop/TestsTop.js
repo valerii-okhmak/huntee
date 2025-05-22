@@ -4,7 +4,7 @@ import './TestsTop.css'
 const TestsTop = () => {
   return (
     <div className='testsTop'>
-        <div className='container'>
+        <div className='container testsTop_container'>
             <div className='main'>
                 <div className='blackbox'></div>
                 <h1 className='addtitle'>Приєднуйся!</h1>

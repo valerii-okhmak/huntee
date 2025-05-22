@@ -42,9 +42,8 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.2</version>
+            <version>2.2.0</version> <!-- Оновлено для сумісності -->
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -116,8 +115,8 @@
         <!-- Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.2.0</version>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.9</version> <!-- Оновлено для сумісності -->
         </dependency>
 
         <dependency>
@@ -137,7 +136,29 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>javax.mail-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>

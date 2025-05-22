@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
 import './RegForm.css';
+import { register, verifyEmail } from '../../services/authService';
+import SocialLogin from '../SocialLogin/SocialLogin';
 
 const RegForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -9,51 +10,69 @@ const RegForm = () => {
   const [password, setPassword] = useState('');
   const [confirmationStep, setConfirmationStep] = useState(false);
   const [codeDigits, setCodeDigits] = useState(['', '', '', '', '', '']);
+  const [error, setError] = useState('');
   const inputRefs = useRef([]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/register', {
-        firstName,
-        lastName,
-        email,
-        password,
-      });
-      console.log(response.data);
+      await register({ firstName, lastName, email, password });
       setConfirmationStep(true);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+  
+      switch (status) {
+        case 400:
+          setError(message || 'Некоректні дані. Перевірте всі поля.');
+          break;
+        case 409:
+          setError(message || 'Користувач з такою поштою вже зареєстрований.');
+          break;
+        case 500:
+          setError('Помилка сервера. Спробуйте пізніше.');
+          break;
+        default:
+          setError('Невідома помилка. Спробуйте ще раз.');
+      }
     }
   };
+  
 
   const handleConfirm = async (e) => {
     e.preventDefault();
+    setError('');
     const code = codeDigits.join('');
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/confirm', {
-        email,
-        code,
-      });
-      console.log(response.data);
-      alert('Реєстрація успішна!');
-      window.location.href = '/auth';
-    } catch (error) {
-      console.error(error);
+      await verifyEmail({ email, code });
+      window.location.href = '/';
+    } catch (err) {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+  
+      switch (status) {
+        case 400:
+          setError(message || 'Невірний код підтвердження або електронна пошта.');
+          break;
+        case 500:
+          setError('Помилка сервера. Спробуйте ще раз пізніше.');
+          break;
+        default:
+          setError('Помилка підтвердження. Спробуйте знову.');
+      }
     }
   };
+  
 
   const handleChange = (e, index) => {
-    const value = e.target.value.replace(/\D/g, ''); // тільки цифри
-    if (value.length > 1) return; // по одному символу
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length > 1) return;
     const updatedDigits = [...codeDigits];
     updatedDigits[index] = value;
     setCodeDigits(updatedDigits);
 
-    // автоматичний перехід до наступного поля
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
   const handleKeyDown = (e, index) => {
@@ -64,8 +83,8 @@ const RegForm = () => {
 
   const handleGoBack = () => {
     setConfirmationStep(false);
-    setEmail('');
     setCodeDigits(['', '', '', '', '', '']);
+    setEmail('');
   };
 
   return (
@@ -76,7 +95,6 @@ const RegForm = () => {
         {!confirmationStep ? (
           <>
             <form className="reg-form" onSubmit={handleRegister}>
-              {/* Поля форми реєстрації */}
               <div className="form-group">
                 <label>Ім'я <b>*</b></label>
                 <input
@@ -120,25 +138,14 @@ const RegForm = () => {
                 />
               </div>
 
+              {error && <p className="error-message">{error}</p>}
+
               <button type="submit" className="submit-btn">
                 Зареєструватися
               </button>
             </form>
 
-            <div className="social-login">
-              <button className="social-btn google-btn">
-                <img src="https://www.google.com/favicon.ico" alt="Google" />
-                Реєстрація через Google
-              </button>
-              <button className="social-btn linkedin-btn">
-                <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
-                Реєстрація через LinkedIn
-              </button>
-              <button className="social-btn facebook-btn">
-                <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
-                Реєстрація через Facebook
-              </button>
-            </div>
+            <SocialLogin setError={setError} />
           </>
         ) : (
           <form className="reg-form" onSubmit={handleConfirm}>
@@ -158,10 +165,12 @@ const RegForm = () => {
                 />
               ))}
             </div>
+
+            {error && <p className="error-message">{error}</p>}
+
             <button type="submit" className="submit-btn">
               Підтвердити
             </button>
-
             <button type="button" className="back-btn" onClick={handleGoBack}>
               Назад
             </button>
@@ -169,7 +178,7 @@ const RegForm = () => {
         )}
 
         <p className="reg-footer">
-          Уже є акаунт? <a href="/auth">Авторизуватися</a>
+          Уже є акаунт? <a href="/login">Авторизуватися</a>
         </p>
       </div>
     </div>
