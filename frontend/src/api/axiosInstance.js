@@ -3,7 +3,7 @@ import { getAccessToken, getRefreshToken, saveTokens, clearTokens } from '../uti
 import { refreshToken } from '../services/authService';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'https://java-application-latest-mlfc.onrender.com/api',
   withCredentials: true, 
 });
 
@@ -11,7 +11,7 @@ instance.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `${token}`;
     }
     return config;
   },
@@ -28,7 +28,7 @@ instance.interceptors.response.use(
       try {
         const res = await refreshToken(getRefreshToken());
         saveTokens(res.data);
-        originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+        originalRequest.headers.Authorization = `${res.data.accessToken}`;
         return instance(originalRequest);
       } catch (e) {
         clearTokens();

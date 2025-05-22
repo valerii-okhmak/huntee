@@ -14,7 +14,7 @@ const SocialLogin = ({ setError }) => {
       const credential = credentialResponse.credential;
       const decoded = jwtDecode(credential);
 
-      const response = await axios.post('http://localhost:8080/api/auth/google', {
+      const response = await axios.post('https://java-application-latest-mlfc.onrender.com/api/auth/google', {
         providerUserId: decoded.sub,
         email: decoded.email,
         firstName: decoded.given_name,
@@ -46,12 +46,12 @@ const SocialLogin = ({ setError }) => {
             onError={() => setError('Помилка при логіні з Google')}
         />
 
-      <button className="social-btn linkedin-btn" onClick={() => handleRedirect('http://localhost:8080/oauth2/authorization/linkedin')}>
+      <button className="social-btn linkedin-btn" onClick={() => handleRedirect('https://java-application-latest-mlfc.onrender.com/oauth2/authorization/linkedin')}>
         <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
         Авторизація через LinkedIn
       </button>
 
-      <button className="social-btn facebook-btn" onClick={() => handleRedirect('http://localhost:8080/oauth2/authorization/facebook')}>
+      <button className="social-btn facebook-btn" onClick={() => handleRedirect('https://java-application-latest-mlfc.onrender.com/oauth2/authorization/facebook')}>
         <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
         Авторизація через Facebook
       </button>
