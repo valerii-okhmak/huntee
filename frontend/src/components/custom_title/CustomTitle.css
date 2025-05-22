@@ -24,6 +24,7 @@
 
 .addtitle {
     font-size: 70px;
+    font-family: "MyFont", sans-serif;
     position: absolute;
     left: 16px;
     z-index: 5;
