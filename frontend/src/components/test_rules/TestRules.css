@@ -10,18 +10,6 @@
   position: relative;
 }
 
-.test-rules-container {
-  position: relative;
-  z-index: 2; 
-  padding: 20px 50px;
-  text-align: center;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 1px 8px 7px rgba(0, 0, 0, 0.3);
-  width: 80%;
-  margin: 20px;
-}
-
 .test-rules-main::before {
   content: '';
   position: absolute;
@@ -36,45 +24,57 @@
   z-index: 1; 
 }
 
+.test-rules-container {
+  position: relative;
+  z-index: 2;
+  padding: clamp(8px, 2vw, 40px);
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 1px 8px 7px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  margin: clamp(8px, 2vw, 30px);
+}
+
 .test-rules-container h2 {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 40px;
+  margin-bottom: clamp(8px, 2vw, 18px);
+  font-size: clamp(18px, 4vw, 32px);
   font-family: 'MyFont', sans-serif;
 }
 
 .test-rules-container p {
   text-align: left;
-  font-size: 24px;
-  margin-bottom: 15px;
+  font-size: clamp(14px, 2vw, 20px);
+  margin-bottom: clamp(6px, 1.5vw, 14px);
   font-family: 'MyFont', sans-serif;
 }
 
 .test-rules-container ul {
   text-align: left;
-  padding-left: 20px;
-  font-size: 22px;
+  padding-left: clamp(6px, 2vw, 16px);
+  font-size: clamp(13px, 1.8vw, 18px);
   margin: 0;
-   font-family: "Montserrat", sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .test-rules-container li {
-  margin-bottom: 15px;
+  margin-bottom: clamp(6px, 1.2vw, 12px);
   list-style-type: none;
 }
 
 .test-rules-button {
   display: flex;
   justify-content: flex-end;
-  margin-top: auto;
+  margin-top: clamp(10px, 2vw, 20px);
 }
 
 .test-rules-button button {
   display: inline-flex;
   align-items: center;
-  padding: 5px 25px;
-  margin: 30px 0;
-  font-size: 16px;
+  padding: clamp(3px, 1vw, 6px) clamp(10px, 2vw, 20px);
+  margin: clamp(10px, 2vw, 24px) 0;
+  font-size: clamp(12px, 1.5vw, 15px);
   background-color: #ffffff;
   border: 1px solid #000000;
   border-radius: 5px;
@@ -85,5 +85,5 @@
 
 .test-rules-button button:hover {
   background-color: #000000;
-    color: white;
+  color: white;
 }
