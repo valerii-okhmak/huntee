@@ -1,18 +1,21 @@
-  /* About Work секція */
-  .about-work {
-    min-height: 100vh;
-    background: linear-gradient(to right, #001aff, #5f77ff);
-    padding: 70px;
-    color: white;
-    width: 100%;
-  }
+/* About Work секція */
+.about-work {
+  min-height: 100vh;
+  background: linear-gradient(to right, #001aff, #5f77ff);
+  padding: clamp(20px, 5vw, 70px);
+  color: white;
+  width: 100%;
+}
 
-  .about-work-title h2 {
-    font-size: 100px;
-    font-weight: bold;
-    color: rgb(255, 255, 255, 0.7);
-  }
+.about-work-title h2 {
+  font-size: clamp(30px, 8vw, 100px);
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0; /* щоб контролювати відступ */
+}
 
-  .about-work-text {
-    color: black;
-  }
+.about-work-text {
+  color: black;
+  font-size: clamp(14px, 3vw, 18px);
+  line-height: 1.4;
+}
