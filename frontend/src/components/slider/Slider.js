@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Slider.css';  // Підключаємо CSS
+import './Slider.css'; 
+import { Link } from 'react-router-dom';
 
 const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/forcompanies'},
-    { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/test'},
-    { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/test' },
+    { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/'},
+    { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/' },
   ];
   const totalSlides = slides.length;
 
@@ -41,12 +42,12 @@ const Slider = () => {
     <div className="slider-container">
       <div className="slider2">
         <div className="slider" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-            {slides.map((slide) => (
-              <div key={slide.id} className="slide">
-                <h2>{slide.text}</h2>
-                <a href={slide.link} className="learn-more-btn">Дізнатися більше</a>
-              </div>
-            ))}
+          {slides.map((slide) => (
+            <div key={slide.id} className="slide">
+              <h2>{slide.text}</h2>
+              <Link to={slide.link} className="learn-more-btn">Дізнатися більше</Link>
+            </div>
+          ))}
         </div>
       </div>
       <button className="prev" onClick={prevSlide}>

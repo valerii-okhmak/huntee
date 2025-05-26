@@ -1,5 +1,7 @@
 import React from 'react';
 import './MessageItem.css';
+import { Link } from 'react-router-dom';
+
 
 const MessageItem = ({logo ,testname, read }) => {
   return (
@@ -7,7 +9,7 @@ const MessageItem = ({logo ,testname, read }) => {
       <div className="message-logo">
         <img src={logo} alt="Фото компанії" />
       </div>
-      <a href='/' className="message-testname">{testname}</a>
+      <Link to='/message' className="message-testname">{testname}</Link>
 
       {!read && <div className='unread-message'></div>}
     </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import "./JoinToUs.css";
 import backgroundVideo from '../../video/join-to-us.mp4';
+import { Link } from "react-router-dom";
 
 const JoinToUs = () => {
   return (
@@ -8,7 +9,7 @@ const JoinToUs = () => {
       <div className="join-to-us-container">
         <h1 className="join-to-us-text">Приєднуйся<br />до нас!</h1>
         <div className="join-to-us-btn">
-          <a href="/login" className="join-button">Увійти</a>
+          <Link to="/login" className="join-button">Увійти</Link>
         </div>
       </div>
 
