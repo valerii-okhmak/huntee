@@ -8,6 +8,7 @@
     text-align: left;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* тінь */
     overflow: auto; /* якщо тексту більше — з'явиться прокрутка */
+    font-family: 'MyFont', sans-serif; /* Використовуємо шрифт MyFont */
   }
   
   

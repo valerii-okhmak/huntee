@@ -1,39 +1,24 @@
 .join-to-us {
-    height: 100vh;
-  }
-  
-  .join-to-us-container {
-    height: 40vh; 
-    width: 100%;
-    background: linear-gradient(to bottom right, #FF8EF0 60%, #ffffff 100%);
-    background-size: 400% 400%; 
-    animation: gradientAnimation 20s infinite linear;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
-  }
-  
-  .join-to-us-left {
-    width: 70%;
-    height: 100%;
-    display: flex;
-    margin-left: 50px;
-    align-items: center;
-  }
-  
-  .join-to-us-right {
-    width: 30%; 
-    height: 100%; 
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-  }
-  
+  height: 100vh;
+}
+
+.join-to-us-container {
+  height: 40vh;
+  width: 100%;
+  background: linear-gradient(to bottom right, #FF8EF0 60%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradientAnimation 20s infinite linear;
+  display: flex;
+  justify-content: space-between; /* розносимо текст і кнопку по краях */
+  align-items: center;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
+  padding: 30px; /* додаємо відступи зліва і справа */
+  flex-wrap: wrap;
+}
+
 .join-to-us-text {
   font-family: 'MyFont1', sans-serif;
-  font-size: clamp(16px, 6vw, 95px); /* адаптивний розмір */
+  font-size: clamp(16px, 6vw, 95px);
   color: #fff;
   margin: 0;
   user-select: none;
@@ -42,8 +27,8 @@
 }
 
 .join-to-us-btn .join-button {
-  padding: clamp(4px, 2vw, 25px) clamp(14px, 6vw, 110px); /* зменшено мінімум */
-  font-size: clamp(8px, 3vw, 45px); /* зменшено мінімальний розмір шрифту */
+  padding: clamp(8px, 3vw, 25px) clamp(24px, 8vw, 110px); /* було 4px і 14px – тепер більше */
+  font-size: clamp(16px, 4vw, 45px); /* було 8px — збільшено до 16px */
   font-family: 'MyFont1', sans-serif;
   color: white;
   border: 1px solid white;
@@ -53,12 +38,37 @@
   transition: all 0.3s ease;
 }
 
+.join-to-us-btn .join-button:hover {
+  background: white;
+  color: #FF8EF0;
+}
+
+.lets-start-together-now-container {
+  height: 60vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding: 25px 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-video1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
 .lets-start-together-now-text {
-  font-size: clamp(36px, 8vw, 120px); /* адаптивний розмір */
+  font-size: clamp(36px, 8vw, 120px);
   font-weight: bold;
   text-align: left;
   background: linear-gradient(0deg, #FF8EF0, #ffffff);
-  background-size: 400% 400%; 
+  background-size: 400% 400%;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -68,43 +78,38 @@
   margin: 0;
 }
 
-  
-  .join-to-us-btn .join-button:hover {
-    background: white;
-    color: #FF8EF0;
-  }
-  
-  .background-video1 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-  }
-  
-  .lets-start-together-now-container {
-    height: 60vh;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    padding: 25px 5px;     
-    position: relative;
-    overflow: hidden;    
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (max-width: 576px) {
+  .join-to-us-container {
+    flex-direction: column;
+    gap: 0px;
+    text-align: center;
+    padding: 30px 10px;
+    height: 30vh;
   }
 
-  @keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-  
-@media (max-width: 768px) {
-  .join-to-us-container {
-    height: 30vh; 
+  .lets-start-together-now-container {
+    height: 70vh;
   }
-    .lets-start-together-now-container {
-    height: 70vh; 
+
+  .join-to-us-text {
+    font-size: clamp(28px, 9vw, 70px);
+  }
+
+  .join-to-us-btn {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .join-to-us-btn .join-button {
+    width: 100%;
+    max-width: 200px;
   }
 }
+
