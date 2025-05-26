@@ -5,7 +5,7 @@ const Main_start = () => {
   return (
     <div className="main_start">
         <div className="main_start__container">
-            <h1>LETS START<br/>TOGETHER<br/>NOW!</h1>
+            <h1>LETS START<br/>TOGETHER NOW!</h1>
             <h2>Тести створені щоб допомогти студентам знайти свою карєру в IT</h2>
 
             <div className="main_start__buttons">

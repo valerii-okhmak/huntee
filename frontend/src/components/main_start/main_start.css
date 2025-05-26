@@ -23,14 +23,14 @@
     font-family: 'MyFont1', sans-serif; 
     line-height: 8rem;
     font-weight: 900;
-    font-size: 10rem;
+    font-size: 7rem;
     color: #fff;
     margin: 0;
     user-select: none;
 }
 .main_start__container h2{
     font-weight: 600;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: #fff;
     margin: 0;
     text-decoration: none;
@@ -48,7 +48,7 @@
 .button{
     font-family: 'MyFont1', sans-serif; 
     font-weight: 900;
-    font-size: 3rem;
+    font-size: 2.3rem;
     color: #fff;
     border-radius: 5px;
     padding: 45px 105px;

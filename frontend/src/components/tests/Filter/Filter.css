@@ -14,7 +14,7 @@
 
 .filter_title {
     text-transform: uppercase;
-    font-family: "Kantumruy Pro", sans-serif;
+    font-family: "MyFont", sans-serif;
     font-optical-sizing: auto;
     font-weight: bold;
     font-style: normal;
@@ -62,7 +62,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-family: "Kantumruy Pro", sans-serif;
+    font-family: "MyFont", sans-serif;
     font-optical-sizing: auto;
     font-weight: normal;
     font-style: normal;

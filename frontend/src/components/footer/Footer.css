@@ -90,6 +90,16 @@
   opacity: 0.7;
 }
 
+.footer-copy {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #888; 
+  font-family: 'MyFont1', sans-serif; 
+  user-select: none;
+}
+
+
 
 @media screen and (max-width: 768px) {
   .footer-title, .footer-line, .footer-box, .view-map-link {

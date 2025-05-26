@@ -8,27 +8,24 @@ const ChooseYourFuture = () => {
     <div className="choose-your-future">
       <h2>CHOOSE YOUR<br />FUTURE</h2>
 
-  
-
         <BrowserWindow>
-            <ChooseYourFutureItem testname='ШО'/>
-            <ChooseYourFutureItem testname='Ш'/>
-            <ChooseYourFutureItem testname='ШО'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='FRONTENDDD'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='FRONTENDDD'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
-            <ChooseYourFutureItem testname='ШОСЬ'/>
+            <ChooseYourFutureItem testname='Frontend'/>
+            <ChooseYourFutureItem testname='Backend'/>
+            <ChooseYourFutureItem testname='Full-Stack'/>
+            <ChooseYourFutureItem testname='Mobile'/>
+            <ChooseYourFutureItem testname='DevOps'/>
+            <ChooseYourFutureItem testname='Data Science'/>
+            <ChooseYourFutureItem testname='QA'/>
+            <ChooseYourFutureItem testname='UI/UX Design'/>
+            <ChooseYourFutureItem testname='Cybersecurity'/>
+            <ChooseYourFutureItem testname='Game'/>
+            <ChooseYourFutureItem testname='Artificial Intelligence'/>
+            <ChooseYourFutureItem testname='Machine Learning'/>
+            <ChooseYourFutureItem testname='Systems Administration'/>
+            <ChooseYourFutureItem testname='Systems Programming'/>
+            <ChooseYourFutureItem testname='Robotics'/>
+            <ChooseYourFutureItem testname='Simulation'/>
+            <ChooseYourFutureItem testname='Webflow'/>
         </BrowserWindow>
     </div>
   );
