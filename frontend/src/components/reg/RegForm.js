@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import './RegForm.css';
 import { register, verifyEmail } from '../../services/authService';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import { Link } from 'react-router-dom';
 
 const RegForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -178,7 +179,7 @@ const RegForm = () => {
         )}
 
         <p className="reg-footer">
-          Уже є акаунт? <a href="/login">Авторизуватися</a>
+          Уже є акаунт? <Link to="/login">Авторизуватися</Link>
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import TrialMain from '../components/trialTest/main/main';
+import TrialMain from '../components/trialTest/main/TrialTest';
 import CustomTitle from '../components/custom_title/CustomTitle';
 
 const TestPage = () => {

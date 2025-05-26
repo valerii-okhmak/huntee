@@ -1,6 +1,7 @@
 import React from 'react';
 import './TrialTesting.css';
 import backgroundVideo from '../../video/trialtestingvideo.mp4';
+import { Link } from 'react-router-dom';
 
 const TrialTesting = () => {
   return (
@@ -14,7 +15,7 @@ const TrialTesting = () => {
         <h1 className="trial-testing-title">Пробне<br/>тестування</h1>
         <h2 className="trial-testing-subtitle">Дізнайся як проходить тестування!</h2>
         <div className="trial-testing-info">
-          <a href="/trialtest" className="trial-testing-link">Спробувати</a>
+          <Link to="/trialtest" className="trial-testing-link">Спробувати</Link>
         </div>
       </div>
     </div>

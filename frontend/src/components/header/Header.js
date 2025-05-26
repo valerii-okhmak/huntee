@@ -2,7 +2,7 @@ import React from "react";
 import "./Header.css";
 import logo from "../../img/logo.png"; 
 import BurgerMenu from "../burgerMenu/burgerMenu"; 
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 
 
@@ -28,28 +28,40 @@ const Header = () => {
     }
   });
   
-  return (
+   return (
     <header className="header">
-        <div className="logo">
-          <a href="/">
-            <img src={logo} alt="Logo" />
-          </a>
-        </div>
+      <div className="logo">
+        <Link to="/">
+          <img src={logo} alt="Logo" />
+        </Link>
+      </div>
       <nav className="nav">
         <ul>
           {!isAllTestsPage && (
             <li>
-              <a href="/alltests" className="headermenu">
+              <Link to="/alltests" className="headermenu">
                 <div className="set">Найближчі набори</div>
-              </a>
+              </Link>
             </li>
           )}
-          <li><a href="/messages" className="headermenu"><img src="/headerIcons/contacts.png" alt="Контакти" /></a></li>
-          <li><a href="/profile" className="headermenu"><img src="/headerIcons/authorization.png" alt="profile" /></a></li>
-          <li><button onClick={menuBtn} className="headermenu burger"><img src="/headerIcons/burger.png" alt="Бургер меню" /></button></li>
+          <li>
+            <Link to="/messages" className="headermenu">
+              <img src="/headerIcons/contacts.png" alt="Контакти" />
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile" className="headermenu">
+              <img src="/headerIcons/authorization.png" alt="profile" />
+            </Link>
+          </li>
+          <li>
+            <button onClick={menuBtn} className="headermenu burger">
+              <img src="/headerIcons/burger.png" alt="Бургер меню" />
+            </button>
+          </li>
         </ul>
       </nav>
-      <BurgerMenu/>
+      <BurgerMenu />
     </header>
   );
 };

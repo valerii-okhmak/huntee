@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './CreateTestInfo.css';
 import backgroundVideo from '../../video/welcomevideo.mp4';
+import { Link } from 'react-router-dom';
 
 const ArrowIcon = () => (
   <svg
@@ -21,6 +22,7 @@ const ArrowIcon = () => (
 );
 
 const CreateTestInfo = () => {
+
   const overlayRef = useRef(null);
   const [animate, setAnimate] = useState(false);
 
@@ -68,7 +70,7 @@ const CreateTestInfo = () => {
 
       <div className="bottom-content">
         <h2>HERE’RE YOUR FUTURE EMPLOYEES</h2>
-        <button className="cta-button">СТВОРИТИ ТЕСТ</button>
+        <Link to="/" className="cta-button">СТВОРИТИ ТЕСТ</Link>
       </div>
     </div>
   );

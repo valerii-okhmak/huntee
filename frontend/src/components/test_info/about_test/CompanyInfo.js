@@ -1,7 +1,13 @@
 import React from "react";
 import "./CompanyInfo.css";
+import { useNavigate } from "react-router-dom";
 
 const CompanyInfo = ({ text }) => {
+
+  const navigate = useNavigate();
+  const handleInfo = () => {
+    navigate('/');
+  };
   return (
     <div className="company-info-container">
       <div className="company-info">
@@ -10,7 +16,7 @@ const CompanyInfo = ({ text }) => {
         ))}
       </div>
       <div className="details-button">
-        <button>Детальніше</button>
+        <button onClick={handleInfo}>Детальніше</button>
       </div>
     </div>
   );
