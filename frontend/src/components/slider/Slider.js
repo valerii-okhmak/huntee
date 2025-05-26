@@ -4,7 +4,7 @@ import './Slider.css';  // Підключаємо CSS
 const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
-    { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/test'},
+    { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/forcompanies'},
     { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/test'},
     { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/test' },
   ];
