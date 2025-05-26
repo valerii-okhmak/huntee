@@ -19,6 +19,7 @@
   width: 100%;
   max-width: 400px;
   margin: 20px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .auth-main::before {

@@ -13,12 +13,11 @@
   align-items: center;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
   padding: 30px; /* додаємо відступи зліва і справа */
-  flex-wrap: wrap;
 }
 
 .join-to-us-text {
   font-family: 'MyFont1', sans-serif;
-  font-size: clamp(16px, 6vw, 95px);
+  font-size: clamp(16px, 6vw, 80px);
   color: #fff;
   margin: 0;
   user-select: none;
@@ -28,7 +27,7 @@
 
 .join-to-us-btn .join-button {
   padding: clamp(8px, 3vw, 25px) clamp(24px, 8vw, 110px); /* було 4px і 14px – тепер більше */
-  font-size: clamp(16px, 4vw, 45px); /* було 8px — збільшено до 16px */
+  font-size: clamp(16px, 4vw, 35px); /* було 8px — збільшено до 16px */
   font-family: 'MyFont1', sans-serif;
   color: white;
   border: 1px solid white;

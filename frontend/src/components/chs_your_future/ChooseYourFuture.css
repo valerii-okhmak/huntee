@@ -4,7 +4,7 @@
     flex-direction: column;
     justify-content: flex-start;
     background: linear-gradient(to bottom right, #001aff 60%, #ffffff 100%);
-    background-size: 400% 400%; 
+    background-size: 400% 300%; 
     animation: gradientAnimation 20s infinite linear;
     color: white;
     position: relative;
@@ -19,8 +19,8 @@
 .choose-your-future h2 {
     font-family: 'MyFont1', sans-serif; 
     color: white;
-    font-size: clamp(32px, 8vw, 110px);
-    margin: 25px 45px 10px 45px;
+    font-size: clamp(32px, 8vw, 80px);
+    margin: 25px 45px 0px 45px;
 }
 
 .choose-your-future .browser-bottom-block {

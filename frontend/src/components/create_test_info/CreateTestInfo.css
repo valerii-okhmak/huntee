@@ -148,5 +148,9 @@
   .steps.pan-animation > *:nth-child(6) {
     animation-delay: 1.5s;
   }
+
+  .steps.pan-animation > *:nth-child(7) {
+    animation-delay: 1.8s;
+  }
   
     

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .responsibilities-info {
   min-height: 100vh;
 }
@@ -7,6 +9,7 @@
 }
 
 .responsibilities-info-container h3 {
+  font-family: 'MyFont', sans-serif;
   margin-bottom: clamp(10px, 2vw, 15px);
   font-size: clamp(20px, 4vw, 30px);
 }
@@ -17,8 +20,9 @@
 }
 
 .responsibilities-info-container li {
+  font-family: 'Montserrat', sans-serif;
   margin-bottom: clamp(10px, 3vw, 30px);
-  font-size: clamp(16px, 4vw, 25px);
+  font-size: clamp(16px, 4vw, 22px);
 }
 
 .reg-button {
