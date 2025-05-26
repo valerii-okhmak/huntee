@@ -1,0 +1,152 @@
+.create-test-info {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'MyFont', sans-serif;
+  }
+  
+  .backgroundvideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    filter: grayscale(100%);
+  }
+  
+  .overlay {
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: clamp(20px, 5vw, 55px) clamp(8px, 3vw, 20px);
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 10vh;
+  }
+  
+  .happens {
+    font-size: clamp(14px, 2vw + 1rem, 25px);
+    margin: 0 clamp(3px, 1vw, 10px);
+    font-weight: 500;
+    margin-bottom: clamp(15px, 4vw, 40px);
+  }
+  
+  .steps {
+    width: 100%;
+    display: flex;
+  }
+  
+  .step {
+    font-weight: 700;
+    margin: 0 clamp(3px, 1vw, 10px);
+    font-size: clamp(12px, 1.5vw, 20px);
+  }
+  
+  .arrow {
+    margin: 0 clamp(3px, 1vw, 10px);
+  }  
+  
+  /* Контент під шаром */
+  .bottom-content {
+    z-index: 2;
+    text-align: center;
+    padding: clamp(20px, 5vw, 40px) clamp(10px, 3vw, 20px);
+  }
+  
+  .bottom-content h2 {
+    font-size: clamp(40px, 8vw + 1rem, 80px);
+    font-weight: 800;
+    margin-bottom: clamp(15px, 4vw, 30px);
+    background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15, #fffd87);
+    background-size: 400% 400%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientAnimation 20s infinite linear;
+  }
+  
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .cta-button {
+    background-color: #000;
+    color: #fff;
+    padding: clamp(12px, 2vw, 20px) clamp(24px, 4vw, 40px);
+    font-size: clamp(24px, 5vw + 1rem, 40px);
+    font-weight: bold;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'MyFont', sans-serif;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+  }
+  
+  .cta-button:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+  }
+  
+  @keyframes fadeSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .steps > * {
+    opacity: 0;
+    transform: translateX(-30px);
+    animation-fill-mode: forwards;
+    animation-name: none;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+  }
+  
+  .steps.pan-animation > * {
+    animation-name: fadeSlideIn;
+  }
+  
+  .steps.pan-animation > *:nth-child(1) {
+    animation-delay: 0s;
+  }
+  
+  .steps.pan-animation > *:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+  
+  .steps.pan-animation > *:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+  
+  .steps.pan-animation > *:nth-child(4) {
+    animation-delay: 0.9s;
+  }
+  
+  .steps.pan-animation > *:nth-child(5) {
+    animation-delay: 1.2s;
+  }
+  
+  .steps.pan-animation > *:nth-child(6) {
+    animation-delay: 1.5s;
+  }
+  
+    
