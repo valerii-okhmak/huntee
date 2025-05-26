@@ -4,26 +4,22 @@ import backgroundVideo from '../../video/join-to-us.mp4';
 
 const JoinToUs = () => {
   return (
-<div className="join-to-us">
-  <div className="join-to-us-container">
-    <div className="join-to-us-left">
-      <h1 className="join-to-us-text">Приєднуйся<br/>до нас!</h1>
-    </div>
-    <div className="join-to-us-right">
-      <div className="join-to-us-btn">
-        <a href="/login" className="join-button">Увійти</a>
+    <div className="join-to-us">
+      <div className="join-to-us-container">
+        <h1 className="join-to-us-text">Приєднуйся<br />до нас!</h1>
+        <div className="join-to-us-btn">
+          <a href="/login" className="join-button">Увійти</a>
+        </div>
+      </div>
+
+      <div className="lets-start-together-now-container">
+        <video className="background-video1" autoPlay loop muted>
+          <source src={backgroundVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <h1 className="lets-start-together-now-text">Let's start<br />together now</h1>
       </div>
     </div>
-  </div>
-  <div className="lets-start-together-now-container">
-          <video className="background-video1" autoPlay loop muted>
-            <source src={backgroundVideo} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-    <h1 className="lets-start-together-now-text">Let's start<br/>together now</h1>
-  </div>
-</div>
-
   );
 };
 
