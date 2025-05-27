@@ -34,3 +34,12 @@
   margin-top: clamp(10px, 2vw, 20px);
   padding: clamp(6px, 1.5vw, 10px);
 }
+
+
+@media screen and (max-width: 768px) {
+  .browser-container {
+    width: calc(100% - 30px);
+    margin-left: 15px;
+    padding: 0 15px;
+  }
+}

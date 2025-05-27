@@ -35,3 +35,19 @@
   color: #848282;
   margin: 0;
 }
+
+
+@media screen and (max-width: 850px) {
+  .active-item {
+    width: calc(50% - 15px);
+    max-width: 50%;
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .active-item {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+

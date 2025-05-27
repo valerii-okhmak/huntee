@@ -3,9 +3,9 @@ import './MessageTitle.css';
 
 const MessageTitle = () => {
   return (
-    <div className="message-title container">
-      <h1>Повідомлення</h1>
-    </div>
+    <h1 className="message-title container">
+      Повідомлення
+    </h1>
   );
 };
 

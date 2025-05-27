@@ -11,10 +11,10 @@
 }
 
 .message-testname {
-color: black;
-font-family: 'MyFont', sans-serif;
-font-size: 30px;   
-text-decoration: none;
+    color: black;
+    font-family: 'MyFont', sans-serif;
+    font-size: clamp(24px, 2vw, 30px);   
+    text-decoration: none;
 }
 
 .message-testname:hover {
@@ -29,4 +29,11 @@ text-decoration: none;
     position: absolute;
     top: 10px;
     right: 10px;
+}
+
+
+@media screen and (max-width: 660px) {
+    .message-item {
+        padding: 20px 15px;
+    }
 }
