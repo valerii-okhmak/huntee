@@ -61,3 +61,18 @@
 .unactive-item__result.high {
   color: #1DAD00; /* зелений */
 }
+
+
+@media screen and (max-width: 850px) {
+  .unactive-item {
+    width: calc(50% - 15px);
+    max-width: 50%;
+  }
+}
+
+@media screen and (max-width: 620px) {
+  .unactive-item {
+    width: 100%;
+    max-width: 100%;
+  }
+}

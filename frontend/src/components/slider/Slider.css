@@ -37,8 +37,9 @@
 }
 
 .slide h2 {
-    padding: 20px 0 0 50px;
-    font-size: 2rem;
+    padding-top: clamp(15px, 2vw, 20px);
+    padding-left: clamp(15px, 2vw, 50px);
+    font-size: clamp(1.5rem, 2vw, 2rem);
     margin: 0;
 }
 
@@ -87,7 +88,7 @@
     color: white;
     position: absolute;
     bottom: 20px;
-    padding-left: 50px;
+    padding-left: clamp(15px, 2vw, 50px);
     background-color: none;
     font-size: 18px;
     font-weight: bold;
@@ -101,16 +102,20 @@
 
 @media screen and (max-width: 768px) {
     .slider-container {
-        max-width: 80%; 
-        margin-top: -7vh;
+        max-width: 100%; 
+        margin-top: 0;
     }
     .slide {
         font-size: 20px;
+        height: 25vh;
     }
     .prev, .next {
         height: 40px;
         width: 50px;
         font-size: 16px;
+        display: none;
     }
-    
+    .slider2 {
+        width: 100%;
+    }
 }
