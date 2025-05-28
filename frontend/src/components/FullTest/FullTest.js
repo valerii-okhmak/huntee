@@ -138,6 +138,10 @@ const TestPage = () => {
             <textarea
               value={answer}
               onChange={(e) => handleAnswerChange(e.target.value)}
+              onInput={(e) => {
+                e.target.style.height = 'auto'; 
+                e.target.style.height = `${e.target.scrollHeight}px`; 
+              }}
             />
           );
         case "code":
