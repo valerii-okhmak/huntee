@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import './SocialLogin.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
@@ -6,11 +6,11 @@ import axios from 'axios';
 import { saveTokens } from '../../utils/auth';
 
 const SocialLogin = ({ setError }) => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const credential = credentialResponse.credential;
       const decoded = jwtDecode(credential);
 
@@ -31,13 +31,13 @@ const SocialLogin = ({ setError }) => {
       console.error('Google авторизація не вдалася:', err);
       setError('Не вдалося увійти через Google.');
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
-  const handleRedirect = (providerUrl) => {
-    window.location.href = providerUrl;
-  };
+  // const handleRedirect = (providerUrl) => {
+  //   window.location.href = providerUrl;
+  // };
 
   return (
     <div className="social-login">
@@ -46,7 +46,7 @@ const SocialLogin = ({ setError }) => {
             onError={() => setError('Помилка при логіні з Google')}
         />
 
-      <button className="social-btn linkedin-btn" onClick={() => handleRedirect('https://java-application-latest-mlfc.onrender.com/oauth2/authorization/linkedin')}>
+      {/* <button className="social-btn linkedin-btn" onClick={() => handleRedirect('https://java-application-latest-mlfc.onrender.com/oauth2/authorization/linkedin')}>
         <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" />
         Авторизація через LinkedIn
       </button>
@@ -54,7 +54,7 @@ const SocialLogin = ({ setError }) => {
       <button className="social-btn facebook-btn" onClick={() => handleRedirect('https://java-application-latest-mlfc.onrender.com/oauth2/authorization/facebook')}>
         <img src="https://www.facebook.com/favicon.ico" alt="Facebook" />
         Авторизація через Facebook
-      </button>
+      </button> */}
     </div>
   );
 };
