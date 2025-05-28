@@ -94,10 +94,20 @@ const Profile = () => {
               <h2 className="profile-name">
                 {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
               </h2>
+              <div className='buttons-profile'>
               <button 
                   id="link-information" 
                   className="profile-edit-btn">Поділитись посиланням
                   <img src={linkIcon} alt="link" className="link-icon" /></button>
+              <button 
+                  id="my-tests" 
+                  className="profile-edit-btn">Мої тести
+              </button>
+              <button 
+                  id="exit" 
+                  className="profile-edit-btn">Вийти
+              </button>
+              </div>
 
             </div>
           </div>
