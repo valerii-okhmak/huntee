@@ -290,24 +290,3 @@
     color: #000;
   }
 
-
-
-@media screen and (max-width: 768px) {
-  .header-bar {
-    flex-direction: column;
-    gap: 30px;
-  }
-  .test-container {
-    padding: 1rem;
-  }
-  .question-with-image {
-    flex-direction: column;
-  }
-}
-
-@media screen and (max-width: 460px) {
-  .test-buttons {
-    gap: 20px;
-    justify-content: center;
-  }
-}
