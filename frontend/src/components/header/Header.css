@@ -78,6 +78,8 @@
   transition: 0.3s;
   transition: border 0.1s ease, box-shadow, background-color 0.1s ease;
   text-align: center;
+  align-items: center;
+  display: flex;
 }
 
 .set.scrolled {
@@ -161,6 +163,7 @@
     background-color: rgba(178, 160, 16, 0.3);
     padding: 10px;
     transition: 0.3s;
+    height: 60px;
   }
   
   .set:hover {

@@ -2,6 +2,7 @@
 
 .testsTop {
     padding-top: 100px;
+    padding-bottom: 30px;
 }
 
 .main {
@@ -88,6 +89,10 @@
 
     .addline {
         width: calc(100% - 15px);
+    }
+    
+    .additional{
+        padding-right: 10px;
     }
 }
 

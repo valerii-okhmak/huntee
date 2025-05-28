@@ -1,12 +1,10 @@
 import React from "react";
 import "./CompanyInfo.css";
-import { useNavigate } from "react-router-dom";
 
 const CompanyInfo = ({ text }) => {
 
-  const navigate = useNavigate();
   const handleInfo = () => {
-    navigate('/');
+    window.open('https://www.softserveinc.com/uk-ua/about-us', '_blank');
   };
   return (
     <div className="company-info-container">
