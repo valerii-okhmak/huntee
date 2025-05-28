@@ -2,8 +2,6 @@
     background-color: rgb(0, 0, 0,0.4);
     padding: 15px 20px;
     border-radius: 8px;
-    margin: 0 20px;
-    min-width: 200px;
 }
 
 .chs-your-future-item:hover {
@@ -15,15 +13,13 @@
 .chs-your-future-testname {
     text-decoration: none;
     color: white;
-    font-size: 40px;
+    font-size: 30px;
     font-family: 'MyFont', sans-serif;
 }
 
 @media (max-width: 768px) {
   .chs-your-future-item {
     padding: 10px 15px;
-    margin: 0 10px;
-    min-width: 150px;
   }
 
   .chs-your-future-testname {

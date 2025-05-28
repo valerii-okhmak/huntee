@@ -37,9 +37,11 @@
 }
 
 .slide h2 {
-    padding: 20px 0 0 50px;
-    font-size: 2rem;
+    padding-top: clamp(15px, 2vw, 20px);
+    padding-left: clamp(15px, 4.5vw, 50px);
+    font-size: clamp(1.5rem, 2vw, 2rem);
     margin: 0;
+    user-select: none;
 }
 
 @keyframes gradientAnimation {
@@ -51,8 +53,8 @@
 /* Стилі для кнопок */
 .prev, .next {
     position: absolute;
-    height: 60px;
-    width: 70px;
+    height: 50px;
+    width: 60px;
     top: 50%;
     transform: translateY(-50%);
     background-color: rgba(255, 255, 255, 1);
@@ -63,7 +65,6 @@
     font-size: 20px;
     z-index: 2; /* Зробимо кнопки поверх слайдів */
     transition: 0.3s;
-    border: 0.1px solid rgb(192, 192, 192);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -87,13 +88,14 @@
     color: white;
     position: absolute;
     bottom: 20px;
-    padding-left: 50px;
+    padding-left: clamp(15px, 4.5vw, 50px);
     background-color: none;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     z-index: 1;
     text-decoration: none;
+    user-select: none;
 }
 
 
@@ -101,16 +103,20 @@
 
 @media screen and (max-width: 768px) {
     .slider-container {
-        max-width: 80%; 
-        margin-top: -7vh;
+        max-width: 100%; 
+        margin-top: 0;
     }
     .slide {
         font-size: 20px;
+        height: 25vh;
     }
     .prev, .next {
         height: 40px;
         width: 50px;
         font-size: 16px;
+        display: none;
     }
-    
+    .slider2 {
+        width: 100%;
+    }
 }

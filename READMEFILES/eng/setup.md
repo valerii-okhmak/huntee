@@ -65,9 +65,16 @@ The API will be accessible at: http://localhost:8080
 huntee/
 ├── backend/         # Backend server
 ├── frontend/        # Frontend application
-└── READMEFILESeng   # Documentation
-    ├── README.md       
-    └── docs.eng/
+├── README.md        # Frontend application
+└── READMEFILES      # Documentation
+    ├── ua/
+        ├── companies.md
+        ├── setup.md
+        ├── students.md
+        ├── technologies.md
+        └── test-format.md
+
+    └── eng/
         ├── companies.md
         ├── setup.md
         ├── students.md

@@ -2,6 +2,7 @@
 
 .testsTop {
     padding-top: 100px;
+    padding-bottom: 30px;
 }
 
 .main {
@@ -23,7 +24,7 @@
 }
 
 .addtitle {
-    font-size: 70px;
+    font-size: clamp(40px, 2vw, 70px);
     font-family: "MyFont", sans-serif;
     position: absolute;
     left: 16px;
@@ -48,11 +49,11 @@
 
 .additional {
     color: #000;
-    font-size: 18px;
+    font-size: clamp(14px, 2vw, 18px);
     position: absolute;
     bottom: -25px;
     left: 160px;
-    font-family: "Kantumruy Pro", sans-serif;
+    font-family: "MyFont", sans-serif;
     font-optical-sizing: auto;
     font-weight: normal;
     font-style: normal;
@@ -61,4 +62,42 @@
 .additional_logo {
     height: 80px;
     margin-left: -40px;
+}
+
+.addline {
+    width: 500px;
+    height: 2px;
+    background-color: #000;
+    margin-bottom: 10px;
+}
+
+.additional p {
+    font-weight: lighter;
+}
+
+
+@media (max-width: 768px) {
+    .testsTop_container {
+        width: 100%;
+        padding: 0 15px;
+    }
+
+    .additional_logo {
+        height: 50px;
+        margin-left: -20px;
+    }
+
+    .addline {
+        width: calc(100% - 15px);
+    }
+    
+    .additional{
+        padding-right: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .additional {
+        bottom: -40px;
+    }
 }

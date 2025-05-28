@@ -10,16 +10,17 @@ const JUDGE0_API = "https://judge0-ce.p.rapidapi.com/submissions";
 const RAPIDAPI_HEADERS = {
   "content-type": "application/json",
   "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-  "X-RapidAPI-Key": "", // заміни на свій
+  "X-RapidAPI-Key": "41a9f024efmsh1a0ad3ef3f1f9b0p162680jsnad4442fec743", 
 };
 
 const TestPage = () => {
+  const [outputMap, setOutputMap] = useState({});
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(3600); // 1 година у секундах
+  const [timeLeft, setTimeLeft] = useState(3600); // 1 година 
 
   const [questions, setQuestions] = useState([]);
 
@@ -35,7 +36,7 @@ const TestPage = () => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          handleSubmit(); // автозавершення
+          handleSubmit(); 
           return 0;
         }
         return prev - 1;
@@ -56,30 +57,48 @@ const TestPage = () => {
 
     for (const q of questions) {
       const ans = answers[q.id];
-      if (q.type === "choice" || q.type === "text") {
-        if (
-          ans != null &&
-          ans === q.correctAnswer
-        ) {
-          total++;
-        }
-      } else if (q.type === "code") {
+
+      if ((q.type === "choice" || q.type === "text") && ans != null) {
+        if (ans === q.correctAnswer) total++;
+      }
+
+      if (q.type === "code" && ans?.trim()) {
         try {
-          const submission = await axios.post(
-            JUDGE0_API + "?base64_encoded=false&wait=true",
+          // Об'єднуємо код користувача і runTemplate
+          const fullCode = `${ans}\n${q.runTemplate}`;
+
+          const response = await axios.post(
+            `${JUDGE0_API}?base64_encoded=false&wait=true`,
             {
-              source_code: ans,
+              source_code: fullCode,
               language_id: q.language_id,
-              stdin: "",
+              stdin: q.stdin || "",
             },
             { headers: RAPIDAPI_HEADERS }
           );
 
-          if (submission.data.stdout === q.expectedOutput) {
+          const { stdout, stderr, compile_output, status } = response.data;
+
+          const cleanOutput = (stdout || "").trim();
+          const expected = q.expectedOutput.trim();
+
+          if (
+            status?.description === "Accepted" &&
+            cleanOutput === expected
+          ) {
             total++;
+          } else {
+            console.warn("Код не пройшов перевірку:", {
+              question: q.id,
+              output: cleanOutput,
+              expected,
+              stderr,
+              compile_output,
+              status,
+            });
           }
-        } catch (e) {
-          console.error("Помилка компіляції:", e);
+        } catch (err) {
+          console.error("Помилка під час перевірки коду:", err);
         }
       }
     }
@@ -88,6 +107,7 @@ const TestPage = () => {
     setSubmitted(true);
     setLoading(false);
   };
+
   
 
   const renderQuestion = (q) => {
@@ -118,18 +138,71 @@ const TestPage = () => {
             <textarea
               value={answer}
               onChange={(e) => handleAnswerChange(e.target.value)}
+              onInput={(e) => {
+                e.target.style.height = 'auto'; 
+                e.target.style.height = `${e.target.scrollHeight}px`; 
+              }}
             />
           );
         case "code":
           return (
             <>
+              <div className="code-run-button-container">
+                <button
+                  className="run-button"
+                  onClick={async () => {
+                    setLoading(true);
+                    try {
+                      const fullCode = `${answer}\n${q.runTemplate || ""}`;
+                      const submission = await axios.post(
+                        JUDGE0_API + "?base64_encoded=false&wait=true",
+                        {
+                          source_code: fullCode,
+                          language_id: q.language_id,
+                          stdin: "",
+                        },
+                        { headers: RAPIDAPI_HEADERS }
+                      );
+
+                      const result =
+                        submission.data.stdout?.trim() ||
+                        submission.data.stderr?.trim() ||
+                        submission.data.compile_output?.trim() ||
+                        "Немає виводу";
+
+                      setOutputMap((prev) => ({
+                        ...prev,
+                        [q.id]: result,
+                      }));
+                    } catch (e) {
+                      setOutputMap((prev) => ({
+                        ...prev,
+                        [q.id]: "Помилка під час виконання коду",
+                      }));
+                      console.error("Run code error:", e);
+                    }
+                    setLoading(false);
+                  }}
+                >
+                  Run
+                </button>
+              </div>
+
               <textarea
                 rows="10"
                 value={answer}
                 onChange={(e) => handleAnswerChange(e.target.value)}
-                placeholder="def sum(a, b):\n    return a + b\n\nprint(sum(2, 3))"
+                placeholder={q.placeholder || ""}
               />
-              <p className="note">Очікуваний вивід: {q.expectedOutput.trim()}</p>
+
+              <p className="note">Очікуваний вивід: {q.expectedOutput?.trim()}</p>
+
+              {outputMap[q.id] && (
+                <div className="code-output">
+                  <strong>Результат виконання:</strong>
+                  <pre>{outputMap[q.id]}</pre>
+                </div>
+              )}
             </>
           );
         default:

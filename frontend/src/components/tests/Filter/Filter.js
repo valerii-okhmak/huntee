@@ -1,40 +1,51 @@
-import React from 'react'
-import './Filter.css'
+import React, { useState } from 'react';
+import './Filter.css';
 
-const Filter = () => {
+const Filter = ({ selectedLocations, setSelectedLocations }) => {
+  const [hidden, setHidden] = useState(false);
 
-  const hideFilter = () => {
-    const section = document.querySelector('.filter_section');
-    section.classList.toggle('hide')
+  const toggleFilter = () => {
+    setHidden(!hidden);
+  };
 
-    const button = document.querySelector('.filter_button');
-    button.classList.toggle('plus')
-  }
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setSelectedLocations([...selectedLocations, value]);
+    } else {
+      setSelectedLocations(selectedLocations.filter(loc => loc !== value));
+    }
+  };
 
   return (
     <div className='filter'>
       <div className='filer_name'>
         <h2 className='filter_title'>ЛОКАЦІЯ</h2>
-        <div className='filter_action' onClick={hideFilter}>
-            <div className='filter_button'></div>
+        <div className='filter_action' onClick={toggleFilter}>
+          <div className={`filter_button ${hidden ? 'plus' : ''}`}></div>
         </div>
       </div>
-      <div className='filter_section'>
-        <div className='option'>
-          <input type='checkbox' className='input' id='check1_1'></input>
-          <label className='laber' htmlFor='check1_1'>Львів</label>
-        </div>
-        <div className='option'>
-          <input type='checkbox' className='input' id='check1_2'></input>
-          <label className='laber' htmlFor='check1_2'>Тернопіль</label>
-        </div>
-        <div className='option'>
-          <input type='checkbox' className='input' id='check1_3'></input>
-          <label className='laber' htmlFor='check1_3'>Івано-Франківськ</label>
-        </div>
-      </div>
-    </div>
-  )
-}
 
-export default Filter
+      {!hidden && (
+        <div className='filter_section'>
+          {['Львів', 'Тернопіль', 'Івано-Франківськ'].map((loc, i) => (
+          <label className='custom-checkbox' key={i}>
+            <input
+              type='checkbox'
+              className='custom-input'
+              value={loc}
+              id={`check1_${i}`}
+              onChange={handleCheckboxChange}
+              checked={selectedLocations.includes(loc)}
+            />
+            <span className='checkbox-square'></span>
+            {loc}
+          </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Filter;

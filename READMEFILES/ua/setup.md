@@ -62,11 +62,18 @@ API буде доступне за адресою: http://localhost:8080
 
 ```bash
 huntee/
-├── backend/         # Серверна частина 
-├── frontend/        # Клієнтська частина 
-└── READMEFILESua    # Документація
-    ├── README.md       
-    └── docs.ua/
+├── backend/         # Backend server
+├── frontend/        # Frontend application
+├── README.md        # Frontend application
+└── READMEFILES      # Documentation
+    ├── ua/
+        ├── companies.md
+        ├── setup.md
+        ├── students.md
+        ├── technologies.md
+        └── test-format.md
+
+    └── eng/
         ├── companies.md
         ├── setup.md
         ├── students.md

@@ -2,6 +2,10 @@ import React from "react";
 import "./CompanyInfo.css";
 
 const CompanyInfo = ({ text }) => {
+
+  const handleInfo = () => {
+    window.open('https://www.softserveinc.com/uk-ua/about-us', '_blank');
+  };
   return (
     <div className="company-info-container">
       <div className="company-info">
@@ -10,7 +14,7 @@ const CompanyInfo = ({ text }) => {
         ))}
       </div>
       <div className="details-button">
-        <button>Детальніше</button>
+        <button onClick={handleInfo}>Детальніше</button>
       </div>
     </div>
   );

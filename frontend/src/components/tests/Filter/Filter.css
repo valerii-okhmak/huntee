@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 .filter {
     width: 100%;
@@ -14,7 +14,7 @@
 
 .filter_title {
     text-transform: uppercase;
-    font-family: "Kantumruy Pro", sans-serif;
+    font-family: "MyFont", sans-serif;
     font-optical-sizing: auto;
     font-weight: bold;
     font-style: normal;
@@ -50,24 +50,59 @@
 
 .filter_section {
     padding: 20px 20px 1px;
-    background: #fff;  
+    background: #fff; 
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 500;
 }
 
 .hide {
     display: none;
 }
 
-.option {
+/* .option {
     margin-bottom: 20px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-family: "Kantumruy Pro", sans-serif;
+    font-family: "MyFont", sans-serif;
     font-optical-sizing: auto;
     font-weight: normal;
     font-style: normal;
+} */
+
+.custom-input {
+    margin-right: 12px;
 }
 
-.input {
-    margin-right: 12px;
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-square {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: #D9D9D9;
+  margin-right: 10px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-square::after {
+  content: "";
+  position: absolute;
+  top: 3.5px;
+  left: 3.5px;
+  width: 8px;
+  height: 8px;
+  background-color: black;
 }

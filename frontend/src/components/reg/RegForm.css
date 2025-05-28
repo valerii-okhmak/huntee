@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .reg-main {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     background-color: #F5F5F5;
     position: relative;
@@ -20,6 +22,7 @@
     max-width: 400px;
     margin: 20px;
     margin-top: 100px;
+    font-family: 'Montserrat', sans-serif;
   }
   
   .reg-main::before {
@@ -155,6 +158,7 @@ input.error {
       font-size: 0.9rem;
       color: #555;
       margin-bottom: 0.3rem;
+      
     }
     
     .form-group input {
@@ -164,6 +168,7 @@ input.error {
       font-size: 1rem;
       outline: none;
       transition: border-color 0.3s;
+      font-family: 'Montserrat', sans-serif;
     }
     
     .form-group input:focus {
@@ -179,6 +184,7 @@ input.error {
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.3s;
+      font-family: 'Montserrat', sans-serif;
     }
     
     .submit-btn:hover {
@@ -204,6 +210,7 @@ input.error {
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.3s;
+      font-family: 'Montserrat', sans-serif;
     }
     
     .social-btn img {
@@ -233,3 +240,125 @@ input.error {
   .form-group b {
     color: red;
   }
+
+/* Медіа-запити для iPad (768px–1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .reg-main {
+        padding: 20px;
+    }
+
+    .reg-container {
+        max-width: 600px; /* Збільшено для кращого вигляду на iPad */
+        padding: 40px;
+        margin-top: 60px;
+    }
+
+    .reg-container h2 {
+        font-size: 48px; /* Збільшено для привабливості на iPad */
+    }
+
+    .form-group input {
+        padding: 14px;
+        font-size: 18px;
+    }
+
+    .code-input {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+
+    .submit-btn,
+    .back-btn {
+        padding: 14px 30px;
+        font-size: 20px;
+    }
+
+    .social-btn {
+        padding: 14px;
+        font-size: 18px;
+    }
+
+    .social-btn img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .confirm-text {
+        font-size: 20px;
+    }
+
+    .error-text {
+        font-size: 16px;
+    }
+
+    .general-error {
+        font-size: 18px;
+    }
+}
+
+
+@media screen and (max-width: 767px) {
+  .reg-main {
+    padding: 1rem;
+  }
+
+  .reg-container {
+    width: 100%;
+    margin: 20px 10px;
+    padding: 20px 15px;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .reg-container h2 {
+    font-size: 26px;
+  }
+
+  .form-group input {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .submit-btn,
+  .back-btn {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .code-inputs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .code-input {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .reg-footer {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+}
+
+
+@media screen and (max-width: 480px) {
+  .code-input {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+  }
+
+  .reg-container h2 {
+    font-size: 22px;
+  }
+
+  .submit-btn,
+  .back-btn {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+

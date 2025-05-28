@@ -1,6 +1,6 @@
 import React from 'react';
 import './Welcome.css';
-import backgroundVideo from '../../video/welcomevideo.mp4'; // ⚠️ вкажи правильний шлях до відео
+import backgroundVideo from '../../video/welcomevideo.mp4'; 
 
 const Welcome = () => {
   return (
