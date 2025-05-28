@@ -7,11 +7,13 @@ import EducationModal from './EducationModal';
 import ExperienceModal from './ExpirienceModal';
 import editIcon from '../../img/pen.png';
 import linkIcon from '../../img/link.png';
-import { getAccessToken } from '../../utils/auth';
+import { getAccessToken, logout} from '../../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 
 const Profile = () => {
 
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
@@ -88,7 +90,7 @@ const Profile = () => {
               </h3>
               <div className="profile-avatar">
                 {profileData?.profileImage && (
-                  <img src={profileData.profileImage} alt="Аватар" className="avatar-img" />
+                  <img src={profileData.profileImage} alt="Аватар" className="profile-avatar" />
                 )}
               </div>
               <h2 className="profile-name">
@@ -99,14 +101,18 @@ const Profile = () => {
                   id="link-information" 
                   className="profile-edit-btn">Поділитись посиланням
                   <img src={linkIcon} alt="link" className="link-icon" /></button>
+              <div className='bottom-buttons'>
               <button 
+                  onClick={() => navigate('/mytests')}
                   id="my-tests" 
                   className="profile-edit-btn">Мої тести
               </button>
-              <button 
+              <button
+                  onClick={logout}
                   id="exit" 
                   className="profile-edit-btn">Вийти
               </button>
+              </div>
               </div>
 
             </div>
@@ -115,14 +121,17 @@ const Profile = () => {
          
           <div id='aditional-information' className="profile-container">
             <div className="profile-info-section">
-              <h3 className="section-title">Додаткова інформація</h3>
+              <h3 className="subsection-title">Додаткова інформація</h3>
               <div className="profile-info-block">
-                  <p className='aditional-text'>{profileData ? `${profileData.about} ` : 'Допоможіть рекрутерам краще пізнати вас: опишіть, що робить саме вас чудовим кандидатом на посаду й поділіться іншими посиланнями.'}</p>
+                <p className='aditional-text'>
+                  {profileData?.about
+                    ? profileData.about
+                    : 'Допоможіть рекрутерам краще пізнати вас: опишіть, що робить саме вас чудовим кандидатом на посаду й поділіться іншими посиланнями.'}
+                </p>
                   <button 
                   id="add-information" 
                   className="profile-edit-btn"
                   onClick={()=>handleOpenModal("additionalInfo")}>Додати додаткову інфомацію</button>
-                
               </div>
             </div>
           </div>
@@ -138,13 +147,13 @@ const Profile = () => {
                 <div className="profile-info-item">
                   <p>Додайте тут інформацію про місце навчання</p>
                   <button 
-                  className="profile-edit-btn"
+                  className="profile-edit-btn right-btn"
                   onClick={()=>handleOpenModal("education")}>Додати інфомацію про університет</button>
                 </div>
                 <div className="profile-info-item">
                   <p>Додайте тут інформацію про додаткові курси</p>
                   <button 
-                  className="profile-edit-btn"
+                  className="profile-edit-btn right-btn"
                   onClick={()=>handleOpenModal("courses")}>Додати інфомацію про курси</button>
                 </div>
               </div>
@@ -159,7 +168,7 @@ const Profile = () => {
                 <div className="profile-info-item">
                   <p>Додайте тут інформацію про досвід роботи</p>
                   <button 
-                  className="profile-edit-btn"
+                  className="profile-edit-btn right-btn"
                   onClick={()=>handleOpenModal("experience")}>Додати інфомацію про проекти</button>
                 </div>
               </div>

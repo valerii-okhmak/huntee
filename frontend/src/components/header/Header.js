@@ -61,7 +61,7 @@ const Header = () => {
           </li>
         </ul>
       </nav>
-      <BurgerMenu />
+      <BurgerMenu menuBtn={menuBtn}/>
     </header>
   );
 };

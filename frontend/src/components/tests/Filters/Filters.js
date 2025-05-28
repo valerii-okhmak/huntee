@@ -2,10 +2,13 @@ import React from 'react'
 import Filter from '../Filter/Filter'
 import './Filters.css'
 
-const Filters = () => {
+const Filters = ({selectedLocations, setSelectedLocations }) => {
   return (
     <div className='filters'>
-        <Filter/>
+        <Filter
+        selectedLocations={selectedLocations}
+        setSelectedLocations={setSelectedLocations}
+        />
     </div>
   )
 }
