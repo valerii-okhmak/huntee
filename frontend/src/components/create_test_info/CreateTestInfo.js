@@ -21,7 +21,7 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const CreateTestInfo = () => {
+const CreateTestInfo = ({title_button,first_step, second_step,third_step,four_step}) => {
 
   const overlayRef = useRef(null);
   const [animate, setAnimate] = useState(false);
@@ -58,19 +58,19 @@ const CreateTestInfo = () => {
       <div className="overlay" ref={overlayRef}>
         <div className="happens">how it happens?</div>
         <div className={`steps ${animate ? 'pan-animation' : ''}`}>
-          <div className="step">Створюєте обліковий запис</div>
+          <div className="step">{first_step}</div>
           <ArrowIcon />
-          <div className="step">Створюєте тести</div>
+          <div className="step">{second_step}</div>
           <ArrowIcon />
-          <div className="step">Отримуєте результати тестів</div>
+          <div className="step">{third_step}</div>
           <ArrowIcon />
-          <div className="step">Отримуєте перелік найкращих кандидатів </div>
+          <div className="step">{four_step}</div>
         </div>
       </div>
 
       <div className="bottom-content">
         <h2>HERE’RE YOUR FUTURE EMPLOYEES</h2>
-        <Link to="/" className="cta-button">СТВОРИТИ ТЕСТ</Link>
+        <Link to="/" className="cta-button">{title_button}</Link>
       </div>
     </div>
   );

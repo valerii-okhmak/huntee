@@ -9,6 +9,7 @@ import editIcon from '../../img/pen.png';
 import linkIcon from '../../img/link.png';
 import { getAccessToken } from '../../utils/auth';
 
+
 const Profile = () => {
 
   const [profileData, setProfileData] = useState(null);
@@ -76,9 +77,9 @@ const Profile = () => {
   return (
     <div className="profile-main">
       <div className="profile-columns">
-        {/* Ліва колонка: Особиста інформація та Додаткова інформація */}
+        
         <div className="profile-column-left">
-          {/* Блок 1: Особиста інформація (аватар, ім'я, посилання) */}
+          
           <div id='personal-information' className="profile-container">
             <div className="profile-header-section">
               <h3 className="section-title">
@@ -101,7 +102,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Блок 4: Додаткова інформація */}
+         
           <div id='aditional-information' className="profile-container">
             <div className="profile-info-section">
               <h3 className="section-title">Додаткова інформація</h3>
@@ -118,9 +119,9 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Права колонка: Освіта та Досвід */}
+        
         <div className="profile-column-right">
-          {/* Блок 2: Освіта */}
+          
           <div id='education' className="profile-container">
             <div className="profile-info-section">
               <h4 className="subsection-title">Освіта</h4>
@@ -141,7 +142,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Блок 3: Досвід */}
+          
           <div id='experience' className="profile-container">
             <div className="profile-info-section">
               <h4 className="subsection-title">Досвід</h4>
@@ -157,7 +158,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      {/* Модальні вікна */}
+      
     <AdditionalInfoModal
     isOpen={isAdditionalInfoModalOpen}
     onClose={() => handleCloseModal('additionalInfo')}

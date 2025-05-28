@@ -7,7 +7,7 @@ const Slider = () => {
   const slides = [
     { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/forcompanies'},
     { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/'},
-    { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/' },
+    { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/startIT' },
   ];
   const totalSlides = slides.length;
 

@@ -153,5 +153,11 @@
   .steps.pan-animation > *:nth-child(7) {
     animation-delay: 1.8s;
   }
+
+  @media screen and (min-width: 768px) and (max-width: 1024px) {
+    .create-test-info{
+    min-height: 30vh;
+    }
+  }
   
     
