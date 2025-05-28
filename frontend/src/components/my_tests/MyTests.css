@@ -25,3 +25,21 @@
   gap: 30px;
   align-items: flex-start;
 }
+
+
+
+@media screen and (max-width: 768px) {
+  .mytests-container {
+    width: 100%;
+    padding: 20px;   
+  }
+
+  .activetests-container,
+  .unactivetests-container {
+    width: 100%;
+  }
+
+  .activetests-list, .unactivetests-list {
+    gap: 20px;
+  }
+}

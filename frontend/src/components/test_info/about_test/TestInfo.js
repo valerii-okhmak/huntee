@@ -12,12 +12,12 @@ const TestInfo = ({category,logo,vacancy,location,date,time}) => {
                </div>
                <h1 className="info-title">{vacancy}</h1>
                <div className="info-top-line">
-               <div className="info-location">
-               <div className="info-icon">
-                   <img src="/icons/location.png" alt="Локація"/>
-               </div>
-               {location}
-               </div>
+                  <div className="info-location">
+                    <div className="info-icon">
+                        <img src="/icons/location.png" alt="Локація"/>
+                    </div>
+                    {location}
+                  </div>
                <div className="info-date-time">
                <div className="info-icon">
                    <img src="/icons/calendar.png" alt="Календар"/>
