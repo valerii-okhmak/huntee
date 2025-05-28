@@ -21,7 +21,7 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const CreateTestInfo = ({title_button,first_step, second_step,third_step,four_step}) => {
+const CreateTestInfo = ({main_title,title_button,first_step, second_step,third_step,four_step}) => {
 
   const overlayRef = useRef(null);
   const [animate, setAnimate] = useState(false);
@@ -69,7 +69,7 @@ const CreateTestInfo = ({title_button,first_step, second_step,third_step,four_st
       </div>
 
       <div className="bottom-content">
-        <h2>HERE’RE YOUR FUTURE EMPLOYEES</h2>
+        <h2>{main_title}</h2>
         <Link to="/" className="cta-button">{title_button}</Link>
       </div>
     </div>

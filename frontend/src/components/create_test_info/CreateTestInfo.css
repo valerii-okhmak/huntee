@@ -44,7 +44,7 @@
   .step {
     font-weight: 700;
     margin: 0 clamp(3px, 1vw, 10px);
-    font-size: clamp(12px, 1.5vw, 20px);
+    font-size: clamp(8px, 1.5vw, 20px);
   }
   
   .arrow {
@@ -86,7 +86,7 @@
     background-color: #000;
     color: #fff;
     padding: clamp(12px, 2vw, 20px) clamp(24px, 4vw, 40px);
-    font-size: clamp(24px, 5vw + 1rem, 40px);
+    font-size: clamp(20px, 5vw , 40px);
     font-weight: bold;
     border: none;
     border-radius: 2px;

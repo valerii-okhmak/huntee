@@ -10,7 +10,7 @@ const TrialTest = () => {
     };
 
   return (
-    <div className='TrialMain'>
+    <div className='TrialMain container'> 
         <h2>Пробне тестування створене для попереднього розуміння формату екзамену. 
         Воно не впливає на Ваш прогрес та не містить питань з реальних тестів. </h2>
         <button className='trialStart_button' onClick={handleGoTrialTest}>Пройти пробне тестування</button>

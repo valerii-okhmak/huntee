@@ -33,8 +33,6 @@ const App = () => {
         <Route path="/testpage" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/trialtest' element={<TrialTest />} />
-        <Route path="/messages" element={<MessagePage />} />
-        <Route path="/message" element={<MessageTextPage />} />
         <Route path="/testrules" element={<TestRulesPage />} />
         <Route path="/test" element={<FullTest/>} />
         <Route path="/mytests" element={<MyTestsPage/>} />
@@ -44,6 +42,8 @@ const App = () => {
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/messages" element={<MessagePage />} />
+          <Route path="/message" element={<MessageTextPage />} />
         </Route>
       </Routes>
       <Footer />
