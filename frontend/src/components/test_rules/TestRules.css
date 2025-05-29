@@ -36,13 +36,6 @@
   margin: clamp(8px, 2vw, 30px);
 }
 
-.test-rules-container h2 {
-  text-align: center;
-  margin-bottom: clamp(8px, 2vw, 18px);
-  font-size: clamp(18px, 4vw, 32px);
-  font-family: 'MyFont', sans-serif;
-}
-
 .test-rules-container p {
   text-align: left;
   font-size: clamp(14px, 2vw, 20px);
@@ -63,17 +56,19 @@
   list-style-type: none;
 }
 
-.test-rules-button {
+/* Контейнер для вирівнювання */
+.test-rules-button-container {
   display: flex;
   justify-content: flex-end;
   margin-top: clamp(10px, 2vw, 20px);
 }
 
-.test-rules-button button {
+/* Стиль для всіх кнопок */
+.test-rules-button {
   display: inline-flex;
   align-items: center;
   padding: clamp(3px, 1vw, 6px) clamp(10px, 2vw, 20px);
-  margin: clamp(10px, 2vw, 24px) 0;
+  margin: clamp(10px, 2vw, 24px) 5px; /* Додано відступ між кнопками */
   font-size: clamp(12px, 1.5vw, 15px);
   background-color: #ffffff;
   border: 1px solid #000000;
@@ -83,7 +78,69 @@
   font-family: 'MyFont', sans-serif;
 }
 
-.test-rules-button button:hover {
+/* Ховер-ефект */
+.test-rules-button:hover {
   background-color: #000000;
   color: white;
+}
+
+.modal-overlay-test {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+   
+  
+.modal-content-test {
+  background: white;
+  border-radius: clamp(6px, 1vw, 10px);
+  padding: clamp(12px, 4vw, 40px) clamp(16px, 5vw, 55px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  font-family: 'MyFont', sans-serif;
+}
+
+.modal-buttons-test {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(12px, 4vw, 40px);
+  flex-wrap: wrap;
+  margin-top: clamp(10px, 3vw, 30px);
+}
+
+.modal-content-test h1 {
+  font-size: clamp(18px, 5vw, 45px);
+  text-align: left;
+}
+
+.modal-content-test p {
+  margin-top: clamp(8px, 2vw, 20px);
+  font-size: clamp(12px, 2.5vw, 20px);
+  color: #717171;
+  text-align: left;
+}
+
+.modal-buttons-test .test-rules-button {
+  font-size: clamp(14px, 2.5vw, 25px);
+  padding: clamp(6px, 1vw, 12px) clamp(12px, 3vw, 24px);
+  font-family: 'Montserrat',sans-serif;
+}
+
+@media screen and (max-width: 576px){
+    .modal-content-test{
+        width: 90%;
+    }
+    
+    .modal-buttons-test{
+    flex-direction: column;
+    gap: 0px
+    }
 }
