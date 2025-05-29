@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+   
+  
+  .modal-content {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-family: 'MyFont', sans-serif;
+  }
+  
+  .modal-title {
+    font-size: 24px; 
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  
+  .modal-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .modal-label {
+    display: block;
+    font-size: 16px; 
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  .modal-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px; 
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .modal-select option {
+    padding: 0.5rem;
+
+  }
+  
+  .modal-input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px; 
+    color: #333;
+    height: 47px; 
+    width: 100%; 
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .modal-textarea {
+    padding: 0.5rem;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    font-size: 14px; 
+    color: #333;
+    resize: none;
+    height: 148px; 
+    width: 100%; 
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .modal-button {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 18px; 
+    cursor: pointer;
+    font-family: 'MyFont', sans-serif;
+  }
+  
+  .modal-button-cancel {
+    background: transparent;
+    border: 1px solid #000000;
+    color: #000000;
+  }
+  
+  .modal-button-cancel:hover {
+    background: rgb(0, 0, 0);
+    color: white;
+  }
+  
+  .modal-button-submit {
+    background: #000000;
+    border: 1px solid #000000;
+    color: white;
+  }
+  
+  .modal-button-submit:hover {
+    background: #ffffff;
+    color: #000000;
+  }

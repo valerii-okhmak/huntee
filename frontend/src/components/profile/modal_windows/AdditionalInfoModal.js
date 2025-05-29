@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
-import "./Profile.css"
+
+
 
 
 const AdditionalInfoModal = ({ isOpen, onClose }) => {

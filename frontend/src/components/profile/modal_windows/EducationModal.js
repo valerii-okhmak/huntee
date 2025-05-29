@@ -1,6 +1,5 @@
 import React from 'react';
 import Modal from './Modal';
-import './Profile.css';
 
 const EducationModal = ({ isOpen, onClose }) => {
   return (

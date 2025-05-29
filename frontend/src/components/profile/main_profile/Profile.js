@@ -1,13 +1,13 @@
 import React, { useState , useEffect} from 'react';
 import axios from 'axios';
 import './Profile.css';
-import AdditionalInfoModal from './AdditionalInfoModal';
-import CoursesModal from './CoursesModal';
-import EducationModal from './EducationModal';
-import ExperienceModal from './ExpirienceModal';
-import editIcon from '../../img/pen.png';
-import linkIcon from '../../img/link.png';
-import { getAccessToken, logout} from '../../utils/auth';
+import AdditionalInfoModal from '../modal_windows/AdditionalInfoModal';
+import CoursesModal from '../modal_windows/CoursesModal';
+import EducationModal from '../modal_windows/EducationModal';
+import ExperienceModal from '../modal_windows/ExpirienceModal';
+import editIcon from '../../../img/pen.png';
+import linkIcon from '../../../img/link.png';
+import { getAccessToken, logout} from '../../../utils/auth';
 import { useNavigate } from 'react-router-dom';
 
 
