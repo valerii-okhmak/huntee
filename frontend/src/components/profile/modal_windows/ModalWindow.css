@@ -17,17 +17,18 @@
   .modal-content {
     background: white;
     border-radius: 10px;
-    padding: 2rem;
+    padding: 1.5rem;
     width: 80%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
     font-family: 'MyFont', sans-serif;
+    margin-top: 7%;
   }
   
   .modal-title {
-    font-size: 24px; 
+    font-size: 45px; 
     font-weight: bold;
-    color: #333;
+    color: black;
     margin-bottom: 1.5rem;
     text-align: left;
   }
@@ -38,19 +39,31 @@
   
   .modal-label {
     display: block;
-    font-size: 16px; 
+    font-size: 30px; 
     color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-text {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px; 
+    font-weight: bold;
+    color: #717171;
     margin-bottom: 0.5rem;
   }
   
   .modal-select {
     padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    border: 1px solid #0650AC;
+    border-radius: 10px;
     font-size: 16px; 
-    color: #333;
+    font-weight: bold;
+    color: #0650AC;
     font-family: 'Montserrat', sans-serif;
+    width: 30%;
   }
+
   
   .modal-select option {
     padding: 0.5rem;
@@ -59,21 +72,28 @@
   
   .modal-input {
     padding: 0.5rem;
-    border: 1px solid #ddd;
+   border: 1px solid #0650AC;
     border-radius: 5px;
     font-size: 16px; 
-    color: #333;
     height: 47px; 
-    width: 100%; 
+    width: 70%; 
     font-family: 'Montserrat', sans-serif;
+  }
+
+  input::placeholder{
+     color: #0650AC;
+  }
+
+  .modal-textarea::placeholder{
+     color: #0650AC;
   }
   
   .modal-textarea {
     padding: 0.5rem;
-    border: 1px solid #000000;
+    border: 1px solid #0650AC;
     border-radius: 5px;
     font-size: 14px; 
-    color: #333;
+    color: #0650AC;
     resize: none;
     height: 148px; 
     width: 100%; 
@@ -82,13 +102,13 @@
   
   .modal-buttons {
     display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
+    justify-content: center;
+    gap: 2rem;
     width: 100%;
   }
   
   .modal-button {
-    padding: 0.5rem 1rem;
+    padding: 1rem 2rem;
     border-radius: 5px;
     font-size: 18px; 
     cursor: pointer;
@@ -116,3 +136,18 @@
     background: #ffffff;
     color: #000000;
   }
+
+  .linkes{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 2%;
+  }
+
+  .custom-line {
+    width: 100%;
+    height: 2px;
+    margin-top: 3%;
+    margin-bottom: 2%;
+    background-color: #0650AC; /* Колір лінії */
+}

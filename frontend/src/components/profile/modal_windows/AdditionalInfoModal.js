@@ -8,23 +8,26 @@ const AdditionalInfoModal = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h3 className="modal-title">Додаткова інформація</h3>
-      <p id='help'>Допоможіть роботодавцям краще пізнати вас: додайте інші посилання й опишіть, що робить саме вас чудовим кандидатом на посаду.</p>
+      <label className='modal-text'>Допоможіть роботодавцям краще пізнати вас: додайте інші посилання й опишіть, що робить саме вас чудовим кандидатом на посаду.</label>
       <div className="modal-section">
-        <label className="modal-label">Тип додаткової інформації</label>
+        <label className="modal-label">Додаткові посилання</label>
+              <label className='modal-text'>У вас уже є профіль на LinkedIn, обліковий запис на GitHub або персональне портфоліо? Додайте до 5 посилань, щоб роботодавцям було зручніше переглядати ваші роботи.</label>
+      </div>
+      <div className='linkes'>
         <select className="modal-select">
-          <option value="linkedin">LinkedIn</option>
-          <option value="github">GitHub</option>
+          <option className='value' value="linkedin">LinkedIn</option>
+          <option className='value' value="github">GitHub</option>
+          <option className='value' value="github">Facebook</option>
         </select>
-      </div>
-      <div className="modal-section">
-        <label className="modal-label">Посилання, обліковий запис у соц. мережах на посаду, якщо необхідно додати посаду</label>
         <input type="text" className="modal-input" placeholder="https://" />
-      </div>
+        </div>
+        <div class="custom-line"></div>
+      <label className='modal-label'>Про вас</label>
+      
       <div className="modal-section">
-        <label className="modal-label">Про Вас</label>
         <textarea
           className="modal-textarea"
-          placeholder="Додайте сюди інформацію, наприклад, про хобі, нагороди, чим ви займаєтесь у вільний час тощо. Ви можете додати сюди інформацію, яка буде корисна для вашого резюме."
+          placeholder="Додайте кілька коротких подробиць про себе. Наприклад, чим Ви найбільше любите займатися? Якими досягненнями ви пишаєтеся найбільше? Що відрізняє Вас від інших кандидатів?."
         ></textarea>
       </div>
       <div className="modal-buttons">
