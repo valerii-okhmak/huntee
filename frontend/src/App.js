@@ -19,6 +19,7 @@ import FullTest from './components/FullTest/FullTest';
 import MyTestsPage from './pages/MyTestsPage';
 import ForCompaniesPage from './pages/ForCompaniesPage';
 import StartIT from './pages/StartIT';
+import GeneralInfoPage from './pages/GeneralInfoPage';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/forcompanies" element={<ForCompaniesPage/>} />
         <Route path="/startIT" element={<StartIT/>} />
+        <Route path="/generalinfo" element={<GeneralInfoPage/>} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
