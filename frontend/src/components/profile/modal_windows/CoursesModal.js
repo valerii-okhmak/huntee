@@ -18,7 +18,7 @@ const CoursesModal = ({ isOpen, onClose }) => {
           Скасувати
         </button>
         <button className="modal-button modal-button-submit">
-          Додати
+          Зберегти
         </button>
       </div>
     </Modal>

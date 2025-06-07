@@ -35,7 +35,7 @@ const AdditionalInfoModal = ({ isOpen, onClose }) => {
           Скасувати
         </button>
         <button className="modal-button modal-button-submit">
-          Завершити
+          Зберегти
         </button>
       </div>
     </Modal>

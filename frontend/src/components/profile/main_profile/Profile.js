@@ -9,6 +9,7 @@ import editIcon from '../../../img/pen.png';
 import linkIcon from '../../../img/link.png';
 import { getAccessToken, logout} from '../../../utils/auth';
 import { useNavigate } from 'react-router-dom';
+import PasswordModal from '../modal_windows/PasswordModal';
 
 
 const Profile = () => {
@@ -36,6 +37,7 @@ const Profile = () => {
   const [isCoursesModalOpen, setIsCoursesModalOpen] = useState(false);
   const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
   const [isEducationModalOpen, setIsEducationModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const handleOpenModal = (modalType) => {
     switch (modalType) {
@@ -50,6 +52,9 @@ const Profile = () => {
         break;
       case 'education':
         setIsEducationModalOpen(true);
+        break;
+      case 'password':
+        setIsPasswordModalOpen(true);
         break;
       default:
         break;
@@ -69,6 +74,9 @@ const Profile = () => {
         break;
       case 'education':
         setIsEducationModalOpen(false);
+        break;
+      case 'password':
+        setIsPasswordModalOpen(false);
         break;
       default:
         break;
@@ -174,6 +182,21 @@ const Profile = () => {
               </div>
             </div>
           </div>
+
+          <div id='password' className="profile-container">
+            <div className="profile-info-section">
+              <h4 className="subsection-title">Пароль</h4>
+              <div className="profile-info-block">
+                <div className="profile-info-item">
+                  <p>Ми рекомендуємо вам періодично оновлювати пароль, щоб запобігти несанкціонованому доступу до вашого облікового запису.</p>
+                  <button 
+                  className="profile-edit-btn right-btn"
+                  onClick={()=>handleOpenModal("password")}>Змінити пароль</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
       
@@ -192,6 +215,10 @@ const Profile = () => {
       <EducationModal
         isOpen={isEducationModalOpen}
         onClose={() => handleCloseModal('education')}
+      />
+      <PasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => handleCloseModal('password')}
       />
     </div>
   );

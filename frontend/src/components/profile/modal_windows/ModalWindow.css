@@ -25,43 +25,43 @@
     margin-top: 7%;
   }
   
-  .modal-title {
-    font-size: 45px; 
-    font-weight: bold;
-    color: black;
-    margin-bottom: 1.5rem;
-    text-align: left;
-  }
-  
   .modal-section {
     margin-bottom: 1.5rem;
   }
   
-  .modal-label {
-    display: block;
-    font-size: 30px; 
-    color: #333;
-    margin-bottom: 0.5rem;
-  }
+.modal-title {
+  font-size: clamp(24px, 4vw, 45px);
+  font-weight: bold;
+  color: black;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
 
-  .modal-text {
-    display: block;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px; 
-    font-weight: bold;
-    color: #717171;
-    margin-bottom: 0.5rem;
-  }
-  
+.modal-label {
+  display: block;
+  font-size: clamp(18px, 3vw, 30px);
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.modal-text {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(12px, 2vw, 16px);
+  font-weight: bold;
+  color: #717171;
+  margin-bottom: 0.5rem;
+}
+
   .modal-select {
     padding: 0.5rem;
     border: 1px solid #0650AC;
-    border-radius: 10px;
-    font-size: 16px; 
+    border-radius: 5px;
+    font-size: clamp(12px, 2vw, 16px);
     font-weight: bold;
     color: #0650AC;
     font-family: 'Montserrat', sans-serif;
-    width: 30%;
+    width: 100%;
   }
 
   
@@ -74,9 +74,8 @@
     padding: 0.5rem;
    border: 1px solid #0650AC;
     border-radius: 5px;
-    font-size: 16px; 
-    height: 47px; 
-    width: 70%; 
+    font-size: clamp(12px, 2vw, 16px);
+    width: 100%; 
     font-family: 'Montserrat', sans-serif;
   }
 
@@ -92,10 +91,10 @@
     padding: 0.5rem;
     border: 1px solid #0650AC;
     border-radius: 5px;
-    font-size: 14px; 
+    font-size: clamp(10px, 2vw, 14px);
     color: #0650AC;
     resize: none;
-    height: 148px; 
+    height: 100px; 
     width: 100%; 
     font-family: 'Montserrat', sans-serif;
   }
@@ -107,34 +106,33 @@
     width: 100%;
   }
   
-  .modal-button {
-    padding: 1rem 2rem;
-    border-radius: 5px;
-    font-size: 18px; 
-    cursor: pointer;
-    font-family: 'MyFont', sans-serif;
-  }
+ .modal-button {
+  padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 4vw, 2rem);
+  border-radius: 5px;
+  font-size: clamp(14px, 2.5vw, 18px);
+  cursor: pointer;
+  font-family: 'MyFont', sans-serif;
+}
+
   
   .modal-button-cancel {
     background: transparent;
-    border: 1px solid #000000;
-    color: #000000;
+    border: 1px solid #0650ac;
+    color: #0650ac;
   }
   
   .modal-button-cancel:hover {
-    background: rgb(0, 0, 0);
-    color: white;
+  background: #e6f0fa;
   }
   
   .modal-button-submit {
-    background: #000000;
-    border: 1px solid #000000;
-    color: white;
+    background: #0650ac;
+    border: 1px solid #0650ac;
+    color: #ffffff;
   }
   
   .modal-button-submit:hover {
-    background: #ffffff;
-    color: #000000;
+      background: #054490;
   }
 
   .linkes{
@@ -150,4 +148,108 @@
     margin-top: 3%;
     margin-bottom: 2%;
     background-color: #0650AC; /* Колір лінії */
+}
+
+.modal-content-wrapper {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+.modal-label-password {
+  display: block;
+  font-size: clamp(20px, 3vw, 25px);
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+.modal-text-password {
+  display: block;
+  font-size: clamp(14px, 2vw, 18px);
+  color: #717171;
+}
+.right-side-modal{
+  flex: 0 0 50%;
+}
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.modal-input-password {
+  padding: 0.5rem 2.5rem 0.5rem 0.5rem;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  font-size: clamp(12px, 2vw, 16px);
+  width: 100%;
+  font-family: 'Montserrat', sans-serif;
+  color: #000000;
+}
+
+.toggle-password-visibility {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  color: #000000;
+}
+
+    .modal-input-password::placeholder{
+     color: #000000;
+  }
+
+.error-message {
+  color: #0650ac; /* червоний */
+  display: flex;
+  align-items: center;
+  font-size: clamp(16px, 2vw, 18px);
+}
+
+.error-znak{
+color: #2563eb;
+margin-right: 8px;
+vertical-align: middle;
+transform: rotate(180deg);
+}
+  
+ .modal-button-password {
+  padding: clamp(5px, 1.5vw, 10px) clamp(10px, 4vw, 15px);
+  border-radius: 10px;
+  font-size: clamp(14px, 2.5vw, 18px);
+  cursor: pointer;
+  font-family: 'MyFont', sans-serif;
+}
+
+@media (max-width: 768px) {
+.modal-label {
+  text-align: center;
+}
+
+.modal-content-wrapper {
+  flex-direction: column;
+}
+.right-side-modal {
+  width: 100%; /* Змінюємо на 1, щоб зайняти всю ширину */
+}
+.modal-buttons{
+  gap: 1rem;
+}
+
+.modal-label-password {
+  text-align: center;
+}
 }

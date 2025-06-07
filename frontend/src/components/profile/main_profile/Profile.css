@@ -140,6 +140,7 @@
   transition:max-width 0.3s ease;
   gap: 20px;
   width: 100%;
+  padding: 5px 0;
 }
 
 .profile-info-item p {
@@ -148,13 +149,15 @@
   font-weight: 700;
   font-size: 15px;
   color: #7d7b7b;
-  text-align: center;
+  text-align: left;
   line-height: 18px;
   transition:max-width 0.3s ease;
+
 }
 
 .right-btn{
-  width: 30%;
+
+  flex : 0 0 30%;
 }
 
 .profile-edit-btn {
@@ -182,7 +185,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2rem;
   width: 100%;
   transition:max-width 0.3s ease, height 0.3s ease;
 }
@@ -191,7 +193,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 2rem;
   transition:max-width 0.3s ease, height 0.3s ease;
   width: 100%;
 }
@@ -267,14 +268,12 @@
 #education {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
   transition:max-width 0.3s ease, height 0.3s ease;
 }
 
 #experience {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
   transition:max-width 0.3s ease, height 0.3s ease;
 }
 
