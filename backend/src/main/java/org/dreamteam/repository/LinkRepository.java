@@ -1,6 +1,6 @@
 package org.dreamteam.repository;
 
-import org.dreamteam.Entity.Link;
+import org.dreamteam.Entity.ProfileLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface LinkRepository extends JpaRepository<Link, Long> {}
+public interface LinkRepository extends JpaRepository<ProfileLink, Long> {}

@@ -66,5 +66,6 @@ public class Profile {
     private List<Experience> experienceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Link> links = new ArrayList<>();
+    private List<ProfileLink> links = new ArrayList<>();
+
 }
