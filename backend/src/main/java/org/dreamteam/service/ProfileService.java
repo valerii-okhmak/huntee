@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.dreamteam.Entity.Course;
 import org.dreamteam.Entity.Education;
 import org.dreamteam.Entity.Experience;
+import org.dreamteam.Entity.OAuthProvider;
 import org.dreamteam.Entity.Profile;
 import org.dreamteam.Entity.ProfileLink;
 import org.dreamteam.Entity.User;
@@ -35,6 +36,8 @@ public class ProfileService {
     private final ProfileLinkRepository profileLinkRepository;
     private final EducationRepository educationRepository;
     private final CourseRepository courseRepository;
+    private final OAuthProviderRepository providerRepository;
+    private final OAuthIdentityRepository oAuthIdentityRepository;
     private final ExperienceRepository experienceRepository;
     private final JwtService jwtService;
 
@@ -43,6 +46,13 @@ public class ProfileService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return profileRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
+    }
+
+    public ProfileResponse getProfileByUserId(Integer userId) {
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("Профіль не знайдено"));
+
+        return mapToProfileResponse(profile);
     }
 
     public ProfileResponse getProfileResponseByEmail(String email) {
@@ -79,11 +89,16 @@ public class ProfileService {
     }
 
     private ProfileResponse mapToProfileResponse(Profile profile) {
+        Integer[] provider = oAuthIdentityRepository.findByUserId(profile.getUser().getId())
+                .stream()
+                .map(identity -> identity.getProvider().getId())
+                .toArray(Integer[]::new);
         return ProfileResponse.builder()
                 .firstName(profile.getFirstName())
                 .lastName(profile.getLastName())
                 .profileImage(profile.getProfileImageUrl())
                 .about(profile.getAbout())
+                .providerID(provider)
                 .build();
     }
 

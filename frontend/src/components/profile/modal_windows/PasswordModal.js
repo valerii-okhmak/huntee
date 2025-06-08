@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import PasswordInput from './PasswordInput';
 import { AiFillInfoCircle } from 'react-icons/ai';
+import { jwtDecode } from 'jwt-decode'; 
+import { getAccessToken, getRefreshToken, saveAccessToken } from '../../../utils/auth';
+import axios from 'axios';
 
 const PasswordModal = ({ isOpen, onClose }) => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -18,14 +21,19 @@ const PasswordModal = ({ isOpen, onClose }) => {
     }
   }, [newPassword, confirmPassword]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
       return; // Уже показано повідомлення — нічого не робимо
     }
-
-    console.log('Зміна пароля:', { currentPassword, newPassword });
+    const { sub } = jwtDecode(getAccessToken());
+    const response = await axios.post('http://localhost:8080/api/auth/change-password', {
+        email: sub,
+        oldPassword: currentPassword,
+        newPassword: newPassword,
+    });
+    
     onClose();
   };
 

@@ -21,7 +21,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = getAccessToken();
-        const response = await axios.get(`https://java-application-latest-mlfc.onrender.com/api/profile/me`, {
+        const response = await axios.get(`http://localhost:8080/api/profile/me`, {
           params: { token: `${token}` },
         });
         setProfileData(response.data);
@@ -38,6 +38,7 @@ const Profile = () => {
   const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
   const [isEducationModalOpen, setIsEducationModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isLocalProvider, setIsLocalProvider] = useState(false);
 
   const handleOpenModal = (modalType) => {
     switch (modalType) {
@@ -82,6 +83,23 @@ const Profile = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    const checkLocalProvider = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get('http://localhost:8080/api/profile/me', {
+          params: { token: `${token}` },
+        });
+        setIsLocalProvider(response.data.providerID.includes(1));
+      } catch (error) {
+        console.error('Помилка при перевірці провайдера:', error);
+      }
+    };
+
+    checkLocalProvider();
+  }
+, []);
 
 
   return (
@@ -182,7 +200,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
+          {          isLocalProvider && (
           <div id='password' className="profile-container">
             <div className="profile-info-section">
               <h4 className="subsection-title">Пароль</h4>
@@ -196,7 +214,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
+          )}
         </div>
       </div>
       

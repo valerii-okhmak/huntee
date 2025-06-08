@@ -1,6 +1,10 @@
 package org.dreamteam.dto;
 
 
+import java.util.List;
+
+import org.dreamteam.Entity.OAuthProvider;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,4 +15,5 @@ public class ProfileResponse {
     private String lastName;
     private String profileImage;
     private String about;
+    private Integer[] providerID;
 }

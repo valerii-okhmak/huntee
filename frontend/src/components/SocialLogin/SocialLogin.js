@@ -14,7 +14,7 @@ const SocialLogin = ({ setError }) => {
       const credential = credentialResponse.credential;
       const decoded = jwtDecode(credential);
 
-      const response = await axios.post('https://java-application-latest-mlfc.onrender.com/api/auth/google', {
+      const response = await axios.post('http://localhost:8080/api/auth/google', {
         providerUserId: decoded.sub,
         email: decoded.email,
         firstName: decoded.given_name,

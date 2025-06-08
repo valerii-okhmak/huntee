@@ -99,4 +99,10 @@ public class ProfileController {
     private String cleanToken(String token) {
         return token.startsWith("Bearer ") ? token.substring(7) : token;
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<ProfileResponse> getProfile(@PathVariable Integer userId) {
+        return ResponseEntity.ok(profileService.getProfileByUserId(userId));
+    }
+    
 }
