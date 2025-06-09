@@ -21,24 +21,43 @@ const PasswordModal = ({ isOpen, onClose }) => {
     }
   }, [newPassword, confirmPassword]);
 
+  const resetForm = () => {
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setError('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      return; // Уже показано повідомлення — нічого не робимо
+      return;
     }
+
     const { sub } = jwtDecode(getAccessToken());
-    const response = await axios.post(`${process.env.REACT_APP_BACKEND}/api/auth/change-password`, {
+
+    try {
+      await axios.post(`${process.env.REACT_APP_BACKEND}/api/auth/change-password`, {
         email: sub,
         oldPassword: currentPassword,
         newPassword: newPassword,
-    });
-    
-    onClose();
+      });
+
+      resetForm(); // 🧹 очищення після збереження
+      onClose();   // закриття модалки
+    } catch (err) {
+      setError('Не вдалося змінити пароль. Перевірте введені дані.');
+    }
+  };
+
+  const handleCancel = () => {
+    resetForm();  // 🧹 очищення при скасуванні
+    onClose();    // закриття модалки
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleCancel}>
       <div className="modal-content-wrapper">
         <div className="left-side-modal">
           <h3 className="modal-label-password">Змінити пароль</h3>
@@ -71,10 +90,17 @@ const PasswordModal = ({ isOpen, onClose }) => {
               </p>
             )}
             <div className="modal-buttons">
-              <button type="button" className="modal-button-password modal-button-cancel" onClick={onClose}>
+              <button
+                type="button"
+                className="modal-button-password modal-button-cancel"
+                onClick={handleCancel}
+              >
                 Скасувати
               </button>
-              <button type="submit" className="modal-button-password modal-button-submit">
+              <button
+                type="submit"
+                className="modal-button-password modal-button-submit"
+              >
                 Зберегти
               </button>
             </div>

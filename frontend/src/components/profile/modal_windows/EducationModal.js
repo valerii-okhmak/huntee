@@ -13,8 +13,8 @@ const EducationModal = ({ isOpen, onClose }) => {
         </select>
       </div>
       <div className="modal-section">
-        <label className="modal-label">Додайте свої спеціальності</label>
-        <textarea className="modal-textarea" placeholder="Додайте свої спеціальності"></textarea>
+        <label className="modal-label">Додайте свою спеціальність</label>
+        <textarea className="modal-textarea" placeholder="Додайте свою спеціальність"></textarea>
       </div>
       <div className="modal-buttons">
         <button className="modal-button modal-button-cancel" onClick={onClose}>
