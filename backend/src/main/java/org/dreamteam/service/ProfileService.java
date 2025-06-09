@@ -111,6 +111,11 @@ public class ProfileService {
     }
 
     public ProfileLinkResponse addLink(String email, ProfileLinkRequest request) {
+        Integer userId = getUserId(email);
+        if (profileLinkRepository.countByUserId(userId) >= 5) {
+            throw new IllegalStateException("Maximum 5 profile links allowed per user");
+        }
+
         ProfileLink link = new ProfileLink();
         link.setType(request.getType());
         link.setUrl(request.getUrl());
@@ -157,6 +162,11 @@ public class ProfileService {
     }
 
     public EducationResponse addEducation(String email, EducationRequest request) {
+        Integer userId = getUserId(email);
+        if (educationRepository.countByUserId(userId) >= 5) {
+            throw new IllegalStateException("Maximum 5 education entries allowed per user");
+        }
+
         Education education = new Education();
         education.setInstitution(request.getInstitution());
         education.setSpecialties(request.getSpecialities());
@@ -169,6 +179,7 @@ public class ProfileService {
                 .specialities(savedEducation.getSpecialties())
                 .build();
     }
+
 
     public void deleteEducation(String token, Long educationId) throws AccessDeniedException {
         String email = jwtService.extractUsername(cleanToken(token));
@@ -191,6 +202,7 @@ public class ProfileService {
         return courseRepository.findByUserId(userId).stream()
                 .map(course -> CourseResponse.builder()
                         .id(course.getId())
+                        .course_name(course.getCourse_name())
                         .certificateUrl(course.getCertificateUrl())
                         .description(course.getDescription())
                         .build())
@@ -198,7 +210,13 @@ public class ProfileService {
     }
 
     public CourseResponse addCourse(String email, CourseRequest request) {
+        Integer userId = getUserId(email);
+        if (courseRepository.countByUserId(userId) >= 5) {
+            throw new IllegalStateException("Maximum 5 courses allowed per user");
+        }
+
         Course course = new Course();
+        course.setCourse_name(request.getCourse_name());
         course.setCertificateUrl(request.getCertificateUrl());
         course.setDescription(request.getDescription());
         course.setUser(getUserByEmail(email));
@@ -206,10 +224,11 @@ public class ProfileService {
         Course saved = courseRepository.save(course);
 
         return CourseResponse.builder()
-            .id(saved.getId())
-            .certificateUrl(saved.getCertificateUrl())
-            .description(saved.getDescription())
-            .build();
+                .id(saved.getId())
+                .course_name(saved.getCourse_name())
+                .certificateUrl(saved.getCertificateUrl())
+                .description(saved.getDescription())
+                .build();
     }
 
     public void deleteCourse(String token, Long courseId) throws AccessDeniedException {
@@ -234,34 +253,41 @@ public class ProfileService {
         return experienceRepository.findByUserId(userId).stream()
                 .map(experience -> ExperienceResponse.builder()
                         .id(experience.getId())
-                        .certificateUrl(experience.getCertificateUrl())
+                        .projectName(experience.getProjectName())
+                        .projectUrl(experience.getProjectUrl())
                         .description(experience.getDescription())
                         .build())
                 .toList();
     }
 
     public ExperienceResponse addExperience(String email, ExperienceRequest request) {
+        Integer userId = getUserId(email);
+        if (experienceRepository.countByUserId(userId) >= 5) {
+            throw new IllegalStateException("Maximum 5 experiences allowed per user");
+        }
+
         Experience experience = new Experience();
-        experience.setCertificateUrl(request.getCertificateUrl());
+        experience.setProjectName(request.getProjectName());
+        experience.setProjectUrl(request.getProjectUrl());
         experience.setDescription(request.getDescription());
         experience.setUser(getUserByEmail(email));
 
         Experience saved = experienceRepository.save(experience);
 
         return ExperienceResponse.builder()
-            .id(saved.getId())
-            .certificateUrl(saved.getCertificateUrl())
-            .description(saved.getDescription())
-            .build();
+                .id(saved.getId())
+                .projectName(saved.getProjectName())
+                .projectUrl(saved.getProjectUrl())
+                .description(saved.getDescription())
+                .build();
     }
-
 
     public void deleteExperience(String token, Long experienceId) throws AccessDeniedException {
         String email = jwtService.extractUsername(cleanToken(token));
         Integer userId = getUserId(email);
 
         Experience experience = experienceRepository.findById(experienceId)
-            .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
 
         if (!experience.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("You don't have permission to delete this experience");
@@ -269,7 +295,6 @@ public class ProfileService {
 
         experienceRepository.delete(experience);
     }
-
 
     // ====== Utility ======
 

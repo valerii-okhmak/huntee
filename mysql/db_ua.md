@@ -91,6 +91,7 @@
     CREATE TABLE courses (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
+        course_name VARCHAR(255) NOT NULL AFTER,
         certificate_url VARCHAR(255),
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -102,12 +103,14 @@
     CREATE TABLE experiences (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
-        certificate_url VARCHAR(255),
+        project_name VARCHAR(255) NOT NULL,
+        project_url VARCHAR(255),
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
+
 ```
 
 

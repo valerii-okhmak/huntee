@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class CourseResponse {
     private Long id;
+    private String course_name;
     private String certificateUrl;
     private String description;
 }

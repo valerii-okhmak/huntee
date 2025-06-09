@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class ExperienceResponse {
     private Long id;
-    private String certificateUrl;
+    private String projectName;
+    private String projectUrl;
     private String description;
 }

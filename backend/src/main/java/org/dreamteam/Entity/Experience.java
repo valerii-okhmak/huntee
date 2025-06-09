@@ -15,7 +15,11 @@ public class Experience {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String certificateUrl;
+    @Column(name = "project_name", nullable = false)
+    private String projectName;
+
+    @Column(name = "project_url")
+    private String projectUrl;
 
     @Column(columnDefinition = "TEXT")
     private String description;
