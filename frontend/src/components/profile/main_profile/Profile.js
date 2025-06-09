@@ -21,7 +21,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = getAccessToken();
-        const response = await axios.get(`http://localhost:8080/api/profile/me`, {
+        const response = await axios.get(`${import.meta.env.BACKEND}/api/profile/me`, {
           params: { token: `${token}` },
         });
         setProfileData(response.data);
