@@ -21,7 +21,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = getAccessToken();
-        const response = await axios.get(`${import.meta.env.BACKEND}/api/profile/me`, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/me`, {
           params: { token: `${token}` },
         });
         setProfileData(response.data);
@@ -88,7 +88,7 @@ const Profile = () => {
     const checkLocalProvider = async () => {
       try {
         const token = getAccessToken();
-        const response = await axios.get('http://localhost:8080/api/profile/me', {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/me`, {
           params: { token: `${token}` },
         });
         setIsLocalProvider(response.data.providerID.includes(1));
@@ -101,6 +101,10 @@ const Profile = () => {
   }
 , []);
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  }
 
   return (
     <div className="profile-main">
@@ -134,7 +138,7 @@ const Profile = () => {
                   className="profile-edit-btn">Мої тести
               </button>
               <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   id="exit" 
                   className="profile-edit-btn">Вийти
               </button>

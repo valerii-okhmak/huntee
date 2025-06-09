@@ -13,7 +13,7 @@ const AuthForm = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e ) => {
     e.preventDefault();
     setError('');
 
@@ -46,7 +46,7 @@ const AuthForm = () => {
       const credential = credentialResponse.credential;
       const decoded = jwtDecode(credential);
 
-      const response = await axios.post(`${import.meta.env.BACKEND}/api/auth/google`, {
+      const response = await axios.post(`${process.env.BACKEND}/api/auth/google`, {
         providerUserId: decoded.sub,
         email: decoded.email,
         firstName: decoded.given_name,
