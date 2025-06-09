@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import Modal from './Modal';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
-const AdditionalInfoModal = ({ isOpen, onClose, profileData }) => {
+const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
   const [text, setText] = useState('');
 
   useEffect(() => {
@@ -21,20 +21,28 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData }) => {
       const token = getAccessToken();
 
       const response = await axios.patch(
-        `${process.env.REACT_APP_BACKEND}/api/profile/about`,
-        { about: newAboutText },
+        `${process.env.REACT_APP_BACKEND}/api/profile/about?token=${encodeURIComponent(token)}`,
+        newAboutText,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/plain',
           },
         }
       );
 
-      console.log('Опис успішно оновлено:', response.data);
+      console.log('Оновлено успішно:', response.data);
+
+      if (fetchProfile) {
+        fetchProfile(); // передати оновлені дані батьку
+      }
+
+      onClose(); // закрити модалку
+
       return response.data;
     } catch (error) {
-      console.error('Помилка при оновленні опису:', error);
+      if (error.response) {
+        console.error('Сервер повернув помилку:', error.response.data);
+      }
       throw error;
     }
   };
@@ -55,14 +63,17 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData }) => {
           }
           value={text}
           onChange={handleChange}
-        ></textarea>
+        />
       </div>
 
       <div className="modal-buttons">
         <button className="modal-button modal-button-cancel" onClick={onClose}>
           Скасувати
         </button>
-        <button className="modal-button modal-button-submit" onClick={updateAbout(text)}> 
+        <button
+          className="modal-button modal-button-submit"
+          onClick={() => updateAbout(text)}
+        >
           Зберегти
         </button>
       </div>

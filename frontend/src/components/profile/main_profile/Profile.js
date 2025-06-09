@@ -20,8 +20,23 @@ const Profile = () => {
 
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
+  const [educationData, setEducationData] = useState(null);
+  const [sertificatesData, setSertificatesData] = useState(null);
+  const [experienceData, setExperienceData] = useState(null);
 
-  useEffect(() => {
+  const fetchExperience = async () => {
+    try {
+      const token = getAccessToken();
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/experiences`, {
+        params: { token: `${token}` },
+      });
+      setExperienceData(response.data);
+    } catch (error) {
+      console.error('Помилка при завантаженні досвіду:', error);
+    }
+  };
+  
+
     const fetchProfile = async () => {
       try {
         const token = getAccessToken();
@@ -34,7 +49,35 @@ const Profile = () => {
       }
     };
 
+        const fetchEducation = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/education`, {
+          params: { token: `${token}` },
+        });
+        setEducationData(response.data);
+      } catch (error) {
+        console.error('Помилка при завантаженні профілю:', error);
+      }
+    };
+
+    const fetchSertificates = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/courses`, {
+          params: { token: `${token}` },
+        });
+        setSertificatesData(response.data);
+      } catch (error) {
+        console.error('Помилка при завантаженні профілю:', error);
+      }
+    };
+
+  useEffect(() => {
     fetchProfile();
+    fetchEducation();
+    fetchSertificates();
+    fetchExperience();
   }, []);
 
   const [isAdditionalInfoModalOpen, setIsAdditionalInfoModalOpen] = useState(false);
@@ -240,34 +283,74 @@ const Profile = () => {
           )}  */}
         </div>
         <div className="profile-column-bottom">
-          <div id='education' className="profile-container">
-            <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("education")}/>
+        <div id='education' className="profile-container">
+            <img 
+              src={plus} 
+              alt="plus" 
+              className="plus-icon" 
+              onClick={() => handleOpenModal("education")} 
+            />
             <div className="profile-info-bottom-section">
               <h3 className="subsection-title">Освіта</h3>
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" />
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" />
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" />
+              {educationData && educationData.length > 0 ? (
+                educationData.map((item, index) => (
+                  <ProfileItem 
+                    key={index} 
+                    id={item.id || index} 
+                    title={item.institution} 
+                    description={item.specialities} 
+                    fetch={fetchEducation}
+                    type={"education"}
+                  />
+                ))
+              ) : (
+                'Додайте інформацію про університет, в якому навчаєтеся.'
+              )}
             </div>
           </div>
           <div id='sertificates' className="profile-container">
             <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("courses")}/>
             <div className="profile-info-bottom-section">
               <h3 className="subsection-title">Сертифікати</h3>
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" url="ss"/>
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" url="ss"/>
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" url="ss"/>
+              {sertificatesData && sertificatesData.length > 0 ? (
+                sertificatesData.map((item, index) => (
+                  <ProfileItem 
+                    key={index} 
+                    id={item.id || index} 
+                    title={item.course_name} 
+                    url={item.certificateUrl}
+                    description={item.description} 
+                    fetch={fetchSertificates}
+                    type={"courses"}
+                  />
+                ))
+              ) : (
+                'Додайте інформацію про сертифікати, які ви отримали.'
+              )}
             </div>
           </div>
           <div id='experience' className="profile-container">
             <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("experience")}/>
             <div className="profile-info-bottom-section">
               <h3 className="subsection-title">Проєкти</h3>
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" url="ss"/>
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" url="ss"/>
-              <ProfileItem id={1} title="Національний університет 'Львівська політехніка'" description="Обчислювальний інтелект смарт-систем" url="ss"/>
+             {experienceData && experienceData.length > 0 ? (
+                experienceData.map((item, index) => (
+                  <ProfileItem 
+                    key={index} 
+                    id={item.id || index} 
+                    title={item.projectName} 
+                    url={item.projectUrl}
+                    description={item.description} 
+                    fetch={fetchExperience}
+                    type={"experiences"}
+                  />
+                ))
+              ) : (
+                'Додайте інформацію про проєкти, в яких ви брали участь.'
+              )}
             </div>
           </div>
-          {          isLocalProvider && (
+
           <div id='password' className="profile-container">
             <div className="profile-info-section">
               <h4 className="subsection-title">Пароль</h4>
@@ -281,25 +364,32 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          )}
+
         </div>
       
     <AdditionalInfoModal
     isOpen={isAdditionalInfoModalOpen}
     onClose={() => handleCloseModal('additionalInfo')}
     profileData={profileData}
+    fetchProfile={fetchProfile}
     />
   <CoursesModal
         isOpen={isCoursesModalOpen}
         onClose={() => handleCloseModal('courses')}
+        fetchSertificates={fetchSertificates}
+        sertificatesData={sertificatesData}
       />
       <ExperienceModal
         isOpen={isExperienceModalOpen}
         onClose={() => handleCloseModal('experience')}
+        fetchExperience={fetchExperience}
+        experienceData={experienceData}
       />
       <EducationModal
         isOpen={isEducationModalOpen}
         onClose={() => handleCloseModal('education')}
+        fetchEducation={fetchEducation}
+        educationData={educationData}
       />
       <PasswordModal
         isOpen={isPasswordModalOpen}
