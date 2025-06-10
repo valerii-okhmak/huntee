@@ -417,7 +417,7 @@ padding: 30px;
 .media-links{
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
@@ -430,11 +430,18 @@ padding: 30px;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   color: black;
+  text-decoration: none;
 }
 
-.media-link-icon{
+.media-link-item:hover {
+  text-decoration: underline;
+}
+.media-link-icon {
   height: 30px;
-  transition: transform 0.3s ease;
+  width: auto;              /* автоматично підібрана ширина — пропорційна */
+  image-rendering: auto;    /* або crisp-edges / pixelated — залежно від ефекту */
+  object-fit: fill;      /* гарантує вкладання в рамку без обрізання */
+  display: block;
 }
 
 .aditional-profile-info-section{

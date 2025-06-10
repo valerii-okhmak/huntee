@@ -25,6 +25,7 @@ const Profile = () => {
   const [sertificatesData, setSertificatesData] = useState(null);
   const [experienceData, setExperienceData] = useState(null);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(null);
+  const [mediaLinksData, setMediaLinksData] = useState(null);
 
   const fetchExperience = async () => {
     try {
@@ -75,11 +76,24 @@ const Profile = () => {
       }
     };
 
+    const fetchMediaLinks = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/links`, {
+          params: { token: `${token}` },
+        });
+        setMediaLinksData(response.data);
+      } catch (error) {
+        console.error('Помилка при завантаженні профілю:', error);
+      }
+    };
+
   useEffect(() => {
     fetchProfile();
     fetchEducation();
     fetchSertificates();
     fetchExperience();
+    fetchMediaLinks();
   }, []);
 
   const [isAdditionalInfoModalOpen, setIsAdditionalInfoModalOpen] = useState(false);
@@ -205,7 +219,7 @@ const Profile = () => {
               <h2 className="profile-age">
                 {profileData && profileData.birthDate
                   ? `${getAgeFromBirthDate(profileData.birthDate)} років`
-                  : 'Завантаження...'}
+                  : ''}
               </h2>
               <div className='buttons-profile'>
               <button 
@@ -244,26 +258,15 @@ const Profile = () => {
               </div>
             </div>
             <div className='media-links'>
-                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
-                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
-                  LinkedIn
+                {mediaLinksData && mediaLinksData.length > 0 && (
+                mediaLinksData.map((item, index) => (
+                console.log(item),
+                <a key={index} className='media-link-item' href={item.url} target="_blank" rel="noopener noreferrer">
+                  <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt="LinkedIn" className="media-link-icon" />
+                  {item.type}
                 </a>
-                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
-                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
-                  LinkedIn
-                </a>
-                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
-                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
-                  LinkedIn
-                </a>
-                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
-                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
-                  LinkedIn
-                </a>
-                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
-                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
-                  LinkedIn
-                </a>
+                ))
+              )}
             </div>
           </div>
           
@@ -387,6 +390,7 @@ const Profile = () => {
     onClose={() => handleCloseModal('additionalInfo')}
     profileData={profileData}
     fetchProfile={fetchProfile}
+    fetchMediaLinks={fetchMediaLinks}
     />
   <CoursesModal
         isOpen={isCoursesModalOpen}
