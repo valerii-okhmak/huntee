@@ -28,7 +28,7 @@
   position: relative;
   transition:
     color 0.3s ease,
-    transform 0.3s ease;
+    transform 2s ease;
   will-change: transform;
 }
 
