@@ -23,8 +23,18 @@ import org.dreamteam.exception.ResourceNotFoundException;
 import org.dreamteam.repository.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -112,6 +122,36 @@ public class ProfileService {
                 .providerID(provider)
                 .build();
     }
+
+    public ProfileResponse saveProfileImage(String email, MultipartFile file) {
+        Profile profile = getProfileByEmail(email);
+
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        String uploadDir = "backend/uploads/avatars/";
+
+        try {
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            String fileUrl = "backend/uploads/avatars/" + fileName;
+
+            // Оновлюємо профіль
+            profile.setProfileImageUrl(fileUrl);
+            profileRepository.save(profile);
+
+            return mapToProfileResponse(profile);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Не вдалося зберегти файл: " + e.getMessage());
+        }
+    }
+
 
     // ====== LINK ======
     public List<ProfileLinkResponse> getLinks(String email) {
