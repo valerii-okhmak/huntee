@@ -199,6 +199,7 @@
 
 #aditional-information {
   display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
   transition:max-width 0.3s ease, height 0.3s ease;
   width: 100%;
@@ -413,6 +414,33 @@ padding: 30px;
   color: #7d7b7b;
 }
 
+.media-links{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.media-link-item{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  gap: 5px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: black;
+}
+
+.media-link-icon{
+  height: 30px;
+  transition: transform 0.3s ease;
+}
+
+.aditional-profile-info-section{
+  flex: 1 1 auto;
+}
+
 @media (max-width: 768px) {
   .profile-columns {
     flex-direction: column;
@@ -471,6 +499,11 @@ padding: 30px;
 }
 
 @media (max-width: 576px) {
+
+  .editInfo-icon{
+    right: 10px;
+  }
+
   .profile-main {
     padding: 2rem 1rem 1rem 1rem;
   }
