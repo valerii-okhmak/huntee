@@ -29,9 +29,9 @@
         user_id INT PRIMARY KEY,
         profile_image_url TEXT,
         first_name VARCHAR(100) not NULL,
-        last_name VARCHAR(100),
-        about TEXT;
-    
+        last_name VARCHAR(100) not NULL,
+        birth_date DATE,
+        about TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

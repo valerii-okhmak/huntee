@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -80,6 +81,15 @@ public class ProfileService {
         profileRepository.save(profile);
         return mapToProfileResponse(profile);
     }
+
+    public ProfileResponse updateBirthDate(String email, String birthDateStr) {
+        Profile profile = getProfileByEmail(email);
+        LocalDate birthDate = LocalDate.parse(birthDateStr); 
+        profile.setBirthDate(birthDate);
+        profileRepository.save(profile);
+        return mapToProfileResponse(profile);
+    }
+
 
     public ProfileResponse updateAbout(String email, String about) {
         Profile profile = getProfileByEmail(email);
