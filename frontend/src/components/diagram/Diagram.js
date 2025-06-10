@@ -22,12 +22,12 @@ const Diagram = () => {
           label: 'Середня оцінка',
           data: [89, 75, 92, 68, 80, 85],
           backgroundColor: [
-            '#76e1f0',
-            '#3da5d9',
-            '#f0a76e',
-            '#f05d5e',
-            '#b4f07f',
-            '#a678f0'
+            '#001F66',
+            '#08308E',
+            '#1E4CB6',
+            '#2083E6',
+            '#4B9EF2',
+            '#4BBAF2'
           ],
           borderRadius: 5,
           borderSkipped: false

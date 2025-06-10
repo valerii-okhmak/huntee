@@ -192,24 +192,6 @@ const Profile = () => {
 
             </div>
           </div>
-
-         
-          {/* <div id='aditional-information' className="profile-container">
-            <div className="profile-info-section">
-              <h3 className="subsection-title">Додаткова інформація</h3>
-              <div className="profile-info-block">
-                <p className='aditional-text'>
-                  {profileData?.about
-                    ? profileData.about
-                    : 'Допоможіть рекрутерам краще пізнати вас: опишіть, що робить саме вас чудовим кандидатом на посаду й поділіться іншими посиланнями.'}
-                </p>
-                  <button 
-                  id="add-information" 
-                  className="profile-edit-btn"
-                  onClick={()=>handleOpenModal("additionalInfo")}>Додати додаткову інфомацію</button>
-              </div>
-            </div>
-          </div> */}
         </div>
 
         
@@ -251,36 +233,6 @@ const Profile = () => {
           </div>
         </div>
 
-
-{/*           
-          <div id='experience' className="profile-container">
-            <div className="profile-info-section">
-              <h4 className="subsection-title">Досвід</h4>
-              <div className="profile-info-block">
-                <div className="profile-info-item">
-                  <p>Додайте тут інформацію про досвід роботи</p>
-                  <button 
-                  className="profile-edit-btn right-btn"
-                  onClick={()=>handleOpenModal("experience")}>Додати інфомацію про проекти</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          {          isLocalProvider && (
-          <div id='password' className="profile-container">
-            <div className="profile-info-section">
-              <h4 className="subsection-title">Пароль</h4>
-              <div className="profile-info-block">
-                <div className="profile-info-item">
-                  <p>Ми рекомендуємо вам періодично оновлювати пароль, щоб запобігти несанкціонованому доступу до вашого облікового запису.</p>
-                  <button 
-                  className="profile-edit-btn right-btn"
-                  onClick={()=>handleOpenModal("password")}>Змінити пароль</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          )}  */}
         </div>
         <div className="profile-column-bottom">
         <div id='education' className="profile-container">
@@ -304,7 +256,7 @@ const Profile = () => {
                   />
                 ))
               ) : (
-                'Додайте інформацію про університет, в якому навчаєтеся.'
+                <p className='empty-placeholder'>Додайте інформацію про університет, в якому навчаєтеся.</p>
               )}
             </div>
           </div>
@@ -325,7 +277,7 @@ const Profile = () => {
                   />
                 ))
               ) : (
-                'Додайте інформацію про сертифікати, які ви отримали.'
+                <p className='empty-placeholder'>Додайте інформацію про сертифікати, які ви отримали.</p>
               )}
             </div>
           </div>
@@ -346,7 +298,7 @@ const Profile = () => {
                   />
                 ))
               ) : (
-                'Додайте інформацію про проєкти, в яких ви брали участь.'
+                <p className='empty-placeholder'>Додайте інформацію про проєкти, в яких ви брали участь.</p>
               )}
             </div>
           </div>
