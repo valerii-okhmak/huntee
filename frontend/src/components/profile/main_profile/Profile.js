@@ -331,6 +331,8 @@ const Profile = () => {
     <EditProfileModal
     isOpen={isEditProfileModalOpen}
     onClose={() => handleCloseModal('editProfile')}
+    profileData={profileData}
+    fetchProfile={fetchProfile}
     />
     <AdditionalInfoModal
     isOpen={isAdditionalInfoModalOpen}
