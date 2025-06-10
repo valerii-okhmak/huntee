@@ -106,6 +106,7 @@ public class ProfileService {
         return ProfileResponse.builder()
                 .firstName(profile.getFirstName())
                 .lastName(profile.getLastName())
+                .birthDate(profile.getBirthDate())
                 .profileImage(profile.getProfileImageUrl())
                 .about(profile.getAbout())
                 .providerID(provider)
