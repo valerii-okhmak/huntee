@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import PasswordModal from '../modal_windows/PasswordModal';
 import Diagram from '../../diagram/Diagram';
 import ProfileItem from '../item_profile/ProfileItem';
+import EditProfileModal from '../modal_windows/EditProfileModal';
 
 
 const Profile = () => {
@@ -23,6 +24,7 @@ const Profile = () => {
   const [educationData, setEducationData] = useState(null);
   const [sertificatesData, setSertificatesData] = useState(null);
   const [experienceData, setExperienceData] = useState(null);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(null);
 
   const fetchExperience = async () => {
     try {
@@ -89,6 +91,9 @@ const Profile = () => {
 
   const handleOpenModal = (modalType) => {
     switch (modalType) {
+      case 'editProfile':
+        setIsEditProfileModalOpen(true);
+        break;
       case 'additionalInfo':
         setIsAdditionalInfoModalOpen(true);
         break;
@@ -111,6 +116,9 @@ const Profile = () => {
 
   const handleCloseModal = (modalType) => {
     switch (modalType) {
+      case 'editProfile':
+        setIsEditProfileModalOpen(false);
+        break;
       case 'additionalInfo':
         setIsAdditionalInfoModalOpen(false);
         break;
@@ -163,7 +171,7 @@ const Profile = () => {
             <div className="profile-header-section">
               <h3 className="section-title">
                 Особиста інформація
-                <img src={editIcon} alt="Edit" className="edit-icon" />
+                <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
               </h3>
               <div className="profile-avatar">
                 {profileData?.profileImage && (
@@ -319,6 +327,11 @@ const Profile = () => {
 
         </div>
       
+
+    <EditProfileModal
+    isOpen={isEditProfileModalOpen}
+    onClose={() => handleCloseModal('editProfile')}
+    />
     <AdditionalInfoModal
     isOpen={isAdditionalInfoModalOpen}
     onClose={() => handleCloseModal('additionalInfo')}

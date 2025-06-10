@@ -235,6 +235,73 @@ transform: rotate(180deg);
   font-family: 'MyFont', sans-serif;
 }
 
+.change-photo-container{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+.modal-photo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-photo-link{
+  text-decoration: none;
+  color: #0650ac;
+  font-size: 28px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.hidden-file-input {
+  display: none; /* Приховує елемент візуально */
+}
+
+.full-width-line {
+  width: calc(100% + 3rem);
+  height: 1px;
+  background-color: rgb(0, 0, 0, 0.2); 
+  margin: 1rem 0; 
+  margin-left: -1.5rem; /* Відступ для вирівнювання з краями */
+}
+
+.modal-info-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.modal-label-subinfo{
+  flex: 0 0 50%;
+  font-size: 20px;
+  font-family: 'Montserrat', sans-serif;
+  color: black;
+}
+
+.modal-info-input{
+   border: none;
+   color: #0650AC;
+  font-size: 20px;
+  font-family: 'Montserrat', sans-serif;
+
+}
+
+.modal-calendar{
+    position: relative;
+  background: url('../../../img/calendar1.png') no-repeat calc(50% + 70px) center;
+  background-size: 20px 20px;
+}
+
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0; /* приховує стандартну іконку */
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
 @media (max-width: 768px) {
 .modal-label {
   text-align: center;
@@ -253,4 +320,15 @@ transform: rotate(180deg);
 .modal-label-password {
   text-align: center;
 }
+}
+
+@media (max-width: 768px) {
+  .modal-info-section{
+    flex-direction: column;
+    align-items: center;
+  }
+  .modal-info-input{
+    text-align: center;
+    width: 100%;
+  }
 }
