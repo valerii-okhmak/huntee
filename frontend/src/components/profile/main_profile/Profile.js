@@ -161,6 +161,27 @@ const Profile = () => {
     navigate('/');
   }
 
+  const getAgeFromBirthDate = (birthDateStr) => {
+    const birthDate = new Date(birthDateStr);
+    const today = new Date();
+
+    if (isNaN(birthDate.getTime())) {
+      return 0; // якщо дата некоректна
+    }
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age >= 0 ? age : 0;
+  };
+
   return (
     <div className="profile-main">
       <div className="profile-columns">
@@ -180,6 +201,11 @@ const Profile = () => {
               </div>
               <h2 className="profile-name">
                 {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+              </h2>
+              <h2 className="profile-age">
+                {profileData && profileData.birthDate
+                  ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                  : 'Завантаження...'}
               </h2>
               <div className='buttons-profile'>
               <button 

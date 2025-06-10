@@ -406,6 +406,13 @@ padding: 30px;
   transition:max-width 0.3s ease;
 }
 
+.profile-age{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #7d7b7b;
+}
+
 @media (max-width: 768px) {
   .profile-columns {
     flex-direction: column;
@@ -420,11 +427,6 @@ padding: 30px;
   .profile-avatar {
    max-width: 200px;
     height: 197px;
-  }
-  
-
-  .profile-name {
-    margin-bottom: 2rem;
   }
 
   .subsection-title {
@@ -476,11 +478,6 @@ padding: 30px;
   .profile-avatar {
    max-width: 200px;
     height: 197px;
-  }
-
-  .profile-name {
-    margin-bottom: 1.5rem;
-    text-align: center;
   }
 
   .profile-edit-btn {
