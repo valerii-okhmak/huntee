@@ -48,9 +48,11 @@ public class ProfileController {
             profile = new Profile();
             userDetails.setProfile(profile);
         }
-    
+        
+
         profile.setFirstName(profileRequest.getFirstName());
         profile.setLastName(profileRequest.getLastName());
+        profile.setBirthDate(profileRequest.getBirthDate());
         profile.setProfileImageUrl(profileRequest.getProfileImageUrl());
         profile.setAbout(profileRequest.getAbout());
     
@@ -78,11 +80,19 @@ public class ProfileController {
         return profileService.updateFirstName(email, firstName);
     }
 
+
     @PatchMapping("/last-name")
     public ProfileResponse updateLastName(@RequestParam("token") String token, @RequestBody String lastName) {
         String email = jwtService.extractUsername(cleanToken(token));
         return profileService.updateLastName(email, lastName);
     }
+
+    @PatchMapping("/birth-date")
+    public ProfileResponse updateBirthDate(@RequestParam("token") String token, @RequestBody String birthDate) {
+        String email = jwtService.extractUsername(cleanToken(token));
+        return profileService.updateBirthDate(email, birthDate);
+    }
+
 
     @PatchMapping("/profile-image")
     public ProfileResponse updateProfileImage(@RequestParam("token") String token, @RequestBody String imageUrl) {
