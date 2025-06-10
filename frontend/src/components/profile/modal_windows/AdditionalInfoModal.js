@@ -1,16 +1,19 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react'; // Видалено 'use', оскільки він не використовувався
 import Modal from './Modal';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
 const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetchMediaLinks }) => {
   const [text, setText] = useState('');
-  const [link, setLink] = useState('');
-  const [url, setUrl] = useState('');
+  const [link, setLink] = useState(''); // Це буде 'name' для посилання, наприклад 'Instagram'
+  const [url, setUrl] = useState('');   // Це буде сама URL-адреса
 
   useEffect(() => {
     if (isOpen) {
       setText(profileData?.about || '');
+      // Скидаємо поля для посилання при кожному відкритті модального вікна
+      setLink('');
+      setUrl('');
     }
   }, [isOpen, profileData]);
 
@@ -22,7 +25,8 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
     try {
       const token = getAccessToken();
 
-      const response1 = await axios.patch(
+      if (newAboutText) {
+      await axios.patch(
         `${process.env.REACT_APP_BACKEND}/api/profile/about?token=${encodeURIComponent(token)}`,
         newAboutText,
         {
@@ -33,53 +37,47 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
       );
 
       if (fetchProfile) {
-        fetchProfile(); // передати оновлені дані батьку
-      }
-
-      if (link && url) {
-      const response2 = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/links?token=${encodeURIComponent(token)}`,
-        {link,url},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (fetchMediaLinks) {
-        fetchMediaLinks(); // передати оновлені дані батьку
+        fetchProfile();
       }
     }
-      onClose(); // закрити модалку
+
+      // Запит на додавання нового посилання, якщо поля заповнені
+      if (link && url) {
+        // --- ОСНОВНЕ ВИПРАВЛЕННЯ ТУТ ---
+        // Бекенд очікує об'єкт з полями `name` та `url`.
+        const linkPayload = { type: link, url };
+
+        await axios.post(
+          `${process.env.REACT_APP_BACKEND}/api/profile/links?token=${encodeURIComponent(token)}`,
+          linkPayload, // Надсилаємо виправлений об'єкт
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (fetchMediaLinks) {
+          fetchMediaLinks();
+        }
+      }
+
+      onClose(); // Закрити модальне вікно після успішного виконання
 
     } catch (error) {
-      if (error) {
-        console.error('Сервер повернув помилку:', error);
-      }
-      throw error;
+      console.error('Сервер повернув помилку:', error);
+      // Можна додати сповіщення для користувача про помилку
     }
   };
 
-const handleSelect = (e) => {
-  const selectedValue = e.target.value;
-  console.log('Selected:', selectedValue);
-  setLink(selectedValue);
-};
+  const handleSelect = (e) => {
+    const selectedValue = e.target.value;
+    setLink(selectedValue);
+  };
 
   const options = [
-    'Instagram',
-    'LinkedIn',
-    'GitHub',
-    'Telegram',
-    'YouTube',
-    'Facebook',
-    'X',
-    'Twitch',
-    'TikTok',
-    'Gmail',
-    'Discord',
-    'WhatsApp'
+    'Instagram', 'LinkedIn', 'GitHub', 'Telegram', 'YouTube', 'Facebook',
+    'X', 'Twitch', 'TikTok', 'Gmail', 'Discord', 'WhatsApp'
   ];
 
   return (
@@ -87,13 +85,12 @@ const handleSelect = (e) => {
       <h3 className="modal-title">Додаткова інформація</h3>
 
       <label className="modal-label">Про вас</label>
-
       <div className="modal-section">
         <textarea
           className="modal-textarea"
           placeholder={
             !profileData?.about
-              ? 'Додайте кілька коротких подробиць про себе. Наприклад, чим Ви найбільше любите займатися? Якими досягненнями ви пишаєтеся найбільше? Що відрізняє Вас від інших кандидатів?.'
+              ? 'Додайте кілька коротких подробиць про себе...'
               : ''
           }
           value={text}
@@ -102,13 +99,11 @@ const handleSelect = (e) => {
       </div>
 
       <label className="modal-label">Додаткові посилання</label>
-
       <div className="modal-section">
         <select
           className="modal-select"
           value={link}
-          onChange={handleSelect}
-          onSelect={handleSelect}
+          onChange={handleSelect} // Видалено зайвий onSelect, onChange достатньо
         >
           <option value="">Виберіть платформу</option>
           {options.map((option, index) => (
@@ -126,7 +121,7 @@ const handleSelect = (e) => {
           <input
             type="text"
             className="modal-input"
-            placeholder={`Введіть посилання на ${link} наприклад: https://`}
+            placeholder={`Введіть посилання на ${link}, наприклад: https://...`}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
