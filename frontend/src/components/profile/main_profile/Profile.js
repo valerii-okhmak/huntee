@@ -233,7 +233,7 @@ const Profile = () => {
 
           <div id='aditional-information' className="profile-container">
             <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
-            <div className="profile-info-section">
+            <div className="profile-info-section aditional-profile-info-section">
               <h3 className="subsection-title">Додаткова інформація</h3>
               <div className="profile-info-block">
                 <p className='aditional-text'>
@@ -242,6 +242,28 @@ const Profile = () => {
                     : 'Допоможіть рекрутерам краще пізнати вас: опишіть, що робить саме вас чудовим кандидатом на посаду й поділіться іншими посиланнями.'}
                 </p>
               </div>
+            </div>
+            <div className='media-links'>
+                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
+                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
+                  LinkedIn
+                </a>
+                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
+                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
+                  LinkedIn
+                </a>
+                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
+                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
+                  LinkedIn
+                </a>
+                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
+                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
+                  LinkedIn
+                </a>
+                                <a className='media-link-item' href={profileData?.linkedin} target="_blank" rel="noopener noreferrer">
+                  <img src={linkIcon} alt="LinkedIn" className="media-link-icon" />
+                  LinkedIn
+                </a>
             </div>
           </div>
           
