@@ -92,7 +92,7 @@
     border: 1px solid #0650AC;
     border-radius: 5px;
     font-size: clamp(10px, 2vw, 14px);
-    color: #0650AC;
+    color: #000000;
     resize: none;
     height: 100px; 
     width: 100%; 
@@ -165,6 +165,7 @@
   display: block;
   font-size: clamp(14px, 2vw, 18px);
   color: #717171;
+  font-family: 'Montserrat', sans-serif;
 }
 .right-side-modal{
   flex: 0 0 50%;

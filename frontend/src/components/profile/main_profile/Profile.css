@@ -157,7 +157,6 @@
   text-align: left;
   line-height: 18px;
   transition:max-width 0.3s ease;
-
 }
 
 .right-btn{
@@ -320,7 +319,18 @@
 .achivement-value {
   font-size: 28px;
   font-weight: bold;
-  color: #1e72f6;
+  background: linear-gradient(45deg, #000f37, #2dacda, #3800b2, #0ddfd4,#1c278f);
+  background-size: 400% 400%; 
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 20s infinite linear;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .diagram-container {
@@ -385,6 +395,16 @@ padding: 30px;
   width: 100%;
 }
 
+.empty-placeholder{
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  color: #7d7b7b;
+  text-align: left;
+  line-height: 18px;
+  transition:max-width 0.3s ease;
+}
 
 @media (max-width: 768px) {
   .profile-columns {
@@ -415,10 +435,6 @@ padding: 30px;
   .profile-info-item {
    width: 100%;
    flex-direction: column;
-  }
-
-  .profile-info-item p {
-    font-size: 14px;
   }
 
   .profile-edit-btn {
@@ -454,7 +470,7 @@ padding: 30px;
 
 @media (max-width: 576px) {
   .profile-main {
-    padding: 16px;
+    padding: 2rem 1rem 1rem 1rem;
   }
 
   .profile-avatar {
@@ -465,10 +481,6 @@ padding: 30px;
   .profile-name {
     margin-bottom: 1.5rem;
     text-align: center;
-  }
-
-  .profile-info-item p {
-    font-size: 12px;
   }
 
   .profile-edit-btn {
@@ -534,7 +546,7 @@ padding: 30px;
   }
 
   .profile-container {
-    width: 90%;
+    width: 100%;
     padding: 1.5rem;
   }
 
@@ -549,12 +561,6 @@ padding: 30px;
     padding: 1rem;
   }
 
-  .profile-info-item p {
-    text-align: center;
-    font-size: 22px;
-   max-width: 100%;
-    margin-bottom: 0.5rem;
-  }
 
   .profile-edit-btn {
     font-size: 22px;
