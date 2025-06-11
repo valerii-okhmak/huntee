@@ -44,5 +44,10 @@ public class ProfileLinkController {
     private String cleanToken(String token) {
         return token.startsWith("Bearer ") ? token.substring(7) : token;
     }
+
+    @GetMapping("/user_id")
+    public List<ProfileLinkResponse> getLinksByUserId(@RequestParam Integer userId) {
+        return profileService.getLinksByUserId(userId);
+    }
 }
 

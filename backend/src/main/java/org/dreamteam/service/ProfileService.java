@@ -114,6 +114,7 @@ public class ProfileService {
                 .map(identity -> identity.getProvider().getId())
                 .toArray(Integer[]::new);
         return ProfileResponse.builder()
+                .user_id(profile.getUser().getId())
                 .firstName(profile.getFirstName())
                 .lastName(profile.getLastName())
                 .birthDate(profile.getBirthDate())
@@ -154,6 +155,12 @@ public class ProfileService {
 
 
     // ====== LINK ======
+    public List<ProfileLinkResponse> getLinksByUserId(Integer userId) {
+        return profileLinkRepository.findByUserId(userId).stream()
+                .map(this::mapToLinkResponse)
+                .toList();
+    }
+
     public List<ProfileLinkResponse> getLinks(String email) {
         Integer userId = getUserId(email);
         return profileLinkRepository.findByUserId(userId).stream()
@@ -200,6 +207,15 @@ public class ProfileService {
     }
 
     // ====== EDUCATION ======
+    public List<EducationResponse> getEducationsByUserId(Integer userId) {
+        return educationRepository.findByUserId(userId).stream()
+                .map(education -> EducationResponse.builder()
+                        .id(education.getId())
+                        .institution(education.getInstitution())
+                        .specialities(education.getSpecialties())
+                        .build())
+                .toList();
+    }
 
     public List<EducationResponse> getEducations(String email) {
         Integer userId = getUserId(email);
@@ -247,6 +263,17 @@ public class ProfileService {
     }
 
     // ====== COURSE ======
+    public List<CourseResponse> getCoursesByUserId(Integer userId) {
+        return courseRepository.findByUserId(userId).stream()
+                .map(course -> CourseResponse.builder()
+                        .id(course.getId())
+                        .course_name(course.getCourse_name())
+                        .certificateUrl(course.getCertificateUrl())
+                        .description(course.getDescription())
+                        .build())
+                .toList();
+    }
+
 
     public List<CourseResponse> getCourses(String email) {
         Integer userId = getUserId(email);
@@ -298,6 +325,17 @@ public class ProfileService {
 
 
     // ====== EXPERIENCE ======
+    public List<ExperienceResponse> getExperiencesByUserId(Integer userId) {
+        return experienceRepository.findByUserId(userId).stream()
+                .map(experience -> ExperienceResponse.builder()
+                        .id(experience.getId())
+                        .projectName(experience.getProjectName())
+                        .projectUrl(experience.getProjectUrl())
+                        .description(experience.getDescription())
+                        .build())
+                .toList();
+    }
+
 
     public List<ExperienceResponse> getExperiences(String email) {
         Integer userId = getUserId(email);

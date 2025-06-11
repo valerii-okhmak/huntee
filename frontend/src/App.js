@@ -39,10 +39,12 @@ const App = () => {
         <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/forcompanies" element={<ForCompaniesPage/>} />
         <Route path="/startIT" element={<StartIT/>} />
-        <Route path="/generalinfo" element={<GeneralInfoPage/>} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/generalinfo" element={<GeneralInfoPage/>} />э
+        <Route path="/profile/:user_id" element={<ProfilePage />} />
+
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/messages" element={<MessagePage />} />
           <Route path="/message" element={<MessageTextPage />} />
         </Route>

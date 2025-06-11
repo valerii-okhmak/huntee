@@ -16,6 +16,7 @@ import Diagram from '../../diagram/Diagram';
 import ProfileItem from '../item_profile/ProfileItem';
 import EditProfileModal from '../modal_windows/EditProfileModal';
 
+
 const DEFAULT_AVATAR = '../../../images/avatar.png'; 
 
 
@@ -28,7 +29,7 @@ const Profile = () => {
   const [experienceData, setExperienceData] = useState(null);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(null);
   const [mediaLinksData, setMediaLinksData] = useState(null);
-  const [avatar, setAvatar] = useState(null);
+
 
   const fetchExperience = async () => {
     try {
@@ -181,10 +182,6 @@ const Profile = () => {
   }
 , []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  }
 
   const getAgeFromBirthDate = (birthDateStr) => {
     const birthDate = new Date(birthDateStr);
@@ -245,7 +242,7 @@ const Profile = () => {
                   className="profile-edit-btn">Мої тести
               </button>
               <button
-                  onClick={handleLogout}
+                  onClick={logout}
                   id="exit" 
                   className="profile-edit-btn">Вийти
               </button>
@@ -325,6 +322,7 @@ const Profile = () => {
                     description={item.specialities} 
                     fetch={fetchEducation}
                     type={"education"}
+                    isMyProfile={true}
                   />
                 ))
               ) : (
@@ -346,6 +344,7 @@ const Profile = () => {
                     description={item.description} 
                     fetch={fetchSertificates}
                     type={"courses"}
+                    isMyProfile={true}
                   />
                 ))
               ) : (
@@ -367,6 +366,7 @@ const Profile = () => {
                     description={item.description} 
                     fetch={fetchExperience}
                     type={"experiences"}
+                    isMyProfile={true}
                   />
                 ))
               ) : (

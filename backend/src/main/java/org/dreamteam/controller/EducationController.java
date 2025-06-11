@@ -49,4 +49,9 @@ public class EducationController {
     private String cleanToken(String token) {
         return token.startsWith("Bearer ") ? token.substring(7) : token;
     }
+
+    @GetMapping("/user_id")
+    public List<EducationResponse> getEducationsByUserId(@RequestParam Integer userId) {
+        return profileService.getEducationsByUserId(userId);
+    }
 }

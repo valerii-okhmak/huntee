@@ -24,4 +24,5 @@ export const clearTokens = () => {
 export const logout = () => {
   Cookies.remove('accessToken');
   Cookies.remove('refreshToken');
+  return <Navigate to="/login" replace />;
 };

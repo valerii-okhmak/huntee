@@ -49,4 +49,8 @@ public class CourseController {
     private String cleanToken(String token) {
         return token.startsWith("Bearer ") ? token.substring(7) : token;
     }
+    @GetMapping("/user_id")
+    public List<CourseResponse> getCoursesByUserId(@RequestParam Integer userId) {
+        return profileService.getCoursesByUserId(userId);
+    }
 }

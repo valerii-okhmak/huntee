@@ -5,7 +5,7 @@ import minus from '../../../img/minus.png';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
-const ProfileItem = ({ id, title, description, url, fetch,type}) => {
+const ProfileItem = ({ id, title, description, url, fetch,type , isMyProfile}) => {
   const handleDelete = async () => {
 
     try {
@@ -26,6 +26,7 @@ const ProfileItem = ({ id, title, description, url, fetch,type}) => {
 
   return (
     <div className="profile-item">
+      {isMyProfile && (
       <img
         src={minus}
         alt="minus"
@@ -33,6 +34,7 @@ const ProfileItem = ({ id, title, description, url, fetch,type}) => {
         onClick={handleDelete}
         style={{ cursor: 'pointer' }}
       />
+      )}
       <h4>{title}</h4>
       <p>{description}</p>
 

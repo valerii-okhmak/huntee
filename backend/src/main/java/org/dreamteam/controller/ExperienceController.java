@@ -49,4 +49,9 @@ public class ExperienceController {
     private String cleanToken(String token) {
         return token.startsWith("Bearer ") ? token.substring(7) : token;
     }
+
+    @GetMapping("/user_id")
+    public List<ExperienceResponse> getExperiencesByUserId(@RequestParam Integer userId) {
+        return profileService.getExperiencesByUserId(userId);
+    }
 }

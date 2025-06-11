@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ProfileResponse {
+    private Integer user_id;
     private String firstName;
     private String lastName;
     private LocalDate birthDate; 
