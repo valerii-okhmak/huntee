@@ -69,8 +69,7 @@ public class ProfileController {
         profile.setProfileImageUrl(profileRequest.getProfileImageUrl());
         profile.setAbout(profileRequest.getAbout());
     
-        // Якщо використовуєте JPA, то збережіть оновлення у базу:
-        userService.saveProfile(profile); // реалізуй цей метод у CustomUserDetailsService
+        userService.saveProfile(profile); 
     
         return ProfileResponse.builder()
                 .firstName(profile.getFirstName())

@@ -139,7 +139,7 @@ public class ProfileService {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            String fileUrl = "backend/uploads/avatars/" + fileName;
+            String fileUrl =  fileName;
 
             // Оновлюємо профіль
             profile.setProfileImageUrl(fileUrl);

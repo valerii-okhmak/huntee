@@ -16,6 +16,8 @@ import Diagram from '../../diagram/Diagram';
 import ProfileItem from '../item_profile/ProfileItem';
 import EditProfileModal from '../modal_windows/EditProfileModal';
 
+const DEFAULT_AVATAR = '../../../images/avatar.png'; 
+
 
 const Profile = () => {
 
@@ -26,6 +28,7 @@ const Profile = () => {
   const [experienceData, setExperienceData] = useState(null);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(null);
   const [mediaLinksData, setMediaLinksData] = useState(null);
+  const [avatar, setAvatar] = useState(null);
 
   const fetchExperience = async () => {
     try {
@@ -40,17 +43,25 @@ const Profile = () => {
   };
   
 
-    const fetchProfile = async () => {
-      try {
-        const token = getAccessToken();
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/me`, {
-          params: { token: `${token}` },
-        });
-        setProfileData(response.data);
-      } catch (error) {
-        console.error('Помилка при завантаженні профілю:', error);
-      }
-    };
+      const fetchProfile = async () => {
+        try {
+          const token = getAccessToken();
+          const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/me?token=${token}`);
+          const data = response.data;
+
+          if (!data.profileImage) {
+            data.profileImage = DEFAULT_AVATAR;
+          } else  {
+            data.profileImage = `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${data.profileImage}`;
+            console.log(data.profileImage);
+          }
+
+          setProfileData(data);
+        } catch (error) {
+          console.error('Помилка завантаження профілю:', error.response?.data || error.message);
+        }
+      };
+
 
         const fetchEducation = async () => {
       try {
@@ -209,9 +220,11 @@ const Profile = () => {
                 <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
               </h3>
               <div className="profile-avatar">
-                {profileData?.profileImage && (
-                  <img src={profileData.profileImage} alt="Аватар" className="profile-avatar" />
-                )}
+                <img
+                  src={profileData ? profileData.profileImage : DEFAULT_AVATAR}
+                  alt="Avatar"
+                  className="profile-avatar"
+                />
               </div>
               <h2 className="profile-name">
                 {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
