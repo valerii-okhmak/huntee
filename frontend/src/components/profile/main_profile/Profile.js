@@ -15,9 +15,10 @@ import PasswordModal from '../modal_windows/PasswordModal';
 import Diagram from '../../diagram/Diagram';
 import ProfileItem from '../item_profile/ProfileItem';
 import EditProfileModal from '../modal_windows/EditProfileModal';
+import minus from '../../../img/minus.png';
+import { FiLink } from 'react-icons/fi'; 
 
-
-const DEFAULT_AVATAR = '../../../images/avatar.png'; 
+import DEFAULT_AVATAR from '../../../img/avatar.png'; 
 
 
 const Profile = () => {
@@ -204,6 +205,42 @@ const Profile = () => {
     return age >= 0 ? age : 0;
   };
 
+  const handleLinkDelete= async (idToDelete) => {
+    const token = getAccessToken();
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_BACKEND}/api/profile/links/${idToDelete}?token=${encodeURIComponent(token)}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      setMediaLinksData(currentLinks => currentLinks.filter(link => link.id !== idToDelete));
+      fetchMediaLinks();
+    } catch (err) {
+      console.error('Не вдалося видалити посилання:', err);
+    }
+  };
+
+    const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    const profileId = profileData?.user_id || ''; 
+    const profileUrl = `${window.location.origin}/profile/${profileId}`;
+
+    navigator.clipboard.writeText(profileUrl)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1300); 
+      })
+      .catch((err) => {
+        console.error('Не вдалося скопіювати посилання:', err);
+      });
+  };
+
   return (
     <div className="profile-main">
       <div className="profile-columns">
@@ -232,10 +269,22 @@ const Profile = () => {
                   : ''}
               </h2>
               <div className='buttons-profile'>
-              <button 
-                  id="link-information" 
-                  className="profile-edit-btn">Поділитись посиланням
-                  <img src={linkIcon} alt="link" className="link-icon" /></button>
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <button
+                  id="link-information"
+                  className="profile-edit-btn"
+                  onClick={handleCopy}
+                >
+                  Поділитись посиланням <FiLink className="link-icon" />
+                </button>
+
+                {copied && (
+                  <div className="copy-popup">
+                    Скопійовано!
+                  </div>
+                )}
+              </div>
+
               <button 
                   onClick={() => navigate('/mytests')}
                   id="my-tests" 
@@ -270,11 +319,16 @@ const Profile = () => {
             <div className='media-links'>
                 {mediaLinksData && mediaLinksData.length > 0 && (
                 mediaLinksData.map((item, index) => (
-                console.log(item),
-                <a key={index} className='media-link-item' href={item.url} target="_blank" rel="noopener noreferrer">
-                  <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt="LinkedIn" className="media-link-icon" />
-                  {item.type}
-                </a>
+                <div key={item.id} className='media-link-wrapper'>
+                  <a className='media-link-item' href={item.url} target="_blank" rel="noopener noreferrer">
+                    {/* Іконку краще зберігати локально, щоб уникнути помилок завантаження */}
+                    <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
+                    {item.type}
+                  </a>
+                  <div className='delete-icon' onClick={() => handleLinkDelete(item.id)} title="Видалити посилання">
+                    <img src={minus} alt="Delete" className="delete-icon-img" />
+                  </div>
+                </div>
                 ))
               )}
             </div>

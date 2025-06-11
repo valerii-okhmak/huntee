@@ -4,10 +4,7 @@ import '../main_profile/Profile.css';
 import { useNavigate } from 'react-router-dom';
 import Diagram from '../../diagram/Diagram';
 import ProfileItem from '../item_profile/ProfileItem';
-
-
-
-const DEFAULT_AVATAR = '../../../images/avatar.png'; 
+import DEFAULT_AVATAR from '../../../img/avatar.png'; 
 
 
 const UserProfile = ({ user_id }) => {

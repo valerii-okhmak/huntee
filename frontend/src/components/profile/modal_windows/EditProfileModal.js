@@ -61,40 +61,34 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
       const updates = [];
 
       if (firstName) {
-        updates.push(
-          axios.patch(
+          await axios.patch(
             `${process.env.REACT_APP_BACKEND}/api/profile/first-name?token=${encodeURIComponent(token)}`,
             firstName,
             { headers: { 'Content-Type': 'text/plain' } }
           )
-        );
       }
 
       if (lastName) {
-        updates.push(
-          axios.patch(
+          await axios.patch(
             `${process.env.REACT_APP_BACKEND}/api/profile/last-name?token=${encodeURIComponent(token)}`,
             lastName,
             { headers: { 'Content-Type': 'text/plain' } }
           )
-        );
       }
 
       if (birthDate) {
-        updates.push(
-          axios.patch(
+          await axios.patch(
             `${process.env.REACT_APP_BACKEND}/api/profile/birth-date?token=${encodeURIComponent(token)}`,
             birthDate,
             { headers: { 'Content-Type': 'text/plain' } }
           )
-        );
       }
 
-      if (selectedAvatarFile) {
-        updates.push(uploadAvatar());
-      }
 
-      await Promise.all(updates);
+        await uploadAvatar();
+
+
+
 
       if (fetchProfile) fetchProfile();
       onClose();
