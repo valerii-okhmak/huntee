@@ -296,6 +296,7 @@ transform: rotate(180deg);
 }
 
 
+
 input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0; /* приховує стандартну іконку */
   cursor: pointer;

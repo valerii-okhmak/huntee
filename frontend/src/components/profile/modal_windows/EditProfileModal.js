@@ -3,139 +3,182 @@ import Modal from './Modal';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
+const DEFAULT_AVATAR = '/img/avatar.png'; // Виправлено шлях (краще починати з '/')
 
-const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile}) => {
+const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [avatarPreview, setAvatarPreview] = useState(DEFAULT_AVATAR);
+  const [selectedAvatarFile, setSelectedAvatarFile] = useState(null);
 
-     const [firstName, setFirstName] = useState('');
-     const [lastName, setLastName] = useState('');
-     const [birthDate, setBirthDate] = useState('');
-    
-      useEffect(() => {
-        if (isOpen) {
-            setFirstName(profileData?.firstName || '');
-            setLastName(profileData?.lastName || '');
-            setBirthDate(profileData?.birthDate || '');
-        }
-      }, [isOpen, profileData]);
+  useEffect(() => {
+    if (isOpen && profileData) {
+      setFirstName(profileData.firstName || '');
+      setLastName(profileData.lastName || '');
+      setBirthDate(profileData.birthDate || '');
 
-  const updateData = async (newFirstName,newLastName,newBirthDate) => {
+      if (profileData.profileImage) {
+        setAvatarPreview(`${profileData.profileImage}`);
+        console.log('Avatar URL:', `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${profileData.profileImage}`);
+      } 
+
+      setSelectedAvatarFile(null);
+    }
+  }, [isOpen, profileData]);
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file)); 
+    }
+  };
+
+  const uploadAvatar = async () => {
+    if (!selectedAvatarFile) return;
+
     try {
       const token = getAccessToken();
-        if (newFirstName) {
-            const response1 = await axios.patch(
-                `${process.env.REACT_APP_BACKEND}/api/profile/first-name?token=${encodeURIComponent(token)}`,
-                newFirstName,
-                {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-                }
-            );
-        }
+      const formData = new FormData();
+      formData.append('file', selectedAvatarFile);
+      formData.append('token', token);
 
-        if (newLastName) {
-            const response2 = await axios.patch(
-                `${process.env.REACT_APP_BACKEND}/api/profile/last-name?token=${encodeURIComponent(token)}`,
-                newLastName,
-                {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-                }
-            );
-        }
+      await axios.post(`${process.env.REACT_APP_BACKEND}/api/profile/upload-avatar`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    } catch (error) {
+      console.error('Помилка завантаження аватара:', error.response?.data || error.message);
+    }
+  };
 
-        if (newBirthDate) {
-        const formattedDate = newBirthDate;
+  const updateData = async () => {
+    const token = getAccessToken();
 
-        await axios.patch(
-            `${process.env.REACT_APP_BACKEND}/api/profile/birth-date?token=${encodeURIComponent(token)}`,
-            formattedDate,
-            {
-            headers: {
-                'Content-Type': 'text/plain',
-            },
-            }
+    try {
+      const updates = [];
+
+      if (firstName) {
+        updates.push(
+          axios.patch(
+            `${process.env.REACT_APP_BACKEND}/api/profile/first-name?token=${encodeURIComponent(token)}`,
+            firstName,
+            { headers: { 'Content-Type': 'text/plain' } }
+          )
         );
-        }
-
-
-
-      if (fetchProfile) {
-        fetchProfile(); // передати оновлені дані батьку
       }
 
-        console.log('Оновлено успішно профіль: ', {
-            firstName: newFirstName,
-            lastName: newLastName,
-            birthDate: newBirthDate
-        });
-      onClose(); // закрити модалку
-        } catch (error) {
-        if (error.response) {
-            console.error('Помилка від сервера:', error.response.status, error.response.data);
-        } else {
-            console.error('Помилка запиту:', error.message);
-        }
-        }
+      if (lastName) {
+        updates.push(
+          axios.patch(
+            `${process.env.REACT_APP_BACKEND}/api/profile/last-name?token=${encodeURIComponent(token)}`,
+            lastName,
+            { headers: { 'Content-Type': 'text/plain' } }
+          )
+        );
+      }
+
+      if (birthDate) {
+        updates.push(
+          axios.patch(
+            `${process.env.REACT_APP_BACKEND}/api/profile/birth-date?token=${encodeURIComponent(token)}`,
+            birthDate,
+            { headers: { 'Content-Type': 'text/plain' } }
+          )
+        );
+      }
+
+      if (selectedAvatarFile) {
+        updates.push(uploadAvatar());
+      }
+
+      await Promise.all(updates);
+
+      if (fetchProfile) fetchProfile();
+      onClose();
+    } catch (error) {
+      console.error('Помилка оновлення профілю:', error.response?.data || error.message);
+    }
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h3 className="modal-title">Редагувати профіль</h3>
 
-        <div className="modal-photo-section">
-        <div className='change-photo-container'>
-            {/* Ваш поточний контейнер для відображення фото, якщо є */}
+      <div className="modal-photo-section">
+        <div className="change-photo-container">
+          <img
+            src={avatarPreview}
+            alt="Аватар"
+            className="profile-avatar"
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '1px solid #ccc',
+            }}
+          />
         </div>
-        {/* Прихований input для вибору файлу */}
         <input
-            type="file"
-            id="avatarUpload"
-            accept="image/*"
-            className="hidden-file-input" /* Додаємо клас для приховування */
+          type="file"
+          id="avatarUpload"
+          accept="image/*"
+          onChange={handleAvatarChange}
+          className="hidden-file-input"
         />
-        {/* Label, який буде виглядати як посилання і активувати input */}
         <label htmlFor="avatarUpload" className="modal-photo-link">
-            Змінити фото
+          Змінити фото
         </label>
-        </div>
-      <div className='full-width-line'></div>
+      </div>
+
+      <div className="full-width-line"></div>
+
       <div className="modal-info-section">
         <label className="modal-label-subinfo">Ім'я</label>
         <input
           type="text"
           className="modal-info-input"
-          placeholder={firstName}
+          placeholder="Ім'я"
+          value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
         />
       </div>
-      <div className='full-width-line'></div>
-            <div className="modal-info-section">
+
+      <div className="full-width-line"></div>
+
+      <div className="modal-info-section">
         <label className="modal-label-subinfo">Прізвище</label>
         <input
           type="text"
           className="modal-info-input"
-          placeholder={lastName}
+          placeholder="Прізвище"
+          value={lastName}
           onChange={(e) => setLastName(e.target.value)}
         />
       </div>
-      <div className='full-width-line'></div>
+
+      <div className="full-width-line"></div>
+
       <div className="modal-info-section">
         <label className="modal-label-subinfo">Дата народження</label>
         <input
           type="date"
           className="modal-info-input modal-calendar"
+          value={birthDate}
           onChange={(e) => setBirthDate(e.target.value)}
         />
       </div>
-      <div className='full-width-line'></div>
+
+      <div className="full-width-line"></div>
 
       <div className="modal-buttons">
         <button className="modal-button modal-button-cancel" onClick={onClose}>
           Скасувати
         </button>
-        <button className="modal-button modal-button-submit" onClick={() => updateData(firstName, lastName, birthDate)}>
+        <button className="modal-button modal-button-submit" onClick={updateData}>
           Зберегти
         </button>
       </div>
