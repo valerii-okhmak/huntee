@@ -8,17 +8,21 @@ import '../index.css';
 import ChooseYourFuture from '../components/chs_your_future/ChooseYourFuture';
 import JoinToUs from '../components/join_to_us/JoinToUs';
 
+import VerticalStepper from '../components/VerticalStepper/VerticalStepper';
+
+
 const HomePage = () => {
   return (
     <div className='page'>
-      <div className='welcome__container'> 
-        <Welcome></Welcome>
-        <Slider></Slider>
+      <VerticalStepper />
+      <div id="section-01" className='welcome__container'> 
+        <Welcome/>
+        <Slider/>
       </div>
-      <Main_start></Main_start>
-      <TrialTesting></TrialTesting>
-      <ChooseYourFuture></ChooseYourFuture>
-      <JoinToUs></JoinToUs>
+      <div id="section-02"><Main_start/></div>
+      <div id="section-03"><TrialTesting/></div>
+      <div id="section-04"><ChooseYourFuture/></div>
+      <div id="section-05"><JoinToUs/></div>
     </div>
   );
 };
