@@ -32,7 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-
+./uploads/avatars
 src/main/resources/application.properties
 
 

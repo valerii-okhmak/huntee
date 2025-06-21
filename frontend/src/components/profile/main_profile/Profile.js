@@ -428,7 +428,8 @@ const Profile = () => {
               )}
             </div>
           </div>
-
+          
+          { isLocalProvider && (
           <div id='password' className="profile-container">
             <div className="profile-info-section">
               <h4 className="subsection-title">Пароль</h4>
@@ -442,7 +443,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
+          )}
         </div>
       
 
