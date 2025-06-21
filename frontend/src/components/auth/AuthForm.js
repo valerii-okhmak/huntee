@@ -7,6 +7,7 @@ import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import { Link } from 'react-router-dom';
+import UserTypeSelector from './UserTypeSelector';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -67,6 +68,7 @@ const AuthForm = () => {
 
   return (
     <div className="auth-main">
+      <UserTypeSelector />
       <div className="auth-container">
         <h2>З поверненням!</h2>
         <form className="auth-form" onSubmit={handleSubmit}>

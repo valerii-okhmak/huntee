@@ -1,0 +1,48 @@
+.UserTypeSelector{
+    z-index: 10;;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: -100px;
+    max-width: 50%;
+    gap: 60px;
+}
+
+.UserTypeSelector__student, .UserTypeSelector__company {
+    width: 100%;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: none;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 25px;
+    font-family: 'MyFont', sans-serif;
+    max-width: 400px;
+}
+
+.UserTypeSelector__student{
+    max-width: 300px;
+}
+
+.UserTypeSelector__company.selected, .UserTypeSelector__student.selected {
+    background: linear-gradient(90deg, #EEF600 0%, #09FFFF 100%);
+    box-shadow: 0 4px 20px rgba(33, 147, 176, 0.15), 0 1.5px 6px rgba(109, 213, 237, 0.10);
+    animation: gradientAnimation 20s infinite linear;
+    background-size: 200% 200%;
+}
+
+
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+
