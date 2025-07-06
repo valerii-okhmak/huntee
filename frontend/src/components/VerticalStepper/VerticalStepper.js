@@ -7,10 +7,12 @@ const steps = [
   { number: '3', label: 'Шось' },
   { number: '4', label: 'Шось' },
   { number: '5', label: 'Шось' },
+  { number: '6', label: 'Шось' },
+  { number: '7', label: 'Шось' },
 ];
 
 const sectionIds = [
-  'section-01', 'section-02', 'section-03', 'section-04', 'section-05',
+  'section-01', 'section-02', 'section-03', 'section-04', 'section-05','section-06', 'section-07',
 ];
 
 const VerticalStepper = () => {

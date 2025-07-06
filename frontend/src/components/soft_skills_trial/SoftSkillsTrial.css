@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.soft-skills-trial{
+    min-height: 100vh;
+    background-color: white;
+}
+
+.soft-skills-title {
+    font-size: 110px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'MyFont', sans-serif;
+    background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
+    background-size: 400% 400%; 
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientAnimation 20s infinite linear;
+    padding-top: 70px;
+}
+
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.soft-skills-subtitle{
+    font-size: 25px;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 15px;
+    padding: 0 100px;
+}
+
+.overlay-soft-skills {
+    margin-top: 70px;
+    background: linear-gradient(to right, #00F7FF, #A200FF);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+    animation: gradientShift 10s ease-in-out infinite;
+    padding: 30px 120px;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 10vh;
+}
+
+.softstep{
+    margin: 0 clamp(3px, 1vw, 10px);
+    font-size: clamp(8px, 1.5vw, 20px);
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    font-weight: 500;
+    color: white;
+}
+
+.softsteps{
+    width: 100%;
+    display: flex;
+}
+
+@keyframes fadeSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .softsteps > * {
+    opacity: 0;
+    transform: translateX(-30px);
+    animation-fill-mode: forwards;
+    animation-name: none;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+  }
+  
+  .softsteps.pan-animation > * {
+    animation-name: fadeSlideIn;
+  }
+  
+  .softsteps.pan-animation > *:nth-child(1) {
+    animation-delay: 0s;
+  }
+  
+  .softsteps.pan-animation > *:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+  
+  .softsteps.pan-animation > *:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+  
+  .softsteps.pan-animation > *:nth-child(4) {
+    animation-delay: 0.9s;
+  }
+  
+  .softsteps.pan-animation > *:nth-child(5) {
+    animation-delay: 1.2s;
+  }
+  
+  .softsteps.pan-animation > *:nth-child(6) {
+    animation-delay: 1.5s;
+  }
+
+  .softsteps.pan-animation > *:nth-child(7) {
+    animation-delay: 1.8s;
+  }
+
+.button-container {
+  position: relative;
+  width: 100%;
+  height: 300px; /* або скільки потрібно, можеш поставити auto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* опціонально */
+}
+
+.waves__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* щоб красиво заповнювало */
+  z-index: 0;
+}
+
+.start-test-button {
+  background-color: black;
+  color: white;
+  padding: 15px 50px;
+  font-size: 55px;
+  border: none;
+  cursor: pointer;
+  font-family: 'MyFont', sans-serif;
+  transition: background-color 0.3s ease;
+    z-index: 1; /* щоб кнопка була поверх зображення */
+}
+
+.start-test-button:hover {
+  background-color: #333333;
+}
+
+.soft-skills-info{
+    font-size: 25px;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    color: #8F8F8F;
+    margin-top: 20px;
+    padding-bottom: 70px;
+}
