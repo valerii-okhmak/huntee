@@ -7,7 +7,7 @@ import RegPage from './pages/RegPage';
 import TestPage from './pages/TestPage';
 import AllTestsPage from './pages/AllTestsPage';
 import ProfilePage from './pages/ProfilePage'
-import TrialTest from './pages/TrialTestPage';
+import StartTestPage from './pages/StartTestPage';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -33,7 +33,7 @@ const App = () => {
         <Route path="/reg" element={<RegPage />} />
         <Route path="/testpage" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
-        <Route path='/trialtest' element={<TrialTest />} />
+        <Route path='/starttest' element={<StartTestPage />} />
         <Route path="/testrules" element={<TestRulesPage />} />
         <Route path="/test" element={<FullTest/>} />
         <Route path="/mytests" element={<MyTestsPage/>} />

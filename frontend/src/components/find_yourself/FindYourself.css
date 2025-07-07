@@ -16,14 +16,14 @@
     align-items: center;
     justify-content: center;
     padding: 5% 5%;
-    margin-bottom: 5%;
     width: 100%;
 }
 
 .find-yourself__content {
     width: 80%;
     background-color: #ffffff;
-    padding: 3.5% 2.65%;
+    padding: 2.5% 2.65%;
+    border-radius: 0px;
 }
 
 @keyframes gradientShift {
@@ -34,7 +34,12 @@
 
 .find-yourself__title {
     font-size: clamp(36px, 8vw, 100px);
-    color: #ACA9A9;
+    background: linear-gradient(45deg, #0b5577, #56c7fb, #26e3ed, #f990f7,#f0d3fd);
+    background-size: 400% 400%; 
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientAnimation 20s infinite linear;
     text-align: left;
     text-transform: uppercase;
     font-family: 'MyFont', sans-serif;
@@ -76,7 +81,7 @@ flex-wrap: wrap;
 }
 
 .direction__img {
-  width: 14%;
+  width: 120px;
   flex-shrink: 0;
 }
 
@@ -97,16 +102,21 @@ flex-wrap: wrap;
   font-family: 'MyFont', sans-serif;
   transition: background-color 0.3s ease;
   z-index: 1;
+  border-radius: 8px;
 }
 
 .start-test-button:hover {
-  background-color: #333333;
+  background-color: #827e7e;
 }
 
-@media (min-width: 320px) and (max-width: 768px) {
-  .find-yourself__background {
-    margin-bottom: 0;
+@media screen and (max-width: 768px) {
+    .direction__img {
+        width: 80px;
+    }
 }
-    
-  
+
+@media screen and (max-width: 480px) {
+    .direction__img {
+        width: 50px;
+    }
 }

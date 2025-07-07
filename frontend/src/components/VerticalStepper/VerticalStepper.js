@@ -12,17 +12,21 @@ const steps = [
 ];
 
 const sectionIds = [
-  'section-01', 'section-02', 'section-03', 'section-04', 'section-05','section-06', 'section-07',
+  'section-01', 'section-02', 'section-03', 'section-04', 'section-05', 'section-06', 'section-07',
 ];
 
 const VerticalStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const [showReturnButton, setShowReturnButton] = useState(false);
+  const [showToggleButton, setShowToggleButton] = useState(true); // для миттєвого контролю кнопки закриття
+
   const observerRef = useRef(null);
 
   useEffect(() => {
     const options = {
       root: null,
-      threshold: 0.6, 
+      threshold: 0.6,
     };
 
     observerRef.current = new IntersectionObserver((entries) => {
@@ -46,6 +50,27 @@ const VerticalStepper = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let timer;
+    if (!isVisible) {
+      timer = setTimeout(() => setShowReturnButton(true), 300); // кнопка повернення з'явиться з затримкою
+    } else {
+      setShowReturnButton(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isVisible]);
+
+  const handleClose = () => {
+    setShowToggleButton(false); // кнопка закриття зникає одразу
+    setIsVisible(false);        // панель ховаємо (з анімацією)
+  };
+
+  const handleOpen = () => {
+    setIsVisible(true);         // панель показуємо
+    setShowReturnButton(false); // сховати кнопку повернення
+    setShowToggleButton(true);  // показати кнопку закриття
+  };
+
   const scrollTo = (id) => {
     const section = document.getElementById(id);
     if (section) {
@@ -54,18 +79,44 @@ const VerticalStepper = () => {
   };
 
   return (
-    <div className="vertical-stepper">
-      {steps.map((step, index) => (
-        <div
-          key={step.number}
-          className={`step ${activeStep === index ? 'active' : ''}`}
-          onClick={() => scrollTo(sectionIds[index])}
+    <>
+      <div className={`vertical-stepper ${isVisible ? 'visible' : 'hidden'}`}>
+        {showToggleButton && (
+          <button
+            className="stepper-toggle"
+            onClick={handleClose}
+            aria-label="Закрити"
+          >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M10 6L16 12L10 18" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          </button>
+        )}
+
+        {steps.map((step, index) => (
+          <div
+            key={step.number}
+            className={`step ${activeStep === index ? 'active' : ''}`}
+            onClick={() => scrollTo(sectionIds[index])}
+          >
+            <span>{step.number}</span>
+            <small>{step.label}</small>
+          </div>
+        ))}
+      </div>
+
+      {showReturnButton && (
+        <button
+          className={`stepper-return visible`}
+          onClick={handleOpen}
+          aria-label="Відкрити"
         >
-          <span>{step.number}</span>
-          <small>{step.label}</small>
-        </div>
-      ))}
-    </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M14 6L8 12L14 18" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+        </button>
+      )}
+    </>
   );
 };
 

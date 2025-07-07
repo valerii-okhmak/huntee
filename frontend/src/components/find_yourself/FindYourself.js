@@ -15,11 +15,11 @@ const FindYourself = () => {
           <p className="find-yourself__text">Це коротке, але продумане опитування, яке визначить, чи більше тобі підходить аналітика, розробка, дизайн, кібербезпека, тестування, DevOps чи, можливо, щось зовсім неочікуване!</p>
           </div>
           <div className='direction_list'>
-            <img src="/directions-icons/devops.png" alt="devops" className="direction__img" />
-            <img src="/directions-icons/html.png" alt="html" className="direction__img" />
-            <img src="/directions-icons/sql.png" alt="sql" className="direction__img" />
-            <img src="/directions-icons/python.png" alt="python" className="direction__img" />
-            <img src="/directions-icons/java.png" alt="java" className="direction__img" />
+            <img src="/directions-icons/devops1.png" alt="devops" className="direction__img" />
+            <img src="/directions-icons/html1.png" alt="html" className="direction__img" />
+            <img src="/directions-icons/sql1.png" alt="sql" className="direction__img" />
+            <img src="/directions-icons/python1.png" alt="python" className="direction__img" />
+            <img src="/directions-icons/java1.png" alt="java" className="direction__img" />
           </div>
         </div>
           <div className='find-yourself__button'>

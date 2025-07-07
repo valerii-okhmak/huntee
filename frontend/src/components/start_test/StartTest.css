@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.TrialMain-text-button{
+    display: flex;
+  flex-direction: row;
+  align-items: center;     
+  gap: 70px;                       
+  padding: 20px 0;
+}
+
+.TrialMain-text {
+  display: flex;
+ flex: 0 1 70%;
+}
+
+.TrialMain-text h2 {
+  font-family: 'Montserrat', sans-serif; 
+  font-size: clamp(16px, 2vw, 24px);
+  color: #000;
+}
+
+.trialStart_button {
+  display: flex;            
+  justify-content: center;      
+  align-items: center;         
+  font-family: 'MyFont', sans-serif;
+  height: 70px;
+  background-color: #000000;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.4);
+  padding: 10px 20px;
+  flex: 1;
+  color: #ffffff;
+}
+
+.gradient-container{
+  width: 100%;
+  background: linear-gradient(to right, #003CFF, #FFEA00);
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  animation: gradientShift 10s ease-in-out infinite;
+  padding: 20px 0;
+  margin-top: 50px;
+}
+
+.vertical-stick{
+  position: relative;
+  width: 2px;
+  height: 80%;
+  background-color: #ea0000;
+}
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 0%; }
+    50%  { background-position: 100% 0%; }
+    100% { background-position: 0% 0%; }
+}
+
+.trial-text {
+  position: relative;
+  padding-left: 20px; /* Відступ для лінії */
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  color: #ffffff;
+  font-size: 25px; /* або будь-який */
+}
+
+.trial-text::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px; 
+  border-radius: 50px;
+  height: 100%;
+  background-color: white;
+}
+
+@media screen and (max-width: 768px) {
+  .TrialMain-text-button {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .TrialMain-text {
+    flex: 1;
+    text-align: center;
+  }
+
+}
