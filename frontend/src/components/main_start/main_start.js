@@ -12,6 +12,7 @@ const Main_start = () => {
         <div className="main_start__buttons">
           <Link to="/alltests" className="button">Активні тести</Link>
           <Link to="/trialtest" className="button">Пробний тест</Link>
+          <Link to="/trialtest" className="button">IT Навігатор</Link>
         </div>
       </div>
     </div>
