@@ -134,21 +134,6 @@
   z-index: 0;
 }
 
-.start-test-button {
-  background-color: black;
-  color: white;
-  padding: 15px 50px;
-  font-size: 55px;
-  border: none;
-  cursor: pointer;
-  font-family: 'MyFont', sans-serif;
-  transition: background-color 0.3s ease;
-    z-index: 1; /* щоб кнопка була поверх зображення */
-}
-
-.start-test-button:hover {
-  background-color: #333333;
-}
 
 .soft-skills-info{
     font-size: 25px;
