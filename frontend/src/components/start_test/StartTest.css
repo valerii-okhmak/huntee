@@ -65,7 +65,11 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   color: #ffffff;
+<<<<<<< HEAD
   font-size: clamp(12px, 2.5vw, 25px); 
+=======
+  font-size: clamp(16px, 2.5vw, 25px);
+>>>>>>> 64f1621e7092e222e50b343dcfa7d51884302735
 }
 
 .trial-text::before {
