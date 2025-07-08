@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.pricing-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px; /* !adaptive! */
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+  text-align: center;
+}
+ .toggle {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* !adaptive!*/
+    margin-bottom: 30px; /* !adaptive! */
+    margin-top: 50px; /* !adaptive! */
+ }
+
+.toggle button {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;        
+    border: none;
+    border-radius: 10px;
+    padding: 0 20px;
+    height: 44px;
+    width: 330px;
+    background: black; /* суттєво темніший сірий */
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(90deg, #f7039b, #00c9ff);
+}
+ 
+.toggle button.active {
+  background: linear-gradient(90deg, #FF06B4, #09FFFF);
+  color: #fff;
+  -webkit-background-clip: border-box; /* повертаємо звичайну обрізку фону */
+  -webkit-text-fill-color: #fff;       /* повертаємо нормальний колір */
+}
+
+
+
+.toggle button.active .discount {
+  font-size: 15px;
+  font-weight: bold;
+  background-color: rgba(228, 228, 228, 0.6); /* 60% прозорості */
+  color: #fff;
+  padding: 8px 33px;
+  border-radius: 10px;
+}
+
+
+
+.plans {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 60px;
+}
+
+
+.plan {
+  background: #E6E6E6;
+  padding: 25px 0 0 0;
+  border-radius: 20px;
+  width: 300px;
+  height: 590px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.plan:hover {
+  transform: translateY(-5px);
+}
+
+.plan.popular {
+  border: 3px solid #f7039b;
+}
+
+.plan .badge {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #f7039b, #00c9ff);
+  color: white;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.plan h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  font-weight: normal; 
+
+}
+
+.plan .price {
+  font-size: 40px;
+  background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(90deg, #FF00B2, #00E0F0);
+  margin-bottom: 25px;
+}
+.mounth-span {
+   font-size: 20px;
+  -webkit-background-clip: border-box; /* повертаємо звичайну обрізку фону */
+  -webkit-text-fill-color: #AEAEAE;  
+
+}
+
+.plan .description {
+  font-size: 15px;
+  color: #000000;
+  padding: 0 25px;
+  height: 65px;
+}
+
+.plan-information{
+    height: 45%;
+}
+.features{
+  background-color: #D9D9D9;
+  padding: 25px;
+  border-radius: 20px;
+  width: 100%;
+  height: 55%;
+}
+
+.plan ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  gap: 10px;
+  padding: 0;
+  text-align: left;
+}
+
+.plan ul li {
+  /*margin: 10px 0;*/
+  display: flex;
+  align-items: center;
+  gap: 10px; /* відступ між галочкою та текстом */
+  
+ 
+
+  font-size: 17px;
+}
+
+.subscribe-btn {
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #f7039b, #00c9ff);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 20px;
+}
+
+.subscribe-btn:hover {
+  transform: scale(1.05);
+}
+
+
+

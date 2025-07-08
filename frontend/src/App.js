@@ -20,6 +20,7 @@ import MyTestsPage from './pages/MyTestsPage';
 import ForCompaniesPage from './pages/ForCompaniesPage';
 import StartIT from './pages/StartIT';
 import GeneralInfoPage from './pages/GeneralInfoPage';
+import PricingPage from './pages/PricingPage';
 
 const App = () => {
   return (
@@ -39,8 +40,9 @@ const App = () => {
         <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/forcompanies" element={<ForCompaniesPage/>} />
         <Route path="/startIT" element={<StartIT/>} />
-        <Route path="/generalinfo" element={<GeneralInfoPage/>} />э
+        <Route path="/generalinfo" element={<GeneralInfoPage/>} />
         <Route path="/profile/:user_id" element={<ProfilePage />} />
+        <Route path="/pricingpage" element={<PricingPage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
