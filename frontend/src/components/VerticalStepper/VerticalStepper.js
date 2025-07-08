@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import './VerticalStepper.css';
 
 const steps = [
-  { number: '1', label: 'Шось' },
-  { number: '2', label: 'Шось' },
-  { number: '3', label: 'Шось' },
-  { number: '4', label: 'Шось' },
-  { number: '5', label: 'Шось' },
-  { number: '6', label: 'Шось' },
-  { number: '7', label: 'Шось' },
+  { number: '1', label: 'Головна' },
+  { number: '2', label: 'Шлях в IT' },
+  { number: '3', label: 'Тести' },
+  { number: '4', label: 'Гнучкі навички' },
+  { number: '5', label: 'Пробне тестування' },
+  { number: '6', label: 'Вибір напряму' },
+  { number: '7', label: 'Приєднуйся до нас' },
 ];
 
 const sectionIds = [
@@ -53,7 +53,7 @@ const VerticalStepper = () => {
   useEffect(() => {
     let timer;
     if (!isVisible) {
-      timer = setTimeout(() => setShowReturnButton(true), 300); // кнопка повернення з'явиться з затримкою
+      timer = setTimeout(() => setShowReturnButton(true), 400); // кнопка повернення з'явиться з затримкою
     } else {
       setShowReturnButton(false);
     }
@@ -81,29 +81,28 @@ const VerticalStepper = () => {
   return (
     <>
       <div className={`vertical-stepper ${isVisible ? 'visible' : 'hidden'}`}>
-        {showToggleButton && (
-          <button
-            className="stepper-toggle"
-            onClick={handleClose}
-            aria-label="Закрити"
-          >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M10 6L16 12L10 18" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          </button>
-        )}
+  <button
+    className="stepper-toggle"
+    onClick={handleClose}
+    aria-label="Закрити"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M10 6L16 12L10 18" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </button>
 
-        {steps.map((step, index) => (
-          <div
-            key={step.number}
-            className={`step ${activeStep === index ? 'active' : ''}`}
-            onClick={() => scrollTo(sectionIds[index])}
-          >
-            <span>{step.number}</span>
-            <small>{step.label}</small>
-          </div>
-        ))}
-      </div>
+  {steps.map((step, index) => (
+    <div
+      key={step.number}
+      className={`step ${activeStep === index ? 'active' : ''}`}
+      onClick={() => scrollTo(sectionIds[index])}
+    >
+      <span>{step.number}</span>
+      <small>{step.label}</small>
+    </div>
+  ))}
+</div>
+
 
       {showReturnButton && (
         <button

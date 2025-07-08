@@ -61,11 +61,11 @@
 
 .trial-text {
   position: relative;
-  padding-left: 20px; /* Відступ для лінії */
+  padding-left: 20px; 
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   color: #ffffff;
-  font-size: 25px; /* або будь-який */
+  font-size: clamp(12px, 2.5vw, 25px); 
 }
 
 .trial-text::before {

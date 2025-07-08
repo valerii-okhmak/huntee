@@ -81,7 +81,7 @@ flex-wrap: wrap;
 }
 
 .direction__img {
-  width: 120px;
+  width: 14%;
   flex-shrink: 0;
 }
 
@@ -109,14 +109,8 @@ flex-wrap: wrap;
   background-color: #827e7e;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 595px) {
     .direction__img {
-        width: 80px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .direction__img {
-        width: 50px;
+        width: 20%;
     }
 }
