@@ -1,6 +1,7 @@
 import React , {useState} from 'react'
 import '../components/pricing_plans/pricing.css'
 import  checkMark from'../img/check_mark.png' 
+
 const PricingPage = () => {
 
 const plansData = {
@@ -19,9 +20,7 @@ const plansData = {
 const [isYearly, setIsYearly] = useState(true);
 const plans = isYearly ? plansData.yearly : plansData.monthly;
 
-  return (
-    
-   
+  return (  
    <div className="page">
     <div className='pricing-container'>
         <div className='toggle'>

@@ -1,20 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+
+.page{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .pricing-container {
   max-width: 1200px;
-  margin: auto;
-  padding: 40px; /* !adaptive! */
+  padding: clamp(20px, 5vw, 40px);
   font-family: 'Montserrat', sans-serif;
   color: #333;
   text-align: center;
 }
  .toggle {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* !adaptive!*/
-    margin-bottom: 30px; /* !adaptive! */
-    margin-top: 50px; /* !adaptive! */
- }
+  display: flex;
+  justify-content: center;
+  gap: clamp(5px, 1vw, 10px);
+  margin-bottom: clamp(15px, 3vw, 30px); 
+  margin-top: 50px;   
+}
+
 
 .toggle button {
     display: flex;
@@ -22,12 +29,11 @@
     align-items: center;        
     border: none;
     border-radius: 10px;
-    padding: 0 20px;
-    height: 44px;
-    width: 330px;
+    padding: 0 clamp(10px, 3vw, 20px);
+    height: clamp(38px, 5vw, 44px);
     background: black; /* суттєво темніший сірий */
-    gap: 10px;
-    font-size: 18px;
+    gap: clamp(6px, 2vw, 12px);
+    font-size: clamp(14px, 2vw, 18px);
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
@@ -47,11 +53,11 @@
 
 
 .toggle button.active .discount {
-  font-size: 15px;
+  font-size: clamp(12px, 2vw, 15px);
   font-weight: bold;
-  background-color: rgba(228, 228, 228, 0.6); /* 60% прозорості */
+  background-color: rgba(228, 228, 228, 0.6); 
   color: #fff;
-  padding: 8px 33px;
+  padding: clamp(5px, 1.2vw, 8px) clamp(20px, 5vw, 33px);
   border-radius: 10px;
 }
 
@@ -61,20 +67,21 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 60px;
+    gap: clamp(20px, 5vw, 60px);
 }
 
 
 .plan {
   background: #E6E6E6;
-  padding: 25px 0 0 0;
+  padding: clamp(16px, 4vw, 25px) 0 0 0;
   border-radius: 20px;
-  width: 300px;
-  height: 590px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  width: clamp(240px, 30vw, 300px);
+  height: clamp(500px, 60vw, 590px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   position: relative;
   transition: transform 0.3s ease;
 }
+
 
 .plan:hover {
   transform: translateY(-5px);
@@ -91,41 +98,39 @@
   transform: translateX(-50%);
   background: linear-gradient(90deg, #f7039b, #00c9ff);
   color: white;
-  padding: 5px 15px;
+  padding: clamp(4px, 1vw, 6px) clamp(10px, 2vw, 15px);
   border-radius: 15px;
-  font-size: 13px;
+  font-size: clamp(11px, 2vw, 13px);
   font-weight: bold;
 }
 
 .plan h3 {
   font-family: 'Montserrat', sans-serif;
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 25px;
+  font-size: clamp(16px, 2.5vw, 18px);
+  margin-bottom: clamp(15px, 3vw, 25px);
   font-weight: normal; 
-
 }
 
 .plan .price {
-  font-size: 40px;
+  font-size: clamp(28px, 6vw, 40px);
   background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(90deg, #FF00B2, #00E0F0);
-  margin-bottom: 25px;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(90deg, #FF00B2, #00E0F0);
+  margin-bottom: clamp(15px, 4vw, 25px);
 }
 .mounth-span {
-   font-size: 20px;
+  font-size: clamp(14px, 2vw, 20px);
   -webkit-background-clip: border-box; /* повертаємо звичайну обрізку фону */
   -webkit-text-fill-color: #AEAEAE;  
 
 }
 
 .plan .description {
-  font-size: 15px;
+  font-size: clamp(13px, 2vw, 15px);
   color: #000000;
-  padding: 0 25px;
-  height: 65px;
+  padding: 0 clamp(15px, 5vw, 25px);
+  height: clamp(50px, 8vh, 65px);
 }
 
 .plan-information{
@@ -133,7 +138,7 @@
 }
 .features{
   background-color: #D9D9D9;
-  padding: 25px;
+  padding: clamp(16px, 4vw, 25px);
   border-radius: 20px;
   width: 100%;
   height: 55%;
@@ -143,24 +148,20 @@
   display: flex;
   flex-wrap: wrap;
   list-style: none;
-  gap: 10px;
+  gap: clamp(5px, 1vw, 10px);
   padding: 0;
   text-align: left;
 }
 
 .plan ul li {
-  /*margin: 10px 0;*/
   display: flex;
   align-items: center;
-  gap: 10px; /* відступ між галочкою та текстом */
-  
- 
-
-  font-size: 17px;
+  gap: clamp(6px, 1vw, 10px);
+  font-size: clamp(13px, 1.5vw, 17px);
 }
 
 .subscribe-btn {
-  padding: 10px 20px;
+  padding: clamp(8px, 1.5vw, 12px) clamp(15px, 3vw, 25px);
   background: linear-gradient(90deg, #f7039b, #00c9ff);
   border: none;
   border-radius: 10px;
@@ -168,12 +169,61 @@
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s ease;
-  font-size: 20px;
+  font-size: clamp(16px, 2vw, 20px);
 }
 
 .subscribe-btn:hover {
   transform: scale(1.05);
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.main-content {
+  flex: 1;
+}
+
+.footer {
+  width: 100%;
+  max-width: 100vw;
+  padding: clamp(20px, 4vw, 40px) clamp(10px, 3vw, 20px);
+  background-color: #000000;
+  color: white;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-family: 'MyFont', sans-serif;
+}
+
+@media (min-width: 575px) and (max-width: 946px) {
+ .plan .description {
+     height: 45px;
+     padding: 0;
+}
+
+}
+
+@media (max-width: 440px) {
+  .toggle button.active .discount {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+}
+
+
+
+
+
 
 
 
