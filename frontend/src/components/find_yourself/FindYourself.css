@@ -103,7 +103,6 @@ flex-wrap: wrap;
   position: relative;
   overflow: hidden;
   z-index: 1;
-  border-radius: 8px;
 }
 
 .start-test-button::before {

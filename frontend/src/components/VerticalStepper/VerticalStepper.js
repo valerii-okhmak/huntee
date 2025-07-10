@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import './VerticalStepper.css';
 
 const steps = [
-  { number: '1', label: 'Головна' },
-  { number: '2', label: 'Шлях в IT' },
-  { number: '3', label: 'Тести' },
-  { number: '4', label: 'Гнучкі навички' },
-  { number: '5', label: 'Пробне тестування' },
-  { number: '6', label: 'Вибір напряму' },
-  { number: '7', label: 'Приєднуйся до нас' },
+  { number: '1', label: 'Home' },
+  { number: '2', label: 'Path' },
+  { number: '3', label: 'Tests' },
+  { number: '4', label: 'Soft' },
+  { number: '5', label: 'Trial' },
+  { number: '6', label: 'Field' },
+  { number: '7', label: 'Join' },
 ];
 
 const sectionIds = [
