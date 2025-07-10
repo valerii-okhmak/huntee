@@ -21,7 +21,7 @@ const [isYearly, setIsYearly] = useState(true);
 const plans = isYearly ? plansData.yearly : plansData.monthly;
 
   return (  
-   <div className="page">
+   <div className="pricing-page">
     <div className='pricing-container'>
         <div className='toggle'>
             <button className={isYearly ? "active" : ""} id='yearly-button' onClick={() => setIsYearly(true)}><div className='text-button'>Річна підписка </div> {isYearly ? <span className="discount">до -20%🔥</span>: ""}</button>
