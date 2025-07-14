@@ -21,6 +21,7 @@ import ForCompaniesPage from './pages/ForCompaniesPage';
 import StartIT from './pages/StartIT';
 import GeneralInfoPage from './pages/GeneralInfoPage';
 import PricingPage from './pages/PricingPage';
+import CompanyMainPage from './pages/CompanyMainPage';
 
 const App = () => {
   return (
@@ -43,6 +44,9 @@ const App = () => {
         <Route path="/generalinfo" element={<GeneralInfoPage/>} />
         <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="/pricingpage" element={<PricingPage />} />
+
+        <Route path="/companymain" element={<CompanyMainPage />} />
+        
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
