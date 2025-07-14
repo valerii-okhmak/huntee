@@ -2,6 +2,7 @@
 
 - [Українська версія](../README.md)
 
+
 **Huntee** is a web platform for online candidate testing with built-in integrity control mechanisms. The platform provides IT companies with an effective tool for initial candidate screening, and students — with the opportunity to showcase their skills and receive interview invitations.
 
 
@@ -62,3 +63,13 @@ This section contains information on system requirements, server configuration, 
 ---
 
 > Detailed feature descriptions, setup instructions, and test format information are available in the respective sections of the `READMEFILES/eng/` directory.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+The MIT License permits reuse, modification, merging, publishing, distribution, sublicensing, and/or selling copies of the software without restriction.  
+The only requirement is to include the original copyright notice and license text in all copies or substantial portions of the software.
+
+> **Disclaimer:** The software is provided "as is", without any warranty of any kind, express or implied. The authors are not liable for any damages arising from the use of this software.
+
