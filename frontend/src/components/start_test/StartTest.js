@@ -11,7 +11,7 @@ const StartTest = ({text, gradienttext}) => {
 
   return (
     <>
-      <div className='container TrialMain-text-button'>
+      <div className='TrialMain-text-button'>
       <div className='TrialMain-text'> 
           <h2>{text}</h2>
       </div>
