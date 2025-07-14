@@ -15,7 +15,7 @@ const TrialTesting = () => {
         <h1 className="trial-testing-title">Пробне<br/>тестування</h1>
         <h2 className="trial-testing-subtitle">Дізнайся як проходить тестування!</h2>
         <div className="trial-testing-info">
-          <Link to="/trialtest" className="trial-testing-link">Спробувати</Link>
+          <Link to="/starttest" className="trial-testing-link">Спробувати</Link>
         </div>
       </div>
     </div>
