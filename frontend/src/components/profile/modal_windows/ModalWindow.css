@@ -78,14 +78,6 @@
     width: 100%; 
     font-family: 'Montserrat', sans-serif;
   }
-
-  input::placeholder{
-     color: #0650AC;
-  }
-
-  .modal-textarea::placeholder{
-     color: #0650AC;
-  }
   
   .modal-textarea {
     padding: 0.5rem;
