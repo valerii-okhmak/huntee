@@ -46,7 +46,7 @@ const CompanyWelcome = () => {
                 </div>
             </div>
         </div>
-        <div className='container companyWelcome_container'>
+        <div className='companyWelcome_container'>
             <div className="overlay-companyWelcome" ref={overlayRef}>
                 <div className={`companyWelcome_steps ${animate ? 'pan-animation' : ''}`}>
                     <div className="companyWelcome_step">Створюєте обліковий запис </div>
