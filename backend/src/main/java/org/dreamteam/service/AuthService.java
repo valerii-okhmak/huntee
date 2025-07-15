@@ -50,7 +50,9 @@ public class AuthService {
                 "Пароль має містити щонайменше 8 символів і принаймні два з трьох: літери, цифри, спеціальні символи.");
         }
 
-        UserType userType = new UserType(1 , "USER");
+        UserType userType = userTypeRepository.findByName("USER")
+        .orElseThrow(() -> new ResourceNotFoundException("User type 'USER' не знайдено"));
+
 
         String verificationCode = generateVerificationCode();
 
