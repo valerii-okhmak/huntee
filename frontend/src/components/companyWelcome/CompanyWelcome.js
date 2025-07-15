@@ -1,6 +1,6 @@
 import React from 'react'
 import './CompanyWelcome.css'
-import bg from '../../img/image.png'
+import bg from '../../video/trialtestingvideo.mp4';
 import arrow from '../../img/arrow.png'
 import { Link } from "react-router-dom"
 import { useState, useEffect, useRef } from 'react';
@@ -36,13 +36,16 @@ const CompanyWelcome = () => {
   return (
     <div className="companyWelcome">
         <div className='companyWelcome__main'>
-            <img className='companyWelcome_bg' src={bg} alt='' />
+            <video className="companyWelcome_bg" autoPlay loop muted>
+                <source src={bg} type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
             <div className='container companyWelcome__main_container'>
                 <h1 className='companyWelcome__title'>HERE’RE YOUR FUTURE EMPLOYEES</h1>
                 <h3 className='companyWelcome__subtitle'>Тести створені щоб допомогти студентам знайти свою карєру в IT</h3>
                 <div className='companyWelcome__buttons'>
-                    <Link to="/" className="companyWelcome__button">Детальніше про нас</Link>
-                    <Link to="/" className="companyWelcome__button">Як проходить створення тестів?</Link>
+                    <Link to="/generalinfo" className="companyWelcome__button">Детальніше про нас</Link>
+                    <Link to="/testcreation" className="companyWelcome__button">Як проходить створення тестів?</Link>
                 </div>
             </div>
         </div>
