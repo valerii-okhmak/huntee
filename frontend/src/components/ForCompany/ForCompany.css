@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.for-company {
+    font-size: clamp(36px, 9vw, 110px);
+    text-align: center;
+    min-height: 85vh;
+    font-family: 'Montserrat', sans-serif;
+    background-size: 400% 400%; 
+    padding-top: clamp(30px, 8vh, 70px);
+    padding: 100px;
+}
+
+.for-company__title {
+    font-size: clamp(32px, 5vw, 50px);
+    background: linear-gradient(45deg, #56c7fb,#b006ff, #26e3ed, #f990f7, #002aff, #f990f7);
+    background-size: 400% 400%; 
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientAnimation 20s infinite linear;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    text-align: left; 
+}
+
+.for-company__subtitle {
+    font-size: clamp(20px, 2.5vw, 25px);
+    color: #000;
+    max-width: 100%;
+    margin: 0 auto 80px 0;
+    line-height: 1.5;
+    font-weight: 400;
+    text-align: left;
+}
+
+.for-company__text {
+    font-size: clamp(32px, 5vw, 30px);
+    background: linear-gradient(45deg, #56c7fb,#b006ff, #26e3ed, #f990f7, #002aff, #f990f7);
+    background-size: 400% 400%; 
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientAnimation 20s infinite linear;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.for-company__button {
+    background: #000000;
+    border: none;
+    padding: clamp(8px, 2vw, 12px) clamp(15px, 8vw, 40px);
+    display: block; 
+    font-size: clamp(16px, 4vw, 50px);
+    font-family: 'MyFont', sans-serif;
+    cursor: pointer;
+    color: #ffffff;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    z-index: 1;
+    margin: 0 auto; 
+    max-width: fit-content; 
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+
+.for-company__button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+  
+  .for-company__button:hover {
+    color: #000000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+  }
+  
+  .for-company__button:hover::before {
+    transform: scaleX(1);
+  }
+  
+
+  @media (max-width: 1024px) {
+    .for-company {
+        padding: 60px 30px;
+        margin-top: 40px;
+    }
+    .for-company__title,
+    .for-company__subtitle {
+        text-align: left;
+        max-width: 90%;
+        margin-bottom: 40px;
+    }
+    .for-company__text {
+        font-size: clamp(22px, 3vw, 26px);
+        max-width: 90%;
+        margin-bottom: 30px;
+        text-align: center; 
+        align-items: center; 
+    }
+    .for-company__button {
+        font-size: clamp(18px, 3vw, 36px);
+        padding: 12px 28px;
+        text-align: center; 
+        align-items: center; 
+    }
+}
+
+@media (max-width: 768px) {
+    .for-company {
+        padding: 40px 20px;
+        text-align: center; 
+        align-items: center; 
+        margin-top: 40px;
+    }
+    .for-company__title{
+        font-size: clamp(20px, 6vw, 40px); 
+    }
+    .for-company__subtitle {
+        font-size: clamp(16px, 6vw, 15px);
+        text-align: center;
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+    .for-company__text {
+        font-size: clamp(18px, 5vw, 22px);
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    .for-company__button {
+        font-size: clamp(16px, 5vw, 24px);
+        padding: 12px 25px;
+        width: 100%;
+        max-width: 300px;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 480px) {
+    .for-company {
+        padding: 30px 15px;
+        margin-top: 40px;
+    }
+    .for-company__title{
+        font-size: clamp(16px, 6vw, 24px); 
+    }
+    .for-company__subtitle {
+        font-size: clamp(16px, 6vw, 10px);
+        margin-bottom: 25px;
+        max-width: 100%;
+        text-align: center;
+    }
+    .for-company__text {
+        font-size: clamp(14px, 7vw, 20px);
+        margin-bottom: 15px;
+    }
+    .for-company__button {
+        font-size: clamp(14px, 6vw, 20px);
+        padding: 10px 20px;
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}

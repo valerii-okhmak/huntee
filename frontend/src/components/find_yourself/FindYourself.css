@@ -65,7 +65,7 @@
 }
 
 .find-yourself__text {
-  font-size: clamp(14px, 2.2vw, 18px);
+  font-size: clamp(10px, 2.2vw, 1px);
   font-family: 'Montserrat', sans-serif;
 }
 

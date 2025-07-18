@@ -8,11 +8,12 @@ const steps = [
   { number: '4', label: 'Soft' },
   { number: '5', label: 'Trial' },
   { number: '6', label: 'Field' },
-  { number: '7', label: 'Join' },
+  { number: '7', label: 'Comp' },
+  { number: '8', label: 'Join' },
 ];
 
 const sectionIds = [
-  'section-01', 'section-02', 'section-03', 'section-04', 'section-05', 'section-06', 'section-07',
+  'section-01', 'section-02', 'section-03', 'section-04', 'section-05', 'section-06', 'section-07', 'section-08'
 ];
 
 const VerticalStepper = () => {

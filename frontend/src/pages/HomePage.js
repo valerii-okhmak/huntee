@@ -10,6 +10,7 @@ import JoinToUs from '../components/join_to_us/JoinToUs';
 import Find_yourself from '../components/find_yourself/FindYourself';
 import VerticalStepper from '../components/VerticalStepper/VerticalStepper';
 import SoftSkills from '../components/soft_skills_trial/SoftSkillsTrial';
+import ForCompany from '../components/ForCompany/ForCompany';
 
 
 const HomePage = () => {
@@ -25,7 +26,8 @@ const HomePage = () => {
       <div id="section-04"><SoftSkills/></div>
       <div id="section-05"><TrialTesting/></div>
       <div id="section-06"><ChooseYourFuture/></div>
-      <div id="section-07"><JoinToUs/></div>
+      <div id="section-07"><ForCompany/></div>
+      <div id="section-08"><JoinToUs/></div>
     </div>
   );
 };

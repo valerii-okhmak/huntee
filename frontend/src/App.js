@@ -23,6 +23,7 @@ import GeneralInfoPage from './pages/GeneralInfoPage';
 import PricingPage from './pages/PricingPage';
 import CompanyMainPage from './pages/CompanyMainPage';
 import TestCreationPage from './pages/TestCreationPage';
+import ForCompany from './components/ForCompany/ForCompany';
 
 const App = () => {
   return (
@@ -45,6 +46,7 @@ const App = () => {
         <Route path="/generalinfo" element={<GeneralInfoPage/>} />
         <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="/pricingpage" element={<PricingPage />} />
+        <Route path="/forcompany" element={<ForCompany />} />
 
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />
