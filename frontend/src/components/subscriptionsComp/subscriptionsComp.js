@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // імпорт Link з react-router-dom
+import { Link } from 'react-router-dom'; 
 import './subscriptionsComp.css';
 
 const Subscriptions = () => {

@@ -14,7 +14,7 @@ const steps = [
 ];
 
 const sectionIds = [
-  'section-01', 'section-02', 'section-03', 'section-04', 'section-05', 'section-06', 'section-07', 'section-08'
+  'section-01', 'section-02', 'section-03', 'section-04', 'section-05', 'section-06', 'section-07', 'section-08', 'section-09'
 ];
 
 const VerticalStepper = () => {
