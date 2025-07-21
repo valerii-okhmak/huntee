@@ -11,6 +11,7 @@ import Find_yourself from '../components/find_yourself/FindYourself';
 import VerticalStepper from '../components/VerticalStepper/VerticalStepper';
 import SoftSkills from '../components/soft_skills_trial/SoftSkillsTrial';
 import ForCompany from '../components/ForCompany/ForCompany';
+import Subscriptions from '../components/subscriptionsComp/subscriptionsComp';
 
 
 const HomePage = () => {
@@ -27,7 +28,8 @@ const HomePage = () => {
       <div id="section-05"><TrialTesting/></div>
       <div id="section-06"><ChooseYourFuture/></div>
       <div id="section-07"><ForCompany/></div>
-      <div id="section-08"><JoinToUs/></div>
+      <div id="section-08"><Subscriptions/></div>
+      <div id="section-09"><JoinToUs/></div>
     </div>
   );
 };

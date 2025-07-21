@@ -9,7 +9,8 @@ const steps = [
   { number: '5', label: 'Trial' },
   { number: '6', label: 'Field' },
   { number: '7', label: 'Comp' },
-  { number: '8', label: 'Join' },
+  { number: '8', label: 'Subs' },
+  { number: '9', label: 'Join' },
 ];
 
 const sectionIds = [

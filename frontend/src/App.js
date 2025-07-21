@@ -24,6 +24,7 @@ import PricingPage from './pages/PricingPage';
 import CompanyMainPage from './pages/CompanyMainPage';
 import TestCreationPage from './pages/TestCreationPage';
 import ForCompany from './components/ForCompany/ForCompany';
+import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
         <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="/pricingpage" element={<PricingPage />} />
         <Route path="/forcompany" element={<ForCompany />} />
+        <Route path="/subscriptions" element={<Subscriptions />} />
 
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />
