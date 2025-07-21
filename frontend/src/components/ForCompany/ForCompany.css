@@ -3,16 +3,29 @@
 .for-company {
     font-size: clamp(36px, 9vw, 110px);
     text-align: center;
-    min-height: 85vh;
+    height: 100%;
     font-family: 'Montserrat', sans-serif;
     background-size: 400% 400%; 
-    padding-top: clamp(30px, 8vh, 70px);
     padding: 100px;
+    position: relative;
+    overflow: hidden;
+    
 }
 
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+
 .for-company__title {
-    font-size: clamp(32px, 5vw, 50px);
-    background: linear-gradient(45deg, #56c7fb,#b006ff, #26e3ed, #f990f7, #002aff, #f990f7);
+    font-size: clamp(32px, 5vw, 60px);
+    background: linear-gradient(45deg, #0015ff,#f6ff00, #26e3ed, #ffee00, #44a1cd,#f6ff00, #26e3ed, #ffee00);
     background-size: 400% 400%; 
     background-clip: text;
     -webkit-background-clip: text;
@@ -28,16 +41,21 @@
 .for-company__subtitle {
     font-size: clamp(20px, 2.5vw, 25px);
     color: #000;
-    max-width: 100%;
+    max-width: 99%;
     margin: 0 auto 80px 0;
     line-height: 1.5;
     font-weight: 400;
     text-align: left;
+    background-color: rgba(255, 255, 255, 0.3); 
+    padding: 20px;
+    border: 0px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6); 
 }
 
 .for-company__text {
-    font-size: clamp(32px, 5vw, 30px);
-    background: linear-gradient(45deg, #56c7fb,#b006ff, #26e3ed, #f990f7, #002aff, #f990f7);
+    font-size: clamp(32px, 5vw, 20px);
+    background: linear-gradient(45deg, #44a1cd,#f6ff00, #26e3ed, #ffee00, #44a1cd,#f6ff00, #26e3ed, #ffee00);
     background-size: 400% 400%; 
     background-clip: text;
     -webkit-background-clip: text;
@@ -47,6 +65,7 @@
     margin-bottom: 20px;
     text-align: center;
 }
+
 .for-company__button {
     background: #000000;
     border: none;
@@ -93,14 +112,21 @@
 
   @media (max-width: 1024px) {
     .for-company {
-        padding: 60px 30px;
-        margin-top: 40px;
+        margin: 0;
+        padding: 0 30px;
+        min-height: 80vh;   
+    }
+    .background-video {
+        margin: 0;
+        padding: 0;
+        min-height: 80vh;   
     }
     .for-company__title,
     .for-company__subtitle {
         text-align: left;
         max-width: 90%;
         margin-bottom: 40px;
+        margin-top: 40px;
     }
     .for-company__text {
         font-size: clamp(22px, 3vw, 26px);
@@ -119,13 +145,18 @@
 
 @media (max-width: 768px) {
     .for-company {
-        padding: 40px 20px;
-        text-align: center; 
-        align-items: center; 
-        margin-top: 40px;
+        margin: 0;
+        padding: 0 20px;
+        min-height: 70vh;   
+    }
+    .background-video {
+        margin: 0;
+        padding: 0;
+        min-height: 70vh;
     }
     .for-company__title{
-        font-size: clamp(20px, 6vw, 40px); 
+        font-size: clamp(20px, 6vw, 40px);
+        margin-top: 40px; 
     }
     .for-company__subtitle {
         font-size: clamp(16px, 6vw, 15px);
@@ -149,11 +180,18 @@
 
 @media (max-width: 480px) {
     .for-company {
-        padding: 30px 15px;
-        margin-top: 40px;
+        margin: 0;
+        padding: 0 20px;
+        min-height: 70vh;
+    }
+    .background-video {
+        margin: 0;
+        padding: 0;
+        min-height: 70vh;
     }
     .for-company__title{
         font-size: clamp(16px, 6vw, 24px); 
+        margin-top: 40px;
     }
     .for-company__subtitle {
         font-size: clamp(16px, 6vw, 10px);
