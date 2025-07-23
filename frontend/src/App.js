@@ -25,8 +25,18 @@ import CompanyMainPage from './pages/CompanyMainPage';
 import TestCreationPage from './pages/TestCreationPage';
 import ForCompany from './components/ForCompany/ForCompany';
 import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
+import tryTestLogo from "./img/softserve.png";
+import tryTestQuestions from "./data/questions.json";
 
 const App = () => {
+
+  const tryTest = {
+    logo: tryTestLogo,
+    category: "Data Science",
+    title: "JUNIOR DATA SCIENTIST",
+    location: "Lviv",
+  }
+
   return (
     <Router>
     <GoogleOAuthProvider clientId="1081513846462-lhcffrki4nfgq2imdr4qdkfg9dgrmhh1.apps.googleusercontent.com">
@@ -40,7 +50,7 @@ const App = () => {
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/starttest' element={<StartTestPage />} />
         <Route path="/testrules" element={<TestRulesPage />} />
-        <Route path="/test" element={<FullTest/>} />
+        <Route path="/test" element={<FullTest testType="trial" textData={tryTest} time={3600} questionsLink={tryTestQuestions} />} />
         <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/forcompanies" element={<ForCompaniesPage/>} />
         <Route path="/startIT" element={<StartIT/>} />
@@ -49,6 +59,8 @@ const App = () => {
         <Route path="/pricingpage" element={<PricingPage />} />
         <Route path="/forcompany" element={<ForCompany />} />
         <Route path="/subscriptions" element={<Subscriptions />} />
+
+        <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
 
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />
