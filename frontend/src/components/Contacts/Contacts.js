@@ -54,17 +54,16 @@ const Contacts = () => {
         <h3>Соціальні мережі</h3>
         <p>Будьте на зв’язку з нами у соцмережах, щоб дізнаватись першими про новини та оновлення:</p>
         <div className="contacts__icons">
-            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className='contact__icon_facebook'>
                 <FontAwesomeIcon icon={faFacebookF} />
             </a>
-            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className='contact__icon_instagram'>
                 <FontAwesomeIcon icon={faInstagram} />
             </a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className='contact__icon_linkedin'>
                  <FontAwesomeIcon icon={faLinkedinIn} />
             </a>
         </div>
-
       </div>
     </div>
   );

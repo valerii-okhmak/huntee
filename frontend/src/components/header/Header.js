@@ -49,21 +49,23 @@ const Header = () => {
               </Link>
             </li>
           )}
+          <div className="header-icons">
           <li>
             <Link to="/messages" className="headermenu" aria-label="Повідомлення">
-              <FontAwesomeIcon icon={faEnvelope} size="lg" />
+              <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
             </Link>
           </li>
           <li>
             <Link to="/profile" className="headermenu" aria-label="Профіль">
-              <FontAwesomeIcon icon={faUser} size="lg" />
+              <FontAwesomeIcon icon={faUser} className="header-icon" />
             </Link>
           </li>
           <li>
             <button onClick={menuBtn} className="headermenu burger" aria-label="Бургер меню">
-              <FontAwesomeIcon icon={faBars} size="lg" />
+              <FontAwesomeIcon icon={faBars} className="header-icon"/>
             </button>
           </li>
+          </div>
         </ul>
       </nav>
       <BurgerMenu menuBtn={menuBtn}/>
