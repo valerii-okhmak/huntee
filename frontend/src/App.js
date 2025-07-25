@@ -17,7 +17,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import TestRulesPage from './pages/TestRulesPage';
 import FullTest from './components/FullTest/FullTest';
 import MyTestsPage from './pages/MyTestsPage';
-import ForCompaniesPage from './pages/ForCompaniesPage';
+import Contacts from './pages/Contacts';
 import StartIT from './pages/StartIT';
 import GeneralInfoPage from './pages/GeneralInfoPage';
 import PricingPage from './pages/PricingPage';
@@ -52,7 +52,7 @@ const App = () => {
         <Route path="/testrules" element={<TestRulesPage />} />
         <Route path="/test" element={<FullTest testType="trial" textData={tryTest} time={3600} questionsLink={tryTestQuestions} />} />
         <Route path="/mytests" element={<MyTestsPage/>} />
-        <Route path="/forcompanies" element={<ForCompaniesPage/>} />
+        <Route path="/contacts" element={<Contacts/>} />
         <Route path="/startIT" element={<StartIT/>} />
         <Route path="/generalinfo" element={<GeneralInfoPage/>} />
         <Route path="/profile/:user_id" element={<ProfilePage />} />
