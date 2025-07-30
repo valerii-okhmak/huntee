@@ -23,6 +23,7 @@ import GeneralInfoPage from './pages/GeneralInfoPage';
 import PricingPage from './pages/PricingPage';
 import CompanyMainPage from './pages/CompanyMainPage';
 import TestCreationPage from './pages/TestCreationPage';
+import TestCreationStartPage from './pages/TestCreationStartPage';
 import ForCompany from './components/ForCompany/ForCompany';
 import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 import tryTestLogo from "./img/softserve.png";
@@ -64,6 +65,7 @@ const App = () => {
 
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />
+        <Route path="/testcreation/start" element={<TestCreationStartPage />} />
         
 
         {/* Protected routes*/}
