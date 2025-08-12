@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 .find-yourself{
+  height: 100vh;
   display: flex;
   justify-content: center; 
   align-items: center; 
 }
 
 .find-yourself__background {
+  height: 100vh;
     background: linear-gradient(to right, #00F7FF, #A200FF);
     background-size: 200% 100%;
     background-position: 0% 0%;
