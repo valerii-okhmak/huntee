@@ -62,7 +62,7 @@
     -- Індексів для оптимізації пошуку 
     CREATE INDEX idx_users_email ON users (email);
     CREATE INDEX idx_oauth_identities_user_id ON oauth_identities (user_id);
-    CREATE INDEX idx_oauth_identities_provider_user_id ON oauth_identities (provider_user_id);\
+    CREATE INDEX idx_oauth_identities_provider_user_id ON oauth_identities (provider_user_id);
 
 
         -- Таблиця додаткових посилань
@@ -91,7 +91,7 @@
     CREATE TABLE courses (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
-        course_name VARCHAR(255) NOT NULL AFTER,
+        course_name VARCHAR(255) NOT NULL,
         certificate_url VARCHAR(255),
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
