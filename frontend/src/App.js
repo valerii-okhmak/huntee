@@ -28,6 +28,7 @@ import ForCompany from './components/ForCompany/ForCompany';
 import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 import tryTestLogo from "./img/softserve.png";
 import tryTestQuestions from "./data/questions.json";
+import TemplatesHunteePage from './pages/TemplatesHunteePage';
 
 const App = () => {
 
@@ -65,6 +66,7 @@ const App = () => {
 
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />
+        <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
         
 

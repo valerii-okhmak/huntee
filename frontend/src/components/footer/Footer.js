@@ -7,14 +7,14 @@ import { faFacebookF, faInstagram, faLinkedinIn, faYoutube } from '@fortawesome/
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const [setCopied] = useState(null);
+  const [copied, setCopied] = useState(null);
 
-  const handleCopy = (text, type) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(type);
-      setTimeout(() => setCopied(null), 2000);
-    });
-  };
+const handleCopy = (text, type) => {
+  navigator.clipboard.writeText(text).then(() => {
+    setCopied(type);
+    setTimeout(() => setCopied(null), 2000);
+  });
+};
 
   return (
     <footer className="footer" id="footer">

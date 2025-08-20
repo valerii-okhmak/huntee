@@ -75,12 +75,12 @@
 .test-creation-steptext{
     font-size: clamp(18px, 3vw, 35px);
     font-family: 'MyFont', sans-serif;
-    background: linear-gradient(to bottom, #160dc2 0%, #FB11FF 100%);
-    background-size: 100% 200%; /* подвоєна висота для анімації */
+    background: linear-gradient(to right, #00BBFF 0%, #1505A9 100%);
+    background-size: 200% 100%; 
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradientMove 20s linear infinite;
+    animation: gradientShift 10s linear infinite;
 }
 
 .test-creation-gradient {
