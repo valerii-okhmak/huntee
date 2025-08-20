@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,12 +9,20 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [copied, setCopied] = useState(null);
 
+useEffect(() => {
+  if (!copied) return;
+
+  const timer = setTimeout(() => setCopied(null), 2000);
+  return () => clearTimeout(timer);
+  
+}, [copied]);
+
 const handleCopy = (text, type) => {
   navigator.clipboard.writeText(text).then(() => {
     setCopied(type);
-    setTimeout(() => setCopied(null), 2000);
   });
 };
+
 
   return (
     <footer className="footer" id="footer">
@@ -44,6 +52,7 @@ const handleCopy = (text, type) => {
               <span className="adress-label">
                 Вулиця 15 квітня, 1, Тернопіль, Тернопільська область, 46023, Україна
               </span>
+              {copied != 'address' &&
               <FontAwesomeIcon
                 icon={faCopy}
                 className="copy-icon"
@@ -54,6 +63,8 @@ const handleCopy = (text, type) => {
                   )
                 }
               />
+              }
+              {copied === 'address' && <span className="copied-text">Скопійовано!</span>}
             </p>
           </div>
 
@@ -61,11 +72,14 @@ const handleCopy = (text, type) => {
             <p className="footer-label">Телефон</p>
             <p className="copy-line">
               <a href="tel:+380960000000" className="phone-link">+380-960-000-000</a>
+              {copied != 'phone' &&
               <FontAwesomeIcon
                 icon={faCopy}
                 className="copy-icon"
                 onClick={() => handleCopy("+380960000000", "phone")}
               />
+              }
+              {copied === 'phone' && <span className="copied-text">Скопійовано!</span>}
             </p>
           </div>
 
@@ -73,11 +87,14 @@ const handleCopy = (text, type) => {
             <p className="footer-label">E-mail</p>
             <p className="copy-line">
               <a href="mailto:huntee@gmail.com" className="email-link">huntee@gmail.com</a>
+              {copied != 'email' &&
               <FontAwesomeIcon
                 icon={faCopy}
                 className="copy-icon"
                 onClick={() => handleCopy("huntee@gmail.com", "email")}
               />
+              }
+              {copied === 'email' && <span className="copied-text">Скопійовано!</span>}
             </p>
           </div>
 
