@@ -1,0 +1,169 @@
+.reg2-form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    margin: 160px auto;
+    padding: 60px;
+    background-color: white;
+    border-radius: 28px;
+}
+
+.top-part-reg2{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 80px;
+}
+
+.left-side-reg2{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.left-side-reg2 h1{
+    font-size: clamp(24px, 4vw, 48px);
+    font-family: 'Montserrat', sans-serif;
+    color: #000000;
+}
+
+.special-t{
+    color: #359AC4;
+}
+
+.choose-who-i-am{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.choose-who-i-am div {
+  cursor: pointer;
+  padding: 10px 25px;
+  border-radius: 28px;
+  border: 1px solid #000000;
+  font-size: 24px;
+  font-family: 'Montserrat', sans-serif;
+  color: #000000;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.choose-who-i-am div:hover {
+  background-color: #f4f4f9;
+}
+
+.choose-who-i-am .active {
+    background: linear-gradient(to right, #EEF600, #09FFFF);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+    animation: gradientShift 10s ease-in-out infinite;
+    color: #000000;
+}
+
+.right-side-reg2 {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.reg2-input-box {
+  position: relative;
+  width: 100%;
+}
+
+.reg2-input-box .reg2-input {
+  width: 100%;
+  height: 50px;
+  padding: 13px 15px;
+  border: 1px solid #5a5e61;
+  border-radius: 0px;
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  color: #202124;
+  background: #ffffff;
+  outline: none;
+  transition: border 0.25s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.reg2-input-box .reg2-input:focus {
+  border: 2px solid #000000;
+}
+
+.reg2-input-label {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-family: 'MyFont', sans-serif;
+  color: #5a5e61;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  background: #fff;
+  padding: 0 4px;
+}
+
+.reg2-input-box .reg2-input:focus + .reg2-input-label,
+.reg2-input-box .reg2-input:valid + .reg2-input-label {
+  top: 0;
+  transform: translateY(-50%); 
+  font-size: 18px;
+  color: #000000;
+}
+
+
+.reg2-submit-button{
+    background: #000000;
+    border: none;
+    padding: 12px 32px;
+    display: inline-block;
+    font-size: clamp(14px, 2.5vw, 30px);
+    font-family: 'MyFont', sans-serif;
+    cursor: pointer;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    align-self: flex-start;
+}
+
+.reg2-submit-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+}
+
+.reg2-submit-button:hover {
+    color: #000000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+}
+
+.reg2-submit-button:hover::before {
+    transform: scaleX(1);
+}
+
+.horizontal-line-reg2{
+    width: 100%;
+    height: 1px;
+    background-color: #000000;
+    margin: 40px 0;
+}
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 0%; }
+    50%  { background-position: 100% 0%; }
+    100% { background-position: 0% 0%; }
+}
