@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Reg2Form.css';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import { Link } from 'react-router-dom';
 
 const Reg2Form = () => {
   const [selectedRole, setSelectedRole] = useState('student');
@@ -85,6 +86,9 @@ const Reg2Form = () => {
         <div className="horizontal-line-reg2"></div>
         <div className="bottom-part-reg2">
             <SocialLogin setError={setError} />
+            <p className="reg2-footer">
+                Уже є акаунт? <Link to="/login">Авторизуватися</Link>
+            </p>
         </div>
       </form>
     </div>
