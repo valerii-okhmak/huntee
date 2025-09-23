@@ -9,9 +9,10 @@ const Slider = () => {
   const currentX = useRef(null);
 
   const slides = [
-    { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/forcompanies' },
-    { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/' },
+    { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/companymain' },
+    { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/generalinfo' },
     { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/startIT' },
+    { id: 4, text: 'МАЄТЕ ЗАПИТАННЯ АБО ПРОПОЗИЦІЇ?', link: '/contacts' },
   ];
   const totalSlides = slides.length;
 

@@ -4,7 +4,7 @@
   max-height: 600px;
   overflow-y: auto;
   box-shadow: 0 0 70px rgba(0, 0, 0, 0.7);
-  margin: clamp(30px, 5vw, 65px) auto clamp(50px, 8vw, 100px) auto;
+  margin: 0 auto clamp(50px, 8vw, 100px) auto;
 }
 
 .browser-top-block {

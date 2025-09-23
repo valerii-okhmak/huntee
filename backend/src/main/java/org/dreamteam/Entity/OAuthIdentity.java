@@ -37,8 +37,6 @@ public class OAuthIdentity {
     @Column(name = "refresh_token", columnDefinition = "TEXT")
     private String refreshToken;
     
-    @Column(name = "expires_at")
-    private LocalDateTime expiresAt;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -56,4 +54,11 @@ public class OAuthIdentity {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    @Column(name = "access_token_expires_at")
+    private LocalDateTime accessTokenExpiresAt;
+
+    @Column(name = "refresh_token_expires_at")
+    private LocalDateTime refreshTokenExpiresAt;
+
 }

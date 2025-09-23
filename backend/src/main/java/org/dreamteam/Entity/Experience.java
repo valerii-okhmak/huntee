@@ -15,7 +15,11 @@ public class Experience {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String certificateUrl;
+    @Column(name = "project_name", nullable = false)
+    private String projectName;
+
+    @Column(name = "project_url")
+    private String projectUrl;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -23,5 +27,9 @@ public class Experience {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
 

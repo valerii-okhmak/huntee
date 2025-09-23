@@ -29,9 +29,9 @@
         user_id INT PRIMARY KEY,
         profile_image_url TEXT,
         first_name VARCHAR(100) not NULL,
-        last_name VARCHAR(100),
-        about TEXT;
-    
+        last_name VARCHAR(100) not NULL,
+        birth_date DATE,
+        about TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -62,7 +62,7 @@
     -- Індексів для оптимізації пошуку 
     CREATE INDEX idx_users_email ON users (email);
     CREATE INDEX idx_oauth_identities_user_id ON oauth_identities (user_id);
-    CREATE INDEX idx_oauth_identities_provider_user_id ON oauth_identities (provider_user_id);\
+    CREATE INDEX idx_oauth_identities_provider_user_id ON oauth_identities (provider_user_id);
 
 
         -- Таблиця додаткових посилань
@@ -91,6 +91,7 @@
     CREATE TABLE courses (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
+        course_name VARCHAR(255) NOT NULL,
         certificate_url VARCHAR(255),
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -102,12 +103,14 @@
     CREATE TABLE experiences (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
-        certificate_url VARCHAR(255),
+        project_name VARCHAR(255) NOT NULL,
+        project_url VARCHAR(255),
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
+
 ```
 
 

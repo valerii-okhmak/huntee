@@ -16,6 +16,10 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "course_name", nullable = false)
+    private String course_name;
+
+    @Column(name = "certificate_url", nullable = false)
     private String certificateUrl;
 
     @Column(columnDefinition = "TEXT")
@@ -24,4 +28,8 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

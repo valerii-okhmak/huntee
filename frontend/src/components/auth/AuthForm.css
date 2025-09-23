@@ -1,16 +1,18 @@
 .auth-main {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
   width: 100vw;
   background-color: #F5F5F5;
   position: relative;
+  gap: 20px;
 }
 
 .auth-container {
   position: relative;
-  z-index: 2; /* Встановлюємо на передній план */
+  z-index: 2; 
   padding: 20px;
   text-align: center;
   background: white;
@@ -142,4 +144,24 @@
 
 .form-group b {
   color: red;
+}
+
+@media screen and (max-width: 480px) {
+  .auth-container {
+  max-width: 350px;
+  margin: 20px;
+  font-family: 'Montserrat', sans-serif;
+}
+}
+
+/* Медіа-запити для iPad (768px–1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    
+
+    .auth-container {
+        max-width: 600px;
+        padding: 40px;
+    }
+
+    
 }

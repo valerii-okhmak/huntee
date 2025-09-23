@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+.subscriptions {
+  background-color: #F1F1F1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10% 8%; 
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh; 
+  width: 100%;
+}
+
+.subscriptions__content {
+  background: linear-gradient(to bottom, #00cfff, #000cff);
+  width: 100%;
+  padding: clamp(20px, 5vw, 60px);
+  color: #fff;
+  text-align: left;
+  position: relative;
+}
+
+.corner-icon {
+  background: linear-gradient(45deg, #00d9ff, #2200ff, #00ddff, #2200ff, #00d9ff, #2200ff, #00ddff, #2200ff);
+  background-size: 400% 400%; 
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 20s infinite linear;
+  position: absolute;
+  font-family: 'Montserrat', sans-serif;
+  top: clamp(5px, 2vw, 10px);
+  right: clamp(10px, 3vw, 15px);
+  font-size: clamp(16px, 8vw, 150px);
+  font-weight: bold;
+  z-index: 2;
+  user-select: none;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.subscriptions__title {
+  font-size: clamp(24px, 5vw, 50px);
+  font-weight: 700;
+  text-transform: lowercase;
+  margin-bottom: clamp(5px, 1vw, 10px);
+}
+
+.subscriptions__subtitle {
+  font-size: clamp(14px, 2.5vw, 20px);
+  font-weight: 500;
+  margin-bottom: clamp(10px, 2vw, 20px);
+}
+
+.subscriptions__plans {
+  display: flex;
+  justify-content: center;
+  gap: clamp(20px, 5vw, 50px);
+  flex-wrap: wrap;
+  margin: clamp(30px, 5vw, 60px) 0;
+}
+
+.subscription__plan-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(140px, 25vw, 250px);
+}
+
+.plan__desc {
+  font-size: clamp(14px, 2vw, 18px);
+  color: #e0e0e0;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.plan__button {
+  background: #000000;
+  border: none;
+  padding: clamp(8px, 2vw, 12px) clamp(15px, 5vw, 40px);
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  font-size: clamp(16px, 4vw, 32px);
+  font-family: 'MyFont', sans-serif;
+  cursor: pointer;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  margin: 0 auto;
+  width: 100%;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.plan__button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+.plan__button:hover {
+  color: #000000;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+}
+
+.plan__button:hover::before {
+  transform: scaleX(1);
+}
+
+.plan__number {
+  font-size: clamp(40px, 8vw, 80px);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+.plan__price {
+  background: linear-gradient(45deg, #2d3efb,#ea00ff, #26e3ed, #ed26c8, #3d4eff,#ea00ff, #26e3ed, #ed26c8);
+  background-size: 400% 400%; 
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 20s infinite linear;
+  font-size: clamp(16px, 3vw, 35px);
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  padding: 10px 4px;
+  position: absolute;
+  bottom: clamp(5px, 1vw, 10px);
+  right: clamp(10px, 3vw, 15px);
+}
+
+.subscriptions__footer {
+  margin-top: clamp(30px, 5vw, 60px);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(12px, 2vw, 18px);
+  color: #ffffffb5;
+  text-align: center;
+}
+
+@media screen and (max-width: 670px) {
+  .subscriptions__plans {
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(20px, 4vw, 40px);
+  }
+
+  .subscription__plan-item {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .plan__button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

@@ -1,0 +1,499 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+.create-test-info {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.backgroundvideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  filter: grayscale(100%);
+}
+
+.overlay {
+  background-color: rgba(255, 255, 255, 0.75);
+  padding: clamp(20px, 5vw, 55px) clamp(8px, 3vw, 20px);
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 10vh;
+}
+
+.happens {
+  font-size: clamp(14px, 2vw + 1rem, 25px);
+  margin: 0 clamp(3px, 1vw, 10px) clamp(15px, 4vw, 40px);
+  font-weight: 700;
+}
+
+.steps {
+  width: 100%;
+  display: flex;
+}
+
+.step {
+  font-weight: 700;
+  margin: 0 clamp(3px, 1vw, 10px);
+  font-size: clamp(8px, 1.5vw, 20px);
+}
+
+.arrow {
+  margin: 0 clamp(3px, 1vw, 10px);
+}
+
+/* Key Benefits */
+.benefits-section {
+  padding: 0px 20px 40px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.benefits-section h2 {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  position: relative;
+  display: inline-block;
+}
+
+.benefits-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #00afef, #bc2ce8);
+  border-radius: 2px;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  justify-items: center;
+}
+
+.benefit-card {
+  background: linear-gradient(145deg, #ffffff, #f1f5f9);
+  padding: 30px 25px;
+  border-radius: 0px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.6s forwards;
+}
+
+.benefit-card:nth-child(1) { animation-delay: 0s; }
+.benefit-card:nth-child(2) { animation-delay: 0.1s; }
+.benefit-card:nth-child(3) { animation-delay: 0.2s; }
+.benefit-card:nth-child(4) { animation-delay: 0.3s; }
+
+.benefit-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 18px 30px rgba(0,0,0,0.12);
+}
+
+.benefit-card h3 {
+  font-size: 20px;
+  margin: 20px 0 10px;
+  font-weight: 800;
+}
+
+.benefit-card p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Who is this platform for? */
+.audience-section {
+  padding: 40px 20px 90px; 
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.audience-section h2 {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  position: relative;
+  display: inline-block;
+}
+
+.audience-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #07baa2, #ff0bce);
+  border-radius: 2px;
+}
+
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  justify-items: center;
+}
+
+.audience-card {
+  background: linear-gradient(145deg, #ffffff, #f9fafd);
+  padding: 30px 25px;
+  border-radius: 0px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+  text-align: center;
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.6s forwards;
+}
+
+.audience-card:nth-child(1) { animation-delay: 0s; }
+.audience-card:nth-child(2) { animation-delay: 0.1s; }
+.audience-card:nth-child(3) { animation-delay: 0.2s; }
+.audience-card:nth-child(4) { animation-delay: 0.3s; }
+
+.audience-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 18px 28px rgba(0,0,0,0.1);
+}
+
+.audience-card h3 {
+  font-size: 20px;
+  margin: 20px 0 10px;
+  font-weight: 800;
+}
+
+.audience-card p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/*  How does it work? */
+.how-section {
+  padding: 80px 20px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  background: #f5f7fa;
+}
+
+/*Контент під шаром */
+.bottom-content {
+  z-index: 2;
+  display: flex;
+  width: 100%; /* щоб займати всю ширину */
+  padding: 40px 70px;
+  flex-wrap: wrap;
+}
+
+
+.bottom-content p {
+  margin-bottom: 20px;
+  font-size: clamp(20px, 5vw , 40px);
+  font-weight: 700;
+  width: 100%;
+  text-transform: uppercase;
+  background: linear-gradient(45deg,#00afef,#07baa2,#26e3ed,#bc2ce8,#ff0bce,#f383f5);
+  background-size: 400% 400%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 20s infinite linear;
+}
+
+/* Ліва кнопка залишається ліворуч */
+.bottom-content .general__button:first-child {
+  margin-right: auto;
+  text-align: left;
+}
+
+/* Права кнопка вирівнюється праворуч */
+.bottom-content .general__button:last-child {
+  margin-left: auto;
+  text-align: right;
+}
+
+.general__button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.general_info_button {
+  background: #000000;
+  border: none;
+  padding: clamp(10px, 3vw, 15px) clamp(20px, 10vw, 50px);
+  display: inline-block;
+  font-size: clamp(20px, 5vw, 45px);
+  font-family: 'MyFont', sans-serif;
+  cursor: pointer;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.general_info_button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+.general_info_button:hover {
+  color: #000000;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+}
+
+.general_info_button:hover::before {
+  transform: scaleX(1);
+}
+
+
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media screen and (max-width: 994px){
+  .bottom-content .left-content p,
+  .bottom-content .right-content p {
+    text-align: center;
+  }
+}
+
+
+@media screen and (max-width: 1000px) {
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+  }
+
+  .benefit-card h3 {
+    font-size: 18px;
+  }
+
+  .benefit-card p {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px;
+  }
+
+  .benefit-card h3 {
+    font-size: 16px;
+  }
+
+  .benefit-card p {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .benefit-card h3 {
+    font-size: 16px;
+  }
+
+  .benefit-card p {
+    font-size: 13px;
+  }
+}
+
+
+@media screen and (max-width: 1000px) {
+  .audience-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 20px;
+  }
+
+  .audience-card h3 {
+    font-size: 18px;
+  }
+
+  .audience-card p {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .audience-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 15px;
+    
+  }
+
+  .audience-card h3 {
+    font-size: 16px;
+  }
+
+  .audience-card p {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .audience-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+    gap: 15px;
+    
+  }
+
+  .audience-card h3 {
+    font-size: 16px;
+  }
+
+  .audience-card p {
+    font-size: 13px;
+  }
+}
+@media screen and (max-width:540px) {
+  .audience-grid {
+    grid-template-columns: 1fr; 
+    gap: 15px;
+  }
+
+  .audience-card {
+    width: 100%; 
+  }
+
+  .audience-card h3 {
+    font-size: 16px;
+  }
+
+  .audience-card p {
+    font-size: 13px;
+  }
+}
+
+
+@media screen and (max-width: 1000px) {
+  .how-section {
+    padding: 60px 20px;
+  }
+
+  .bottom-content {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .bottom-content p {
+    font-size: clamp(18px, 4vw, 32px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .how-section {
+    padding: 50px 15px;
+  }
+
+  .bottom-content {
+    flex-direction: column; 
+    gap: 15px;
+  }
+
+  .bottom-content p {
+    font-size: clamp(16px, 5vw, 28px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .how-section {
+    padding: 40px 10px;
+  }
+
+  .bottom-content p {
+    font-size: clamp(14px, 6vw, 24px);
+  }
+}
+
+@media screen and (max-width: 1060px) {
+  .general_info_button {
+    padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 25px);
+    font-size: clamp(16px, 4vw, 32px);
+  }
+
+  .bottom-content p {
+    font-size: clamp(18px, 2.5vw, 28px);
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .general_info_button {
+    padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px);
+    font-size: clamp(10px, 4vw, 20px);
+  }
+  .bottom-content p {
+    font-size: clamp(15px, 3vw, 20px);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .bottom-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .general__button {
+    width: 100%; 
+    text-align: center;
+    align-items: center;
+    margin: 0;
+  }
+
+  .general_info_button {
+    width: 100%; 
+    padding: clamp(15px, 4vw, 20px);
+    font-size: clamp(14px, 4vw, 28px);
+  }
+  .bottom-content p {
+    width: 100%; 
+    font-size: clamp(14px, 4vw, 30px);
+    text-align: center;
+    margin: 0; 
+  }
+}

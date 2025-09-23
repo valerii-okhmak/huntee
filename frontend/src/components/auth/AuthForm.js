@@ -7,13 +7,14 @@ import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import { Link } from 'react-router-dom';
+import UserTypeSelector from './UserTypeSelector';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e ) => {
     e.preventDefault();
     setError('');
 
@@ -46,7 +47,7 @@ const AuthForm = () => {
       const credential = credentialResponse.credential;
       const decoded = jwtDecode(credential);
 
-      const response = await axios.post('https://java-application-latest-mlfc.onrender.com/api/auth/google', {
+      const response = await axios.post(`${process.env.BACKEND}/api/auth/google`, {
         providerUserId: decoded.sub,
         email: decoded.email,
         firstName: decoded.given_name,
@@ -67,6 +68,7 @@ const AuthForm = () => {
 
   return (
     <div className="auth-main">
+      <UserTypeSelector />
       <div className="auth-container">
         <h2>З поверненням!</h2>
         <form className="auth-form" onSubmit={handleSubmit}>

@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.companyOptions {
+    height: 80vh;
+    position: relative;
+}
+
+.companyOptions_container {
+    padding: 80px 0;
+}
+
+.companyOptions_bd {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 80vh;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.6);
+    z-index: -1;
+}
+
+
+.companyOptions_bd {
+    position: absolute;
+    filter: grayscale(100%) brightness(0.6);
+
+}
+.companyOptions__title {
+    font-family: 'Montserrat', sans-serif;
+    color: rgb(190, 190, 190);
+    font-size: clamp(28px, 5vw, 60px);
+    font-weight: 700;
+    margin-bottom: 30px;
+    margin-top: 80px;
+}
+
+.companyOptions__buttons {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.co-button {
+    background: linear-gradient(45deg, #82a3ff, #52b9f9, #26e3ed, #f0ed15, #fffd87);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    background-clip: text;
+    color: transparent;
+
+    padding: clamp(15px, 2vw, 25px) clamp(15px, 4vw, 20px);
+    font-size: clamp(10px, 4vw , 30px);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+    text-decoration: none;
+    text-align: center;
+    background-size: 400% 400%;
+    animation: gradientTextMove 10s linear infinite;
+}
+
+  
+.co-button:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+    color: #000;
+}
+
+@media screen and (max-width: 795px) {
+    .companyOptions__buttons {
+        flex-direction: column;
+    }
+}

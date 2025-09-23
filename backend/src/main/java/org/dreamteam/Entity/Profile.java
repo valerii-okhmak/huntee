@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,9 @@ public class Profile {
     
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "birth_date")
+    private LocalDate birthDate; 
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -66,5 +71,6 @@ public class Profile {
     private List<Experience> experienceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Link> links = new ArrayList<>();
+    private List<ProfileLink> links = new ArrayList<>();
+
 }

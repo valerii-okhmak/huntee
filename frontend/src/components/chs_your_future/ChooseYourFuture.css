@@ -17,6 +17,7 @@
 }
 
 .choose-your-future h2 {
+    padding-top: 50px;
     font-family: 'MyFont1', sans-serif; 
     color: white;
     font-size: clamp(32px, 8vw, 80px);

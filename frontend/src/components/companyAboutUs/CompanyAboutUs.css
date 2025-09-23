@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cousine:ital,wght@0,400;0,700;1,400;1,700&family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap');
+
+.companyAboutUs {
+    min-height: 100vh;
+    background-color: #D9D9D9;
+    padding: clamp(40px, 10vw, 100px) 0;
+}
+
+
+.companyAboutUs__title {
+    font-family: 'Montserrat', sans-serif;
+    color: #FFFFFF;
+    font-size: clamp(40px, 8vw, 100px);
+    font-weight: 700;
+    opacity: 0.75;
+    margin-left: 12.5%;
+    line-height: 0.8;
+}
+
+.companyAboutUs__container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.companyAboutUs__hello {
+    font-family: "Cousine", monospace;
+    font-size: clamp(14px, 2.5vw, 22px); 
+    font-weight: bold;
+}
+
+.companyAboutUs__text {
+    font-size: clamp(12px, 2vw, 18px); /* не такий різкий спад як 1.2vw */
+    font-family: "Cousine", monospace;
+}
+
+.companyAboutUs__why {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.companyAboutUs__benefit {
+    background-color: #D9D9D9;
+    border-radius: 5px;
+    padding: 15px 10px;
+    text-align: center;
+    font-family: "Cousine", monospace;
+    font-size: clamp(14px, 2.5vw, 18px); 
+    font-weight: bold;
+}
+
+.companyAboutUs__benefit-small {
+    flex: 1 1 calc((100% - 30px ) / 3);
+}
+.companyAboutUs__benefit-big {
+    flex: 1 1 calc((100% - 15px ) / 2);
+}
+
+@media screen and (max-width: 768px) {
+    .companyAboutUs__title {
+        margin-left: 15px;
+    }
+}

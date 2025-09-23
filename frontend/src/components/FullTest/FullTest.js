@@ -13,24 +13,25 @@ const RAPIDAPI_HEADERS = {
   "X-RapidAPI-Key": "41a9f024efmsh1a0ad3ef3f1f9b0p162680jsnad4442fec743", 
 };
 
-const TestPage = () => {
+const TestPage = ({testType, textData, time, questionsLink}) => {
   const [outputMap, setOutputMap] = useState({});
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(3600); // 1 година 
+  const [timeLeft, setTimeLeft] = useState(time); 
 
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    setQuestions(rawQuestions);
+    setQuestions(questionsLink);
   }, []);
 
   // Таймер
   useEffect(() => {
     if (submitted) return;
+    if (timeLeft == 0) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -234,43 +235,44 @@ const TestPage = () => {
   const { h, m, s } = formatTime(timeLeft);
 
   return (
-    <div className="FullTest">
-      <div className="header-bar">
-        <div className="top-section">
-          <div className="top-line">
-            <div className="category">Data Science</div>
-            <div className="logo">
-              <img src={logo} alt="Фото компанії" />
-            </div>
-          </div>
-          <h1 className="fulltest-title">JUNIOR DATA SCIENTIST</h1>
-          <div className="top-line">
-            <div className="location">
-              <div className="icon">
-                <img src="/icons/location.png" alt="Локація" />
+    <div className={`FullTest ${testType === "softskills" ? 'FullTest-gradient' : 'FullTest-regular'}`}>
+      {testType != "softskills" &&
+        <div className="header-bar">
+            <div className="top-section">
+              <div className="top-line">
+                <div className="category">{textData.category}</div>
+                <div className="logo">
+                  <img src={textData.logo} alt="Фото компанії" />
+                </div>
               </div>
-              Lviv
+              <h1 className="fulltest-title">{textData.title}</h1>
+              <div className="top-line">
+                <div className="location">
+                  <div className="icon">
+                    <img src="/icons/location.png" alt="Локація" />
+                  </div>
+                  {textData.location}
+                </div>
+              </div>
+            </div>
+          <div className="timer-box">
+            <div className="time">
+              <span className="time-val">{h}</span>
+              <span className="time-label">годин</span>
+            </div>
+            <div className="time">
+              <span className="time-val">{m}</span>
+              <span className="time-label">хвилин</span>
+            </div>
+            <div className="time">
+              <span className="time-val">{s}</span>
+              <span className="time-label">секунд</span>
             </div>
           </div>
         </div>
+      }
 
-        <div className="timer-box">
-          <div className="time">
-            <span className="time-val">{h}</span>
-            <span className="time-label">годин</span>
-          </div>
-          <div className="time">
-            <span className="time-val">{m}</span>
-            <span className="time-label">хвилин</span>
-          </div>
-          <div className="time">
-            <span className="time-val">{s}</span>
-            <span className="time-label">секунд</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="test-container">
+      <div className={`test-container ${testType === "softskills" ? 'test-container-transparent' : ''}`}>
         {questions.length > 0 && (
           <>
             <h2 className="question">{questions[current].question}</h2>
@@ -281,7 +283,7 @@ const TestPage = () => {
         <div className="test-buttons">
           {current < questions.length - 1 && (
             <button
-              className="next-button"
+              className={`next-button ${testType === "softskills" ? 'finish-button' : ''}`}
               onClick={() =>
                 setCurrent((prev) => Math.min(prev + 1, questions.length - 1))
               }
@@ -320,7 +322,7 @@ const TestPage = () => {
         </div>
       </div>
 
-      <div className="Num">
+      <div className={`Num ${testType === "softskills" ? 'Num-bg' : ''}`}>
         {questions.map((_, i) => (
           <button
             key={i}

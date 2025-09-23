@@ -24,7 +24,6 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-
 }
 
 main {
@@ -92,6 +91,9 @@ main {
   padding-top: 40px;
 }
 
+input::placeholder, textarea::placeholder {
+  color: #000000;
+}
 
 @media screen and (max-width: 900px) {
   .message {

@@ -72,6 +72,7 @@ public class AuthController {
                 request.getExpiresAt()
         );
     }
+
     @Operation(summary = "Refresh JWT token")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Token refreshed successfully"),
@@ -98,5 +99,9 @@ public class AuthController {
         );
     }
     
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+        return authService.changePassword(request);
+    }
 
 }
