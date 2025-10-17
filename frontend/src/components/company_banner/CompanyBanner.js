@@ -25,17 +25,19 @@ const CompanyBanner = () => {
   if (!visible) return null;
 
   return (
+    <div className="banner-wrapper">
     <div className={`company-banner ${closed ? "hide" : "show"}`} onClick={handleClick}>
       <button className="close-btn" onClick={handleClose}>
         ✖
       </button>
       <div className="banner-content">
         <div>
-          <h4>ВИ ПРЕДСТАВНИК КОМПАНІЙ?</h4>
+          <h4>ВИ ПРЕДСТАВНИК<br/>КОМПАНІЙ?</h4>
           <p>Переходьте на сторінку компаній!</p>
         </div>
         <span className="arrow">➜</span>
       </div>
+    </div>
     </div>
   );
 };
