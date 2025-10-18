@@ -30,6 +30,7 @@ import tryTestLogo from "./img/softserve.png";
 import tryTestQuestions from "./data/questions.json";
 import TemplatesHunteePage from './pages/TemplatesHunteePage';
 import Reg2Page from './pages/Reg2Page';
+import ScrollToTop from './components/ScrollToTop'; 
 
 const App = () => {
 
@@ -42,6 +43,7 @@ const App = () => {
 
   return (
     <Router>
+    <ScrollToTop /> 
     <GoogleOAuthProvider clientId="1081513846462-lhcffrki4nfgq2imdr4qdkfg9dgrmhh1.apps.googleusercontent.com">
     <div className="App">
       <Header />
@@ -63,14 +65,11 @@ const App = () => {
         <Route path="/pricingpage" element={<PricingPage />} />
         <Route path="/forcompany" element={<ForCompany />} />
         <Route path="/subscriptions" element={<Subscriptions />} />
-
         <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
-
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
-        
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>

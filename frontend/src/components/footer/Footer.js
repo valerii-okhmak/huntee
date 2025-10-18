@@ -33,7 +33,7 @@ const handleCopy = (text, type) => {
         <ul className="footer-menu">
           <li><Link to="/generalinfo" className="footermenu">Про нас</Link></li>
           <li><Link to="/contacts" className="footermenu">Запитання та пропозиції</Link></li>
-          <li><Link to="/forcompany" className="footermenu">Для компаній</Link></li>
+          <li><Link to="/companymain" className="footermenu">Для компаній</Link></li>
           <li><Link to="/pricingpage" className="footermenu">Підписки</Link></li>
           <li><Link to="/" className="footermenu">Співпраця</Link></li>
           <li><Link to="/" className="footermenu">Інвестиції</Link></li>
