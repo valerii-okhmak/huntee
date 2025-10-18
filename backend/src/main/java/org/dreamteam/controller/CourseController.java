@@ -2,13 +2,13 @@ package org.dreamteam.controller;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
-
-import org.dreamteam.Entity.Course;
+import jakarta.persistence.EntityNotFoundException;
 import org.dreamteam.dto.CourseRequest;
 import org.dreamteam.dto.CourseResponse;
-import org.dreamteam.service.JwtService;
 import org.dreamteam.service.ProfileService;
+import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication; 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,29 +26,32 @@ import lombok.RequiredArgsConstructor;
 public class CourseController {
 
     private final ProfileService profileService;
-    private final JwtService jwtService;
 
     @GetMapping
-    public List<CourseResponse> getCourses(@RequestParam("token") String token) {
-        String email = jwtService.extractUsername(cleanToken(token));
+    public List<CourseResponse> getCourses(Authentication authentication) {
+        String email = authentication.getName(); 
         return profileService.getCourses(email);
     }
 
     @PostMapping
-    public CourseResponse addCourse(@RequestParam("token") String token, @RequestBody CourseRequest request) {
-        String email = jwtService.extractUsername(cleanToken(token));
-        return profileService.addCourse(email, request); 
+    public CourseResponse addCourse(Authentication authentication, @RequestBody CourseRequest request) {
+        String email = authentication.getName();
+        return profileService.addCourse(email, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@RequestParam("token") String token, @PathVariable Long id) throws AccessDeniedException {
-        profileService.deleteCourse(token, id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteCourse(Authentication authentication, @PathVariable Long id) {
+        String email = authentication.getName();
+        try {
+            profileService.deleteCourse(email, id); 
+            return ResponseEntity.noContent().build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-    private String cleanToken(String token) {
-        return token.startsWith("Bearer ") ? token.substring(7) : token;
-    }
     @GetMapping("/user_id")
     public List<CourseResponse> getCoursesByUserId(@RequestParam Integer userId) {
         return profileService.getCoursesByUserId(userId);

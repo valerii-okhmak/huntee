@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.dreamteam.Entity.Course;
 import org.dreamteam.Entity.Education;
 import org.dreamteam.Entity.Experience;
-import org.dreamteam.Entity.OAuthProvider;
 import org.dreamteam.Entity.Profile;
 import org.dreamteam.Entity.ProfileLink;
 import org.dreamteam.Entity.User;
@@ -33,8 +32,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,7 +44,6 @@ public class ProfileService {
     private final ProfileLinkRepository profileLinkRepository;
     private final EducationRepository educationRepository;
     private final CourseRepository courseRepository;
-    private final OAuthProviderRepository providerRepository;
     private final OAuthIdentityRepository oAuthIdentityRepository;
     private final ExperienceRepository experienceRepository;
     private final JwtService jwtService;
@@ -142,7 +138,6 @@ public class ProfileService {
 
             String fileUrl =  fileName;
 
-            // Оновлюємо профіль
             profile.setProfileImageUrl(fileUrl);
             profileRepository.save(profile);
 

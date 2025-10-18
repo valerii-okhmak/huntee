@@ -25,8 +25,6 @@ import java.util.Optional;
 
 import javax.mail.MessagingException;
 
-
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -47,7 +45,7 @@ public class AuthService {
         }
         if (!isStrongPassword(request.getPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                "Пароль має містити щонайменше 8 символів і принаймні два з трьох: літери, цифри, спеціальні символи.");
+                    "Пароль має містити щонайменше 8 символів і принаймні два з трьох: літери, цифри, спеціальні символи.");
         }
 
         UserType userType = userTypeRepository.findByName("USER")
@@ -117,37 +115,37 @@ public class AuthService {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Невірна електронна адреса або пароль");
         }
-    
+
         if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Невірний об'єкт авторизації");
         }
-    
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
-    
+
         String newAccessToken = jwtService.generateToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);
-    
+
         OAuthProvider localProvider = oauthProviderRepository.findByName("local")
                 .orElseThrow(() -> new ResourceNotFoundException("OAuth Provider 'local' не знайдено"));
-    
+
         OAuthIdentity identity = oauthIdentityRepository
                 .findByProviderAndProviderUserId(localProvider, user.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("OAuth identity не знайдено"));
-    
+
         identity.setAccessToken(newAccessToken);
         identity.setRefreshToken(newRefreshToken);
         identity.setAccessTokenExpiresAt(LocalDateTime.now().plusDays(1));
         identity.setRefreshTokenExpiresAt(LocalDateTime.now().plusDays(7));
 
-    
-        oauthIdentityRepository.save(identity); 
-    
+
+        oauthIdentityRepository.save(identity);
+
         AuthResponse response = AuthResponse.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
@@ -158,7 +156,7 @@ public class AuthService {
                 .lastName(user.getProfile().getLastName())
                 .profileImage(user.getProfile().getProfileImageUrl())
                 .build();
-    
+
         return ResponseEntity.ok(response);
     }
 
@@ -172,7 +170,6 @@ public class AuthService {
 
         User user = userOpt.get();
 
-        // Перевірка чи користувач пов’язаний з LOCAL-провайдером
         Optional<OAuthProvider> localProviderOpt = oauthProviderRepository.findByName("LOCAL");
         if (localProviderOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Провайдер LOCAL не знайдено");
@@ -188,24 +185,21 @@ public class AuthService {
                     .body("Зміна пароля доступна лише для користувачів, зареєстрованих через локальний акаунт");
         }
 
-        // Перевірка старого пароля
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Старий пароль неправильний");
         }
 
-        // Перевірка надійності нового пароля
         if (!isStrongPassword(request.getNewPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     "Новий пароль повинен містити щонайменше 8 символів і хоча б два з трьох: літери, цифри, спецсимволи");
         }
 
-        // Оновлення пароля
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
 
         return ResponseEntity.ok("Пароль успішно змінено");
     }
-
+    
     @Transactional
     public ResponseEntity<?> refreshToken(RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
@@ -243,33 +237,38 @@ public class AuthService {
                                                String firstName, String lastName, String imageUrl,
                                                String accessToken, String refreshToken, LocalDateTime expiresAt) {
 
-        OAuthProvider provider = oauthProviderRepository.findByName(providerName)
-                .orElseThrow(() -> new ResourceNotFoundException("OAuth provider not found"));
+        if (providerUserId == null || providerUserId.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider User ID is required.");
+        }
 
-        Optional<OAuthIdentity> existingOAuthIdentity = oauthIdentityRepository
+        OAuthProvider provider = oauthProviderRepository.findByName(providerName)
+                .orElseThrow(() -> new ResourceNotFoundException("OAuth provider not found: " + providerName));
+
+        Optional<OAuthIdentity> identityOpt = oauthIdentityRepository
                 .findByProviderAndProviderUserId(provider, providerUserId);
 
         User user;
-        if (existingOAuthIdentity.isPresent()) {
-            OAuthIdentity oauthIdentity = existingOAuthIdentity.get();
-            oauthIdentity.setAccessToken(accessToken);
-            oauthIdentity.setRefreshToken(refreshToken);
-            oauthIdentity.setAccessTokenExpiresAt(LocalDateTime.now().plusDays(1));
-            oauthIdentity.setRefreshTokenExpiresAt(LocalDateTime.now().plusDays(7));
+        if (identityOpt.isPresent()) {
+            OAuthIdentity identity = identityOpt.get();
+            identity.setAccessToken(accessToken);
+            identity.setRefreshToken(refreshToken);
+            identity.setAccessTokenExpiresAt(expiresAt != null ? expiresAt : LocalDateTime.now().plusDays(1));
+            oauthIdentityRepository.save(identity);
+            user = identity.getUser();
 
-            oauthIdentityRepository.save(oauthIdentity);
-            user = oauthIdentity.getUser();
         } else {
-            Optional<User> existingUser = userRepository.findByEmail(email);
-            if (existingUser.isPresent()) {
-                user = existingUser.get();
+            
+            Optional<User> userOpt = userRepository.findByEmail(email);
+
+            if (userOpt.isPresent()) {
+                user = userOpt.get();
             } else {
                 UserType userType = userTypeRepository.findByName(UserType.USER)
                         .orElseThrow(() -> new ResourceNotFoundException("Default user type not found"));
 
                 user = User.builder()
                         .email(email)
-                        .isVerified(true)
+                        .isVerified(true) 
                         .userType(userType)
                         .build();
 
@@ -281,33 +280,31 @@ public class AuthService {
                         .build();
 
                 user.setProfile(profile);
-                userRepository.save(user);
+                userRepository.save(user); 
             }
 
-            OAuthIdentity oauthIdentity = OAuthIdentity.builder()
+            OAuthIdentity newIdentity = OAuthIdentity.builder()
                     .user(user)
                     .provider(provider)
                     .providerUserId(providerUserId)
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .accessTokenExpiresAt(LocalDateTime.now().plusDays(1))
-                    .refreshTokenExpiresAt(LocalDateTime.now().plusDays(7))
+                    .accessTokenExpiresAt(expiresAt != null ? expiresAt : LocalDateTime.now().plusDays(1))
                     .build();
-
-            oauthIdentityRepository.save(oauthIdentity);
+            oauthIdentityRepository.save(newIdentity);
         }
-
         AuthResponse response = createAuthResponse(user);
         return ResponseEntity.ok(response);
     }
+
 
     private AuthResponse createAuthResponse(User user) {
         String accessToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .accessToken(accessToken) 
+                .refreshToken(refreshToken) 
                 .userId(user.getId())
                 .email(user.getEmail())
                 .userType(user.getUserType().getName())
@@ -319,7 +316,7 @@ public class AuthService {
 
     private String generateVerificationCode() {
         SecureRandom random = new SecureRandom();
-        int code = 100000 + random.nextInt(900000); 
+        int code = 100000 + random.nextInt(900000);
         return String.valueOf(code);
     }
 
@@ -337,5 +334,4 @@ public class AuthService {
 
         return count >= 2;
     }
-
 }
