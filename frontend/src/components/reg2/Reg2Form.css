@@ -32,37 +32,6 @@
     color: #359AC4;
 }
 
-.choose-who-i-am{
-    display: flex;
-    flex-direction: column;
-    gap: clamp(15px, 3vw, 30px);
-}
-
-.choose-who-i-am div {
-  cursor: pointer;
-  padding: clamp(6px, 1vw, 10px) clamp(15px, 2vw, 25px);
-  border-radius: 28px;
-  border: 1px solid #000000;
-  font-size: clamp(12px, 2vw, 24px);
-  font-family: 'Montserrat', sans-serif;
-  color: #000000;
-  text-align: center;
-  font-weight: 700;
-  transition: 0.3s;
-}
-
-.choose-who-i-am div:hover {
-  background-color: #f4f4f9;
-}
-
-.choose-who-i-am .active {
-    background: linear-gradient(to right, #EEF600, #09FFFF);
-    background-size: 200% 100%;
-    background-position: 0% 0%;
-    animation: gradientShift 10s ease-in-out infinite;
-    color: #000000;
-}
-
 .right-side-reg2 {
     display: flex;
     flex-direction: column;
@@ -211,7 +180,7 @@
     100% { background-position: 0% 0%; }
 }
 
-@media screen and (max-width: 578px) {
+@media screen and (max-width: 676px) {
     .reg2-form-container{
         min-width: 100%;
         border-radius: 0px;
