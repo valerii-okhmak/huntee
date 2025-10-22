@@ -29,11 +29,12 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/courses?token=${encodeURIComponent(token)}`,
+        `${process.env.REACT_APP_BACKEND}/api/profile/courses`,
         body,
         {
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
         }
       );
@@ -41,10 +42,10 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
       console.log('Сертифікат збережено:', response.data);
 
       if (fetchSertificates) {
-        fetchSertificates(); // оновити список сертифікатів
+        fetchSertificates(); 
       }
 
-      onClose(); // закрити модалку
+      onClose(); 
     } catch (error) {
       console.error('Помилка збереження сертифікату:', error.response?.data || error.message);
     }

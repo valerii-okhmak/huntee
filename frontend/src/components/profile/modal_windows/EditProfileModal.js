@@ -3,7 +3,7 @@ import Modal from './Modal';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
-const DEFAULT_AVATAR = '/img/avatar.png'; // Виправлено шлях (краще починати з '/')
+const DEFAULT_AVATAR = '/img/avatar.png'; 
 
 const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
   const [firstName, setFirstName] = useState('');
@@ -42,11 +42,11 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
       const token = getAccessToken();
       const formData = new FormData();
       formData.append('file', selectedAvatarFile);
-      formData.append('token', token);
 
       await axios.post(`${process.env.REACT_APP_BACKEND}/api/profile/upload-avatar`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
         },
       });
     } catch (error) {
@@ -62,28 +62,28 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
 
       if (firstName) {
           await axios.patch(
-            `${process.env.REACT_APP_BACKEND}/api/profile/first-name?token=${encodeURIComponent(token)}`,
-            firstName,
-            { headers: { 'Content-Type': 'text/plain' } }
+            `${process.env.REACT_APP_BACKEND}/api/profile/first-name`,
+            { firstName: firstName }, 
+            { headers: { 'Authorization': `Bearer ${token}` } }
           )
       }
 
       if (lastName) {
           await axios.patch(
-            `${process.env.REACT_APP_BACKEND}/api/profile/last-name?token=${encodeURIComponent(token)}`,
-            lastName,
-            { headers: { 'Content-Type': 'text/plain' } }
+            `${process.env.REACT_APP_BACKEND}/api/profile/last-name`,
+            { lastName: lastName },
+            { headers: {  'Authorization': `Bearer ${token}` } }
           )
       }
 
       if (birthDate) {
           await axios.patch(
-            `${process.env.REACT_APP_BACKEND}/api/profile/birth-date?token=${encodeURIComponent(token)}`,
-            birthDate,
-            { headers: { 'Content-Type': 'text/plain' } }
+            `${process.env.REACT_APP_BACKEND}/api/profile/birth-date`,
+            { birthDate: birthDate },
+            { headers: { 'Authorization': `Bearer ${token}` } }
           )
       }
-
+      
 
         await uploadAvatar();
 

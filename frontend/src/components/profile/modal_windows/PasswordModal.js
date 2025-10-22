@@ -12,7 +12,6 @@ const PasswordModal = ({ isOpen, onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  // 🔁 Автоматична перевірка під час введення
   useEffect(() => {
     if (confirmPassword.length > 0 && newPassword !== confirmPassword) {
       setError('Ваші нові паролі не співпадають');
@@ -44,16 +43,16 @@ const PasswordModal = ({ isOpen, onClose }) => {
         newPassword: newPassword,
       });
 
-      resetForm(); // 🧹 очищення після збереження
-      onClose();   // закриття модалки
+      resetForm(); 
+      onClose();   
     } catch (err) {
       setError('Не вдалося змінити пароль. Перевірте введені дані.');
     }
   };
 
   const handleCancel = () => {
-    resetForm();  // 🧹 очищення при скасуванні
-    onClose();    // закриття модалки
+    resetForm();  
+    onClose();    
   };
 
   return (

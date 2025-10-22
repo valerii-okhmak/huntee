@@ -46,19 +46,17 @@ public class ProfileService {
     private final CourseRepository courseRepository;
     private final OAuthIdentityRepository oAuthIdentityRepository;
     private final ExperienceRepository experienceRepository;
-    private final JwtService jwtService;
+
 
     public Profile getProfileByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = getUserByEmail(email);
         return profileRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Profile not found for user ID: " + user.getId()));
     }
 
     public ProfileResponse getProfileByUserId(Integer userId) {
         Profile profile = profileRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("Профіль не знайдено"));
-
+                .orElseThrow(() -> new UsernameNotFoundException("Профіль не знайдено для ID: " + userId));
         return mapToProfileResponse(profile);
     }
 
@@ -90,12 +88,15 @@ public class ProfileService {
 
     public ProfileResponse updateBirthDate(String email, String birthDateStr) {
         Profile profile = getProfileByEmail(email);
-        LocalDate birthDate = LocalDate.parse(birthDateStr); 
-        profile.setBirthDate(birthDate);
-        profileRepository.save(profile);
-        return mapToProfileResponse(profile);
+        try {
+            LocalDate birthDate = LocalDate.parse(birthDateStr);
+            profile.setBirthDate(birthDate);
+            profileRepository.save(profile);
+            return mapToProfileResponse(profile);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date format: " + birthDateStr);
+        }
     }
-
 
     public ProfileResponse updateAbout(String email, String about) {
         Profile profile = getProfileByEmail(email);
@@ -122,9 +123,7 @@ public class ProfileService {
 
     public ProfileResponse saveProfileImage(String email, MultipartFile file) {
         Profile profile = getProfileByEmail(email);
-
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
         String uploadDir = "backend/uploads/avatars/";
 
         try {
@@ -136,8 +135,7 @@ public class ProfileService {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            String fileUrl =  fileName;
-
+            String fileUrl = fileName;
             profile.setProfileImageUrl(fileUrl);
             profileRepository.save(profile);
 
@@ -177,10 +175,9 @@ public class ProfileService {
         return mapToLinkResponse(saved);
     }
 
-    public void deleteLink(String token, Long linkId) throws AccessDeniedException {
-        String email = jwtService.extractUsername(cleanToken(token));
+    public void deleteLink(String email, Long linkId) throws AccessDeniedException {
         ProfileLink link = profileLinkRepository.findById(linkId)
-                .orElseThrow(() -> new EntityNotFoundException("Link not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Link not found with ID: " + linkId));
 
         if (!link.getUser().getEmail().equals(email)) {
             throw new AccessDeniedException("You do not have permission to delete this link.");
@@ -197,29 +194,18 @@ public class ProfileService {
                 .build();
     }
 
-    private String cleanToken(String token) {
-        return token.startsWith("Bearer ") ? token.substring(7) : token;
-    }
 
     // ====== EDUCATION ======
     public List<EducationResponse> getEducationsByUserId(Integer userId) {
         return educationRepository.findByUserId(userId).stream()
-                .map(education -> EducationResponse.builder()
-                        .id(education.getId())
-                        .institution(education.getInstitution())
-                        .specialities(education.getSpecialties())
-                        .build())
+                .map(this::mapEducationToResponse)
                 .toList();
     }
 
     public List<EducationResponse> getEducations(String email) {
         Integer userId = getUserId(email);
         return educationRepository.findByUserId(userId).stream()
-                .map(education -> EducationResponse.builder()
-                        .id(education.getId())
-                        .institution(education.getInstitution())
-                        .specialities(education.getSpecialties())
-                        .build())
+                .map(this::mapEducationToResponse)
                 .toList();
     }
 
@@ -235,20 +221,14 @@ public class ProfileService {
         education.setUser(getUserByEmail(email));
 
         Education savedEducation = educationRepository.save(education);
-        return EducationResponse.builder()
-                .id(savedEducation.getId())
-                .institution(savedEducation.getInstitution())
-                .specialities(savedEducation.getSpecialties())
-                .build();
+        return mapEducationToResponse(savedEducation);
     }
 
-
-    public void deleteEducation(String token, Long educationId) throws AccessDeniedException {
-        String email = jwtService.extractUsername(cleanToken(token));
-        Integer userId = getUserId(email);
+    public void deleteEducation(String email, Long educationId) throws AccessDeniedException {
+        Integer userId = getUserId(email); 
 
         Education education = educationRepository.findById(educationId)
-            .orElseThrow(() -> new ResourceNotFoundException("Education not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Education not found with ID: " + educationId));
 
         if (!education.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("You don't have permission to delete this education");
@@ -257,28 +237,25 @@ public class ProfileService {
         educationRepository.delete(education);
     }
 
+    private EducationResponse mapEducationToResponse(Education education) {
+        return EducationResponse.builder()
+                .id(education.getId())
+                .institution(education.getInstitution())
+                .specialities(education.getSpecialties())
+                .build();
+    }
+
     // ====== COURSE ======
     public List<CourseResponse> getCoursesByUserId(Integer userId) {
         return courseRepository.findByUserId(userId).stream()
-                .map(course -> CourseResponse.builder()
-                        .id(course.getId())
-                        .course_name(course.getCourse_name())
-                        .certificateUrl(course.getCertificateUrl())
-                        .description(course.getDescription())
-                        .build())
+                .map(this::mapCourseToResponse)
                 .toList();
     }
-
 
     public List<CourseResponse> getCourses(String email) {
         Integer userId = getUserId(email);
         return courseRepository.findByUserId(userId).stream()
-                .map(course -> CourseResponse.builder()
-                        .id(course.getId())
-                        .course_name(course.getCourse_name())
-                        .certificateUrl(course.getCertificateUrl())
-                        .description(course.getDescription())
-                        .build())
+                .map(this::mapCourseToResponse)
                 .toList();
     }
 
@@ -295,21 +272,14 @@ public class ProfileService {
         course.setUser(getUserByEmail(email));
 
         Course saved = courseRepository.save(course);
-
-        return CourseResponse.builder()
-                .id(saved.getId())
-                .course_name(saved.getCourse_name())
-                .certificateUrl(saved.getCertificateUrl())
-                .description(saved.getDescription())
-                .build();
+        return mapCourseToResponse(saved);
     }
 
-    public void deleteCourse(String token, Long courseId) throws AccessDeniedException {
-        String email = jwtService.extractUsername(cleanToken(token));
-        Integer userId = getUserId(email);
+    public void deleteCourse(String email, Long courseId) throws AccessDeniedException {
+        Integer userId = getUserId(email); 
 
         Course course = courseRepository.findById(courseId)
-            .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with ID: " + courseId));
 
         if (!course.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("You don't have permission to delete this course");
@@ -318,29 +288,27 @@ public class ProfileService {
         courseRepository.delete(course);
     }
 
+    private CourseResponse mapCourseToResponse(Course course) {
+        return CourseResponse.builder()
+                .id(course.getId())
+                .course_name(course.getCourse_name())
+                .certificateUrl(course.getCertificateUrl())
+                .description(course.getDescription())
+                .build();
+    }
+
 
     // ====== EXPERIENCE ======
     public List<ExperienceResponse> getExperiencesByUserId(Integer userId) {
         return experienceRepository.findByUserId(userId).stream()
-                .map(experience -> ExperienceResponse.builder()
-                        .id(experience.getId())
-                        .projectName(experience.getProjectName())
-                        .projectUrl(experience.getProjectUrl())
-                        .description(experience.getDescription())
-                        .build())
+                .map(this::mapExperienceToResponse)
                 .toList();
     }
-
 
     public List<ExperienceResponse> getExperiences(String email) {
         Integer userId = getUserId(email);
         return experienceRepository.findByUserId(userId).stream()
-                .map(experience -> ExperienceResponse.builder()
-                        .id(experience.getId())
-                        .projectName(experience.getProjectName())
-                        .projectUrl(experience.getProjectUrl())
-                        .description(experience.getDescription())
-                        .build())
+                .map(this::mapExperienceToResponse)
                 .toList();
     }
 
@@ -357,21 +325,14 @@ public class ProfileService {
         experience.setUser(getUserByEmail(email));
 
         Experience saved = experienceRepository.save(experience);
-
-        return ExperienceResponse.builder()
-                .id(saved.getId())
-                .projectName(saved.getProjectName())
-                .projectUrl(saved.getProjectUrl())
-                .description(saved.getDescription())
-                .build();
+        return mapExperienceToResponse(saved);
     }
 
-    public void deleteExperience(String token, Long experienceId) throws AccessDeniedException {
-        String email = jwtService.extractUsername(cleanToken(token));
-        Integer userId = getUserId(email);
+    public void deleteExperience(String email, Long experienceId) throws AccessDeniedException {
+        Integer userId = getUserId(email); 
 
         Experience experience = experienceRepository.findById(experienceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found with ID: " + experienceId));
 
         if (!experience.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("You don't have permission to delete this experience");
@@ -380,14 +341,22 @@ public class ProfileService {
         experienceRepository.delete(experience);
     }
 
-    // ====== Utility ======
+    private ExperienceResponse mapExperienceToResponse(Experience experience) {
+        return ExperienceResponse.builder()
+                .id(experience.getId())
+                .projectName(experience.getProjectName())
+                .projectUrl(experience.getProjectUrl())
+                .description(experience.getDescription())
+                .build();
+    }
+
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
     private Integer getUserId(String email) {
-        return Integer.valueOf(getUserByEmail(email).getId());
+        return getUserByEmail(email).getId();
     }
 }

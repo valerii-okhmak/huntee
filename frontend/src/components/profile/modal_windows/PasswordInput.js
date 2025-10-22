@@ -21,7 +21,7 @@ const PasswordInput = ({ placeholder, value, onChange }) => {
         <span
           className="toggle-password-visibility"
           onMouseDown={(e) => {
-            e.preventDefault(); // не дає інпуту втратити фокус
+            e.preventDefault(); 
             toggleVisibility();
           }}
         >

@@ -34,11 +34,12 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/education?token=${encodeURIComponent(token)}`,
+        `${process.env.REACT_APP_BACKEND}/api/profile/education`,
         body,
         {
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
         }
       );
@@ -46,10 +47,9 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
       console.log('Освіту оновлено:', response.data);
 
       if (fetchEducation) {
-        fetchEducation(); // оновити дані профілю
+        fetchEducation(); 
       }
-
-      onClose(); // закрити модалку
+      onClose(); 
     } catch (error) {
       console.error('Помилка оновлення освіти:', error.response?.data || error.message);
     }

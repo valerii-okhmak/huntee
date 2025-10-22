@@ -36,7 +36,10 @@ const Profile = () => {
     try {
       const token = getAccessToken();
       const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/experiences`, {
-        params: { token: `${token}` },
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}` 
+        },
       });
       setExperienceData(response.data);
     } catch (error) {
@@ -48,13 +51,18 @@ const Profile = () => {
       const fetchProfile = async () => {
         try {
           const token = getAccessToken();
-          const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/me?token=${token}`);
+          const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/me`, {
+            headers: {
+          'Authorization': `Bearer ${token}` 
+          },
+          });
           const data = response.data;
 
           if (!data.profileImage) {
             data.profileImage = DEFAULT_AVATAR;
           } else  {
             data.profileImage = `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${data.profileImage}`;
+
             console.log(data.profileImage);
           }
 
@@ -69,7 +77,9 @@ const Profile = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/education`, {
-          params: { token: `${token}` },
+          headers: {
+          'Authorization': `Bearer ${token}` 
+         }, 
         });
         setEducationData(response.data);
       } catch (error) {
@@ -81,7 +91,9 @@ const Profile = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/courses`, {
-          params: { token: `${token}` },
+          headers: {
+          'Authorization': `Bearer ${token}` 
+         },
         });
         setSertificatesData(response.data);
       } catch (error) {
@@ -93,7 +105,9 @@ const Profile = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/links`, {
-          params: { token: `${token}` },
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
         });
         setMediaLinksData(response.data);
       } catch (error) {
@@ -171,7 +185,7 @@ const Profile = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/me`, {
-          params: { token: `${token}` },
+          headers: { 'Authorization': `Bearer ${token}` },
         });
         setIsLocalProvider(response.data.providerID.includes(1));
       } catch (error) {
@@ -180,8 +194,7 @@ const Profile = () => {
     };
 
     checkLocalProvider();
-  }
-, []);
+  }, []);
 
 
   const getAgeFromBirthDate = (birthDateStr) => {
@@ -212,9 +225,10 @@ const Profile = () => {
     }
 
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_BACKEND}/api/profile/links/${idToDelete}?token=${encodeURIComponent(token)}`, {
+      const response = await axios.delete(`${process.env.REACT_APP_BACKEND}/api/profile/links/${idToDelete}`, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
       });
 

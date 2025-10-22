@@ -27,11 +27,12 @@ const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) =
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/experiences?token=${encodeURIComponent(token)}`,
+        `${process.env.REACT_APP_BACKEND}/api/profile/experiences`,
         body,
         {
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
         }
       );
@@ -39,10 +40,10 @@ const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) =
       console.log('Проєкт збережено:', response.data);
 
       if (fetchExperience) {
-        fetchExperience(); // оновити список досвіду
+        fetchExperience(); 
       }
 
-      onClose(); // закрити модалку
+      onClose(); 
     } catch (error) {
       console.error('Помилка збереження проєкту:', error.response?.data || error.message);
     }

@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'; // Видалено 'use', оскільки він не використовувався
+import React, { useState, useEffect } from 'react'; 
 import Modal from './Modal';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
 const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetchMediaLinks }) => {
   const [text, setText] = useState('');
-  const [link, setLink] = useState(''); // Це буде 'name' для посилання, наприклад 'Instagram'
-  const [url, setUrl] = useState('');   // Це буде сама URL-адреса
+  const [link, setLink] = useState(''); 
+  const [url, setUrl] = useState('');   
 
   useEffect(() => {
     if (isOpen) {
       setText(profileData?.about || '');
-      // Скидаємо поля для посилання при кожному відкритті модального вікна
       setLink('');
       setUrl('');
     }
@@ -27,11 +26,12 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
 
       if (newAboutText) {
       await axios.patch(
-        `${process.env.REACT_APP_BACKEND}/api/profile/about?token=${encodeURIComponent(token)}`,
-        newAboutText,
+        `${process.env.REACT_APP_BACKEND}/api/profile/about`,
+        { about: newAboutText },
         {
           headers: {
-            'Content-Type': 'text/plain',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
         }
       );
@@ -41,18 +41,16 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
       }
     }
 
-      // Запит на додавання нового посилання, якщо поля заповнені
       if (link && url) {
-        // --- ОСНОВНЕ ВИПРАВЛЕННЯ ТУТ ---
-        // Бекенд очікує об'єкт з полями `name` та `url`.
         const linkPayload = { type: link, url };
 
         await axios.post(
-          `${process.env.REACT_APP_BACKEND}/api/profile/links?token=${encodeURIComponent(token)}`,
-          linkPayload, // Надсилаємо виправлений об'єкт
+          `${process.env.REACT_APP_BACKEND}/api/profile/links`,
+          linkPayload, 
           {
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
             },
           }
         );
@@ -62,11 +60,10 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
         }
       }
 
-      onClose(); // Закрити модальне вікно після успішного виконання
+      onClose(); 
 
     } catch (error) {
       console.error('Сервер повернув помилку:', error);
-      // Можна додати сповіщення для користувача про помилку
     }
   };
 
@@ -103,7 +100,7 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
         <select
           className="modal-select"
           value={link}
-          onChange={handleSelect} // Видалено зайвий onSelect, onChange достатньо
+          onChange={handleSelect}
         >
           <option value="">Виберіть платформу</option>
           {options.map((option, index) => (
@@ -114,7 +111,6 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
         </select>
       </div>
 
-      {/* Показати input, якщо вибрано платформу */}
       {link && (
         <div className="modal-section">
           <label className="modal-label">Посилання</label>
