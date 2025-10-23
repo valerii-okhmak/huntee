@@ -1,12 +1,13 @@
 package org.dreamteam.repository;
 
+import org.dreamteam.Entity.Question;
+import org.dreamteam.Entity.QuestionType;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
-import org.dreamteam.Entity.Question;
-import org.dreamteam.Entity.Test;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface  QuestionRepository extends JpaRepository<Question, Long> {
-    List<Question> findByTest(Test test);
-    List<Question> findByType(String type);
+@Repository
+public interface QuestionRepository extends JpaRepository<Question, Long> {
+    
+    List<Question> findByQuestionType(QuestionType questionType);
 }
