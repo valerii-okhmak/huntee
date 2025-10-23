@@ -29,6 +29,7 @@ import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 import tryTestLogo from "./img/softserve.png";
 import tryTestQuestions from "./data/questions.json";
 import TemplatesHunteePage from './pages/TemplatesHunteePage';
+import Reg2Page from './pages/Reg2Page';
 
 const App = () => {
 
@@ -48,6 +49,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/reg" element={<RegPage />} />
+        <Route path="/reg2" element={<Reg2Page />} />
         <Route path="/testpage" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/starttest' element={<StartTestPage />} />
