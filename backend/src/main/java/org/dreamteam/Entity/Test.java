@@ -20,7 +20,7 @@ public class Test {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "test_id")
+    @Column (name = "id")
     private Long testId;
 
     @Column(name = "test_name", nullable = false)
