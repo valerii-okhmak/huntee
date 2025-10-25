@@ -9,4 +9,5 @@ import java.util.List;
 public interface TestQuestionRepository extends JpaRepository<TestQuestion, Long> {
 
     List<TestQuestion> findByTest_TestId(Long testId);
+    int countByTest_TestId(Long testId);
 }
