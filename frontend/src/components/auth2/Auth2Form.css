@@ -32,38 +32,6 @@
     color: #359AC4;
 }
 
-.choose-who-i-am{
-    display: flex;
-    flex-direction: column;
-    gap: clamp(15px, 3vw, 30px);
-}
-
-.choose-who-i-am div {
-  cursor: pointer;
-  padding: clamp(6px, 1vw, 10px) clamp(15px, 2vw, 25px);
-  border-radius: 28px;
-  border: 1px solid #000000;
-  font-size: clamp(12px, 2vw, 24px);
-  font-family: 'Montserrat', sans-serif;
-  color: #000000;
-  text-align: center;
-  font-weight: 700;
-  transition: 0.3s;
-}
-
-
-.choose-who-i-am div:hover {
-  background-color: #f4f4f9;
-}
-
-.choose-who-i-am .active {
-    background: linear-gradient(to right, #EEF600, #09FFFF);
-    background-size: 200% 100%;
-    background-position: 0% 0%;
-    animation: gradientShift 10s ease-in-out infinite;
-    color: #000000;
-}
-
 .right-side-auth2 {
     display: flex;
     flex-direction: column;
@@ -107,6 +75,26 @@
   background: #fff;
   padding: 0 clamp(2px, 1vw, 4px);
 }
+
+/* піднімаємо лейбл якщо користувач ввів щось (email чи пароль) */
+.auth2-input-label.filled {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: clamp(14px, 3.5vw, 18px);
+  color: #000;
+}
+
+/* блокуємо автозаповнення фон */
+.auth2-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #202124 !important;
+}
+
+/* для email валідного */
+.auth2-input.valid + .auth2-input-label {
+  color: #000000;
+}
+
 
 .auth2-input-box .auth2-input:focus + .auth2-input-label,
 .auth2-input-box .auth2-input:valid + .auth2-input-label {
