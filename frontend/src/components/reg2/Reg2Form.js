@@ -19,61 +19,68 @@ const Reg2Form = () => {
   const inputRefs = useRef([]);
 
   // помилки та стани
-  const [error, setError] = useState(''); 
-  const [passwordError, setPasswordError] = useState(''); // окрема помилка для паролів
+  const [errors, setErrors] = useState({
+    firstName: '',
+    email: '',
+    password: '',
+    confirmpassword: ''
+  });
+  const [generalError, setGeneralError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // простий regex для перевірки e-mail
   const validateEmail = (em) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
 
-  // Якщо користувач змінює пароль або підтвердження — перевірка збігу (не чіпаємо глобальний error)
+  // Перевірка пароля на співпадіння
   useEffect(() => {
     if (!confirmpassword) {
-      setPasswordError('');
-      return;
-    }
-
-    if (password === confirmpassword) {
-      setPasswordError('');
-    } else {
-      setPasswordError('Паролі не співпадають.');
-    }
-  }, [password, confirmpassword]);
-
-  const CheckPasswordMatch = (confirm) => {
-    setConfirmPassword(confirm);
-    if (!confirm) {
-      setPasswordError('');
-    }
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setError('');
-
-    // локальна валідація полів — виставляємо відповідні помилки в потрібні стани
-    if (!firstName.trim()) {
-      setError("Імʼя обовʼязкове.");
-      return;
-    }
-    if (!validateEmail(email)) {
-      setError('Введіть коректну пошту.');
-      return;
-    }
-    if (!password || password.length < 6) {
-      setError('Пароль повинен містити щонайменше 6 символів.');
+      setErrors((prev) => ({ ...prev, confirmpassword: '' }));
       return;
     }
     if (password !== confirmpassword) {
-      setPasswordError('Паролі не співпадають. Перевірте поле підтвердження пароля.');
-      return;
+      setErrors((prev) => ({ ...prev, confirmpassword: 'Паролі не співпадають.' }));
+    } else {
+      setErrors((prev) => ({ ...prev, confirmpassword: '' }));
     }
+  }, [password, confirmpassword]);
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setGeneralError('');
+
+    // локальна валідація
+    let tempErrors = {
+      firstName: '',
+      email: '',
+      password: '',
+      confirmpassword: ''
+    };
+    let hasError = false;
+
+    if (!firstName.trim()) {
+      tempErrors.firstName = "Імʼя обовʼязкове.";
+      hasError = true;
+    }
+    if (!validateEmail(email)) {
+      tempErrors.email = 'Введіть коректну пошту.';
+      hasError = true;
+    }
+    if (!password || password.length < 6) {
+      tempErrors.password = 'Пароль повинен містити щонайменше 6 символів.';
+      hasError = true;
+    }
+    if (password !== confirmpassword) {
+      tempErrors.confirmpassword = 'Паролі не співпадають.';
+      hasError = true;
+    }
+
+    setErrors(tempErrors);
+    if (hasError) return;
 
     setIsSubmitting(true);
     try {
       await register({ firstName, lastName, email, password, age });
       setConfirmationStep(true);
-      // setError('');
     } catch (err) {
       console.error('Register error:', err);
       const status = err.response?.status;
@@ -81,16 +88,16 @@ const Reg2Form = () => {
 
       switch (status) {
         case 400:
-          setError(message || 'Некоректні дані. Перевірте всі поля.');
+          setGeneralError(message || 'Некоректні дані. Перевірте всі поля.');
           break;
         case 409:
-          setError(message || 'Користувач з такою поштою вже зареєстрований.');
+          setGeneralError(message || 'Користувач з такою поштою вже зареєстрований.');
           break;
         case 500:
-          setError('Помилка сервера. Спробуйте пізніше.');
+          setGeneralError('Помилка сервера. Спробуйте пізніше.');
           break;
         default:
-          setError('Невідома помилка. Спробуйте ще раз.');
+          setGeneralError('Невідома помилка. Спробуйте ще раз.');
       }
     } finally {
       setIsSubmitting(false);
@@ -99,10 +106,10 @@ const Reg2Form = () => {
 
   const handleConfirm = async (e) => {
     e.preventDefault();
-    setError('');
+    setGeneralError('');
     const code = codeDigits.join('');
     if (code.length !== 6) {
-      setError('Введіть 6-значний код підтвердження.');
+      setGeneralError('Введіть 6-значний код підтвердження.');
       return;
     }
 
@@ -117,20 +124,19 @@ const Reg2Form = () => {
 
       switch (status) {
         case 400:
-          setError(message || 'Невірний код підтвердження або електронна пошта.');
+          setGeneralError(message || 'Невірний код підтвердження або електронна пошта.');
           break;
         case 500:
-          setError('Помилка сервера. Спробуйте ще раз пізніше.');
+          setGeneralError('Помилка сервера. Спробуйте ще раз пізніше.');
           break;
         default:
-          setError('Помилка підтвердження. Спробуйте знову.');
+          setGeneralError('Помилка підтвердження. Спробуйте знову.');
       }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // код підтвердження: дозволяємо тільки цифри, автоматично фокус на наступне поле
   const handleChangeDigit = (e, index) => {
     const value = e.target.value.replace(/\D/g, '');
     if (value.length > 1) return;
@@ -138,9 +144,7 @@ const Reg2Form = () => {
     updated[index] = value;
     setCodeDigits(updated);
 
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
   const handleKeyDownDigit = (e, index) => {
@@ -158,16 +162,8 @@ const Reg2Form = () => {
   const handleGoBack = () => {
     setConfirmationStep(false);
     setCodeDigits(['', '', '', '', '', '']);
-    // залишаємо email для зручності редагування
+    setEmail('');
   };
-
-  // чи можна відправляти форму (кнопка активна)
-  const isFormValid =
-    firstName.trim() &&
-    validateEmail(email) &&
-    password.length >= 6 &&
-    password === confirmpassword &&
-    !passwordError;
 
   return (
     <div className="reg2-form-container">
@@ -194,15 +190,12 @@ const Reg2Form = () => {
                     type="text"
                     id="firstName"
                     className="reg2-input"
-                    required
                     placeholder=" "
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    aria-invalid={!!(error && !firstName.trim())}
                   />
-                  <label htmlFor="firstName" className="reg2-input-label">
-                    Ім’я
-                  </label>
+                  <label htmlFor="firstName" className="reg2-input-label">Ім’я</label>
+                  {errors.firstName && <p className="error-message">{errors.firstName}</p>}
                 </div>
 
                 <div className="reg2-input-box">
@@ -215,9 +208,7 @@ const Reg2Form = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
-                  <label htmlFor="lastName" className="reg2-input-label">
-                    Прізвище
-                  </label>
+                  <label htmlFor="lastName" className="reg2-input-label">Прізвище</label>
                 </div>
 
                 <div className="reg2-input-box">
@@ -230,11 +221,8 @@ const Reg2Form = () => {
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
                     min="0"
-                    aria-invalid={false}
                   />
-                  <label htmlFor="age" className="reg2-input-label">
-                    Вік
-                  </label>
+                  <label htmlFor="age" className="reg2-input-label">Вік</label>
                 </div>
 
                 <div className="reg2-input-box">
@@ -243,15 +231,12 @@ const Reg2Form = () => {
                     type="email"
                     id="email"
                     className="reg2-input"
-                    required
                     placeholder=" "
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    aria-invalid={!!(error && !validateEmail(email))}
                   />
-                  <label htmlFor="email" className="reg2-input-label">
-                    Пошта
-                  </label>
+                  <label htmlFor="email" className="reg2-input-label">Пошта</label>
+                  {errors.email && <p className="error-message">{errors.email}</p>}
                 </div>
 
                 <div className="reg2-input-box">
@@ -260,16 +245,12 @@ const Reg2Form = () => {
                     type="password"
                     id="password"
                     className="reg2-input"
-                    required
                     placeholder=" "
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    aria-invalid={!!(passwordError || (error && password.length < 6))}
-                    aria-describedby="password-help"
                   />
-                  <label htmlFor="password" className="reg2-input-label">
-                    Пароль
-                  </label>
+                  <label htmlFor="password" className="reg2-input-label">Пароль</label>
+                  {errors.password && <p className="error-message">{errors.password}</p>}
                 </div>
 
                 <div className="reg2-input-box">
@@ -278,45 +259,20 @@ const Reg2Form = () => {
                     type="password"
                     id="confirmpassword"
                     className="reg2-input"
-                    required
                     placeholder=" "
                     value={confirmpassword}
-                    onChange={(e) => CheckPasswordMatch(e.target.value)}
-                    aria-invalid={!!passwordError}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
-                  <label htmlFor="confirmpassword" className="reg2-input-label">
-                    Підтвердіть пароль
-                  </label>
+                  <label htmlFor="confirmpassword" className="reg2-input-label">Підтвердіть пароль</label>
+                  {errors.confirmpassword && <p className="error-message">{errors.confirmpassword}</p>}
                 </div>
 
-                {/* показуємо помилку пароля окремо від загальної помилки */}
-                {passwordError && (
-                  <p
-                    className="error-message"
-                    role="alert"
-                    aria-live="assertive"
-                    style={{ color: '#d93025', marginTop: 8 }}
-                  >
-                    {passwordError}
-                  </p>
-                )}
-
-                {error && (
-                  <p
-                    className="error-message"
-                    role="alert"
-                    aria-live="polite"
-                    style={{ color: '#d93025', marginTop: 8 }}
-                  >
-                    {error}
-                  </p>
-                )}
+                {generalError && <p className="error-message">{generalError}</p>}
 
                 <button
                   type="submit"
                   className="reg2-submit-button"
-                  disabled={isSubmitting || !isFormValid}
-                  aria-disabled={isSubmitting || !isFormValid}
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Відправка...' : 'Зареєструватися'}
                 </button>
@@ -353,22 +309,22 @@ const Reg2Form = () => {
                   ))}
                 </div>
 
-                {error && (
-                  <p className="error-message" style={{ color: '#d93025'}}>
-                    {error}
-                  </p>
-                )}
+                {generalError && <p className="error-message">{generalError}</p>}
 
                 <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
                   <button
                     type="submit"
                     className="reg2-submit-button"
                     disabled={isSubmitting}
-                    aria-disabled={isSubmitting}
                   >
                     {isSubmitting ? 'Перевірка...' : 'Підтвердити'}
                   </button>
-                  <button type="button" className="back-btn" onClick={handleGoBack} disabled={isSubmitting}>
+                  <button
+                    type="button"
+                    className="back-btn"
+                    onClick={handleGoBack}
+                    disabled={isSubmitting}
+                  >
                     Назад
                   </button>
                 </div>
@@ -380,7 +336,7 @@ const Reg2Form = () => {
         <div className="horizontal-line-reg2"></div>
 
         <div className="bottom-part-reg2">
-          <SocialLogin setError={setError} />
+          <SocialLogin setError={setGeneralError} />
           <p className="reg2-footer">
             Уже є акаунт? <Link to="/login">Авторизуватися</Link>
           </p>
