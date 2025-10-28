@@ -31,6 +31,7 @@ import tryTestQuestions from "./data/questions.json";
 import TemplatesHunteePage from './pages/TemplatesHunteePage';
 import Reg2Page from './pages/Reg2Page';
 import ScrollToTop from './components/ScrollToTop'; 
+import ViewingTestsPage from './pages/ViewingTestsPage';
 
 const App = () => {
 
@@ -70,6 +71,7 @@ const App = () => {
         <Route path="/testcreation" element={<TestCreationPage />} />
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
+        <Route path="/viewingtests" element={<ViewingTestsPage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>

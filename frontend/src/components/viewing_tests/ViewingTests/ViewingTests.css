@@ -1,0 +1,16 @@
+.viewing-tests-page{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin: 120px auto;
+}
+
+/* Ліва частина - 67% */
+.viewing-tests-left-side {
+  flex: 0 0 67%;
+}
+
+/* Права частина - 33% */
+.viewing-tests-right-side {
+  flex: 0 0 33%;
+}
