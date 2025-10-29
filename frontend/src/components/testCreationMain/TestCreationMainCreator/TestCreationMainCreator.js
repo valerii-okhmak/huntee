@@ -7,7 +7,7 @@ import practical_icon from '../../../img/testCreation/practical.png'
 import addImage_icon from '../../../img/testCreation/addImage.png'
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
 
-const TestCreationMainCreator = () => {
+const TestCreationMainCreator = ({onQuestionsChange}) => {
     const [selectedType, setSelectedType] = useState("regular");
 
     const [questionText, setQuestionText] = useState("");
