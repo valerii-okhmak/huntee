@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.ourdata_filter {
+    width: 100%;
+}
+
+.ourdata_filter_name {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #E1DEDE;
+}
+
+.ourdata_filter_title {
+    text-transform: uppercase;
+    font-family: "MyFont", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    font-size: 16px;
+}
+
+.ourdata_filter_action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    cursor: pointer;
+}
+
+.ourdata_filter_button {
+    width: 20px;
+    height: 3px;
+    background: #000;
+}
+
+.plus {
+    position: relative;
+}
+.plus::after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 3px;
+    top: -9px;
+    left: 9px;
+    background: #000;
+}
+
+.ourdata_filter_section {
+    padding: 10px 20px;
+    background: #fff; 
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 500;
+}
+
+.hide {
+    display: none;
+}
+
+.custom-input {
+    margin-right: 12px;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-square {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: #D9D9D9;
+  margin-right: 10px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-square::after {
+  content: "";
+  position: absolute;
+  top: 3.5px;
+  left: 3.5px;
+  width: 8px;
+  height: 8px;
+  background-color: black;
+}
+
+.ourdata_checkbox-label {
+  flex: 1;
+  font-size: 20px;
+  color: #000;
+}
+
+.ourdata_checkbox-count {
+  font-size: 18px;
+  color: #555;
+  margin-left: 8px;
+}
+

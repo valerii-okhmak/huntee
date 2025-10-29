@@ -8,9 +8,15 @@
 /* Ліва частина - 67% */
 .viewing-tests-left-side {
   flex: 0 0 67%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px
 }
 
 /* Права частина - 33% */
 .viewing-tests-right-side {
   flex: 0 0 33%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px
 }

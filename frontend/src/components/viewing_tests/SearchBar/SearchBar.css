@@ -6,18 +6,18 @@
 .searchbar-input {
   width: 100%;
   background-color: #FFFBFB;
-  padding: 10px 15px 10px 40px; /* лівий padding для лупи */
+  padding: 10px 15px 10px 40px; 
   border: none;
   border-radius: 0px;
   font-size: 16px;
 }
 
-.search_icon {
+.searchbar_icon {
   position: absolute;
-  left: 10px;   /* відступ від лівого краю інпуту */
-  top: 50%;     /* по центру по вертикалі */
+  left: 10px;   
+  top: 50%;     
   transform: translateY(-50%);
-  width: 20px;  /* розмір іконки */
+  width: 20px;  
   height: 20px;
-  pointer-events: none; /* щоб клік по іконці не блокував інпут */
+  pointer-events: none; 
 }
