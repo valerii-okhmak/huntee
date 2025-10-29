@@ -109,7 +109,7 @@ const TestCreationStartContainer = () => {
         />
 
 
-        <Link to="/starttest" className={`testCreationStartContainer__next-button`}>
+        <Link to="/testcreation/main" className={`testCreationStartContainer__next-button`}>
             Наступна сторінка
             <svg
               xmlns="http://www.w3.org/2000/svg"

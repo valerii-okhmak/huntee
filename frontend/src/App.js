@@ -24,6 +24,7 @@ import PricingPage from './pages/PricingPage';
 import CompanyMainPage from './pages/CompanyMainPage';
 import TestCreationPage from './pages/TestCreationPage';
 import TestCreationStartPage from './pages/TestCreationStartPage';
+import TestCreationMainPage from './pages/TestCreationMainPage';
 import ForCompany from './components/ForCompany/ForCompany';
 import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 import tryTestLogo from "./img/softserve.png";
@@ -70,6 +71,7 @@ const App = () => {
         <Route path="/testcreation" element={<TestCreationPage />} />
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
+        <Route path="/testcreation/main" element={<TestCreationMainPage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>

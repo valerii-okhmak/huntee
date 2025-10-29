@@ -1,4 +1,5 @@
 /* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Основні стилі для сторінки */
 * {
@@ -114,4 +115,45 @@ input::placeholder, textarea::placeholder {
   .message {
     flex-direction: column;
   }
+}
+
+
+.testCreationMainButtons__container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 40px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+
+
+.white-btn {
+  background: none;
+  cursor: pointer;
+  padding: 10px 15px;
+  border: 1px solid black;
+  font-size: clamp(16px, 2vw, 22px);
+  font-family: 'Montserrat', sans-serif;
+  color: #000000;
+  font-weight: 700;
+  transition: .3s;
+}
+.white-btn:hover {
+  background: #999;
+}
+.black-btn {
+  background: #000000;
+  cursor: pointer;
+  padding: 10px 15px;
+  border: 1px solid black;
+  font-size: clamp(16px, 2vw, 22px);
+  font-family: 'Montserrat', sans-serif;
+  color: #ffffff;
+  font-weight: 700;
+  transition: .3s;
+}
+.black-btn:hover {
+  background: #777777;
 }
