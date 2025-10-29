@@ -351,7 +351,7 @@ public class ProfileService {
     }
 
 
-    private User getUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
