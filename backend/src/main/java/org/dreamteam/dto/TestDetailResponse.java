@@ -3,14 +3,24 @@ package org.dreamteam.dto;
 import lombok.Builder;
 import lombok.Data;
 import org.dreamteam.Entity.QuestionType;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
 public class TestDetailResponse {
+    
     private Long testId;
     private String testName;
-    private String description;
+    private String sphere;
+    private String level;
+    private String city;
+    private String vacancyDescription;
+    private String responsibilities;
+    private boolean isFixedTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Integer durationMinutes;
     private String authorUsername;
     private List<QuestionSummary> questions;
 

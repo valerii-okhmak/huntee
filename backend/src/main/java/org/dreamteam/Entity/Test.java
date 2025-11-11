@@ -1,10 +1,12 @@
 package org.dreamteam.Entity;
+
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime; // Імпортуємо класи для дати і часу
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,8 +16,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "testId")
-
-
 public class Test {
 
     @Id
@@ -23,15 +23,44 @@ public class Test {
     @Column (name = "id")
     private Long testId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false) 
+    private User user;
+
     @Column(name = "test_name", nullable = false)
-    private String testName;
+    private String testName; 
+
+    @Column(name = "sphere")
+    private String sphere; 
+
+    @Column(name = "level")
+    private String level; 
+
+    @Column(name = "city")
+    private String city; 
+
+    @Column(name = "vacancy_description", columnDefinition = "TEXT")
+    private String vacancyDescription; 
+
+    @Column(name = "responsibilities", columnDefinition = "TEXT")
+    private String responsibilities; 
+    
+
+    @Column(name = "is_fixed_time")
+    private boolean isFixedTime; 
+
+    @Column(name = "start_time")
+    private LocalDateTime startTime; 
+
+    @Column(name = "end_time")
+    private LocalDateTime endTime; 
+
+    @Column(name = "duration_minutes") 
+    private Integer durationMinutes; 
+
 
     @OneToMany(mappedBy= "test", cascade= CascadeType.ALL, orphanRemoval= true)
     private Set<TestQuestion> testQuestions = new HashSet<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     public Test(String testName, User user) {
         this.testName = testName;
