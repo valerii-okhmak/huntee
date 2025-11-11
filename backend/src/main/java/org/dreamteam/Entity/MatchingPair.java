@@ -1,4 +1,5 @@
 package org.dreamteam.Entity;
+
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,26 +12,26 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "pairId")
-
 public class MatchingPair {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pair_id")
     private Long pairId;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false, unique = true)
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @Column(name = "prompt_text", columnDefinition = "TEXT", nullable = false)
-    private String promptText;
+    @Column(name = "prompt", columnDefinition = "TEXT", nullable = false)
+    private String prompt;
 
-    @Column(name = "answer_text", columnDefinition = "TEXT", nullable = false)
-    private String answerText;
+    @Column(name = "answer", columnDefinition = "TEXT", nullable = false)
+    private String answer;
 
-    public MatchingPair(Question question, String promptText, String answerText) {
+    public MatchingPair(Question question, String prompt, String answer) {
         this.question = question;
-        this.promptText = promptText;
-        this.answerText = answerText;
-    } 
+        this.prompt = prompt;
+        this.answer = answer;
+    }
 }
