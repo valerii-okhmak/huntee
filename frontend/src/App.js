@@ -24,12 +24,12 @@ import PricingPage from './pages/PricingPage';
 import CompanyMainPage from './pages/CompanyMainPage';
 import TestCreationPage from './pages/TestCreationPage';
 import TestCreationStartPage from './pages/TestCreationStartPage';
+import TestCreationMainPage from './pages/TestCreationMainPage';
 import ForCompany from './components/ForCompany/ForCompany';
 import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 import tryTestLogo from "./img/softserve.png";
 import tryTestQuestions from "./data/questions.json";
 import TemplatesHunteePage from './pages/TemplatesHunteePage';
-import Reg2Page from './pages/Reg2Page';
 import ScrollToTop from './components/ScrollToTop'; 
 
 const App = () => {
@@ -52,7 +52,7 @@ const App = () => {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/reg" element={<RegPage />} />
         <Route path="/reg2" element={<Reg2Page />} />
-        <Route path="/testpage/:testId" element={<TestPage />} />
+        <Route path="/testpage" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/starttest' element={<StartTestPage />} />
         <Route path="/testrules" element={<TestRulesPage />} />
@@ -70,6 +70,7 @@ const App = () => {
         <Route path="/testcreation" element={<TestCreationPage />} />
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
+        <Route path="/testcreation/main" element={<TestCreationMainPage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
