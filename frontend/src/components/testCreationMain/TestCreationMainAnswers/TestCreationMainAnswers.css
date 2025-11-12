@@ -78,6 +78,16 @@
     cursor: pointer;
 }
 
+.testCreationMainCreatorAnswers__btn--remove {
+    color: red;
+    font-size: 36px;
+    margin-left: 30px;
+    transition: .1s;
+}
+.testCreationMainCreatorAnswers__btn--remove:hover {
+    transform: scale(1.1);
+}
+
 .testCreationMainCreatorAnswers__add {
     background-color: #F1F1F1;
     border: none;
