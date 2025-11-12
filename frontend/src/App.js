@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styless/app.css';
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
-import Auth2Page from './pages/Auth2Page';
 import RegPage from './pages/RegPage';
 import TestPage from './pages/TestPage';
 import AllTestsPage from './pages/AllTestsPage';
@@ -30,7 +29,6 @@ import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 import tryTestLogo from "./img/softserve.png";
 import tryTestQuestions from "./data/questions.json";
 import TemplatesHunteePage from './pages/TemplatesHunteePage';
-import Reg2Page from './pages/Reg2Page';
 import ScrollToTop from './components/ScrollToTop'; 
 
 const App = () => {
@@ -51,9 +49,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage />} />
-        <Route path="/login2" element={<Auth2Page />} />
         <Route path="/reg" element={<RegPage />} />
-        <Route path="/reg2" element={<Reg2Page />} />
         <Route path="/testpage" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/starttest' element={<StartTestPage />} />
