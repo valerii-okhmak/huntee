@@ -51,7 +51,7 @@ const RegForm = () => {
     } catch (err) {
       const status = err.response?.status;
       const message = err.response?.data?.message;
-  
+
       switch (status) {
         case 400:
           setError(message || 'Невірний код підтвердження або електронна пошта.');

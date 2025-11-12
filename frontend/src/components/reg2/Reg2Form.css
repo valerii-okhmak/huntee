@@ -2,9 +2,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: clamp(60px, 15vh, 160px) auto;
+    margin: clamp(40px, 15vh, 80px) auto;
     max-width: 75%;
-    padding: clamp(20px, 5vw, 60px);
+    padding: clamp(20px, 5vw, 40px);
     background-color: white;
     border-radius: 28px;
 }
@@ -32,38 +32,6 @@
     color: #359AC4;
 }
 
-.choose-who-i-am{
-    display: flex;
-    flex-direction: column;
-    gap: clamp(15px, 3vw, 30px);
-}
-
-.choose-who-i-am div {
-  cursor: pointer;
-  padding: clamp(6px, 1vw, 10px) clamp(15px, 2vw, 25px);
-  border-radius: 28px;
-  border: 1px solid #000000;
-  font-size: clamp(12px, 2vw, 24px);
-  font-family: 'Montserrat', sans-serif;
-  color: #000000;
-  text-align: center;
-  font-weight: 700;
-  transition: 0.3s;
-}
-
-
-.choose-who-i-am div:hover {
-  background-color: #f4f4f9;
-}
-
-.choose-who-i-am .active {
-    background: linear-gradient(to right, #EEF600, #09FFFF);
-    background-size: 200% 100%;
-    background-position: 0% 0%;
-    animation: gradientShift 10s ease-in-out infinite;
-    color: #000000;
-}
-
 .right-side-reg2 {
     display: flex;
     flex-direction: column;
@@ -77,26 +45,29 @@
 
 .reg2-input-box .reg2-input {
   width: 100%;
-  height: clamp(42px, 6vw, 55px); /* адаптивна висота */
-  padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px); /* адаптивні відступи */
+  height: clamp(42px, 6vw, 55px); 
+  padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px); 
   border: 1px solid #5a5e61;
   border-radius: 0px;
-  font-size: clamp(14px, 3.5vw, 16px); /* адаптивний розмір тексту */
+  font-size: clamp(12px, 3.5vw, 16px); 
   font-family: 'Montserrat', sans-serif;
   color: #202124;
   background: #ffffff;
   outline: none;
-  transition: border 0.25s;
+  transition: border 0.25s, box-shadow 0.2s;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
+/* фокус — товстіший чорний бордер */
 .reg2-input-box .reg2-input:focus {
   border: 2px solid #000000;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
+/* тіло лейбла */
 .reg2-input-label {
   position: absolute;
-  left: clamp(10px, 2vw, 15px); /* адаптивний відступ */
+  left: clamp(10px, 2vw, 15px); 
   top: 50%;
   transform: translateY(-50%);
   font-size: clamp(13px, 3vw, 16px);
@@ -109,11 +80,36 @@
 }
 
 .reg2-input-box .reg2-input:focus + .reg2-input-label,
-.reg2-input-box .reg2-input:valid + .reg2-input-label {
+.reg2-input-box .reg2-input:not(:placeholder-shown) + .reg2-input-label {
   top: 0;
   transform: translateY(-50%);
   font-size: clamp(14px, 3.5vw, 18px);
   color: #000000;
+}
+
+.reg2-input:-webkit-autofill,
+.reg2-input:-webkit-autofill:focus,
+.reg2-input:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #202124 !important;
+}
+
+.reg2-input:-moz-autofill {
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  -moz-text-fill-color: #202124 !important;
+}
+
+.reg2-input:-webkit-autofill + .reg2-input-label,
+.reg2-input:-moz-autofill + .reg2-input-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: clamp(14px, 3.5vw, 18px);
+  color: #000000;
+}
+
+.reg2-input:focus {
+  outline: none;
 }
 
 .reg2-submit-button{
@@ -163,8 +159,8 @@
 }
 
 .reg2-footer {
-    margin-top: clamp(16px, 3vw, 24px); /* від 16px до 24px */
-    font-size: clamp(12px, 2vw, 15px);  /* від 12px до 15px */
+    margin-top: clamp(16px, 3vw, 24px); 
+    font-size: clamp(12px, 2vw, 15px);  
     color: #555;
     text-align: center;
 }
@@ -184,7 +180,7 @@
     100% { background-position: 0% 0%; }
 }
 
-@media screen and (max-width: 578px) {
+@media screen and (max-width: 676px) {
     .reg2-form-container{
         min-width: 100%;
         border-radius: 0px;
@@ -197,9 +193,9 @@
 
     .reg2-form{
         width: 80%;
-        /* padding: 10px;
+        padding: 10px;
         border: 1px solid #000000;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); */
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
     .choose-who-i-am{
