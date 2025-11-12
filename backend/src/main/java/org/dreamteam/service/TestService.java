@@ -121,16 +121,20 @@ public class TestService {
                 .build();
     }
 
-    private TestSummaryResponse mapToSummaryResponse(Test test) {
-        int count = testQuestionRepository.countByTest_TestId(test.getTestId());
 
-        return TestSummaryResponse.builder()
-                .testId(test.getTestId())
-                .testName(test.getTestName())
-                .authorUsername(test.getUser().getUsername())
-                .questionCount(count)
-                .build();
-    }
+    private TestSummaryResponse mapToSummaryResponse(Test test) {
+            return TestSummaryResponse.builder()
+                    .testId(test.getTestId())
+                    .testName(test.getTestName())
+                    .sphere(test.getSphere())
+                    .level(test.getLevel())
+                    .city(test.getCity())
+                    .startTime(test.getStartTime())
+                    .endTime(test.getEndTime())
+                    .isFixedTime(test.isFixedTime())
+                    .authorUsername(test.getUser().getUsername())
+                    .build();
+        }
 
     private Test findTestById(Long testId) {
         return testRepository.findById(testId)

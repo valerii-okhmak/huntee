@@ -31,7 +31,7 @@ import com.nimbusds.oauth2.sdk.Response;
 
 public class TestController {
     private final TestService testService;
-    @Operation(summary = "Створити новий тест", description = "Створює 'обкладинку' тесту.")
+    @Operation(summary = "Створити новий тест")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тест успішно створено (повертає деталі тесту)"),
         @ApiResponse(responseCode = "400", description = "Некоректний запит (напр., відсутня назва)"),
@@ -48,7 +48,7 @@ public class TestController {
             return ResponseEntity.ok(createdTest);       
     }
 
-    @Operation(summary = "Отримати список всіх тестів", description = "Повертає список всіх тестів з короткою інформацією.")
+    @Operation(summary = "Отримати список всіх тестів")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Список тестів успішно отримано"),
         @ApiResponse(responseCode = "401", description = "Неавторизований")
@@ -61,7 +61,7 @@ public class TestController {
         return ResponseEntity.ok(tests);
     }
 
-    @Operation(summary = "Отримати один тест за ID", description = "Повертає повну інформацію про тест, включаючи список його питань.")
+    @Operation(summary = "Отримати один тест за ID")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тест знайдено"),
         @ApiResponse(responseCode = "401", description = "Неавторизований"),
@@ -77,7 +77,7 @@ public class TestController {
             return ResponseEntity.ok(test);
         }
     
-    @Operation(summary = "Оновити тест", description = "Оновлює назву або опис тесту. Доступно тільки автору тесту.")
+    @Operation(summary = "Оновити тест")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тест успішно оновлено (повертає нові деталі)"),
         @ApiResponse(responseCode = "401", description = "Неавторизований"),
@@ -97,7 +97,7 @@ public class TestController {
                 return ResponseEntity.ok(updatedTest);
             }
     
-    @Operation(summary = "Видалити тест", description = "Видаляє тест та всі пов'язані з ним питання. Доступно тільки автору тесту.")
+    @Operation(summary = "Видалити тест")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Тест успішно видалено (без тіла відповіді)"),
         @ApiResponse(responseCode = "401", description = "Неавторизований"),

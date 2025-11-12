@@ -23,8 +23,7 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    @Operation(summary = "Створити та додати нове питання до тесту",
-               description = "Створює нове питання і одразу прив'язує його до тесту {testId}. Доступно тільки автору тесту.")
+    @Operation(summary = "Створити та додати нове питання до тесту")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/tests/{testId}/questions")
     public ResponseEntity<?> createAndAddQuestionToTest(
@@ -44,8 +43,7 @@ public class QuestionController {
         }
     }
 
-    @Operation(summary = "Отримати деталі одного питання",
-               description = "Повертає повну структуру питання з усіма варіантами відповідей.")
+    @Operation(summary = "Отримати деталі одного питання")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/questions/{questionId}")
     public ResponseEntity<QuestionResponse> getQuestionDetails(
@@ -55,8 +53,7 @@ public class QuestionController {
         return ResponseEntity.ok(response);
     }
     
-    @Operation(summary = "Оновити питання",
-               description = "Оновлює текст та варіанти відповідей. Доступно тільки автору питання.")
+    @Operation(summary = "Оновити питання")
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/questions/{questionId}")
     public ResponseEntity<?> updateQuestion(
@@ -76,8 +73,7 @@ public class QuestionController {
         }
     }
     
-    @Operation(summary = "Видалити питання з банку",
-               description = "Повністю видаляє питання з системи (і з усіх тестів). Доступно тільки автору питання.")
+    @Operation(summary = "Видалити питання з банку")
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/questions/{questionId}")
     public ResponseEntity<?> deleteQuestionFromBank(
@@ -92,8 +88,7 @@ public class QuestionController {
         }
     }
     
-    @Operation(summary = "Відв'язати питання від тесту",
-               description = "Видаляє питання з тесту {testId}, але залишає його в банку питань. Доступно автору тесту.")
+    @Operation(summary = "Відв'язати питання від тесту")
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/tests/{testId}/questions/{questionId}")
     public ResponseEntity<?> unlinkQuestionFromTest(
