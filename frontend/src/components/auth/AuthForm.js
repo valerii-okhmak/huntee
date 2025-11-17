@@ -42,6 +42,9 @@ const AuthForm = () => {
         case 401:
           setError(message || 'Невірна електронна пошта або пароль.');
           break;
+        case 403: 
+          setError(message || 'Доступ заборонено. Дозволено лише пошти @lpnu.ua.');
+          break;
         case 500:
           setError('Помилка сервера. Спробуйте пізніше.');
           break;
