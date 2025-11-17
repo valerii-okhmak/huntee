@@ -90,6 +90,9 @@ const RegForm = () => {
         case 400:
           setGeneralError(message || 'Некоректні дані. Перевірте всі поля.');
           break;
+        case 403: 
+          setGeneralError(message || 'Доступ заборонено. Дозволено лише пошти @lpnu.ua.');
+          break;
         case 409:
           setGeneralError(message || 'Користувач з такою поштою вже зареєстрований.');
           break;

@@ -40,6 +40,14 @@ public class AuthService {
 
     @Transactional
     public ResponseEntity<?> register(RegisterRequest request) throws MessagingException {
+        // Перевірка на корпоративну пошту політехніки
+        String email = request.getEmail();
+        if (email == null || !email.endsWith("@lpnu.ua")) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Дозволено лише реєстрація з корпоративною поштою @lpnu.ua");
+    }
+    //
         if (userRepository.existsByEmail(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email вже зареєстровано");
         }
@@ -112,6 +120,14 @@ public class AuthService {
 
     @Transactional
     public ResponseEntity<?> login(AuthRequest request) {
+        // Перевірка на корпоративну пошту політехніки
+        String email = request.getEmail();
+        if (email == null || !email.endsWith("@lpnu.ua")) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Дозволено лише вхід з корпоративною поштою @lpnu.ua");
+        }
+        //
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
@@ -237,6 +253,15 @@ public class AuthService {
                                                String firstName, String lastName, String imageUrl,
                                                String accessToken, String refreshToken, LocalDateTime expiresAt) {
 
+        // Перевірка на корпоративну пошту пошту політехніки для Google
+        if("google".equalsIgnoreCase(providerName)){
+            if(email == null || !email.endsWith("@lpnu.ua")){
+                return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Дозволено лише вхід з корпоративною поштою @lpnu.ua");
+            }
+        }
+        //
         if (providerUserId == null || providerUserId.isBlank()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider User ID is required.");
         }
