@@ -70,6 +70,7 @@ const App = () => {
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
         <Route path="/testcreation/main" element={<TestCreationMainPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>

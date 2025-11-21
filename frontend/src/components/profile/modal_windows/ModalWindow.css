@@ -248,6 +248,31 @@ transform: rotate(180deg);
   font-family: 'Montserrat', sans-serif;
 }
 
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #e6e6e6;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
 .hidden-file-input {
   display: none; /* Приховує елемент візуально */
 }
