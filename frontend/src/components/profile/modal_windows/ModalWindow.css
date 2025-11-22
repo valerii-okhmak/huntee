@@ -122,7 +122,14 @@
     border: 1px solid #000000;
     color: #ffffff;
   }
-  
+
+  .modal-button-submit.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transition: 0.2s ease;
+}
+
   .modal-button-submit:hover {
       background: #000000;
   }

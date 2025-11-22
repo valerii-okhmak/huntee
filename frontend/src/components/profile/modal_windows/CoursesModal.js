@@ -9,12 +9,11 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
   const [course_name, setCourseName] = useState('');
   const [certificateUrl, setCertificateUrl] = useState('');
 
-
   useEffect(() => {
     if (isOpen) {
       setCourseName('');
       setCertificateUrl('');
-      setDescription( '');
+      setDescription('');
     }
   }, [isOpen, sertificatesData]);
 
@@ -50,6 +49,10 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
       console.error('Помилка збереження сертифікату:', error.response?.data || error.message);
     }
   };
+
+  // Логіка активації кнопки
+  const isSaveDisabled =
+    !course_name.trim() || !certificateUrl.trim() || !description.trim();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -95,7 +98,11 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
       </div>
 
       <div className="modal-buttons">
-        <button className="modal-button modal-button-submit" onClick={handleSave}>
+        <button
+          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : ""}`}
+          disabled={isSaveDisabled}
+          onClick={() => !isSaveDisabled && handleSave()}
+        >
           Зберегти
         </button>
       </div>
