@@ -136,13 +136,13 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
       )}
 
       <div className="modal-buttons">
-        <button
-          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : ""}`}
-          disabled={isSaveDisabled}
-          onClick={() => !isSaveDisabled && updateAbout(text)}
-        >
-          Зберегти
-        </button>
+      <button
+        className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+        disabled={isSaveDisabled}
+        onClick={() => !isSaveDisabled && updateAbout(text)}
+      >
+        Зберегти
+      </button>
       </div>
     </Modal>
   );

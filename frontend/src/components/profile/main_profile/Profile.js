@@ -281,10 +281,9 @@ return (
           <div className='profile-horizontal-line'></div>
         </div>
 
-        {/* === Вміст залежно від вкладки === */}
+        {/* === Вміст Мій кабінет === */}
         {activeTab === "cabinet" && (
           <>
-            {/* ТВОЯ ОСНОВНА РОЗМІТКА ДЛЯ МІЙ КАБІНЕТ */}
             <div className='profile-left-right-column'>
               <div className="profile-column-left">
                 <div id='personal-information' className="profile-container personal-profile-container">
@@ -344,8 +343,6 @@ return (
                   </div>
                 </div>
               </div>
-
-              {/* --- ПРАВА КОЛОНКА --- */}
               <div className="profile-column-right">
                 <div id='aditional-information' className="profile-container">
                   <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
@@ -377,7 +374,7 @@ return (
                 </div>
 
                 <div id='achievements' className="profile-container">
-                  <div className="profile-info-section">
+                  <div className="profile-info-section achievement-profile-info-section">
                     <h4 className="subsection-title">Досягнення</h4>
 
                     <div className='achievements-block'>
@@ -399,10 +396,7 @@ return (
                 </div>
               </div>
             </div>
-
-            {/* НИЖНІ БЛОКИ */}
             <div className="profile-column-bottom">
-              {/* освіта */}
               <div id='education' className="profile-container">
                 <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("education")}/>
                 <div className="profile-info-bottom-section">
@@ -425,8 +419,6 @@ return (
                   )}
                 </div>
               </div>
-
-              {/* сертифікати */}
               <div id='sertificates' className="profile-container">
                 <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("courses")}/>
                 <div className="profile-info-bottom-section">
@@ -450,8 +442,6 @@ return (
                   )}
                 </div>
               </div>
-
-              {/* досвід */}
               <div id='experience' className="profile-container">
                 <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("experience")}/>
                 <div className="profile-info-bottom-section">
@@ -475,8 +465,6 @@ return (
                   )}
                 </div>
               </div>
-
-              {/* пароль */}
               {isLocalProvider && (
                 <div id='password' className="profile-container">
                   <div className="profile-info-section">
@@ -494,12 +482,119 @@ return (
           </>
         )}
 
-        {/* === Порожня вкладка для Адмін-панелі === */}
+        {/* === Вміст Адміністративна панель === */}
         {activeTab === "admin" && (
-          <div className="admin-empty-block">
-            <h2>Адміністративна панель</h2>
-            <p>Тут скоро буде функціонал для адміністрування.</p>
-          </div>
+          <>
+            <div className='profile-left-right-column'>
+              <div className="profile-column-left">
+                <div id='personal-information' className="profile-container personal-profile-container">
+                  <div className="profile-header-section">
+                    <h3 className="section-title">
+                      Особиста інформація
+                      <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
+                    </h3>
+
+                    <div className="profile-avatar">
+                      <img
+                        src={profileData ? profileData.profileImage : DEFAULT_AVATAR}
+                        alt="Avatar"
+                        className="profile-avatar"
+                      />
+                    </div>
+
+                    <h2 className="profile-name">
+                      {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+                    </h2>
+
+                    <h2 className="profile-age">
+                      {profileData && profileData.birthDate
+                        ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                        : ''}
+                    </h2>
+
+                    <div className='buttons-profile'>
+                      <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <button
+                          id="link-information"
+                          className="profile-edit-btn"
+                          onClick={handleCopy}
+                        >
+                          Поділитись посиланням <FiLink className="link-icon" />
+                        </button>
+
+                        {copied && <div className="copy-popup">Скопійовано!</div>}
+                      </div>
+
+                      <button 
+                        onClick={() => navigate('/mytests')}
+                        id="my-tests" 
+                        className="profile-edit-btn"
+                      >
+                        Мої тести
+                      </button>
+
+                      <button
+                        onClick={logout}
+                        id="exit" 
+                        className="profile-edit-btn"
+                      >
+                        Вийти
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="profile-column-right">
+                <div id='aditional-information' className="profile-container">
+                  <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
+                  <div className="profile-info-section aditional-profile-info-section">
+                    <h3 className="subsection-title">Додаткова інформація</h3>
+                    <div className="profile-info-block">
+                      <p className='aditional-text'>
+                        {profileData?.about
+                          ? profileData.about
+                          : 'Допоможіть рекрутерам краще пізнати вас...'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className='media-links'>
+                    {mediaLinksData?.length > 0 &&
+                      mediaLinksData.map((item) => (
+                        <div key={item.id} className='media-link-wrapper'>
+                          <a className='media-link-item' href={item.url} target="_blank">
+                            <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
+                            {item.type}
+                          </a>
+                          <div className='delete-icon' onClick={() => handleLinkDelete(item.id)}>
+                            <img src={minus} alt="Delete" className="delete-icon-img" />
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+                <div id='analytics' className="profile-container">
+                <div className="profile-info-section analytics-profile-info-section">
+                  <h4 className="subsection-title">Аналітика</h4>
+                  <button className="analytics-btn">Переглянути детальну аналітику</button>
+                </div>
+                <div className='diagram-container'>
+                    <Diagram />
+                </div>
+                </div>
+                <div className="admin-panel-tests-info-container">
+                  <div className='admin-panel-tests-info'>
+                    <p className="admin-panel-tests-label">Кількість створених тестів:</p>
+                    <span className="admin-panel-tests-value">20</span>
+                  </div>
+                  <div className='admin-panel-tests-info'>
+                    <p className="admin-panel-tests-label">Активні тести:</p>
+                    <span className="admin-panel-tests-value">4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
         )}
 
       </div>

@@ -167,7 +167,7 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
 
       <div className="modal-buttons">
         <button
-          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : ""}`}
+          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
           disabled={isSaveDisabled}
           onClick={() => !isSaveDisabled && updateData()}
         >

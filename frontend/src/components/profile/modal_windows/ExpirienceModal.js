@@ -89,13 +89,13 @@ const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) =
       </div>
 
       <div className="modal-buttons">
-        <button
-          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : ""}`}
-          disabled={isSaveDisabled}
-          onClick={() => !isSaveDisabled && handleSave()}
-        >
-          Зберегти
-        </button>
+      <button
+        className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+        disabled={isSaveDisabled}
+        onClick={() => !isSaveDisabled && handleSave()}
+      >
+        Зберегти
+      </button>
       </div>
     </Modal>
   );
