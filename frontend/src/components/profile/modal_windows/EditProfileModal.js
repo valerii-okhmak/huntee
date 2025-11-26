@@ -17,12 +17,7 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
       setFirstName(profileData.firstName || '');
       setLastName(profileData.lastName || '');
       setBirthDate(profileData.birthDate || '');
-
-      if (profileData.profileImage) {
-        setAvatarPreview(`${profileData.profileImage}`);
-        console.log('Avatar URL:', `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${profileData.profileImage}`);
-      } 
-
+      setAvatarPreview(profileData.profileImage ? profileData.profileImage : DEFAULT_AVATAR);
       setSelectedAvatarFile(null);
     }
   }, [isOpen, profileData]);
@@ -55,47 +50,42 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
   };
 
   const updateData = async () => {
-    const token = getAccessToken();
-
     try {
-      const updates = [];
+      const token = getAccessToken();
 
       if (firstName) {
-          await axios.patch(
-            `${process.env.REACT_APP_BACKEND}/api/profile/first-name`,
-            { firstName: firstName }, 
-            { headers: { 'Authorization': `Bearer ${token}` } }
-          )
+        await axios.patch(`${process.env.REACT_APP_BACKEND}/api/profile/first-name`, { firstName }, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
       }
 
       if (lastName) {
-          await axios.patch(
-            `${process.env.REACT_APP_BACKEND}/api/profile/last-name`,
-            { lastName: lastName },
-            { headers: {  'Authorization': `Bearer ${token}` } }
-          )
+        await axios.patch(`${process.env.REACT_APP_BACKEND}/api/profile/last-name`, { lastName }, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
       }
 
       if (birthDate) {
-          await axios.patch(
-            `${process.env.REACT_APP_BACKEND}/api/profile/birth-date`,
-            { birthDate: birthDate },
-            { headers: { 'Authorization': `Bearer ${token}` } }
-          )
+        await axios.patch(`${process.env.REACT_APP_BACKEND}/api/profile/birth-date`, { birthDate }, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
       }
-      
 
-        await uploadAvatar();
+      await uploadAvatar();
 
-
-
-
-      if (fetchProfile) fetchProfile();
+      fetchProfile && fetchProfile();
       onClose();
     } catch (error) {
       console.error('Помилка оновлення профілю:', error.response?.data || error.message);
     }
   };
+
+  // Кнопка активна, якщо хоча б одне поле змінилось або обрано аватар
+  const isSaveDisabled =
+    firstName === (profileData?.firstName || '') &&
+    lastName === (profileData?.lastName || '') &&
+    birthDate === (profileData?.birthDate || '') &&
+    !selectedAvatarFile;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -176,7 +166,11 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
       <div className="full-width-line"></div>
 
       <div className="modal-buttons">
-        <button className="modal-button modal-button-submit" onClick={updateData}>
+        <button
+          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+          disabled={isSaveDisabled}
+          onClick={() => !isSaveDisabled && updateData()}
+        >
           Зберегти
         </button>
       </div>

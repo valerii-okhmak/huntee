@@ -9,12 +9,10 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
 
   useEffect(() => {
     if (isOpen) {
-      setInstitution( '');
-      setSpecialities( '');
+      setInstitution('');
+      setSpecialities('');
     }
   }, [isOpen, educationData]);
-
-  
 
   const handleInstitutionChange = (e) => {
     setInstitution(e.target.value);
@@ -28,10 +26,7 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
     try {
       const token = getAccessToken();
 
-      const body = {
-        institution,
-        specialities,
-      };
+      const body = { institution, specialities };
 
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND}/api/profile/education`,
@@ -46,14 +41,15 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
 
       console.log('Освіту оновлено:', response.data);
 
-      if (fetchEducation) {
-        fetchEducation(); 
-      }
-      onClose(); 
+      if (fetchEducation) fetchEducation();
+      onClose();
     } catch (error) {
       console.error('Помилка оновлення освіти:', error.response?.data || error.message);
     }
   };
+
+  // Логіка активації кнопки
+  const isSaveDisabled = !institution.trim() || !specialities.trim();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -87,7 +83,11 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
       </div>
 
       <div className="modal-buttons">
-        <button className="modal-button modal-button-submit" onClick={updateEducation}>
+        <button
+          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+          disabled={isSaveDisabled}
+          onClick={() => !isSaveDisabled && updateEducation()}
+        >
           Зберегти
         </button>
       </div>

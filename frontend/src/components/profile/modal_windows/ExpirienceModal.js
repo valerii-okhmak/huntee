@@ -20,11 +20,7 @@ const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) =
     try {
       const token = getAccessToken();
 
-      const body = {
-        projectName,
-        projectUrl,
-        description,
-      };
+      const body = { projectName, projectUrl, description };
 
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND}/api/profile/experiences`,
@@ -39,15 +35,15 @@ const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) =
 
       console.log('Проєкт збережено:', response.data);
 
-      if (fetchExperience) {
-        fetchExperience(); 
-      }
-
-      onClose(); 
+      if (fetchExperience) fetchExperience();
+      onClose();
     } catch (error) {
       console.error('Помилка збереження проєкту:', error.response?.data || error.message);
     }
   };
+
+  // Логіка активації кнопки
+  const isSaveDisabled = !projectName.trim() || !projectUrl.trim() || !description.trim();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -93,9 +89,13 @@ const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) =
       </div>
 
       <div className="modal-buttons">
-        <button className="modal-button modal-button-submit" onClick={handleSave}>
-          Зберегти
-        </button>
+      <button
+        className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+        disabled={isSaveDisabled}
+        onClick={() => !isSaveDisabled && handleSave()}
+      >
+        Зберегти
+      </button>
       </div>
     </Modal>
   );
