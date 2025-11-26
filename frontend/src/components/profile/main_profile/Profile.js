@@ -30,6 +30,7 @@ const Profile = () => {
   const [experienceData, setExperienceData] = useState(null);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(null);
   const [mediaLinksData, setMediaLinksData] = useState(null);
+  const [activeTab, setActiveTab] = useState("cabinet");
 
 
   const fetchExperience = async () => {
@@ -255,211 +256,348 @@ const Profile = () => {
       });
   };
 
-  return (
+return (
     <div className="profile-main">
       <div className="profile-columns">
-        <div className='profile-left-right-column'>
-        <div className="profile-column-left">
-          
-          <div id='personal-information' className="profile-container personal-profile-container">
-            <div className="profile-header-section">
-              <h3 className="section-title">
-                Особиста інформація
-                <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
-              </h3>
-              <div className="profile-avatar">
-                <img
-                  src={profileData ? profileData.profileImage : DEFAULT_AVATAR}
-                  alt="Avatar"
-                  className="profile-avatar"
-                />
-              </div>
-              <h2 className="profile-name">
-                {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
-              </h2>
-              <h2 className="profile-age">
-                {profileData && profileData.birthDate
-                  ? `${getAgeFromBirthDate(profileData.birthDate)} років`
-                  : ''}
-              </h2>
-              <div className='buttons-profile'>
-              <div style={{ position: 'relative', display: 'inline-block' }}>
-                <button
-                  id="link-information"
-                  className="profile-edit-btn"
-                  onClick={handleCopy}
-                >
-                  Поділитись посиланням <FiLink className="link-icon" />
-                </button>
-
-                {copied && (
-                  <div className="copy-popup">
-                    Скопійовано!
-                  </div>
-                )}
-              </div>
-
-              <button 
-                  onClick={() => navigate('/mytests')}
-                  id="my-tests" 
-                  className="profile-edit-btn">Мої тести
-              </button>
-              <button
-                  onClick={logout}
-                  id="exit" 
-                  className="profile-edit-btn">Вийти
-              </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
         
-        <div className="profile-column-right">
+        {/* === Вкладки профілю === */}
+        <div className='choose-profile-type-container'>
+          <div className="choose-profile-type">
+            <span
+              className={activeTab === "cabinet" ? "active-profile-tab" : ""}
+              onClick={() => setActiveTab("cabinet")}
+            >
+              Мій кабінет
+            </span>
 
-          <div id='aditional-information' className="profile-container">
-            <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
-            <div className="profile-info-section aditional-profile-info-section">
-              <h3 className="subsection-title">Додаткова інформація</h3>
-              <div className="profile-info-block">
-                <p className='aditional-text'>
-                  {profileData?.about
-                    ? profileData.about
-                    : 'Допоможіть рекрутерам краще пізнати вас: опишіть, що робить саме вас чудовим кандидатом на посаду й поділіться іншими посиланнями.'}
-                </p>
-              </div>
-            </div>
-            <div className='media-links'>
-                {mediaLinksData && mediaLinksData.length > 0 && (
-                mediaLinksData.map((item, index) => (
-                <div key={item.id} className='media-link-wrapper'>
-                  <a className='media-link-item' href={item.url} target="_blank" rel="noopener noreferrer">
-                    {/* Іконку краще зберігати локально, щоб уникнути помилок завантаження */}
-                    <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
-                    {item.type}
-                  </a>
-                  <div className='delete-icon' onClick={() => handleLinkDelete(item.id)} title="Видалити посилання">
-                    <img src={minus} alt="Delete" className="delete-icon-img" />
+            <span
+              className={activeTab === "admin" ? "active-profile-tab" : ""}
+              onClick={() => setActiveTab("admin")}
+            >
+              Адміністративна панель
+            </span>
+          </div>
+
+          <div className='profile-horizontal-line'></div>
+        </div>
+
+        {/* === Вміст Мій кабінет === */}
+        {activeTab === "cabinet" && (
+          <>
+            <div className='profile-left-right-column'>
+              <div className="profile-column-left">
+                <div id='personal-information' className="profile-container personal-profile-container">
+                  <div className="profile-header-section">
+                    <h3 className="section-title">
+                      Особиста інформація
+                      <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
+                    </h3>
+
+                    <div className="profile-avatar">
+                      <img
+                        src={profileData ? profileData.profileImage : DEFAULT_AVATAR}
+                        alt="Avatar"
+                        className="profile-avatar"
+                      />
+                    </div>
+
+                    <h2 className="profile-name">
+                      {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+                    </h2>
+
+                    <h2 className="profile-age">
+                      {profileData && profileData.birthDate
+                        ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                        : ''}
+                    </h2>
+
+                    <div className='buttons-profile'>
+                      <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <button
+                          id="link-information"
+                          className="profile-edit-btn"
+                          onClick={handleCopy}
+                        >
+                          Поділитись посиланням <FiLink className="link-icon" />
+                        </button>
+
+                        {copied && <div className="copy-popup">Скопійовано!</div>}
+                      </div>
+
+                      <button 
+                        onClick={() => navigate('/mytests')}
+                        id="my-tests" 
+                        className="profile-edit-btn"
+                      >
+                        Мої тести
+                      </button>
+
+                      <button
+                        onClick={logout}
+                        id="exit" 
+                        className="profile-edit-btn"
+                      >
+                        Вийти
+                      </button>
+                    </div>
                   </div>
                 </div>
-                ))
-              )}
-            </div>
-          </div>
-          
-          <div id='achievements' className="profile-container">
-            <div className="profile-info-section">
-              <h4 className="subsection-title">Досягнення</h4>
-                <div className='achievements-block'>
-                  <div className='achievement-info'>
-                    <p className="achivement-label">Кількість пройдених тестів:</p>
-                    <span className="achivement-value">8</span>
-                  </div>  
-                
-                  <div className='achievement-info'>
-                    <p className="achivement-label">Успішні:</p>
-                    <span className="achivement-value">7</span>
-                  </div>  
-                </div>
               </div>
+              <div className="profile-column-right">
+                <div id='aditional-information' className="profile-container">
+                  <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
+                  <div className="profile-info-section aditional-profile-info-section">
+                    <h3 className="subsection-title">Додаткова інформація</h3>
+                    <div className="profile-info-block">
+                      <p className='aditional-text'>
+                        {profileData?.about
+                          ? profileData.about
+                          : 'Допоможіть рекрутерам краще пізнати вас...'}
+                      </p>
+                    </div>
+                  </div>
 
-            <div className='diagram-container'>
-              <Diagram />
-            </div>
-          </div>
-        </div>
+                  <div className='media-links'>
+                    {mediaLinksData?.length > 0 &&
+                      mediaLinksData.map((item) => (
+                        <div key={item.id} className='media-link-wrapper'>
+                          <a className='media-link-item' href={item.url} target="_blank">
+                            <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
+                            {item.type}
+                          </a>
+                          <div className='delete-icon' onClick={() => handleLinkDelete(item.id)}>
+                            <img src={minus} alt="Delete" className="delete-icon-img" />
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
 
-        </div>
-        <div className="profile-column-bottom">
-        <div id='education' className="profile-container">
-            <img 
-              src={plus} 
-              alt="plus" 
-              className="plus-icon" 
-              onClick={() => handleOpenModal("education")} 
-            />
-            <div className="profile-info-bottom-section">
-              <h3 className="subsection-title">Освіта</h3>
-              {educationData && educationData.length > 0 ? (
-                educationData.map((item, index) => (
-                  <ProfileItem 
-                    key={index} 
-                    id={item.id || index} 
-                    title={item.institution} 
-                    description={item.specialities} 
-                    fetch={fetchEducation}
-                    type={"education"}
-                    isMyProfile={true}
-                  />
-                ))
-              ) : (
-                <p className='empty-placeholder'>Додайте інформацію про університет, в якому навчаєтеся.</p>
-              )}
-            </div>
-          </div>
-          <div id='sertificates' className="profile-container">
-            <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("courses")}/>
-            <div className="profile-info-bottom-section">
-              <h3 className="subsection-title">Сертифікати</h3>
-              {sertificatesData && sertificatesData.length > 0 ? (
-                sertificatesData.map((item, index) => (
-                  <ProfileItem 
-                    key={index} 
-                    id={item.id || index} 
-                    title={item.course_name} 
-                    url={item.certificateUrl}
-                    description={item.description} 
-                    fetch={fetchSertificates}
-                    type={"courses"}
-                    isMyProfile={true}
-                  />
-                ))
-              ) : (
-                <p className='empty-placeholder'>Додайте інформацію про сертифікати, які ви отримали.</p>
-              )}
-            </div>
-          </div>
-          <div id='experience' className="profile-container">
-            <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("experience")}/>
-            <div className="profile-info-bottom-section">
-              <h3 className="subsection-title">Проєкти</h3>
-             {experienceData && experienceData.length > 0 ? (
-                experienceData.map((item, index) => (
-                  <ProfileItem 
-                    key={index} 
-                    id={item.id || index} 
-                    title={item.projectName} 
-                    url={item.projectUrl}
-                    description={item.description} 
-                    fetch={fetchExperience}
-                    type={"experiences"}
-                    isMyProfile={true}
-                  />
-                ))
-              ) : (
-                <p className='empty-placeholder'>Додайте інформацію про проєкти, в яких ви брали участь.</p>
-              )}
-            </div>
-          </div>
-          
-          { isLocalProvider && (
-          <div id='password' className="profile-container">
-            <div className="profile-info-section">
-              <h4 className="subsection-title">Пароль</h4>
-              <div className="profile-info-block">
-                <div className="profile-info-item">
-                  <p>Ми рекомендуємо вам періодично оновлювати пароль, щоб запобігти несанкціонованому доступу до вашого облікового запису.</p>
-                  <button 
-                  className="profile-edit-btn right-btn"
-                  onClick={()=>handleOpenModal("password")}>Змінити пароль</button>
+                <div id='achievements' className="profile-container">
+                  <div className="profile-info-section achievement-profile-info-section">
+                    <h4 className="subsection-title">Досягнення</h4>
+
+                    <div className='achievements-block'>
+                      <div className='achievement-info'>
+                        <p className="achivement-label">Кількість пройдених тестів:</p>
+                        <span className="achivement-value">8</span>
+                      </div>
+
+                      <div className='achievement-info'>
+                        <p className="achivement-label">Успішні:</p>
+                        <span className="achivement-value">7</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='diagram-container'>
+                    <Diagram />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          )}
-        </div>
-      
+            <div className="profile-column-bottom">
+              <div id='education' className="profile-container">
+                <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("education")}/>
+                <div className="profile-info-bottom-section">
+                  <h3 className="subsection-title">Освіта</h3>
+
+                  {educationData?.length > 0 ? (
+                    educationData.map((item, index) => (
+                      <ProfileItem 
+                        key={index}
+                        id={item.id || index}
+                        title={item.institution}
+                        description={item.specialities}
+                        fetch={fetchEducation}
+                        type="education"
+                        isMyProfile={true}
+                      />
+                    ))
+                  ) : (
+                    <p className='empty-placeholder'>Додайте інформацію про університет.</p>
+                  )}
+                </div>
+              </div>
+              <div id='sertificates' className="profile-container">
+                <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("courses")}/>
+                <div className="profile-info-bottom-section">
+                  <h3 className="subsection-title">Сертифікати</h3>
+
+                  {sertificatesData?.length > 0 ? (
+                    sertificatesData.map((item, index) => (
+                      <ProfileItem 
+                        key={index}
+                        id={item.id || index}
+                        title={item.course_name}
+                        url={item.certificateUrl}
+                        description={item.description}
+                        fetch={fetchSertificates}
+                        type="courses"
+                        isMyProfile={true}
+                      />
+                    ))
+                  ) : (
+                    <p className='empty-placeholder'>Додайте інформацію про сертифікати.</p>
+                  )}
+                </div>
+              </div>
+              <div id='experience' className="profile-container">
+                <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("experience")}/>
+                <div className="profile-info-bottom-section">
+                  <h3 className="subsection-title">Проєкти</h3>
+
+                  {experienceData?.length > 0 ? (
+                    experienceData.map((item, index) => (
+                      <ProfileItem 
+                        key={index}
+                        id={item.id || index}
+                        title={item.projectName}
+                        url={item.projectUrl}
+                        description={item.description}
+                        fetch={fetchExperience}
+                        type="experiences"
+                        isMyProfile={true}
+                      />
+                    ))
+                  ) : (
+                    <p className='empty-placeholder'>Додайте інформацію про проєкти.</p>
+                  )}
+                </div>
+              </div>
+              {isLocalProvider && (
+                <div id='password' className="profile-container">
+                  <div className="profile-info-section">
+                    <h4 className="subsection-title">Пароль</h4>
+                    <div className="profile-info-block">
+                      <p>Ми рекомендуємо вам періодично оновлювати пароль.</p>
+                      <button className="profile-edit-btn right-btn" onClick={()=>handleOpenModal("password")}>
+                        Змінити пароль
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* === Вміст Адміністративна панель === */}
+        {activeTab === "admin" && (
+          <>
+            <div className='profile-left-right-column'>
+              <div className="profile-column-left">
+                <div id='personal-information' className="profile-container personal-profile-container">
+                  <div className="profile-header-section">
+                    <h3 className="section-title">
+                      Особиста інформація
+                      <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
+                    </h3>
+
+                    <div className="profile-avatar">
+                      <img
+                        src={profileData ? profileData.profileImage : DEFAULT_AVATAR}
+                        alt="Avatar"
+                        className="profile-avatar"
+                      />
+                    </div>
+
+                    <h2 className="profile-name">
+                      {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+                    </h2>
+
+                    <h2 className="profile-age">
+                      {profileData && profileData.birthDate
+                        ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                        : ''}
+                    </h2>
+
+                    <div className='buttons-profile'>
+                      <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <button
+                          id="link-information"
+                          className="profile-edit-btn"
+                          onClick={handleCopy}
+                        >
+                          Поділитись посиланням <FiLink className="link-icon" />
+                        </button>
+
+                        {copied && <div className="copy-popup">Скопійовано!</div>}
+                      </div>
+
+                      <button 
+                        onClick={() => navigate('/mytests')}
+                        id="my-tests" 
+                        className="profile-edit-btn"
+                      >
+                        Мої тести
+                      </button>
+
+                      <button
+                        onClick={logout}
+                        id="exit" 
+                        className="profile-edit-btn"
+                      >
+                        Вийти
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="profile-column-right">
+                <div id='aditional-information' className="profile-container">
+                  <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
+                  <div className="profile-info-section aditional-profile-info-section">
+                    <h3 className="subsection-title">Додаткова інформація</h3>
+                    <div className="profile-info-block">
+                      <p className='aditional-text'>
+                        {profileData?.about
+                          ? profileData.about
+                          : 'Допоможіть рекрутерам краще пізнати вас...'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className='media-links'>
+                    {mediaLinksData?.length > 0 &&
+                      mediaLinksData.map((item) => (
+                        <div key={item.id} className='media-link-wrapper'>
+                          <a className='media-link-item' href={item.url} target="_blank">
+                            <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
+                            {item.type}
+                          </a>
+                          <div className='delete-icon' onClick={() => handleLinkDelete(item.id)}>
+                            <img src={minus} alt="Delete" className="delete-icon-img" />
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+                <div id='analytics' className="profile-container">
+                <div className="profile-info-section analytics-profile-info-section">
+                  <h4 className="subsection-title">Аналітика</h4>
+                  <button className="analytics-btn">Переглянути детальну аналітику</button>
+                </div>
+                <div className='diagram-container'>
+                    <Diagram />
+                </div>
+                </div>
+                <div className="admin-panel-tests-info-container">
+                  <div className='admin-panel-tests-info'>
+                    <p className="admin-panel-tests-label">Кількість створених тестів:</p>
+                    <span className="admin-panel-tests-value">20</span>
+                  </div>
+                  <div className='admin-panel-tests-info'>
+                    <p className="admin-panel-tests-label">Активні тести:</p>
+                    <span className="admin-panel-tests-value">4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+      </div>
 
     <EditProfileModal
     isOpen={isEditProfileModalOpen}
@@ -497,7 +635,6 @@ const Profile = () => {
         onClose={() => handleCloseModal('password')}
       />
     </div>
-  </div>
   );
 };
 

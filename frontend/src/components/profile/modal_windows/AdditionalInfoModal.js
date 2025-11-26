@@ -77,6 +77,10 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
     'X', 'Twitch', 'TikTok', 'Gmail', 'Discord', 'WhatsApp'
   ];
 
+  const isSaveDisabled =
+    text === (profileData?.about || "") &&
+    (link === "" || url === "");
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       
@@ -132,12 +136,13 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
       )}
 
       <div className="modal-buttons">
-        <button
-          className="modal-button modal-button-submit"
-          onClick={() => updateAbout(text)}
-        >
-          Зберегти
-        </button>
+      <button
+        className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+        disabled={isSaveDisabled}
+        onClick={() => !isSaveDisabled && updateAbout(text)}
+      >
+        Зберегти
+      </button>
       </div>
     </Modal>
   );
