@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime; // Імпортуємо класи для дати і часу
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,28 +24,27 @@ public class Test {
     private Long testId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false) 
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
+    
     @Column(name = "test_name", nullable = false)
-    private String testName; 
+    private String testName;
 
     @Column(name = "sphere")
-    private String sphere; 
+    private String sphere;
 
     @Column(name = "level")
-    private String level; 
+    private String level;
 
     @Column(name = "city")
-    private String city; 
+    private String city;
 
     @Column(name = "vacancy_description", columnDefinition = "TEXT")
-    private String vacancyDescription; 
+    private String vacancyDescription;
 
     @Column(name = "responsibilities", columnDefinition = "TEXT")
     private String responsibilities; 
     
-
     @Column(name = "is_fixed_time")
     private boolean isFixedTime; 
 
@@ -57,10 +56,14 @@ public class Test {
 
     @Column(name = "duration_minutes") 
     private Integer durationMinutes; 
-
+    
 
     @OneToMany(mappedBy= "test", cascade= CascadeType.ALL, orphanRemoval= true)
     private Set<TestQuestion> testQuestions = new HashSet<>();
+
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserTestAttempt> userTestAttempts = new HashSet<>();
+
 
     public Test(String testName, User user) {
         this.testName = testName;
