@@ -6,7 +6,9 @@ import BrowserWindow from '../browser_window/BrowserWindow';
 const ChooseYourFuture = () => {
   return (
     <div className="choose-your-future">
-      <h2>CHOOSE YOUR<br />FUTURE</h2>
+      <div className='choose-your-future-title'>
+        <h2>CHOOSE YOUR<br />FUTURE</h2>
+      </div>
 
         <BrowserWindow>
             <ChooseYourFutureItem testname='Frontend'/>

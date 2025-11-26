@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./GeneralInfo.css";
-import backgroundVideo from "../../video/welcomevideo.mp4";
+import backgroundVideo from "../../video/welcomevideo.webm";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
