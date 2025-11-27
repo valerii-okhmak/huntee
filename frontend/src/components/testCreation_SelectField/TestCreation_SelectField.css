@@ -10,9 +10,6 @@
 .select-field-tc.expanded {
     height: 250px; 
 }
-.select-field-tc.expanded-big {
-  height: 360px; 
-}
 .select-field-tc.class-expanded {
   height: 430px; 
 }
@@ -25,24 +22,29 @@
       font-family: 'Montserrat', sans-serif;
       flex: 0 0 40%;
       font-weight: bold;
-      font-size: 28px;
+      font-size: clamp(20px, 4vw, 28px);
       display: block;
       border-bottom: 1px solid #000;
       padding-bottom: 5px;
     }
     .select-field-tc__label.adding {
-      flex: 0 0 60%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 100%;
       cursor: pointer;
-      position: relative;
     }
+    
     .select-field-tc__label.adding:hover {
       text-decoration: underline;
     }
+
+    .select-field-tc__label.adding p{
+      text-align: left;
+    }
     .select-field-tc__label.adding span{
       font-size: 46px;
-      position: absolute;
-      top: -10px;
-      right: 0;
     }
   
     .select-field-tc__custom-select__control {
@@ -137,8 +139,8 @@ td.rdtActive {
   align-items: center;
   justify-content: center;
   background-color: #F1F1F1 ;
-  padding: 10px 30px;
-  gap: 30px;
+  padding: clamp(6px, 2vw, 10px) clamp(8px, 3vw, 30px);
+  gap: clamp(10px, 3vw, 30px);
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -148,12 +150,12 @@ td.rdtActive {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 32px;
+  font-size: clamp(24px, 3vw, 32px);
 }
 
 .select-field-tc__time-input span {
   font-weight: bold;
-  font-size: 32px;
+  font-size: clamp(24px, 3vw, 32px);
 }
 
 
@@ -165,6 +167,7 @@ td.rdtActive {
   padding: 20px;
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
+  resize: none;
 }
 .select-field-tc__custom-textarea::placeholder {
   color: #5C5959;
@@ -200,4 +203,32 @@ td.rdtActive {
 
 .question-classification__select {
   margin-left: 15px;
+}
+
+@media screen  and (max-width: 678px) {
+  .select-field-tc {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .select-field-tc__label {
+    width: 100%;
+    text-align: center;
+  }
+
+  .select-field-tc__right{
+    width: 100% !important;
+  }
+
+  .select-field-tc.expanded {
+    height: auto; 
+}
+
+  .select-field-tc.expanded-big {
+    height: auto; 
+}
+
+  .select-field-tc.class-expanded {
+    height: auto; 
+}
 }

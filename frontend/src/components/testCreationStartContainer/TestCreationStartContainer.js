@@ -36,7 +36,7 @@ const TestCreationStartContainer = () => {
     const [selectedQuestions, setSelectedQuestions] = useState([]);
 
   return (
-    <div className='testCreationStartContainer container'>
+    <div className='testCreationStartContainer'>
         <SelectField
             type={'select'}
             selectedOption={selectedField}
