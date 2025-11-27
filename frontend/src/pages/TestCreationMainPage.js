@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import GeneralTestInfoHeader from '../components/GeneralTestInfoHeader/GeneralTestInfoHeader'
 import TestCreationMainCount from '../components/testCreationMain/TestCreationMainCount/TestCreationMainCount'
@@ -7,12 +8,43 @@ import TestCreationMainPreview from '../components/testCreationMain/TestCreation
 import { getAccessToken} from '../utils/auth'
 
 const TestCreationMainPage = () => {
+  const location = useLocation()
+  const passed = location.state?.testMeta || null
+
   const [mode, setMode] = useState('create')
   const [questionsCount, setQuestionsCount] = useState(0)
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(false)
 
   const creatorRef = useRef(null)
+
+  const [testMeta, setTestMeta] = useState(() => ({
+    testName: passed?.vacancyDescription ? passed.vacancyDescription.slice(0,50) : 'Нова вакансія',
+    sphere: passed?.field || 'unknown',
+    level: (passed?.level || 'JUNIOR')?.toUpperCase(),
+    city: passed?.city || 'online',
+    vacancyDescription: passed?.vacancyDescription || '',
+    responsibilities: passed?.responsibilities || '',
+    fixedTime: true,
+    startTime: passed?.startTime ? new Date(passed.startTime) : null,
+    endTime: passed?.endTime ? new Date(passed.endTime) : null,
+    durationMinutes: passed?.durationMinutes || 0
+  }))
+
+  useEffect(() => {
+    if (passed) {
+      setTestMeta(prev => ({ ...prev,
+        sphere: passed.field || prev.sphere,
+        level: passed.level || prev.level,
+        city: passed.city || prev.city,
+        vacancyDescription: passed.vacancyDescription || prev.vacancyDescription,
+        responsibilities: passed.responsibilities || prev.responsibilities,
+        startTime: passed.startTime ? new Date(passed.startTime) : prev.startTime,
+        endTime: passed.endTime ? new Date(passed.endTime) : prev.endTime,
+        durationMinutes: passed.durationMinutes || prev.durationMinutes
+      }))
+    }
+  }, [passed])
 
   const handleNextQuestion = () => {
     const q = creatorRef.current?.getCurrentQuestionAndReset()
@@ -95,16 +127,16 @@ const TestCreationMainPage = () => {
 
       // 1) Створюємо тест (TestCreateRequest)
       const testPayload = {
-        testName: "JUNIOR DATA SCIENTIST",  // назва тесту
-        sphere: "Data Science",
-        level: "JUNIOR",
-        city: "Lviv",
-        vacancyDescription: "",   // можеш підставити реальні значення з окремої форми
-        responsibilities: "",
-        fixedTime: false,         // якщо буде фіксований час — став true і передавай startTime/endTime
-        startTime: null,          // формат ISO, напр. "2025-03-21T18:00:00"
-        endTime: null,
-        durationMinutes: 60       // тривалість, якщо fixedTime === false
+        testName: testMeta.testName,
+        sphere: testMeta.sphere,
+        level: testMeta.level,
+        city: testMeta.city,
+        vacancyDescription: testMeta.vacancyDescription,
+        responsibilities: testMeta.responsibilities,
+        fixedTime: testMeta.fixedTime,
+        startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
+        endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
+        durationMinutes: testMeta.durationMinutes
       }
 
       const testResponse = await axios.post(
@@ -149,11 +181,11 @@ const TestCreationMainPage = () => {
   return (
     <div className='page'>
       <GeneralTestInfoHeader
-        field="Data Science"
-        title="JUNIOR DATA SCIENTIST"
-        location="Lviv"
-        date="21.03.2025"
-        time="18:00"
+        field={testMeta.sphere}
+        title={testMeta.testName}
+        location={testMeta.city}
+        date={testMeta.startTime ? testMeta.startTime.toLocaleDateString() : ''}
+        time={testMeta.startTime ? testMeta.startTime.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}
       />
 
       <TestCreationMainCount questionsCount={questionsCount} />

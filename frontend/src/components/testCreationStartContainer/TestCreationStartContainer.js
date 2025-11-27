@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './TestCreationStartContainer.css'
 import SelectField from '../testCreation_SelectField/TestCreation_SelectField'
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
   
 const fieldOptions = [
@@ -34,6 +34,24 @@ const TestCreationStartContainer = () => {
     const [selectedTime, setSelectedTime] = useState(0);
     const [classes, setClasses] = useState([]);
     const [selectedQuestions, setSelectedQuestions] = useState([]);
+
+    const navigate = useNavigate();
+
+    const handleNext = () => {
+        const payload = {
+          field: selectedField?.value || null,
+          level: selectedLevel?.value || null,
+          city: selectedCity?.value || null,
+          vacancyDescription: description || '',
+          responsibilities: responsibilities || '',
+          startTime: startingDate ? new Date(startingDate).toISOString() : null,
+          endTime: finishingDate ? new Date(finishingDate).toISOString() : null,
+          durationMinutes: Number(selectedTime) || 0,
+          classes
+        }
+    
+        navigate('/testcreation/main', { state: { testMeta: payload } })
+    }
 
   return (
     <div className='testCreationStartContainer'>
@@ -109,7 +127,7 @@ const TestCreationStartContainer = () => {
         />
 
 
-        <Link to="/testcreation/main" className={`testCreationStartContainer__next-button`}>
+        <button className={`testCreationStartContainer__next-button`} onClick={handleNext} >
             Наступна сторінка
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +144,7 @@ const TestCreationStartContainer = () => {
             <line x1="4" y1="12" x2="34" y2="12" />
             <polyline points="26 6 34 12 26 18" />
             </svg>
-        </Link>
+        </button>
         
     </div>
   )
