@@ -40,7 +40,7 @@ public class TestAttemptService {
                 .orElseThrow(() -> new EntityNotFoundException("Test not found: " + testId));
 
         LocalDateTime now = LocalDateTime.now();
-        if (!test.isFixedTime()) {
+        if (!test.getIsFixedTime()) {
             if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
                 throw new AccessDeniedException("Test has not started yet.");
             }

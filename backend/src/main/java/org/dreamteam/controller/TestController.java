@@ -2,6 +2,7 @@ package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
 
+import org.dreamteam.dto.MyTestDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
 import org.dreamteam.dto.TestSummaryResponse;
@@ -115,6 +116,27 @@ public class TestController {
         testService.deleteTest(id, userEmail);
         
         return ResponseEntity.noContent().build(); 
+    }
+
+    @PostMapping("/{id}/register")
+    public ResponseEntity<Void> registerForTest(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        
+        testService.registerForTest(id, userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/created") 
+    public ResponseEntity<List<MyTestDTO>> getCreatedTests(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(testService.getCreatedTests(userDetails.getUsername()));
+    }
+
+    @GetMapping("/my") 
+    public ResponseEntity<List<MyTestDTO>> getMyTests(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(testService.getMyCandidateTests(userDetails.getUsername()));
     }
 
 }

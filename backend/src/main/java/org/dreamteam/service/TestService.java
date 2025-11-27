@@ -6,12 +6,15 @@ import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.User;
 import org.dreamteam.Entity.Question;
 import org.dreamteam.Entity.TestQuestion;
+import org.dreamteam.Entity.TestRegistration;
+import org.dreamteam.dto.MyTestDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
 import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
 import org.dreamteam.repository.TestRepository;
 import org.dreamteam.repository.TestQuestionRepository;
+import org.dreamteam.repository.TestRegistrationRepository;
 import org.dreamteam.repository.UserRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException; 
@@ -29,6 +32,25 @@ public class TestService {
     private final TestRepository testRepository;
     private final TestQuestionRepository testQuestionRepository;
     private final UserRepository userRepository; 
+    private final TestRegistrationRepository registrationRepository;
+    private final NotificationService notificationService; 
+
+    @Transactional
+    public void registerForTest(Long testId, String userEmail) {
+        User user = findUserByEmail(userEmail);
+        Test test = findTestById(testId);
+
+        if (registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), testId)) {
+            throw new IllegalStateException("User is already registered for this test.");
+        }
+
+        TestRegistration registration = new TestRegistration(user, test);
+        registrationRepository.save(registration);
+
+        String title = "Реєстрація успішна!";
+        String message = "Ви успішно зареєструвалися на тест: " + test.getTestName();
+        notificationService.sendSystemNotification(user.getId(), title, message);
+    }
 
     @Transactional
     public TestDetailResponse createTest(TestCreateRequest request, String authorEmail) {
@@ -82,6 +104,35 @@ public class TestService {
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
+    }
+    public List<MyTestDTO> getCreatedTests(String userEmail) {
+        User user = findUserByEmail(userEmail);
+        List<Test> tests = testRepository.findByUser_Id(user.getId());
+        
+        return tests.stream().map(test -> {
+            int candidates = registrationRepository.findByTest_TestId(test.getTestId()).size();
+            
+            return MyTestDTO.builder()
+                    .id(test.getTestId())
+                    .title(test.getTestName())
+                    .status("Active")
+                    .candidatesCount(candidates)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    public List<MyTestDTO> getMyCandidateTests(String userEmail) {
+        User user = findUserByEmail(userEmail);
+        
+        List<TestRegistration> registrations = registrationRepository.findByUser_Id(user.getId());
+                
+        return registrations.stream().map(reg -> {
+            return MyTestDTO.builder()
+                    .id(reg.getTest().getTestId())
+                    .title(reg.getTest().getTestName())
+                    .status("Registered")
+                    .build();
+        }).collect(Collectors.toList());
     }
 
     @Transactional
