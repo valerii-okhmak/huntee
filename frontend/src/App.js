@@ -31,7 +31,7 @@ import tryTestLogo from "./img/softserve.png";
 import tryTestQuestions from "./data/questions.json";
 import TemplatesHunteePage from './pages/TemplatesHunteePage';
 import ScrollToTop from './components/ScrollToTop'; 
-import NotFoundPage from './pages/NotFoundPage';
+import ViewingTestsPage from './pages/ViewingTestsPage';
 
 const App = () => {
 
@@ -70,9 +70,7 @@ const App = () => {
         <Route path="/testcreation" element={<TestCreationPage />} />
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
-        <Route path="/testcreation/main" element={<TestCreationMainPage />} />
-
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="/viewingtests" element={<ViewingTestsPage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>

@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap');
+
+.testcard-container {
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 20px 35px;
+    font-family: "MyFont", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.testcard-top_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.testcard-type {
+    color: #000;
+    font-size: clamp(16px, 2vw, 18px);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.testcard-title {
+    font-weight: bold;
+    color: #000;
+    font-size: clamp(22px, 2vw, 30px);
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+}
+.testcard-title:hover {
+    text-decoration: underline; 
+}
+
+.testcard-bottom_row {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.testcard-location{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.testcard-location p{
+    color: #848282;
+    font-size: clamp(16px, 2vw, 18px);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.location_icon {
+    height: 22px;
+}
+
+.testcard-date {
+    display: flex;
+}
+.testcard-date p{
+    color: #848282;
+    font-size: clamp(16px, 2vw, 18px);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.testcard-time {
+    margin-left: 15px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.testcard-status-active{
+    color: #679C6A; 
+    font-weight: bold;
+    padding: 10px 15px;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.testcard-status-unactive{
+    background-color: #679C6A;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+}
+
+@media screen and (max-width: 450px) {
+    .testcard {
+        padding: 20px;
+    }
+    .location_icon {
+        height: 20px;
+    }
+}
