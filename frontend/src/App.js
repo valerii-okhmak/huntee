@@ -35,7 +35,6 @@ import ViewingTestsPage from './pages/ViewingTestsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 
-
 const App = () => {
 
   const tryTest = {
@@ -73,6 +72,7 @@ const App = () => {
         <Route path="/testcreation" element={<TestCreationPage />} />
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
+        <Route path="/testcreation/main" element={<TestCreationMainPage />} />
         <Route path="/viewingtests" element={<ViewingTestsPage />} />
         <Route path="/*" element={<NotFoundPage />} />
 

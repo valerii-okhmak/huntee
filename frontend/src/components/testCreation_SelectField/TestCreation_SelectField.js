@@ -25,7 +25,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
     return (
         <div className={`select-field-tc ${menuOpen ? 'expanded' : ''} ${bigMenuOpen ? 'class-expanded' : ''} ${menuDateOpen && type === 'date' ? 'expanded-big' : ''}`}>
           {type === 'add' ?
-            <label className="select-field-tc__label adding">{fieldName} <span>+</span></label>
+            <label className="select-field-tc__label adding"><p>{fieldName}</p> <span>+</span></label>
             :
             <label className="select-field-tc__label">{fieldName}</label>
           }
@@ -50,7 +50,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 <textarea
                   value={selectedOption || ''}
                   onChange={(e) => setSelectedOption(e.target.value)}
-                  placeholder="Опис вакансії"
+                  placeholder={fieldName}
                   className="select-field-tc__custom-textarea"
                 />
               }
@@ -75,7 +75,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                     type="number"
                     min="0"
                     max="23"
-                    value={Math.floor(selectedOption / 3600)}
+                    value={String(Math.floor(selectedOption / 3600)).padStart(2, '0')}
                     onChange={(e) => handleTimeChange('hours', e.target.value)}
                   />
                   <span>:</span>
@@ -83,7 +83,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                     type="number"
                     min="0"
                     max="59"
-                    value={Math.floor((selectedOption % 3600) / 60)}
+                    value={String(Math.floor((selectedOption % 3600) / 60)).padStart(2, '0')}
                     onChange={(e) => handleTimeChange('minutes', e.target.value)}
                   />
                   <span>:</span>
@@ -91,7 +91,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                     type="number"
                     min="0"
                     max="59"
-                    value={selectedOption % 60}
+                    value={String(selectedOption % 60).padStart(2, '0')}
                     onChange={(e) => handleTimeChange('seconds', e.target.value)}
                   />
                 </div>
