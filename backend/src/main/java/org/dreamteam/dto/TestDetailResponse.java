@@ -17,7 +17,7 @@ public class TestDetailResponse {
     private String city;
     private String vacancyDescription;
     private String responsibilities;
-    private boolean isFixedTime;
+    private Boolean isFixedTime;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer durationMinutes;

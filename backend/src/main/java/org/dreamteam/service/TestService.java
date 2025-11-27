@@ -17,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException; 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import java.lang.Boolean;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class TestService {
         test.setCity(request.getCity());
         test.setVacancyDescription(request.getVacancyDescription());
         test.setResponsibilities(request.getResponsibilities());
-        test.setFixedTime(request.isFixedTime());
+        test.setIsFixedTime(request.getIsFixedTime());
         test.setStartTime(request.getStartTime());
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
@@ -74,7 +75,7 @@ public class TestService {
         test.setCity(request.getCity());
         test.setVacancyDescription(request.getVacancyDescription());
         test.setResponsibilities(request.getResponsibilities());
-        test.setFixedTime(request.isFixedTime());
+        test.setIsFixedTime(request.getIsFixedTime());
         test.setStartTime(request.getStartTime());
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
@@ -112,7 +113,7 @@ public class TestService {
                 .city(test.getCity())
                 .vacancyDescription(test.getVacancyDescription())
                 .responsibilities(test.getResponsibilities())
-                .isFixedTime(test.isFixedTime())
+                .isFixedTime(test.getIsFixedTime())
                 .startTime(test.getStartTime())
                 .endTime(test.getEndTime())
                 .durationMinutes(test.getDurationMinutes())
@@ -131,7 +132,7 @@ public class TestService {
                     .city(test.getCity())
                     .startTime(test.getStartTime())
                     .endTime(test.getEndTime())
-                    .isFixedTime(test.isFixedTime())
+                    .isFixedTime(test.getIsFixedTime())
                     .authorUsername(test.getUser().getUsername())
                     .build();
         }

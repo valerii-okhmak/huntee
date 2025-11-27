@@ -3,6 +3,7 @@ package org.dreamteam.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.lang.Boolean;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +15,7 @@ public class TestUpdateRequest {
     private String city;
     private String vacancyDescription;
     private String responsibilities;
-    private boolean isFixedTime;
+    private Boolean isFixedTime;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer durationMinutes;

@@ -14,6 +14,6 @@ public class TestSummaryResponse {
     private String city;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private boolean isFixedTime;
+    private Boolean isFixedTime;
     private String authorUsername;
 }

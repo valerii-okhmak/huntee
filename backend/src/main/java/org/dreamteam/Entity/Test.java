@@ -47,7 +47,7 @@ public class Test {
     
 
     @Column(name = "is_fixed_time")
-    private boolean isFixedTime; 
+    private Boolean isFixedTime; 
 
     @Column(name = "start_time")
     private LocalDateTime startTime; 
