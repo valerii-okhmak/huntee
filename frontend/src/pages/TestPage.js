@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; 
-import axios from 'axios';                    
-import { getAccessToken } from '../utils/auth'; 
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { getAccessToken } from '../utils/auth';
 
 import AboutTest from '../components/test_info/about_test/AboutTest';
 import AboutWork from '../components/test_info/AboutWork';
 import WorkResponsibilities from '../components/test_info/WorkResponsibilities';
 
 const TestPage = () => {
-    const { testId } = useParams(); 
+    const { testId } = useParams();
 
     const [testData, setTestData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -16,8 +16,8 @@ const TestPage = () => {
 
     useEffect(() => {
         const fetchTestDetails = async () => {
-            if (!testId) return; 
-            
+            if (!testId) return;
+
             setIsLoading(true);
             try {
                 const token = getAccessToken();
@@ -29,19 +29,19 @@ const TestPage = () => {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }
                 );
-                
-                setTestData(response.data); 
+
+                setTestData(response.data);
                 setError(null);
             } catch (err) {
                 console.error("Помилка завантаження тесту:", err);
-                setError(err.message || "Не вдалося завантажити дані тесту");
+                setError(err.response?.data?.message || err.message || "Не вдалося завантажити дані тесту");
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchTestDetails();
-    }, [testId]); 
+    }, [testId]);
 
     if (isLoading) {
         return <div className="page"><div>Завантаження...</div></div>;
@@ -55,9 +55,20 @@ const TestPage = () => {
         return <div className="page"><div>Тест не знайдено.</div></div>;
     }
 
-    const responsibilitiesList = testData.responsibilities 
-        ? JSON.parse(testData.responsibilities) 
-        : [];
+    // Виправлений код: перевіряємо, чи це масив, або парсимо JSON рядок
+    let responsibilitiesList = [];
+    if (testData.responsibilities) {
+        if (typeof testData.responsibilities === 'string') {
+            try {
+                responsibilitiesList = JSON.parse(testData.responsibilities);
+            } catch (err) {
+                console.warn("Не вдалося розпарсити responsibilities:", err);
+                responsibilitiesList = [];
+            }
+        } else if (Array.isArray(testData.responsibilities)) {
+            responsibilitiesList = testData.responsibilities;
+        }
+    }
 
     return (
         <div className="page">
