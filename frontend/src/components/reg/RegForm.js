@@ -1,84 +1,164 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './RegForm.css';
-import { register, verifyEmail } from '../../services/authService';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import { Link } from 'react-router-dom';
+import { register, verifyEmail } from '../../services/authService'; // перевір шлях
 
 const RegForm = () => {
+  // поля реєстрації
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [age, setAge] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmpassword, setConfirmPassword] = useState('');
+
+  // підтвердження пошти
   const [confirmationStep, setConfirmationStep] = useState(false);
   const [codeDigits, setCodeDigits] = useState(['', '', '', '', '', '']);
-  const [error, setError] = useState('');
   const inputRefs = useRef([]);
+
+  // помилки та стани
+  const [errors, setErrors] = useState({
+    firstName: '',
+    email: '',
+    password: '',
+    confirmpassword: ''
+  });
+  const [generalError, setGeneralError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // простий regex для перевірки e-mail
+  const validateEmail = (em) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+
+  // Перевірка пароля на співпадіння
+  useEffect(() => {
+    if (!confirmpassword) {
+      setErrors((prev) => ({ ...prev, confirmpassword: '' }));
+      return;
+    }
+    if (password !== confirmpassword) {
+      setErrors((prev) => ({ ...prev, confirmpassword: 'Паролі не співпадають.' }));
+    } else {
+      setErrors((prev) => ({ ...prev, confirmpassword: '' }));
+    }
+  }, [password, confirmpassword]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError('');
+    setGeneralError('');
+
+    // локальна валідація
+    let tempErrors = {
+      firstName: '',
+      email: '',
+      password: '',
+      confirmpassword: ''
+    };
+    let hasError = false;
+
+    if (!firstName.trim()) {
+      tempErrors.firstName = "Імʼя обовʼязкове.";
+      hasError = true;
+    }
+    if (!validateEmail(email)) {
+      tempErrors.email = 'Введіть коректну пошту.';
+      hasError = true;
+    }
+    if (!password || password.length < 6) {
+      tempErrors.password = 'Пароль повинен містити щонайменше 6 символів.';
+      hasError = true;
+    }
+    if (password !== confirmpassword) {
+      tempErrors.confirmpassword = 'Паролі не співпадають.';
+      hasError = true;
+    }
+
+    setErrors(tempErrors);
+    if (hasError) return;
+
+    setIsSubmitting(true);
     try {
-      await register({ firstName, lastName, email, password });
+      await register({ firstName, lastName, email, password, age });
       setConfirmationStep(true);
     } catch (err) {
+      console.error('Register error:', err);
       const status = err.response?.status;
       const message = err.response?.data?.message;
-  
+
       switch (status) {
         case 400:
-          setError(message || 'Некоректні дані. Перевірте всі поля.');
+          setGeneralError(message || 'Некоректні дані. Перевірте всі поля.');
+          break;
+        case 403: 
+          setGeneralError(message || 'Доступ заборонено. Дозволено лише пошти @lpnu.ua.');
           break;
         case 409:
-          setError(message || 'Користувач з такою поштою вже зареєстрований.');
+          setGeneralError(message || 'Користувач з такою поштою вже зареєстрований.');
           break;
         case 500:
-          setError('Помилка сервера. Спробуйте пізніше.');
+          setGeneralError('Помилка сервера. Спробуйте пізніше.');
           break;
         default:
-          setError('Невідома помилка. Спробуйте ще раз.');
+          setGeneralError('Невідома помилка. Спробуйте ще раз.');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
 
   const handleConfirm = async (e) => {
     e.preventDefault();
-    setError('');
+    setGeneralError('');
     const code = codeDigits.join('');
+    if (code.length !== 6) {
+      setGeneralError('Введіть 6-значний код підтвердження.');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       await verifyEmail({ email, code });
       window.location.href = '/';
     } catch (err) {
+      console.error('Verify error:', err);
       const status = err.response?.status;
       const message = err.response?.data?.message;
-  
+
       switch (status) {
         case 400:
-          setError(message || 'Невірний код підтвердження або електронна пошта.');
+          setGeneralError(message || 'Невірний код підтвердження або електронна пошта.');
           break;
         case 500:
-          setError('Помилка сервера. Спробуйте ще раз пізніше.');
+          setGeneralError('Помилка сервера. Спробуйте ще раз пізніше.');
           break;
         default:
-          setError('Помилка підтвердження. Спробуйте знову.');
+          setGeneralError('Помилка підтвердження. Спробуйте знову.');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
 
-  const handleChange = (e, index) => {
+  const handleChangeDigit = (e, index) => {
     const value = e.target.value.replace(/\D/g, '');
     if (value.length > 1) return;
-    const updatedDigits = [...codeDigits];
-    updatedDigits[index] = value;
-    setCodeDigits(updatedDigits);
+    const updated = [...codeDigits];
+    updated[index] = value;
+    setCodeDigits(updated);
 
     if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
-  const handleKeyDown = (e, index) => {
+  const handleKeyDownDigit = (e, index) => {
     if (e.key === 'Backspace' && !codeDigits[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
+    }
+    if (e.key === 'ArrowLeft' && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+    if (e.key === 'ArrowRight' && index < 5) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
@@ -89,99 +169,182 @@ const RegForm = () => {
   };
 
   return (
-    <div className="reg-main">
-      <div className="reg-container">
-        <h2>Реєстрація</h2>
+    <div className="reg-form-container">
+      <form
+        className="reg-form"
+        onSubmit={confirmationStep ? handleConfirm : handleRegister}
+        noValidate
+      >
+        <div className="top-part-reg">
+          <div className="left-side-reg">
+            <h1>
+              Реєстрація на
+              <br />
+              Hun<span className="special-t">t</span>ee
+            </h1>
+          </div>
 
-        {!confirmationStep ? (
-          <>
-            <form className="reg-form" onSubmit={handleRegister}>
-              <div className="form-group">
-                <label>Ім'я <b>*</b></label>
-                <input
-                  type="text"
-                  placeholder="Ім'я"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                />
-              </div>
+          <div className="right-side-reg">
+            {!confirmationStep ? (
+              <>
+                <div className="reg-input-box">
+                  <input
+                    name="firstName"
+                    type="text"
+                    id="firstName"
+                    className="reg-input"
+                    placeholder=" "
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                  <label htmlFor="firstName" className="reg-input-label">Ім’я</label>
+                  {errors.firstName && <p className="error-message">{errors.firstName}</p>}
+                </div>
 
-              <div className="form-group">
-                <label>Прізвище</label>
-                <input
-                  type="text"
-                  placeholder="Прізвище (необов'язково)"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
+                <div className="reg-input-box">
+                  <input
+                    name="lastName"
+                    type="text"
+                    id="lastName"
+                    className="reg-input"
+                    placeholder=" "
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                  <label htmlFor="lastName" className="reg-input-label">Прізвище</label>
+                </div>
 
-              <div className="form-group">
-                <label>Email <b>*</b></label>
-                <input
-                  type="email"
-                  placeholder="example@domain.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+                <div className="reg-input-box">
+                  <input
+                    name="age"
+                    type="number"
+                    id="age"
+                    className="reg-input"
+                    placeholder=" "
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    min="0"
+                  />
+                  <label htmlFor="age" className="reg-input-label">Вік</label>
+                </div>
 
-              <div className="form-group">
-                <label>Пароль <b>*</b></label>
-                <input
-                  type="password"
-                  placeholder="Введіть пароль"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
+                <div className="reg-input-box">
+                  <input
+                    name="email"
+                    type="email"
+                    id="email"
+                    className="reg-input"
+                    placeholder=" "
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <label htmlFor="email" className="reg-input-label">Пошта</label>
+                  {errors.email && <p className="error-message">{errors.email}</p>}
+                </div>
 
-              {error && <p className="error-message">{error}</p>}
+                <div className="reg-input-box">
+                  <input
+                    name="password"
+                    type="password"
+                    id="password"
+                    className="reg-input"
+                    placeholder=" "
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <label htmlFor="password" className="reg-input-label">Пароль</label>
+                  {errors.password && <p className="error-message">{errors.password}</p>}
+                </div>
 
-              <button type="submit" className="submit-btn">
-                Зареєструватися
-              </button>
-            </form>
+                <div className="reg-input-box">
+                  <input
+                    name="confirmpassword"
+                    type="password"
+                    id="confirmpassword"
+                    className="reg-input"
+                    placeholder=" "
+                    value={confirmpassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <label htmlFor="confirmpassword" className="reg-input-label">Підтвердіть пароль</label>
+                  {errors.confirmpassword && <p className="error-message">{errors.confirmpassword}</p>}
+                </div>
 
-            <SocialLogin setError={setError} />
-          </>
-        ) : (
-          <form className="reg-form" onSubmit={handleConfirm}>
-            <p className="confirm-text">Ми надіслали код підтвердження на <b>{email}</b></p>
-            <div className="code-inputs">
-              {codeDigits.map((digit, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  className="code-input"
-                  maxLength="1"
-                  value={digit}
-                  onChange={(e) => handleChange(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  ref={(el) => (inputRefs.current[index] = el)}
-                  required
-                />
-              ))}
-            </div>
+                {generalError && <p className="error-message">{generalError}</p>}
 
-            {error && <p className="error-message">{error}</p>}
+                <button
+                  type="submit"
+                  className="reg-submit-button"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Відправка...' : 'Зареєструватися'}
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="confirm-text">
+                  Ми надіслали код підтвердження на <b>{email}</b>
+                </p>
 
-            <button type="submit" className="submit-btn">
-              Підтвердити
-            </button>
-            <button type="button" className="back-btn" onClick={handleGoBack}>
-              Назад
-            </button>
-          </form>
-        )}
+                <div className="code-inputs" style={{ display: 'flex', gap: '10px' }}>
+                  {codeDigits.map((digit, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="\d*"
+                      className="code-input"
+                      maxLength="1"
+                      value={digit}
+                      onChange={(e) => handleChangeDigit(e, index)}
+                      onKeyDown={(e) => handleKeyDownDigit(e, index)}
+                      ref={(el) => (inputRefs.current[index] = el)}
+                      required
+                      style={{
+                        width: '44px',
+                        height: '56px',
+                        textAlign: 'center',
+                        fontSize: '20px',
+                        borderRadius: '6px',
+                        border: '1px solid #ccc',
+                      }}
+                    />
+                  ))}
+                </div>
 
-        <p className="reg-footer">
-          Уже є акаунт? <Link to="/login">Авторизуватися</Link>
-        </p>
-      </div>
+                {generalError && <p className="error-message">{generalError}</p>}
+
+                <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
+                  <button
+                    type="submit"
+                    className="reg-submit-button"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Перевірка...' : 'Підтвердити'}
+                  </button>
+                  <button
+                    type="button"
+                    className="back-btn"
+                    onClick={handleGoBack}
+                    disabled={isSubmitting}
+                  >
+                    Назад
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="horizontal-line-reg"></div>
+
+        <div className="bottom-part-reg">
+          <SocialLogin setError={setGeneralError} />
+          <p className="reg-footer">
+            Уже є акаунт? <Link to="/login">Авторизуватися</Link>
+          </p>
+        </div>
+      </form>
     </div>
   );
 };

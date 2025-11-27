@@ -1,0 +1,50 @@
+package org.dreamteam.Entity;
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "user_test_attempt")
+@Getter
+@Setter
+@NoArgsConstructor 
+@EqualsAndHashCode(of = "attemptId")
+
+public class UserTestAttempt {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "attempt_id")
+    private Long attemptId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "test_id", nullable = false)
+    private Test test;
+
+    @Column(name = "started_at", nullable = false)
+    private LocalDateTime startedAt;
+
+    @Column(name = "completed_at") 
+    private LocalDateTime completedAt;
+
+    @Column(precision = 5, scale = 2) 
+    private BigDecimal score;
+
+    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<UserAnswer> userAnswers = new HashSet<>();
+
+    public UserTestAttempt(User user, Test test) {
+        this.user = user;
+        this.test = test;
+        this.startedAt = LocalDateTime.now();
+    }    
+}

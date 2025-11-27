@@ -1,7 +1,7 @@
 import React from 'react';
 import './ForCompany.css';
 import { Link } from 'react-router-dom';
-import backgVideo from '../../video/forcomp.mp4';
+import backgVideo from '../../video/forcomp.webm';
 
 const ForCompany = () => {
     return (
