@@ -51,8 +51,11 @@
     margin: 0 clamp(3px, 1vw, 10px);
   }  
   
-  /* Контент під шаром */
   .bottom-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     z-index: 2;
     text-align: center;
     padding: clamp(20px, 5vw, 40px) clamp(10px, 3vw, 20px);

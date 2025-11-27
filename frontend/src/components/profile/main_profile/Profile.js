@@ -17,6 +17,11 @@ import ProfileItem from '../item_profile/ProfileItem';
 import EditProfileModal from '../modal_windows/EditProfileModal';
 import minus from '../../../img/minus.png';
 import { FiLink } from 'react-icons/fi'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
 
 import DEFAULT_AVATAR from '../../../img/avatar.png'; 
 
@@ -290,7 +295,12 @@ return (
                   <div className="profile-header-section">
                     <h3 className="section-title">
                       Особиста інформація
-                      <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      className="edit-icon"
+                      onClick={() => handleOpenModal("editProfile")}
+                      style={{ cursor: 'pointer'}}
+                    />
                     </h3>
 
                     <div className="profile-avatar">
@@ -318,7 +328,7 @@ return (
                           className="profile-edit-btn"
                           onClick={handleCopy}
                         >
-                          Поділитись посиланням <FiLink className="link-icon" />
+                          Поділитись посиланням <FontAwesomeIcon icon={faLink} className="link-icon" />
                         </button>
 
                         {copied && <div className="copy-popup">Скопійовано!</div>}
@@ -345,9 +355,16 @@ return (
               </div>
               <div className="profile-column-right">
                 <div id='aditional-information' className="profile-container">
-                  <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
                   <div className="profile-info-section aditional-profile-info-section">
+                    <div className='icon_and_title_container'>
                     <h3 className="subsection-title">Додаткова інформація</h3>
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      className="edit-icon"
+                      onClick={() => handleOpenModal("additionalInfo")}
+                      style={{ cursor: 'pointer'}}
+                    />
+                    </div>
                     <div className="profile-info-block">
                       <p className='aditional-text'>
                         {profileData?.about
@@ -398,7 +415,12 @@ return (
             </div>
             <div className="profile-column-bottom">
               <div id='education' className="profile-container">
-                <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("education")}/>
+                <FontAwesomeIcon 
+                  icon={faPlus} 
+                  className="plus-icon" 
+                  onClick={() => handleOpenModal("education")} 
+                  style={{ cursor: 'pointer' }}
+                />
                 <div className="profile-info-bottom-section">
                   <h3 className="subsection-title">Освіта</h3>
 
@@ -420,7 +442,12 @@ return (
                 </div>
               </div>
               <div id='sertificates' className="profile-container">
-                <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("courses")}/>
+                <FontAwesomeIcon 
+                  icon={faPlus} 
+                  className="plus-icon" 
+                  onClick={() => handleOpenModal("courses")} 
+                  style={{ cursor: 'pointer' }}
+                />
                 <div className="profile-info-bottom-section">
                   <h3 className="subsection-title">Сертифікати</h3>
 
@@ -443,7 +470,12 @@ return (
                 </div>
               </div>
               <div id='experience' className="profile-container">
-                <img src={plus} alt="plus" className="plus-icon" onClick={()=>handleOpenModal("experience")}/>
+                <FontAwesomeIcon 
+                  icon={faPlus} 
+                  className="plus-icon" 
+                  onClick={() => handleOpenModal("experience")} 
+                  style={{ cursor: 'pointer' }}
+                />
                 <div className="profile-info-bottom-section">
                   <h3 className="subsection-title">Проєкти</h3>
 
@@ -491,7 +523,12 @@ return (
                   <div className="profile-header-section">
                     <h3 className="section-title">
                       Особиста інформація
-                      <img src={editIcon} alt="Edit" className="edit-icon" onClick={()=>handleOpenModal("editProfile")}/>
+                     <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      className="edit-icon"
+                      onClick={() => handleOpenModal("editProfile")}
+                      style={{ cursor: 'pointer'}}
+                    />
                     </h3>
 
                     <div className="profile-avatar">
@@ -519,7 +556,7 @@ return (
                           className="profile-edit-btn"
                           onClick={handleCopy}
                         >
-                          Поділитись посиланням <FiLink className="link-icon" />
+                          Поділитись посиланням <FontAwesomeIcon icon={faLink} className="link-icon" />
                         </button>
 
                         {copied && <div className="copy-popup">Скопійовано!</div>}
@@ -546,9 +583,16 @@ return (
               </div>
               <div className="profile-column-right">
                 <div id='aditional-information' className="profile-container">
-                  <img src={editInfo} alt="edit" className="editInfo-icon" onClick={()=>handleOpenModal("additionalInfo")}/>
                   <div className="profile-info-section aditional-profile-info-section">
+                    <div className='icon_and_title_container'>
                     <h3 className="subsection-title">Додаткова інформація</h3>
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      className="edit-icon"
+                      onClick={() => handleOpenModal("additionalInfo")}
+                      style={{ cursor: 'pointer'}}
+                    />
+                    </div>
                     <div className="profile-info-block">
                       <p className='aditional-text'>
                         {profileData?.about

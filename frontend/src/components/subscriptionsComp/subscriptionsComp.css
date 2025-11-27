@@ -64,7 +64,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: clamp(140px, 25vw, 250px);
 }
 
 .plan__desc {

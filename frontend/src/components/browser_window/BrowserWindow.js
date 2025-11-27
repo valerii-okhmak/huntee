@@ -6,12 +6,16 @@ const BrowserWindow = ({ children }) => {
   return (
     <div className="browser-container">
         <div className="browser-top-block">
-          <div className="browser-image">
-            <img src={browser_nav} alt="<Браузерне меню"/>
+          <div class="circle">
+            <span class="red box"></span>
           </div>
-          <div className="vertical-line"></div>
+          <div class="circle">
+            <span class="yellow box"></span>
+          </div>
+          <div class="circle">
+            <span class="green box"></span>
+          </div>
         </div>
-        <div className="horizontal-line"></div>
         <div className="browser-bottom-block">
             {children}
         </div>

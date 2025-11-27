@@ -1,6 +1,6 @@
 import React from "react";
 import "./JoinToUs.css";
-import backgroundVideo from '../../video/join-to-us.mp4';
+import backgroundVideo from '../../video/join-to-us.webm';
 import { Link } from "react-router-dom";
 
 const JoinToUs = () => {

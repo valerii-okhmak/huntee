@@ -2,12 +2,12 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     background: linear-gradient(to bottom right, #001aff 60%, #ffffff 100%);
     background-size: 400% 300%; 
     animation: gradientAnimation 20s infinite linear;
     color: white;
     position: relative;
+    padding-top: clamp(20px, 6vw, 50px);
 }
 
 @keyframes gradientAnimation {
@@ -16,12 +16,19 @@
     100% { background-position: 0% 50%; }
 }
 
-.choose-your-future h2 {
-    padding-top: 50px;
+.choose-your-future-title {
+    display: flex;
+    flex-direction: column;   /* щоб текст вирівнювався по осі X */
+    justify-content: center;  /* центрує по вертикалі */
+    align-items: flex-start;  /* текст на початку */
+    width: 75%;
+    margin: 0 auto;           /* центрує контейнер */
+}
+
+.choose-your-future-title h2 {
     font-family: 'MyFont1', sans-serif; 
     color: white;
     font-size: clamp(32px, 8vw, 80px);
-    margin: 25px 45px 0px 45px;
 }
 
 .choose-your-future .browser-bottom-block {
@@ -30,3 +37,8 @@
   gap: 20px;     
 }
 
+@media screen and (max-width: 768px) {
+    .choose-your-future-title {
+        width: calc(100% - 30px);
+    }
+}

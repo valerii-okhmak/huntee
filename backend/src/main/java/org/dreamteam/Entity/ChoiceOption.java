@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = "optionId")
+@EqualsAndHashCode(of = {"question", "optionText"})
 public class ChoiceOption {
 
     @Id

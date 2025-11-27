@@ -78,6 +78,12 @@ main {
   padding-top: 40px;
 }
 
+.custom_title_and_browser_window_space{
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 4vw, 30px);
+}
+
 input::placeholder, textarea::placeholder {
   color: #000000;
 }

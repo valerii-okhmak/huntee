@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = "pairId")
+@EqualsAndHashCode(of = {"prompt", "answer"})
 public class MatchingPair {
 
     @Id
@@ -23,10 +23,10 @@ public class MatchingPair {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @Column(name = "prompt", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "prompt_text", columnDefinition = "TEXT", nullable = false)
     private String prompt;
 
-    @Column(name = "answer", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "answer_text", columnDefinition = "TEXT", nullable = false)
     private String answer;
 
     public MatchingPair(Question question, String prompt, String answer) {

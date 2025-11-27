@@ -15,10 +15,12 @@ const StartIT = () => {
   
     return (
       <div className="page">
+        <div className='custom_title_and_browser_window_space'>
          <CustomTitle title='ВІТАЄМО НА HUNTEE!' data={object} /> 
           <BrowserWindow>
             <BrowserWinText who={'шановний(на) студенте(тко)'} company={'Huntee'} text = {'Твій старт у кар’єру починається тут!\n Ми створили цю платформу, щоб допомогти саме тобі — студенту, який шукає перший крок у професійне життя.\nУ нас ти знайдеш можливості для першої роботи та розвитку практичних навичок. Ми не просто платформа — ми твій надійний партнер на шляху до успішної кар’єри. З нами твій потенціал знайде свій шлях. \nДій зараз — майбутнє починається сьогодні.'} />
           </BrowserWindow>
+          </div>
           <CreateTestInfo
           main_title={"HERE'S YOUR FUTURE"}
           title_button={'НАЙБЛИЖЧІ НАБОРИ'}

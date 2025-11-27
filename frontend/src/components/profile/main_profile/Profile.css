@@ -13,6 +13,12 @@
   width: 100%;
 }
 
+.icon_and_title_container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .achievement-profile-info-section{
   display: flex;
   flex-direction: column;
@@ -132,8 +138,7 @@
 }
 
 .edit-icon {
- max-width: 19px;
-  height: 19px;
+  font-size: 24px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -291,6 +296,7 @@
   font-weight: 700;
   transition:max-width 0.3s ease;
   width: 100%;
+  gap: 10px;
 }
 
 #exit{
@@ -467,7 +473,7 @@ padding: 30px;
   top: 20px;
   right: 20px;
   cursor: pointer; 
-  width: 40px;
+  font-size: 24px;
 }
 
 .plus-icon:hover {
@@ -717,11 +723,6 @@ padding: 30px;
   .aditional-text {
     font-size: 12px;
     margin-bottom: 20px;
-  }
-
-  .edit-icon {
-   max-width: 15px;
-    height: 15px;
   }
 
   .link-icon {
