@@ -2,15 +2,26 @@ import React from 'react';
 import './TestsList.css';
 import TestCard from '../TestCard/TestCard';
 
-const TestsList = () => {
+const TestsList = ({ tests }) => {
+  if (!tests || tests.length === 0) {
+      return <div className="no-tests">Тестів не знайдено</div>;
+  }
+
   return (
     <div className="tests-list-block">
-      <TestCard title='JUNIOR DATA SCIENTIST' type='Data Science' location='Lviv' date='21.03.2025' time='18:00' link='/' isActive={true}/>
-      <TestCard title='JUNIOR DATA SCIENTIST' type='Data Science' location='Lviv' date='21.03.2025' time='18:00' link='/' isActive={false}/>
-      <TestCard title='JUNIOR DATA SCIENTIST' type='Data Science' location='Lviv' date='21.03.2025' time='18:00' link='/' isActive={true}/>
-      <TestCard title='JUNIOR DATA SCIENTIST' type='Data Science' location='Lviv' date='21.03.2025' time='18:00' link='/' isActive={false}/>
-      <TestCard title='JUNIOR DATA SCIENTIST' type='Data Science' location='Lviv' date='21.03.2025' time='18:00' link='/' isActive={true}/>
-      <TestCard title='JUNIOR DATA SCIENTIST' type='Data Science' location='Lviv' date='21.03.2025' time='18:00' link='/' isActive={false}/>
+      {tests.map(test => (
+        <TestCard 
+            key={test.id}
+            title={test.title}
+            type={test.type}
+            location={test.location}
+            date={test.date}
+            time={test.time}
+            link={test.link}
+            isActive={test.candidatesCount > 0} 
+            candidatesCount={test.candidatesCount}
+        />
+      ))}
     </div>
   );
 };
