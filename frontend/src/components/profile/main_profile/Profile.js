@@ -202,6 +202,16 @@ const Profile = () => {
     checkLocalProvider();
   }, []);
 
+function getYearWord(n) {
+  n = Math.abs(n) % 100; 
+  const n1 = n % 10;
+
+  if (n > 10 && n < 20) return "років";
+  if (n1 > 1 && n1 < 5) return "роки";
+  if (n1 === 1) return "рік";
+  return "років";
+}
+
 
   const getAgeFromBirthDate = (birthDateStr) => {
     const birthDate = new Date(birthDateStr);
@@ -317,7 +327,7 @@ return (
 
                     <h2 className="profile-age">
                       {profileData && profileData.birthDate
-                        ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                        ? `${getAgeFromBirthDate(profileData.birthDate)} ${getYearWord(getAgeFromBirthDate(profileData.birthDate))}`
                         : ''}
                     </h2>
 
@@ -545,7 +555,7 @@ return (
 
                     <h2 className="profile-age">
                       {profileData && profileData.birthDate
-                        ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                        ? `${getAgeFromBirthDate(profileData.birthDate)} ${getYearWord(getAgeFromBirthDate(profileData.birthDate))}`
                         : ''}
                     </h2>
 
@@ -567,7 +577,7 @@ return (
                         id="my-tests" 
                         className="profile-edit-btn"
                       >
-                        Мої тести
+                        Конструктор тестів
                       </button>
 
                       <button

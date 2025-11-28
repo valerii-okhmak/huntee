@@ -54,8 +54,9 @@
 }
 
   .modal-select {
+    background-color: #f5f5f5;
     padding: 0.5rem;
-    border: 1px solid #000000;
+    border: none;
     border-radius: 5px;
     font-size: clamp(12px, 2vw, 16px);
     font-weight: bold;
@@ -64,6 +65,11 @@
     width: 100%;
   }
 
+  .modal-select:focus{
+      border: 1px solid #000000 !important;
+       outline: none !important;
+    }
+
   
   .modal-select-option {
     padding: 0.5rem;
@@ -71,17 +77,24 @@
   }
   
   .modal-input {
+    background-color: #f5f5f5;
     padding: 0.5rem;
-   border: 1px solid #000000;
+    border: none;
     border-radius: 5px;
     font-size: clamp(12px, 2vw, 16px);
     width: 100%; 
     font-family: 'Montserrat', sans-serif;
   }
+
+    .modal-input:focus{
+      border: 1px solid #000000 !important;
+        outline: none !important;
+    }
   
   .modal-textarea {
+    background-color: #f5f5f5;
     padding: 0.5rem;
-    border: 1px solid #000000;
+    border: none;
     border-radius: 5px;
     font-size: clamp(10px, 2vw, 14px);
     color: #000000;
@@ -89,6 +102,11 @@
     height: 100px; 
     width: 100%; 
     font-family: 'Montserrat', sans-serif;
+  }
+
+  .modal-textarea:focus{
+      border: 1px solid #000000 !important;
+        outline: none !important;
   }
   
   .modal-buttons {
@@ -275,10 +293,17 @@ transform: rotate(180deg);
 }
 
 .modal-photo-link{
+  text-align: center;
   text-decoration: none;
   color: #0650ac;
-  font-size: 28px;
+  font-size: clamp(20px, 3vw, 28px);
   font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.modal-photo-link:hover{
+  color: #5798e9;
 }
 
 .modal-close {
@@ -326,17 +351,18 @@ transform: rotate(180deg);
 
 .modal-label-subinfo{
   flex: 0 0 50%;
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vw, 20px);
   font-family: 'Montserrat', sans-serif;
   color: black;
 }
 
 .modal-info-input{
-   border: none;
+   border: none !important;
+   outline: none !important;
    color: #000000;
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vw, 20px);
   font-family: 'Montserrat', sans-serif;
-
+  
 }
 
 .modal-calendar{

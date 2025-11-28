@@ -143,6 +143,11 @@
   transition: transform 0.3s ease;
 }
 
+.edit-icon:hover {
+  transition: transform 0.3s ease;
+  transform: scale(1.05);
+}
+
 .profile-avatar {
   width: 193px;
   height: 190px;
@@ -478,7 +483,7 @@ padding: 30px;
 
 .plus-icon:hover {
   transition: transform 0.3s ease;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .editInfo-icon:hover {
