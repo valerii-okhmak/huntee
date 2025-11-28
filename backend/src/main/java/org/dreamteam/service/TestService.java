@@ -115,6 +115,10 @@ public class TestService {
             return MyTestDTO.builder()
                     .id(test.getTestId())
                     .title(test.getTestName())
+                    .sphere(test.getSphere())
+                    .level(test.getLevel())
+                    .city(test.getCity())
+                    .startTime(test.getStartTime())
                     .status("Active")
                     .candidatesCount(candidates)
                     .build();
