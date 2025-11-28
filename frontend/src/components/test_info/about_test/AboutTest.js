@@ -20,9 +20,6 @@ const AboutTest = ({ testData }) => {
                 date={date} 
                 time={time}
             />
-            <CompanyInfo 
-                text={'SoftServe — це перш за все люди.\nТі, які створюють глобальну IT компанію...'}
-            />
         </div>
     );
 }
