@@ -80,7 +80,7 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/messages" element={<MessagePage />} />
-          <Route path="/message" element={<MessageTextPage />} />
+          <Route path="/message/:id" element={<MessageTextPage />} />
         </Route>
       </Routes>
       <Footer />

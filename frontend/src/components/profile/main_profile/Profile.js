@@ -335,7 +335,7 @@ return (
                       </div>
 
                       <button 
-                        onClick={() => navigate('/mytests')}
+                        onClick={() => navigate('/viewingtests')}
                         id="my-tests" 
                         className="profile-edit-btn"
                       >

@@ -1,11 +1,48 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import "./TestRules.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; 
+import axios from 'axios';
+import { getAccessToken } from '../../utils/auth';
 
 const TestRules = () => {
-
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
+  
   const navigate = useNavigate();
+  const location = useLocation();
+  const testId = location.state?.testId; 
+
+  const handleConfirmRegistration = async () => {
+    if (!testId) {
+        alert("Помилка: ID тесту не знайдено. Будь ласка, поверніться назад і спробуйте ще раз.");
+        return;
+    }
+
+    setIsLoading(true);
+    try {
+        const token = getAccessToken();
+        if (!token) {
+            alert("Будь ласка, увійдіть у систему.");
+            navigate('/login'); 
+            return;
+        }
+
+        await axios.post(
+            `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/register`,
+            {}, 
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+
+        setShowModal(true);
+
+    } catch (error) {
+        console.error("Помилка реєстрації:", error);
+        const message = error.response?.data || "Не вдалося зареєструватися. Спробуйте пізніше.";
+        alert(message); 
+    } finally {
+        setIsLoading(false);
+    }
+  };
 
   return (
     <div className="test-rules-main">
@@ -20,51 +57,36 @@ const TestRules = () => {
           <li><strong>6. Фінальне завершення тесту</strong> – після виходу із сторінки тест буде завершено без можливості повернення, тож перевіряйте відповіді перед відправленням.</li>
         </ul>
         <div className="test-rules-button-container">
-        <button className="test-rules-button" onClick={() => setShowModal(true)}>
-            Підтвердити реєстрацію
+        <button 
+            className="test-rules-button" 
+            onClick={handleConfirmRegistration} 
+            disabled={isLoading} 
+        >
+            {isLoading ? "Обробка..." : "Підтвердити реєстрацію"}
         </button>
         </div>
       </div>
-            {showModal && (
+      
+      {showModal && (
         <div className="modal-overlay-test">
           <div className="modal-content-test">
             <h1><strong>Вітаємо з успішною<br/>реєстрацією!</strong></h1>
             <p>Це твій перший крок до успішної IT-кар’єри!</p>
             <div className="modal-buttons-test">
               <button onClick={() => navigate('/')} className="test-rules-button"> 
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="34"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 38 24"
-                style={{
-                    marginRight: "8px",
-                    verticalAlign: "middle"
-                }}
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 38 24" style={{ marginRight: "8px", verticalAlign: "middle" }}>
                 <line x1="4" y1="12" x2="34" y2="12" />
                 <polyline points="12 6 4 12 12 18" />
-                </svg>Перейти на головну</button>
-              <button onClick={() => navigate('/mytests')} className="test-rules-button">Перейти в мої тести<svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="34"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 38 24"
-                style={{ marginLeft: "8px", verticalAlign: "middle" }}
-                >
+                </svg>Перейти на головну
+              </button>
+              
+              <button onClick={() => navigate('/viewingtests')} className="test-rules-button">
+                Перейти в мої тести
+                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 38 24" style={{ marginLeft: "8px", verticalAlign: "middle" }}>
                 <line x1="4" y1="12" x2="34" y2="12" />
                 <polyline points="26 6 34 12 26 18" />
-            </svg></button>
+                </svg>
+              </button>
             </div>
           </div>
         </div>

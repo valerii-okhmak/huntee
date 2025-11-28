@@ -55,7 +55,6 @@ const TestPage = () => {
         return <div className="page"><div>Тест не знайдено.</div></div>;
     }
 
-    // Виправлений код: перевіряємо, чи це масив, або парсимо JSON рядок
     let responsibilitiesList = [];
     if (testData.responsibilities) {
         if (typeof testData.responsibilities === 'string') {
@@ -74,7 +73,10 @@ const TestPage = () => {
         <div className="page">
             <AboutTest testData={testData} />
             <AboutWork vacancyDescription={testData.vacancyDescription} />
-            <WorkResponsibilities responsibilities={responsibilitiesList} />
+            <WorkResponsibilities 
+                responsibilities={responsibilitiesList} 
+                testId={testId} 
+            />
         </div>
     );
 };
