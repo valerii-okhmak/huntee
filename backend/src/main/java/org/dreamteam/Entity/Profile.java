@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,9 +23,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @AllArgsConstructor
 public class Profile {
     
-    @Id
+    @Id 
     @Column(name = "user_id")
-    private Integer userId;
+    private UUID userId;
     
     @OneToOne
     @MapsId

@@ -1,6 +1,7 @@
 package org.dreamteam.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.dreamteam.Entity.Notification;
 import org.dreamteam.Entity.User;
 import org.dreamteam.dto.NotificationResponse;
@@ -8,7 +9,9 @@ import org.dreamteam.repository.NotificationRepository;
 import org.dreamteam.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +23,7 @@ public class NotificationService {
     private final EmailService emailService;
 
     @Transactional
-    public void sendNotification(Integer recipientId, Integer senderId, String title, String message) {
+    public void sendNotification(UUID recipientId, UUID senderId, String title, String message) {
         User recipient = userRepository.findById(recipientId)
                 .orElseThrow(() -> new RuntimeException("Recipient not found"));
         
@@ -41,11 +44,11 @@ public class NotificationService {
     }
     
     @Transactional
-    public void sendSystemNotification(Integer recipientId, String title, String message) {
+    public void sendSystemNotification(UUID recipientId, String title, String message) {
         sendNotification(recipientId, null, title, message);
     }
 
-    public List<NotificationResponse> getUserNotifications(Integer userId) {
+    public List<NotificationResponse> getUserNotifications(UUID userId) {
         List<Notification> notifications = notificationRepository.findByRecipient_IdOrderByCreatedAtDesc(userId);
         
         return notifications.stream()
@@ -83,7 +86,7 @@ public class NotificationService {
     }
     
     @Transactional
-    public void markAsRead(Long notificationId, Integer userId) {
+    public void markAsRead(Long notificationId, UUID userId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         

@@ -1,6 +1,9 @@
 package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
 import org.dreamteam.dto.AnswerSubmissionRequest;
 import org.dreamteam.dto.TestResultResponse;
 import org.dreamteam.dto.TestTakeResponse;
@@ -28,7 +31,7 @@ public class TestAttemptController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/tests/{testId}/start")
     public ResponseEntity<?> startTest(
-            @PathVariable Long testId,
+            @PathVariable UUID testId,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         try {
@@ -46,8 +49,8 @@ public class TestAttemptController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/attempts/{attemptId}/questions/{questionId}/answer")
     public ResponseEntity<?> submitAnswer(
-            @PathVariable Long attemptId,
-            @PathVariable Long questionId,
+            @PathVariable UUID attemptId,
+            @PathVariable UUID questionId,
             @RequestBody AnswerSubmissionRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         
@@ -66,7 +69,7 @@ public class TestAttemptController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/attempts/{attemptId}/finish")
     public ResponseEntity<?> finishTest(
-            @PathVariable Long attemptId,
+            @PathVariable UUID attemptId,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         try {

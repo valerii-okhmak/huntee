@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.nimbusds.oauth2.sdk.Response;
 
@@ -73,7 +74,7 @@ public class TestController {
     @GetMapping("/{id}")
     public ResponseEntity<TestDetailResponse> getTestById(
         @Parameter(description = "ID тесту, який потрібно знайти")
-        @PathVariable Long id) {
+        @PathVariable UUID id) {
             TestDetailResponse test = testService.getTestById(id);
             return ResponseEntity.ok(test);
         }
@@ -90,7 +91,7 @@ public class TestController {
     @PutMapping("/{id}")
     public ResponseEntity<TestDetailResponse> updateTest(
         @Parameter(description = "ID тесту, який потрібно оновити")
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody TestUpdateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
                 String userEmail = userDetails.getUsername();
@@ -109,7 +110,7 @@ public class TestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTest(
             @Parameter(description = "ID тесту, який потрібно видалити")
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         String userEmail = userDetails.getUsername();
@@ -120,7 +121,7 @@ public class TestController {
 
     @PostMapping("/{id}/register")
     public ResponseEntity<Void> registerForTest(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         testService.registerForTest(id, userDetails.getUsername());

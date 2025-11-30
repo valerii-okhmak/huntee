@@ -2,12 +2,14 @@ package org.dreamteam.dto;
 
 import lombok.Builder;
 import lombok.Data;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
 public class MyTestDTO {
-    private Long id;
+    private UUID id;
     private String title;
     private String sphere;
     private String level;

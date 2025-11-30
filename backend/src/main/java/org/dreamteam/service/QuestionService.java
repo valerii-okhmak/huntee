@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class QuestionService {
     private final CodeAnswerRepository codeAnswerRepository;
 
     @Transactional
-    public Question createQuestionAndLinkToTest(Long testId, QuestionCreateRequest request, String authorEmail) {
+    public Question createQuestionAndLinkToTest(UUID testId, QuestionCreateRequest request, String authorEmail) {
         
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
@@ -53,13 +54,13 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionResponse getQuestionDetails(Long questionId) {
+    public QuestionResponse getQuestionDetails(UUID questionId) {
         Question question = findQuestionById(questionId);
         return mapToQuestionResponse(question);
     }
 
     @Transactional
-    public QuestionResponse updateQuestion(Long questionId, QuestionUpdateRequest request, String authorEmail) {
+    public QuestionResponse updateQuestion(UUID questionId, QuestionUpdateRequest request, String authorEmail) {
         Question question = findQuestionById(questionId);
         checkQuestionOwnership(question, authorEmail);
 
@@ -73,7 +74,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public void deleteQuestion(Long questionId, String authorEmail) {
+    public void deleteQuestion(UUID questionId, String authorEmail) {
         Question question = findQuestionById(questionId);
         checkQuestionOwnership(question, authorEmail);
         
@@ -81,7 +82,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public void unlinkQuestionFromTest(Long testId, Long questionId, String authorEmail) {
+    public void unlinkQuestionFromTest(UUID testId, UUID questionId, String authorEmail) {
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
         checkTestOwnership(test, authorEmail);
@@ -173,7 +174,7 @@ public class QuestionService {
         question.setCodeAnswer(answer);
     }
 
-    private Question findQuestionById(Long questionId) {
+    private Question findQuestionById(UUID questionId) {
         return questionRepository.findById(questionId)
                 .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + questionId));
     }

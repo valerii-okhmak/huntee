@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,7 @@ public class TestAttemptService {
     private final MatchingPairRepository matchingPairRepository;
     
     @Transactional
-    public TestTakeResponse startTest(Long testId, String userEmail) {
+    public TestTakeResponse startTest(UUID testId, String userEmail) {
         User user = findUserByEmail(userEmail);
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found: " + testId));
@@ -70,7 +71,7 @@ public class TestAttemptService {
     }
 
     @Transactional
-    public void submitAnswer(Long attemptId, Long questionId, AnswerSubmissionRequest request, String userEmail) {
+    public void submitAnswer(UUID attemptId, UUID questionId, AnswerSubmissionRequest request, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
         checkAttemptOwnership(attempt, userEmail);
 
@@ -129,7 +130,7 @@ public class TestAttemptService {
     }
 
     @Transactional
-    public TestResultResponse finishTest(Long attemptId, String userEmail) {
+    public TestResultResponse finishTest(UUID attemptId, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
         checkAttemptOwnership(attempt, userEmail);
 
@@ -255,7 +256,7 @@ public class TestAttemptService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 
-    private UserTestAttempt findAttemptById(Long attemptId) {
+    private UserTestAttempt findAttemptById(UUID attemptId) {
         return attemptRepository.findById(attemptId)
                 .orElseThrow(() -> new EntityNotFoundException("Test attempt not found: " + attemptId));
     }

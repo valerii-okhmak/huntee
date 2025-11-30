@@ -6,12 +6,13 @@ import org.dreamteam.Entity.QuestionType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 public class TestTakeResponse {
-    private Long attemptId;
-    private Long testId;
+    private UUID attemptId;
+    private UUID testId;
     private String testName;
     private LocalDateTime endTime; // Час, коли спроба буде автоматично завершена
     private List<QuestionTakeResponse> questions;

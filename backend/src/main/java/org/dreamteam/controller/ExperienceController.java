@@ -2,6 +2,8 @@ package org.dreamteam.controller;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.UUID;
+
 import jakarta.persistence.EntityNotFoundException; // Додайте цей імпорт
 import org.dreamteam.dto.ExperienceRequest;
 import org.dreamteam.dto.ExperienceResponse;
@@ -53,7 +55,7 @@ public class ExperienceController {
     }
 
     @GetMapping("/user_id")
-    public List<ExperienceResponse> getExperiencesByUserId(@RequestParam Integer userId) {
+    public List<ExperienceResponse> getExperiencesByUserId(@RequestParam UUID  userId) {
         return profileService.getExperiencesByUserId(userId);
     }
 }

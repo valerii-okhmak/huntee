@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -30,7 +31,7 @@ public class NotificationController {
     public ResponseEntity<List<NotificationResponse>> getMyNotifications( 
             @AuthenticationPrincipal UserDetails userDetails) {
         
-        Integer userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
+        UUID  userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
         return ResponseEntity.ok(notificationService.getUserNotifications(userId));
     }
     
@@ -41,7 +42,7 @@ public class NotificationController {
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         
-        Integer userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
+        UUID  userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
         notificationService.markAsRead(id, userId);
         return ResponseEntity.ok().build();
     }
@@ -50,12 +51,12 @@ public class NotificationController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(
-            @RequestParam Integer recipientId,
+            @RequestParam UUID  recipientId,
             @RequestParam String title,
             @RequestBody String message,
             @AuthenticationPrincipal UserDetails userDetails) {
         
-        Integer senderId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
+        UUID  senderId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
         notificationService.sendNotification(recipientId, senderId, title, message);
         return ResponseEntity.ok().body("Notification sent");
     }

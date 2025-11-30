@@ -5,8 +5,10 @@ import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
+
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "question")
@@ -17,9 +19,9 @@ import java.util.Set;
 public class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name ="question_id")
-    private Long questionId;
+    private UUID questionId;
 
     @Column(name = "question_text", columnDefinition= "TEXT", nullable = false)
     private String questionText;

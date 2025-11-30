@@ -2,6 +2,8 @@ package org.dreamteam.controller;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.UUID;
+
 import jakarta.persistence.EntityNotFoundException; 
 import org.dreamteam.dto.EducationRequest;
 import org.dreamteam.dto.EducationResponse;
@@ -53,7 +55,7 @@ public class EducationController {
     }
 
     @GetMapping("/user_id")
-    public List<EducationResponse> getEducationsByUserId(@RequestParam Integer userId) {
+    public List<EducationResponse> getEducationsByUserId(@RequestParam UUID  userId) {
         return profileService.getEducationsByUserId(userId);
     }
 }

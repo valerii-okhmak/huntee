@@ -5,12 +5,13 @@ import lombok.Data;
 import org.dreamteam.Entity.QuestionType;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 public class TestDetailResponse {
     
-    private Long testId;
+    private UUID testId;
     private String testName;
     private String sphere;
     private String level;
@@ -27,7 +28,7 @@ public class TestDetailResponse {
     @Data
     @Builder
     public static class QuestionSummary {
-        private Long questionId;
+        private UUID questionId;
         private String questionText;
         private QuestionType questionType;
     }

@@ -54,7 +54,7 @@ public class ProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("Profile not found for user ID: " + user.getId()));
     }
 
-    public ProfileResponse getProfileByUserId(Integer userId) {
+    public ProfileResponse getProfileByUserId(UUID userId) {
         Profile profile = profileRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("Профіль не знайдено для ID: " + userId));
         return mapToProfileResponse(profile);
@@ -148,21 +148,21 @@ public class ProfileService {
 
 
     // ====== LINK ======
-    public List<ProfileLinkResponse> getLinksByUserId(Integer userId) {
+    public List<ProfileLinkResponse> getLinksByUserId(UUID userId) {
         return profileLinkRepository.findByUserId(userId).stream()
                 .map(this::mapToLinkResponse)
                 .toList();
     }
 
     public List<ProfileLinkResponse> getLinks(String email) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         return profileLinkRepository.findByUserId(userId).stream()
                 .map(this::mapToLinkResponse)
                 .toList();
     }
 
     public ProfileLinkResponse addLink(String email, ProfileLinkRequest request) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         if (profileLinkRepository.countByUserId(userId) >= 5) {
             throw new IllegalStateException("Maximum 5 profile links allowed per user");
         }
@@ -196,21 +196,21 @@ public class ProfileService {
 
 
     // ====== EDUCATION ======
-    public List<EducationResponse> getEducationsByUserId(Integer userId) {
+    public List<EducationResponse> getEducationsByUserId(UUID userId) {
         return educationRepository.findByUserId(userId).stream()
                 .map(this::mapEducationToResponse)
                 .toList();
     }
 
     public List<EducationResponse> getEducations(String email) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         return educationRepository.findByUserId(userId).stream()
                 .map(this::mapEducationToResponse)
                 .toList();
     }
 
     public EducationResponse addEducation(String email, EducationRequest request) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         if (educationRepository.countByUserId(userId) >= 5) {
             throw new IllegalStateException("Maximum 5 education entries allowed per user");
         }
@@ -225,7 +225,7 @@ public class ProfileService {
     }
 
     public void deleteEducation(String email, Long educationId) throws AccessDeniedException {
-        Integer userId = getUserId(email); 
+        UUID userId = getUserId(email); 
 
         Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Education not found with ID: " + educationId));
@@ -246,21 +246,21 @@ public class ProfileService {
     }
 
     // ====== COURSE ======
-    public List<CourseResponse> getCoursesByUserId(Integer userId) {
+    public List<CourseResponse> getCoursesByUserId(UUID userId) {
         return courseRepository.findByUserId(userId).stream()
                 .map(this::mapCourseToResponse)
                 .toList();
     }
 
     public List<CourseResponse> getCourses(String email) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         return courseRepository.findByUserId(userId).stream()
                 .map(this::mapCourseToResponse)
                 .toList();
     }
 
     public CourseResponse addCourse(String email, CourseRequest request) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         if (courseRepository.countByUserId(userId) >= 5) {
             throw new IllegalStateException("Maximum 5 courses allowed per user");
         }
@@ -276,7 +276,7 @@ public class ProfileService {
     }
 
     public void deleteCourse(String email, Long courseId) throws AccessDeniedException {
-        Integer userId = getUserId(email); 
+        UUID userId = getUserId(email); 
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with ID: " + courseId));
@@ -299,21 +299,21 @@ public class ProfileService {
 
 
     // ====== EXPERIENCE ======
-    public List<ExperienceResponse> getExperiencesByUserId(Integer userId) {
+    public List<ExperienceResponse> getExperiencesByUserId(UUID userId) {
         return experienceRepository.findByUserId(userId).stream()
                 .map(this::mapExperienceToResponse)
                 .toList();
     }
 
     public List<ExperienceResponse> getExperiences(String email) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         return experienceRepository.findByUserId(userId).stream()
                 .map(this::mapExperienceToResponse)
                 .toList();
     }
 
     public ExperienceResponse addExperience(String email, ExperienceRequest request) {
-        Integer userId = getUserId(email);
+        UUID userId = getUserId(email);
         if (experienceRepository.countByUserId(userId) >= 5) {
             throw new IllegalStateException("Maximum 5 experiences allowed per user");
         }
@@ -329,7 +329,7 @@ public class ProfileService {
     }
 
     public void deleteExperience(String email, Long experienceId) throws AccessDeniedException {
-        Integer userId = getUserId(email); 
+        UUID userId = getUserId(email); 
 
         Experience experience = experienceRepository.findById(experienceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found with ID: " + experienceId));
@@ -356,7 +356,7 @@ public class ProfileService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
-    private Integer getUserId(String email) {
+    private UUID getUserId(String email) {
         return getUserByEmail(email).getId();
     }
 }
