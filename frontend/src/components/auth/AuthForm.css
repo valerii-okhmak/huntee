@@ -172,6 +172,35 @@
     100% { background-position: 0% 0%; }
 }
 
+.auth-input.input-error {
+    border-color: #d93025;
+}
+
+.input-error-message {
+    color: #d93025;
+    font-size: 12px;
+    margin-top: 2px;
+    display: block;
+}
+
+.password-box {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
 @media screen and (max-width: 578px) {
     .auth-form-container{
         min-width: 100%;
