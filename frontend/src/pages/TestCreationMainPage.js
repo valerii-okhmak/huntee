@@ -19,7 +19,7 @@ const TestCreationMainPage = () => {
   const creatorRef = useRef(null)
 
   const [testMeta, setTestMeta] = useState(() => ({
-    testName: passed?.vacancyDescription ? passed.vacancyDescription.slice(0,50) : 'Нова вакансія',
+    testName: passed.testName || 'Без назви',
     sphere: passed?.field || 'unknown',
     level: (passed?.level || 'JUNIOR')?.toUpperCase(),
     city: passed?.city || 'online',
@@ -33,7 +33,8 @@ const TestCreationMainPage = () => {
 
   useEffect(() => {
     if (passed) {
-      setTestMeta(prev => ({ ...prev,
+      setTestMeta(prev => ({ 
+        testName: passed.testName || prev.testName,
         sphere: passed.field || prev.sphere,
         level: passed.level || prev.level,
         city: passed.city || prev.city,
@@ -69,7 +70,7 @@ const TestCreationMainPage = () => {
   const mapQuestionToCreateRequest = (q) => {
     switch (q.type) {
       case 'regular': {
-        // одна правильна відповідь → SINGLE_CHOICE
+        // SINGLE_CHOICE
         return {
           questionText: q.question,
           questionType: 'SINGLE_CHOICE',
@@ -80,7 +81,7 @@ const TestCreationMainPage = () => {
         }
       }
       case 'multiple': {
-        // декілька правильних → MULTIPLE_CHOICE
+        // MULTIPLE_CHOICE
         const correctSet = new Set(q.correctIndices || [])
         return {
           questionText: q.question,
@@ -93,8 +94,8 @@ const TestCreationMainPage = () => {
       }
       case 'open':
       case 'practical': {
-        // текстова відповідь → TEXT
-        // бекенд вимагає textAnswer != null
+        // TEXT
+        // textAnswer != null
         return {
           questionText: q.question,
           questionType: 'TEXT',
@@ -165,14 +166,14 @@ const TestCreationMainPage = () => {
       }
 
       console.log('Тест і питання успішно збережені, testId =', testId)
-      alert('✅ Тест і питання успішно збережені!')
+      alert('Тест і питання успішно збережені!')
 
       setQuestions([])
       setQuestionsCount(0)
       setMode("create")
     } catch (error) {
       console.error("Помилка при збереженні тесту:", error)
-      alert(`❌ Помилка при збереженні тесту: ${error?.response?.data || error.message}`)
+      alert(`Помилка при збереженні тесту: ${error?.response?.data || error.message}`)
     } finally {
       setLoading(false)
     }

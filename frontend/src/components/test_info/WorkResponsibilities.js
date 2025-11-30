@@ -6,7 +6,7 @@ const WorkResponsibilities = ({ responsibilities }) => {
  
     const navigate = useNavigate();
     const handleRegistration = () => {
-    navigate('/');
+      navigate('/');
     };
 
   return (

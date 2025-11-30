@@ -16,87 +16,94 @@
 
 .select-field-tc__right {
   flex: 0 0 calc(60% - 30px);
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
 }
 
-    .select-field-tc__label {
-      font-family: 'Montserrat', sans-serif;
-      flex: 0 0 40%;
-      font-weight: bold;
-      font-size: clamp(20px, 4vw, 28px);
-      display: block;
-      border-bottom: 1px solid #000;
-      padding-bottom: 5px;
-    }
-    .select-field-tc__label.adding {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex: 0 0 100%;
-      cursor: pointer;
-    }
-    
-    .select-field-tc__label.adding:hover {
-      text-decoration: underline;
-    }
+.select-field-tc__label {
+  font-family: 'Montserrat', sans-serif;
+  flex: 0 0 40%;
+  font-weight: bold;
+  font-size: clamp(20px, 4vw, 28px);
+  display: block;
+  border-bottom: 1px solid #000;
+  padding-bottom: 5px;
+}
+.select-field-tc__label.adding {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 100%;
+  cursor: pointer;
+}
 
-    .select-field-tc__label.adding p{
-      text-align: left;
-    }
-    .select-field-tc__label.adding span{
-      font-size: 46px;
-    }
-  
-    .select-field-tc__custom-select__control {
-      border: none !important;
-      border-radius: 0 !important;
-      box-shadow: none;
-      background-color: #F1F1F1 !important;
-      padding: 5px 10px;
-      outline: none !important;
-      box-shadow: none !important;
-      border-color: #ccc !important;
-    }
+.select-field-tc__label.adding:hover {
+  text-decoration: underline;
+}
 
-    .select-field-tc__custom-select__indicator-separator {
-      display: none;
-    }
-  
-    .select-field-tc__custom-select__menu {
-      background-color: #F1F1F1 !important;
-      max-height: 170px;
-      overflow: scroll;
-      border-radius: 0 !important;
-    }
+.select-field-tc__label.adding p{
+  text-align: left;
+}
+.select-field-tc__label.adding span{
+  font-size: 46px;
+}
 
-    .select-field-tc__custom-select__single-value {
-      color: #000 !important;
-      font-size: 18px !important;
-      font-family: 'Montserrat', sans-serif;
-    }
-  
-    .select-field-tc__custom-select__option {
-      padding: 10px !important;
-      cursor: pointer !important;
-      color: rgba(92, 89, 89, 0.7) !important;
-      font-size: 18px !important;
-      font-family: 'Montserrat', sans-serif;
-      opacity: 0.7;
-    }
-  
-    .select-field-tc__custom-select__option--is-focused {
-      background: #dad9d9 !important;
-      color: #000 !important;
-    }
-  
-    .select-field-tc__custom-select__option--is-selected {
-      background: #dad9d9 !important;
-      color: #000 !important;
-    }
+.select-field-tc__custom-select {
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
+}
 
-    .select-field-tc__custom-select__placeholder {
-      font-family: 'Montserrat', sans-serif;
-    }
+.select-field-tc__custom-select__control {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none;
+  background-color: #F1F1F1 !important;
+  padding: 5px 10px;
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #ccc !important;
+}
+
+.select-field-tc__custom-select__indicator-separator {
+  display: none;
+}
+
+.select-field-tc__custom-select__menu {
+  background-color: #F1F1F1 !important;
+  max-height: 170px;
+  overflow: scroll;
+  border-radius: 0 !important;
+}
+
+.select-field-tc__custom-select__single-value {
+  color: #000 !important;
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.select-field-tc__custom-select__option {
+  padding: 10px !important;
+  cursor: pointer !important;
+  color: rgba(92, 89, 89, 0.7) !important;
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
+  opacity: 0.7;
+}
+
+.select-field-tc__custom-select__option--is-focused {
+  background: #dad9d9 !important;
+  color: #000 !important;
+}
+
+.select-field-tc__custom-select__option--is-selected {
+  background: #dad9d9 !important;
+  color: #000 !important;
+}
+
+.select-field-tc__custom-select__placeholder {
+  font-family: 'Montserrat', sans-serif;
+}
 
   
 .form-control {
@@ -174,6 +181,19 @@ td.rdtActive {
   opacity: 1; 
 }
 
+.select-field-tc__custom-input {
+  width: 100%;
+  border: none;
+  background-color: #F1F1F1;
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+}
+.select-field-tc__custom-input::placeholder {
+  color: #5C5959;
+  opacity: 1; 
+}
+
 
 .question-classification {
   display: flex;
@@ -204,6 +224,62 @@ td.rdtActive {
 .question-classification__select {
   margin-left: 15px;
 }
+
+
+.responsibilities-list__row { 
+  display:flex; 
+  gap:8px; 
+  align-items:center; 
+  margin-bottom:8px; 
+}
+
+.responsibilities-list__input { 
+  flex:1; 
+  width: 100%;
+  border: none;
+  background-color: #F1F1F1;
+  padding: 15px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+}
+.responsibilities-list__input::placeholder {
+  color: #5C5959;
+  opacity: 1; 
+}
+
+.responsibilities-list__remove { 
+  background:transparent; 
+  border:0; 
+  cursor:pointer; 
+  font-size:18px; 
+  color: red;
+}
+
+.responsibilities-list__add { 
+  background-color: #F1F1F1;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #737373;
+  font-weight: 700;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  transition: .3s; 
+}
+.responsibilities-list__add span {
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 100;
+  margin-top: -2px;
+}
+.responsibilities-list__add:hover {
+  background-color: #c3c3c3;
+}
+
+
 
 @media screen  and (max-width: 678px) {
   .select-field-tc {

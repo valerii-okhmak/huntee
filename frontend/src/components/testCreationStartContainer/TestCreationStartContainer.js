@@ -24,6 +24,7 @@ const cityOptions = [
 ];
 
 const TestCreationStartContainer = () => {
+    const [testName, setTestName] = useState('');
     const [selectedField, setSelectedField] = useState(null);
     const [selectedLevel, setSelectedLevel] = useState(null);
     const [selectedCity, setSelectedCity] = useState(null);
@@ -39,6 +40,7 @@ const TestCreationStartContainer = () => {
 
     const handleNext = () => {
         const payload = {
+          testName: (testName || '').trim(),
           field: selectedField?.value || null,
           level: selectedLevel?.value || null,
           city: selectedCity?.value || null,
@@ -55,6 +57,13 @@ const TestCreationStartContainer = () => {
 
   return (
     <div className='testCreationStartContainer'>
+        <SelectField
+            type={'input'}
+            selectedOption={testName}
+            setSelectedOption={setTestName}
+            fieldName="Введіть назву тесту"
+            fieldOptions={{}}
+        />
         <SelectField
             type={'select'}
             selectedOption={selectedField}
@@ -84,7 +93,7 @@ const TestCreationStartContainer = () => {
             fieldOptions={{}}
         />
         <SelectField
-            type={'textarea'}
+            type={'list'}
             selectedOption={responsibilities}
             setSelectedOption={setResponsibilities}
             fieldName="Напишіть обов’язки"
