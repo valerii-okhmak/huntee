@@ -241,18 +241,9 @@ const TestPage = ({testType, textData, time, questionsLink}) => {
             <div className="top-section">
               <div className="top-line">
                 <div className="category">{textData.category}</div>
-                <div className="logo">
-                  <img src={textData.logo} alt="Фото компанії" />
-                </div>
               </div>
               <h1 className="fulltest-title">{textData.title}</h1>
               <div className="top-line">
-                <div className="location">
-                  <div className="icon">
-                    <img src="/icons/location.png" alt="Локація" />
-                  </div>
-                  {textData.location}
-                </div>
               </div>
             </div>
           <div className="timer-box">
@@ -271,6 +262,18 @@ const TestPage = ({testType, textData, time, questionsLink}) => {
           </div>
         </div>
       }
+
+      <div className={`Num ${testType === "softskills" ? 'Num-bg' : 'Num-regular'}`}>
+        {questions.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={i === current ? "active" : ""}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
 
       <div className={`test-container ${testType === "softskills" ? 'test-container-transparent' : ''}`}>
         {questions.length > 0 && (
@@ -320,18 +323,6 @@ const TestPage = ({testType, textData, time, questionsLink}) => {
             </p>
           )}
         </div>
-      </div>
-
-      <div className={`Num ${testType === "softskills" ? 'Num-bg' : ''}`}>
-        {questions.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={i === current ? "active" : ""}
-          >
-            {i + 1}
-          </button>
-        ))}
       </div>
     </div>
   );

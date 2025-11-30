@@ -26,7 +26,7 @@ const SocialLogin = ({ setError }) => {
       });
 
       saveTokens(response.data);
-      window.location.href = '/';
+      window.location.href = '/profile';
     } catch (err) {
       console.error('Google авторизація не вдалася:', err);
       setError('Не вдалося увійти через Google.');
