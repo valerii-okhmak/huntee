@@ -94,7 +94,7 @@ const TestRules = () => {
                 Перейти на головну
               </button>
               
-              <button onClick={() => navigate('/viewingtests')} className="test-rules-button">
+              <button onClick={() => navigate('/mytests')} className="test-rules-button">
                 Перейти в мої тести
                 <svg xmlns="http://www.w3.org/2000/svg" width="34" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 38 24" style={{ marginLeft: "8px", verticalAlign: "middle" }}>
                   <line x1="4" y1="12" x2="34" y2="12" />

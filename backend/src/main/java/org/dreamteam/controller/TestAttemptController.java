@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.UUID;
 
 import org.dreamteam.dto.AnswerSubmissionRequest;
+import org.dreamteam.dto.TestAttemptReviewResponse;
 import org.dreamteam.dto.TestResultResponse;
 import org.dreamteam.dto.TestTakeResponse;
 import org.dreamteam.service.TestAttemptService;
@@ -80,5 +81,17 @@ public class TestAttemptController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @Operation(summary = "Отримати детальний огляд результатів тесту",
+               description = "Повертає повну історію спроби: питання, відповіді користувача, правильні відповіді та коментарі.")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/attempts/{attemptId}/review")
+    public ResponseEntity<TestAttemptReviewResponse> reviewAttempt(
+            @PathVariable Long attemptId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        TestAttemptReviewResponse review = testAttemptService.getAttemptReview(attemptId, userDetails.getUsername());
+        return ResponseEntity.ok(review);
     }
 }

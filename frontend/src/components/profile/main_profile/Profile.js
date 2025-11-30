@@ -38,6 +38,11 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("cabinet");
 
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   const fetchExperience = async () => {
     try {
       const token = getAccessToken();
@@ -353,8 +358,8 @@ return (
                       </button>
 
                       <button
-                        onClick={logout}
-                        id="exit" 
+                        onClick={handleLogout}
+                        id="exit"
                         className="profile-edit-btn"
                       >
                         Вийти
@@ -581,12 +586,12 @@ return (
                       </button>
 
                       <button
-                        onClick={logout}
-                        id="exit" 
-                        className="profile-edit-btn"
-                      >
-                        Вийти
-                      </button>
+                      onClick={handleLogout}
+                      id="exit"
+                      className="profile-edit-btn"
+                    >
+                      Вийти
+                    </button>
                     </div>
                   </div>
                 </div>

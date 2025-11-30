@@ -1,37 +1,45 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './RegForm.css';
 import SocialLogin from '../SocialLogin/SocialLogin';
-import { Link } from 'react-router-dom';
-import { register, verifyEmail } from '../../services/authService'; // перевір шлях
+import { Link, useNavigate } from 'react-router-dom';
+import { register, verifyEmail } from '../../services/authService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 
 const RegForm = () => {
-  // поля реєстрації
+  const navigate = useNavigate();
+
+  // Поля реєстрації
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [age, setAge] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // підтвердження пошти
+
+  // Підтвердження пошти
   const [confirmationStep, setConfirmationStep] = useState(false);
   const [codeDigits, setCodeDigits] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
 
-  // помилки та стани
+  // Помилки та стани
   const [errors, setErrors] = useState({
     firstName: '',
+    lastName: '',
+    age: '',
     email: '',
     password: '',
-    confirmpassword: ''
+    confirmpassword: '',
+    general: ''
   });
-  const [generalError, setGeneralError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // простий regex для перевірки e-mail
   const validateEmail = (em) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
 
-  // Перевірка пароля на співпадіння
   useEffect(() => {
     if (!confirmpassword) {
       setErrors((prev) => ({ ...prev, confirmpassword: '' }));
@@ -46,19 +54,21 @@ const RegForm = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setGeneralError('');
+    setErrors({ firstName: '', email: '', password: '', confirmpassword: '', general: '' });
 
-    // локальна валідація
-    let tempErrors = {
-      firstName: '',
-      email: '',
-      password: '',
-      confirmpassword: ''
-    };
+    let tempErrors = { firstName: '', email: '', password: '', confirmpassword: '', general: '' };
     let hasError = false;
 
     if (!firstName.trim()) {
       tempErrors.firstName = "Імʼя обовʼязкове.";
+      hasError = true;
+    }
+    if (!lastName.trim()) {
+      tempErrors.lastName = "Прізвище обовʼязкове.";
+      hasError = true;
+    }
+    if (!age || isNaN(age) || age <= 0) {
+      tempErrors.age = 'Введіть коректний вік.';
       hasError = true;
     }
     if (!validateEmail(email)) {
@@ -82,26 +92,28 @@ const RegForm = () => {
       await register({ firstName, lastName, email, password, age });
       setConfirmationStep(true);
     } catch (err) {
-      console.error('Register error:', err);
       const status = err.response?.status;
       const message = err.response?.data?.message;
+      let generalMsg = '';
 
       switch (status) {
         case 400:
-          setGeneralError(message || 'Некоректні дані. Перевірте всі поля.');
+          generalMsg = message || 'Некоректні дані. Перевірте всі поля.';
           break;
-        case 403: 
-          setGeneralError(message || 'Доступ заборонено. Дозволено лише пошти @lpnu.ua.');
+        case 403:
+          generalMsg = message || 'Доступ заборонено. Дозволено лише пошти @lpnu.ua.';
           break;
         case 409:
-          setGeneralError(message || 'Користувач з такою поштою вже зареєстрований.');
+          generalMsg = message || 'Користувач з такою поштою вже зареєстрований.';
           break;
         case 500:
-          setGeneralError('Помилка сервера. Спробуйте пізніше.');
+          generalMsg = 'Помилка сервера. Спробуйте пізніше.';
           break;
         default:
-          setGeneralError('Невідома помилка. Спробуйте ще раз.');
+          generalMsg = 'Невідома помилка. Спробуйте ще раз.';
       }
+
+      setErrors((prev) => ({ ...prev, general: generalMsg }));
     } finally {
       setIsSubmitting(false);
     }
@@ -109,32 +121,35 @@ const RegForm = () => {
 
   const handleConfirm = async (e) => {
     e.preventDefault();
-    setGeneralError('');
+    setErrors((prev) => ({ ...prev, general: '' }));
+
     const code = codeDigits.join('');
     if (code.length !== 6) {
-      setGeneralError('Введіть 6-значний код підтвердження.');
+      setErrors((prev) => ({ ...prev, general: 'Введіть 6-значний код підтвердження.' }));
       return;
     }
 
     setIsSubmitting(true);
     try {
       await verifyEmail({ email, code });
-      window.location.href = '/';
+      navigate('/login');
     } catch (err) {
-      console.error('Verify error:', err);
       const status = err.response?.status;
       const message = err.response?.data?.message;
+      let generalMsg = '';
 
       switch (status) {
         case 400:
-          setGeneralError(message || 'Невірний код підтвердження або електронна пошта.');
+          generalMsg = message || 'Невірний код підтвердження або електронна пошта.';
           break;
         case 500:
-          setGeneralError('Помилка сервера. Спробуйте ще раз пізніше.');
+          generalMsg = 'Помилка сервера. Спробуйте ще раз пізніше.';
           break;
         default:
-          setGeneralError('Помилка підтвердження. Спробуйте знову.');
+          generalMsg = 'Помилка підтвердження. Спробуйте знову.';
       }
+
+      setErrors((prev) => ({ ...prev, general: generalMsg }));
     } finally {
       setIsSubmitting(false);
     }
@@ -146,7 +161,6 @@ const RegForm = () => {
     const updated = [...codeDigits];
     updated[index] = value;
     setCodeDigits(updated);
-
     if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
@@ -187,90 +201,115 @@ const RegForm = () => {
           <div className="right-side-reg">
             {!confirmationStep ? (
               <>
+                {/* Ім'я */}
                 <div className="reg-input-box">
                   <input
                     name="firstName"
                     type="text"
                     id="firstName"
-                    className="reg-input"
+                    className={`reg-input ${errors.firstName ? 'input-error' : ''}`}
                     placeholder=" "
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                   />
                   <label htmlFor="firstName" className="reg-input-label">Ім’я</label>
-                  {errors.firstName && <p className="error-message">{errors.firstName}</p>}
+                  {errors.firstName && <span className="input-error-message">{errors.firstName}</span>}
                 </div>
 
+                {/* Прізвище */}
                 <div className="reg-input-box">
                   <input
                     name="lastName"
                     type="text"
                     id="lastName"
-                    className="reg-input"
+                    className={`reg-input ${errors.lastName ? 'input-error' : ''}`}
                     placeholder=" "
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
                   <label htmlFor="lastName" className="reg-input-label">Прізвище</label>
+                  {errors.lastName && <span className="input-error-message">{errors.lastName}</span>}
                 </div>
 
+                {/* Вік */}
                 <div className="reg-input-box">
                   <input
                     name="age"
                     type="number"
                     id="age"
-                    className="reg-input"
+                    className={`reg-input ${errors.age ? 'input-error' : ''}`}
                     placeholder=" "
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
                     min="0"
                   />
                   <label htmlFor="age" className="reg-input-label">Вік</label>
+                  {errors.age && <span className="input-error-message">{errors.age}</span>}
                 </div>
 
+                {/* Пошта */}
                 <div className="reg-input-box">
                   <input
                     name="email"
                     type="email"
                     id="email"
-                    className="reg-input"
+                    className={`reg-input ${errors.email ? 'input-error' : ''}`}
                     placeholder=" "
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <label htmlFor="email" className="reg-input-label">Пошта</label>
-                  {errors.email && <p className="error-message">{errors.email}</p>}
+                  {errors.email && <span className="input-error-message">{errors.email}</span>}
                 </div>
 
-                <div className="reg-input-box">
+                {/* Пароль */}
+                <div className="reg-input-box password-box">
                   <input
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password"
-                    className="reg-input"
+                    className={`reg-input ${errors.password ? 'input-error' : ''}`}
                     placeholder=" "
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <label htmlFor="password" className="reg-input-label">Пароль</label>
-                  {errors.password && <p className="error-message">{errors.password}</p>}
+
+                  <span
+                    className="toggle-password"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                  </span>
+
+                  {errors.password && <span className="input-error-message">{errors.password}</span>}
                 </div>
 
-                <div className="reg-input-box">
+                {/* Підтвердження пароля */}
+                <div className="reg-input-box password-box">
                   <input
                     name="confirmpassword"
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     id="confirmpassword"
-                    className="reg-input"
+                    className={`reg-input ${errors.confirmpassword ? 'input-error' : ''}`}
                     placeholder=" "
                     value={confirmpassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <label htmlFor="confirmpassword" className="reg-input-label">Підтвердіть пароль</label>
-                  {errors.confirmpassword && <p className="error-message">{errors.confirmpassword}</p>}
+
+                  <span
+                    className="toggle-password"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+                  </span>
+
+                  {errors.confirmpassword && <span className="input-error-message">{errors.confirmpassword}</span>}
                 </div>
 
-                {generalError && <p className="error-message">{generalError}</p>}
+                {/* Загальна помилка */}
+                {errors.general && <span className="input-error-message">{errors.general}</span>}
 
                 <button
                   type="submit"
@@ -312,7 +351,8 @@ const RegForm = () => {
                   ))}
                 </div>
 
-                {generalError && <p className="error-message">{generalError}</p>}
+                {/* Помилка підтвердження */}
+                {errors.general && <span className="input-error-message">{errors.general}</span>}
 
                 <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
                   <button
@@ -339,7 +379,7 @@ const RegForm = () => {
         <div className="horizontal-line-reg"></div>
 
         <div className="bottom-part-reg">
-          <SocialLogin setError={setGeneralError} />
+          <SocialLogin setError={(msg) => setErrors((prev) => ({ ...prev, general: msg }))} />
           <p className="reg-footer">
             Уже є акаунт? <Link to="/login">Авторизуватися</Link>
           </p>
