@@ -41,7 +41,7 @@ public class TestAttemptController {
     @PostMapping("/attempts/{attemptId}/questions/{questionId}/run")
     public ResponseEntity<?> runCode(
             @PathVariable Long attemptId,
-            @PathVariable Long questionId,
+            @PathVariable UUID questionId,
             @RequestBody String userCode,
             @AuthenticationPrincipal UserDetails userDetails) {
                 
@@ -117,7 +117,7 @@ public class TestAttemptController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/attempts/{attemptId}/review")
     public ResponseEntity<TestAttemptReviewResponse> reviewAttempt(
-            @PathVariable Long attemptId,
+            @PathVariable UUID attemptId,
             @AuthenticationPrincipal UserDetails userDetails) {
 
         TestAttemptReviewResponse review = testAttemptService.getAttemptReview(attemptId, userDetails.getUsername());

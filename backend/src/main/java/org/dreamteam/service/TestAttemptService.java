@@ -186,7 +186,7 @@ public class TestAttemptService {
     }
 
     @Transactional(readOnly = true)
-    public TestAttemptReviewResponse getAttemptReview(Long attemptId, String userEmail) {
+    public TestAttemptReviewResponse getAttemptReview(UUID attemptId, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
         User requester = findUserByEmail(userEmail);
         

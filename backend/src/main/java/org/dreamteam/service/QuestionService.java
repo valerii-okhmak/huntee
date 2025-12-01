@@ -89,7 +89,7 @@ public class QuestionService {
                 .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
         checkTestOwnership(test, authorEmail);
 
-        TestQuestion testQuestion = testQuestionRepository.findByTestTestIdAndQuestionQuestionId(testId, questionId)
+        TestQuestion testQuestion = testQuestionRepository.findByTest_TestIdAndQuestion_QuestionId(testId, questionId)
                 .orElseThrow(() -> new EntityNotFoundException("Question is not linked to this test."));
         
         testQuestionRepository.delete(testQuestion);

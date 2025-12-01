@@ -5,11 +5,12 @@ import lombok.Data;
 import org.dreamteam.Entity.QuestionType;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 public class TestAttemptReviewResponse {
-    private Long attemptId;
+    private UUID attemptId;
     private String candidateName;
     private BigDecimal score;
     private List<QuestionReviewDTO> questions;

@@ -13,5 +13,5 @@ public interface TestQuestionRepository extends JpaRepository<TestQuestion, Long
     List<TestQuestion> findByTest_TestId(UUID testId);
     
     int countByTest_TestId(UUID testId);
-        Optional<TestQuestion> findByTestTestIdAndQuestionQuestionId(UUID testId, UUID questionId);
+    Optional<TestQuestion> findByTest_TestIdAndQuestion_QuestionId(UUID testId, UUID questionId);
 }
