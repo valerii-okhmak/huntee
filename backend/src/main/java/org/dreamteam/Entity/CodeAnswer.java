@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "code_answer")
-@Getter
+@Getter 
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "answerId")
@@ -24,14 +24,22 @@ public class CodeAnswer {
     private Question question;
 
     @Column(name = "template_code", columnDefinition = "TEXT")
-    private String templateCode;
+    private String templateCode; 
 
     @Column(name = "test_cases", columnDefinition = "TEXT", nullable = false)
-    private String testCases;
+    private String testCases; 
 
-    public CodeAnswer(Question question, String templateCode, String testCases) {
+    @Column(nullable = false)
+    private String language; 
+
+    @Column(nullable = false)
+    private String methodName; 
+
+    public CodeAnswer(Question question, String templateCode, String testCases, String language, String methodName) {
         this.question = question;
         this.templateCode = templateCode;
         this.testCases = testCases;
+        this.language = language;
+        this.methodName = methodName;
     }
 }

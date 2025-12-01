@@ -4,7 +4,6 @@ import './TestCreationMainPreview.css'
 const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
   const [current, setCurrent] = useState(0);
 
-  // Клэмп індекса при будь-якій зміні масиву питань
   useEffect(() => {
     if (questions.length === 0) {
       setCurrent(0);
@@ -18,15 +17,12 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
     const confirmDelete = window.confirm("Ви впевнені, що хочете видалити це запитання?");
     if (!confirmDelete) return;
 
-    // Якщо видаляємо останнє — спершу зсунемо локальний індекс вліво,
-    // щоб не було короткого стану з поза-межним індексом.
     if (current === questions.length - 1) {
       setCurrent(prev => Math.max(0, prev - 1));
     }
     onDeleteQuestion(current);
   };
 
-  // Якщо немає питань — нічого не читаємо з q
   if (!questions.length) {
     return (
       <div className="testCreationMainPreview">
@@ -39,48 +35,91 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
     );
   }
 
-  // Додатковий захист у самому рендері
   const safeIndex = Math.min(Math.max(current, 0), questions.length - 1);
   const q = questions[safeIndex];
 
   const renderQuestion = (q) => {
     if (!q) return null;
 
-    switch (q.type) {
-      case "regular":
-      case "multiple":
-        return (
-          <div className="choices">
-            {(q.options || []).map((opt, i) => (
-              <label className={q.type === 'regular' ? "custom-radio" : "custom-checkbox"} key={i}>
-                <input
-                  className="choices-input"
-                  type={q.type === 'regular' ? 'radio' : 'checkbox'}
-                  name={`q-${safeIndex}`}
-                  disabled
-                />
-                <span className={q.type === 'regular' ? "radio-square" : "radio-square"} />
-                {opt}
-              </label>
-            ))}
-          </div>
-        );
+    const commentBlock = q.comment ? (
+        <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
+            <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
+            <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
+        </div>
+    ) : null;
 
-      case "open":
-      case "practical":
+    switch (q.questionType) {
+      case "SINGLE_CHOICE":
+      case "MULTIPLE_CHOICE":
         return (
           <>
-            <textarea rows="6" placeholder="Ваша відповідь..." disabled />
-            {q.commentEnabled && q.comment?.trim() && (
-              <p className="note" style={{ marginTop: '8px' }}>
-                <strong>Коментар:</strong> {q.comment}
-              </p>
-            )}
+            <div className="choices">
+              {(q.choiceOptions || []).map((opt, i) => (
+                <label 
+                  className={"custom-radio"} 
+                  key={i}
+                >
+                  <input
+                    className="choices-input"
+                    type={'radio'}
+                    name={`preview-q-${safeIndex}`}
+                    disabled
+                    checked={opt.isCorrect}
+                  />
+                  <span className={"radio-square"} />
+                  
+                  {opt.optionText}
+                </label>
+              ))}
+            </div>
+            {commentBlock}
+          </>
+        );
+
+      case "TEXT":
+        return (
+          <>
+            <textarea rows="4" placeholder="Ваша відповідь..." disabled className="preview-textarea" />
+            <div style={{marginTop: '10px', color: '#28a745'}}>
+                <small>Правильна відповідь: <strong>{q.textAnswer?.correctText}</strong></small>
+            </div>
+            {commentBlock}
+          </>
+        );
+
+      case "CODE":
+        return (
+          <>
+            <div className="code-preview" style={{
+                background: '#ffffff',
+                color: '#333333',
+                border: '1px solid #ccc',
+                padding: '15px', 
+                borderRadius: '5px', 
+                fontFamily: 'monospace', 
+                overflowX: 'auto'
+            }}>
+                <div style={{marginBottom: '10px', color: '#007bff', fontWeight: 'bold', borderBottom: '1px solid #eee', paddingBottom: '5px'}}>
+                    Мова: {q.codeAnswer?.language}
+                </div>
+                <pre style={{whiteSpace: 'pre-wrap', margin: 0, fontSize: '14px'}}>
+                    {q.codeAnswer?.templateCode || "// Тут буде код студента"}
+                </pre>
+                
+                <div style={{marginTop: '15px', borderTop: '1px solid #eee', paddingTop: '10px', fontSize: '12px', color: '#666'}}>
+                    <strong>Тест-кейси:</strong> {q.codeAnswer?.testCases}
+                </div>
+            </div>
+            {commentBlock}
           </>
         );
 
       default:
-        return null;
+        return (
+            <div style={{color: 'red'}}>
+                Невідомий тип питання: {q.questionType}
+            </div>
+        );
     }
   };
 
@@ -88,10 +127,14 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
     <div className="testCreationMainPreview">
       <div className='container'>
         <div className="test-container">
-          <h2 className="question">{q.question}</h2>
+          <h2 className="question">
+            <span style={{color: '#888', marginRight: '10px'}}>#{safeIndex + 1}</span>
+            {q.questionText} 
+          </h2>
+          
           <div className="answer">{renderQuestion(q)}</div>
 
-          <div className="test-buttons" style={{ display: "flex", gap: "10px" }}>
+          <div className="test-buttons" style={{ display: "flex", gap: "10px", marginTop: '20px' }}>
             <button
               className="next-button"
               disabled={safeIndex >= questions.length - 1}

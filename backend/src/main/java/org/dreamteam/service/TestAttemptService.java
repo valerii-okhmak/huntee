@@ -307,6 +307,7 @@ public class TestAttemptService {
             case CODE:
                 if (question.getCodeAnswer() != null) {
                     builder.templateCode(question.getCodeAnswer().getTemplateCode());
+                    builder.codeLanguage(question.getCodeAnswer().getLanguage());
                 }
                 break;
             case TEXT:

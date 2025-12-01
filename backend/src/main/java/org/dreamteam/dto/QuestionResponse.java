@@ -13,6 +13,7 @@ import java.util.UUID;
 public class QuestionResponse {
     private UUID questionId;
     private String questionText;
+    private String comment;
     private QuestionType questionType;
     private String authorEmail;
     private List<ChoiceOptionDTO> choiceOptions;
