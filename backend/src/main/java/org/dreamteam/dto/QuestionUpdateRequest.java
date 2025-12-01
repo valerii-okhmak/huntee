@@ -8,6 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 public class QuestionUpdateRequest {
     private String questionText;
+    private String comment;
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;
     private List<MatchingPairDTO> matchingPairs;

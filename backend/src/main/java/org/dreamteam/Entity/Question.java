@@ -24,6 +24,9 @@ public class Question {
     @Column(name = "question_text", columnDefinition= "TEXT", nullable = false)
     private String questionText;
 
+    @Column(name = "comment", columnDefinition= "TEXT")
+    private String comment;
+
     @Enumerated(EnumType.STRING)
     @Column(name= "question_type", nullable= false)
     private QuestionType questionType;

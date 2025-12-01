@@ -10,6 +10,7 @@ import java.util.List;
 public class QuestionResponse {
     private Long questionId;
     private String questionText;
+    private String comment;
     private QuestionType questionType;
     private String authorEmail;
     private List<ChoiceOptionDTO> choiceOptions;

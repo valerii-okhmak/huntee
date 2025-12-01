@@ -41,6 +41,7 @@ public class QuestionService {
         User author = findUserByEmail(authorEmail);
 
         Question question = new Question(request.getQuestionText(), request.getQuestionType(), author);
+        question.setComment(request.getComment());
         
         processQuestionAnswers(question, request);
 
@@ -64,6 +65,7 @@ public class QuestionService {
         checkQuestionOwnership(question, authorEmail);
 
         question.setQuestionText(request.getQuestionText());
+        question.setComment(request.getComment());
         
         clearExistingAnswers(question);
         processQuestionAnswers(question, request);
@@ -169,7 +171,13 @@ public class QuestionService {
     
     private void createCodeAnswer(Question question, CodeAnswerDTO dto) {
         if (dto == null) throw new IllegalArgumentException("Code answer details are required.");
-        CodeAnswer answer = new CodeAnswer(question, dto.getTemplateCode(), dto.getTestCases());
+        CodeAnswer answer = new CodeAnswer(
+            question, 
+            dto.getTemplateCode(), 
+            dto.getTestCases(),
+            dto.getLanguage(),
+            dto.getMethodName()
+        );
         question.setCodeAnswer(answer);
     }
 
@@ -199,6 +207,7 @@ public class QuestionService {
         QuestionResponse.QuestionResponseBuilder builder = QuestionResponse.builder()
                 .questionId(question.getQuestionId())
                 .questionText(question.getQuestionText())
+                .comment(question.getComment())
                 .questionType(question.getQuestionType())
                 .authorEmail(question.getAuthor().getUsername());
 
@@ -226,7 +235,7 @@ public class QuestionService {
             case CODE:
                 if (question.getCodeAnswer() != null) {
                     CodeAnswer ca = question.getCodeAnswer();
-                    builder.codeAnswer(new CodeAnswerDTO(ca.getTemplateCode(), ca.getTestCases()));
+                    builder.codeAnswer(new CodeAnswerDTO(ca.getTemplateCode(), ca.getTestCases(), ca.getLanguage(), ca.getMethodName()));
                 }
                 break;
         }
