@@ -1,9 +1,13 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import './TestCreationMainCreator.css'
-import regular_icon from '../../../img/testCreation/regular.png'
-import multiple_icon from '../../../img/testCreation/multiple.png'
-import open_icon from '../../../img/testCreation/open.png'
-import practical_icon from '../../../img/testCreation/practical.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faCheckCircle, 
+  faListCheck, 
+  faKeyboard, 
+  faLaptopCode,
+  faImage
+} from '@fortawesome/free-solid-svg-icons';
 import addImage_icon from '../../../img/testCreation/addImage.png'
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
 
@@ -156,17 +160,36 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         <h2 className='testCreationMainCreator__title'>Оберіть тип запитання:</h2>
 
         <div className='testCreationMainCreator__typeSelector'>
-          <button className={`testCreationMainCreator__selectedType ${selectedType === "regular" ? "active" : ""}`} onClick={() => setSelectedType("regular")}>
-            <img alt='img' className='testCreationMainCreator_icon' src={regular_icon} /> З однією відповіддю
+          <button
+            className={`testCreationMainCreator__selectedType ${selectedType === "regular" ? "active" : ""}`}
+            onClick={() => setSelectedType("regular")}
+          >
+            <FontAwesomeIcon icon={faCheckCircle} className="testCreationMainCreator_icon" />
+            З однією відповіддю
           </button>
-          <button className={`testCreationMainCreator__selectedType ${selectedType === "multiple" ? "active" : ""}`} onClick={() => setSelectedType("multiple")}>
-            <img alt='img' className='testCreationMainCreator_icon' src={multiple_icon} /> Множинний вибір
+
+          <button
+            className={`testCreationMainCreator__selectedType ${selectedType === "multiple" ? "active" : ""}`}
+            onClick={() => setSelectedType("multiple")}
+          >
+            <FontAwesomeIcon icon={faListCheck} className="testCreationMainCreator_icon" />
+            Множинний вибір
           </button>
-          <button className={`testCreationMainCreator__selectedType ${selectedType === "open" ? "active" : ""}`} onClick={() => setSelectedType("open")}>
-            <img alt='img' className='testCreationMainCreator_icon' src={open_icon} /> Відкрита відповідь
+
+          <button
+            className={`testCreationMainCreator__selectedType ${selectedType === "open" ? "active" : ""}`}
+            onClick={() => setSelectedType("open")}
+          >
+            <FontAwesomeIcon icon={faKeyboard} className="testCreationMainCreator_icon" />
+            Відкрита відповідь
           </button>
-          <button className={`testCreationMainCreator__selectedType ${selectedType === "practical" ? "active" : ""}`} onClick={() => setSelectedType("practical")}>
-            <img alt='img' className='testCreationMainCreator_icon' src={practical_icon} /> Практичний тест
+
+          <button
+            className={`testCreationMainCreator__selectedType ${selectedType === "practical" ? "active" : ""}`}
+            onClick={() => setSelectedType("practical")}
+          >
+            <FontAwesomeIcon icon={faLaptopCode} className="testCreationMainCreator_icon" />
+            Практичний тест
           </button>
         </div>
 
@@ -188,7 +211,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
               className="testCreationMainCreator__questionField-input"
             />
             <button className="testCreationMainCreator__questionField-btn" title="Додати зображення">
-              <img alt='add image' src={addImage_icon} />
+              <FontAwesomeIcon icon={faImage} />
             </button>
           </div>
         </div>

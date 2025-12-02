@@ -24,17 +24,21 @@ const MyTestsPage = () => {
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
-        const mappedTests = response.data.map(t => ({
-          id: t.id,
-          title: t.title || 'Без назви',
-          type: t.status || 'Не вказано',
-          location: t.location || "-",  
-          date: t.date || "-",      
-          time: t.time || "-",   
-          candidatesCount: t.candidatesCount || 0,
-          link: `/testpage/${t.id}`
-        }));
+        const mappedTests = response.data.map(t => {
+          const startDate = t.startTime ? new Date(t.startTime) : null;
 
+          return {
+            id: t.id,
+            title: t.title || "Без назви",
+            type: t.sphere || "Не вказано",
+            location: t.city || "-",
+            date: startDate ? startDate.toLocaleDateString("uk-UA") : "-",
+            time: startDate ? startDate.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }) : "-",
+            candidatesCount: t.candidatesCount ?? 0,
+            link: `/testpage/${t.id}`
+          };
+        });
+        
         setTests(mappedTests);
       } catch (error) {
         console.error("Помилка:", error);

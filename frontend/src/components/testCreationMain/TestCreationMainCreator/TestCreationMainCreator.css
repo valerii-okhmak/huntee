@@ -75,6 +75,12 @@
     display: none;
 }
 
+.testCreationMainCreator_icon{
+    width: clamp(20px, 5vw, 40px);
+    height: clamp(20px, 5vw, 40px);
+    color: #000000;
+}
+
 .testCreationMainCreator__addToJar_radio-circle {
     width: 16px;
     height: 16px;
@@ -116,4 +122,6 @@
     background: none;
     border: none;
     cursor: pointer;
+    color: #ADADAD;
+    font-size: clamp(24px, 4vw, 35px);
 }

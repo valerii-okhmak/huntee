@@ -1,6 +1,7 @@
 import React from "react";
 import './TestCreationMainAnswers.css'
-import addImage_icon from '../../../img/testCreation/addImage.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
 
 const TestCreationMainAnswers = ({
   selectedType,
@@ -62,9 +63,9 @@ const TestCreationMainAnswers = ({
       </label>
 
       <div className="testCreationMainCreatorAnswers__btns">
-        <button className="testCreationMainCreatorAnswers__btn" title="Додати зображення">
-          <img alt='add image' src={addImage_icon} />
-        </button>
+            <button className="testCreationMainCreator__questionField-btn" title="Додати зображення">
+              <FontAwesomeIcon icon={faImage} />
+            </button>
         {i >= minBase && (
           <button
             type="button"

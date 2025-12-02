@@ -7,6 +7,8 @@ import CustomTitle from '../components/custom_title/CustomTitle';
 import BrowserWindow from '../components/browser_window/BrowserWindow';
 import BrowserWinText from '../components/browser_win_text/BrowserWinText';
 import defaultLogo from '../img/softserve.png';
+import MessageSenderInfo from '../components/message_sender_info/MessageSenderInfo';
+
 
 const MessageTextPage = () => {
   const { id } = useParams();
@@ -63,20 +65,16 @@ const MessageTextPage = () => {
       day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
   });
 
-  const object = {
-    logo: logoSrc,
-    line: false,
-    strong: senderName, 
-    p: date 
-  };
-
   return (
     <div className="page">
-        <CustomTitle title={message.title} data={object} />
-        
+        <MessageSenderInfo 
+          logoSrc={logoSrc} 
+          senderName={senderName} 
+          date={date} 
+        />
         <div className='container' style={{marginTop: '30px'}}>
             <BrowserWindow>
-              <BrowserWinText text={message.message} />
+              <BrowserWinText title={message.title} text={message.message} />
             </BrowserWindow>
         </div>
     </div>

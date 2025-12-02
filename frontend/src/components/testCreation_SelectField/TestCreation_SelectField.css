@@ -113,6 +113,7 @@
   border-radius: 0;
   font-size: 18px;
   padding: 10px 18px;
+  font-family: 'Montserrat', sans-serif;
 }
 .rdtPicker {
   width: 100%;
@@ -158,11 +159,13 @@ td.rdtActive {
   border: none;
   outline: none;
   font-size: clamp(24px, 3vw, 32px);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .select-field-tc__time-input span {
   font-weight: bold;
   font-size: clamp(24px, 3vw, 32px);
+  font-family: 'Montserrat', sans-serif;
 }
 
 
@@ -262,6 +265,7 @@ td.rdtActive {
   font-size: 14px;
   color: #737373;
   font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
   margin-top: 10px;
   display: flex;
   align-items: center;
