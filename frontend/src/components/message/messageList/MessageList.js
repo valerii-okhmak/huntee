@@ -17,9 +17,9 @@ const MessageList = ({ messages = [], onMarkAsRead }) => {
       ) : (
         messages.map((msg) => (
           <MessageItem 
-            key={msg.id} 
-            message={msg} 
-            onRead={() => onMarkAsRead && onMarkAsRead(msg.id)}
+            key={msg.id}
+            message={msg}
+            onRead={onMarkAsRead}
           />
         ))
       )}

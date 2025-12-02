@@ -75,12 +75,12 @@ const App = () => {
         <Route path="/testcreation/main" element={<TestCreationMainPage />} />
         <Route path="/viewingtests" element={<ViewingTestsPage />} />
         <Route path="/*" element={<NotFoundPage />} />
+          <Route path="/messages" element={<MessagePage />} />
+          <Route path="/message/:id" element={<MessageTextPage />} />
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/messages" element={<MessagePage />} />
-          <Route path="/message/:id" element={<MessageTextPage />} />
         </Route>
       </Routes>
       <Footer />
