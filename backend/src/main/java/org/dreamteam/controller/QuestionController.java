@@ -1,6 +1,9 @@
 package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
 import org.dreamteam.dto.QuestionCreateRequest;
 import org.dreamteam.dto.QuestionResponse;
 import org.dreamteam.dto.QuestionUpdateRequest;
@@ -27,7 +30,7 @@ public class QuestionController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/tests/{testId}/questions")
     public ResponseEntity<?> createAndAddQuestionToTest(
-            @PathVariable Long testId,
+            @PathVariable UUID testId,
             @RequestBody QuestionCreateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         
@@ -47,7 +50,7 @@ public class QuestionController {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/questions/{questionId}")
     public ResponseEntity<QuestionResponse> getQuestionDetails(
-            @PathVariable Long questionId) {
+            @PathVariable UUID  questionId) {
         
         QuestionResponse response = questionService.getQuestionDetails(questionId);
         return ResponseEntity.ok(response);
@@ -57,7 +60,7 @@ public class QuestionController {
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/questions/{questionId}")
     public ResponseEntity<?> updateQuestion(
-            @PathVariable Long questionId,
+            @PathVariable UUID  questionId,
             @RequestBody QuestionUpdateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         
@@ -77,7 +80,7 @@ public class QuestionController {
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/questions/{questionId}")
     public ResponseEntity<?> deleteQuestionFromBank(
-            @PathVariable Long questionId,
+            @PathVariable UUID  questionId,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         try {
@@ -92,8 +95,8 @@ public class QuestionController {
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/tests/{testId}/questions/{questionId}")
     public ResponseEntity<?> unlinkQuestionFromTest(
-            @PathVariable Long testId,
-            @PathVariable Long questionId,
+            @PathVariable UUID testId,
+            @PathVariable UUID questionId,
             @AuthenticationPrincipal UserDetails userDetails) {
         
         try {

@@ -2,6 +2,7 @@ package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dreamteam.Entity.Notification;
+import org.dreamteam.dto.NotificationResponse;
 import org.dreamteam.service.NotificationService;
 import org.dreamteam.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -21,17 +23,15 @@ import java.util.List;
 public class NotificationController {
 
     private final NotificationService notificationService;
-    private final ProfileService profileService; // Щоб отримати ID користувача
+    private final ProfileService profileService; 
 
     @Operation(summary = "Отримати мої повідомлення")
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
-    public ResponseEntity<List<Notification>> getMyNotifications(
+    public ResponseEntity<List<NotificationResponse>> getMyNotifications( 
             @AuthenticationPrincipal UserDetails userDetails) {
         
-        // Отримуємо ID користувача через профіль або репозиторій
-        Integer userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
-        
+        UUID  userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
         return ResponseEntity.ok(notificationService.getUserNotifications(userId));
     }
     
@@ -42,22 +42,21 @@ public class NotificationController {
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         
-        Integer userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
+        UUID  userId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
         notificationService.markAsRead(id, userId);
         return ResponseEntity.ok().build();
     }
     
-    // Ендпоінт для ручної відправки повідомлення (наприклад, HR студенту)
     @Operation(summary = "Надіслати повідомлення користувачу")
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(
-            @RequestParam Integer recipientId,
+            @RequestParam UUID  recipientId,
             @RequestParam String title,
             @RequestBody String message,
             @AuthenticationPrincipal UserDetails userDetails) {
         
-        Integer senderId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
+        UUID  senderId = profileService.getProfileResponseByEmail(userDetails.getUsername()).getUser_id();
         notificationService.sendNotification(recipientId, senderId, title, message);
         return ResponseEntity.ok().body("Notification sent");
     }

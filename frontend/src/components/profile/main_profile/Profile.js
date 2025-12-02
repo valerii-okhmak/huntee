@@ -38,6 +38,11 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("cabinet");
 
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   const fetchExperience = async () => {
     try {
       const token = getAccessToken();
@@ -202,6 +207,16 @@ const Profile = () => {
     checkLocalProvider();
   }, []);
 
+function getYearWord(n) {
+  n = Math.abs(n) % 100; 
+  const n1 = n % 10;
+
+  if (n > 10 && n < 20) return "років";
+  if (n1 > 1 && n1 < 5) return "роки";
+  if (n1 === 1) return "рік";
+  return "років";
+}
+
 
   const getAgeFromBirthDate = (birthDateStr) => {
     const birthDate = new Date(birthDateStr);
@@ -317,7 +332,7 @@ return (
 
                     <h2 className="profile-age">
                       {profileData && profileData.birthDate
-                        ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                        ? `${getAgeFromBirthDate(profileData.birthDate)} ${getYearWord(getAgeFromBirthDate(profileData.birthDate))}`
                         : ''}
                     </h2>
 
@@ -343,8 +358,8 @@ return (
                       </button>
 
                       <button
-                        onClick={logout}
-                        id="exit" 
+                        onClick={handleLogout}
+                        id="exit"
                         className="profile-edit-btn"
                       >
                         Вийти
@@ -545,7 +560,7 @@ return (
 
                     <h2 className="profile-age">
                       {profileData && profileData.birthDate
-                        ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                        ? `${getAgeFromBirthDate(profileData.birthDate)} ${getYearWord(getAgeFromBirthDate(profileData.birthDate))}`
                         : ''}
                     </h2>
 
@@ -563,20 +578,20 @@ return (
                       </div>
 
                       <button 
-                        onClick={() => navigate('/mytests')}
+                        onClick={() => navigate('/viewingtests')}
                         id="my-tests" 
                         className="profile-edit-btn"
                       >
-                        Мої тести
+                        Конструктор тестів
                       </button>
 
                       <button
-                        onClick={logout}
-                        id="exit" 
-                        className="profile-edit-btn"
-                      >
-                        Вийти
-                      </button>
+                      onClick={handleLogout}
+                      id="exit"
+                      className="profile-edit-btn"
+                    >
+                      Вийти
+                    </button>
                     </div>
                   </div>
                 </div>

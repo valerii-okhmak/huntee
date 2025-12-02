@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class QuestionService {
     private final CodeAnswerRepository codeAnswerRepository;
 
     @Transactional
-    public Question createQuestionAndLinkToTest(Long testId, QuestionCreateRequest request, String authorEmail) {
+    public Question createQuestionAndLinkToTest(UUID testId, QuestionCreateRequest request, String authorEmail) {
         
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
@@ -41,6 +42,7 @@ public class QuestionService {
         User author = findUserByEmail(authorEmail);
 
         Question question = new Question(request.getQuestionText(), request.getQuestionType(), author);
+        question.setComment(request.getComment());
         
         processQuestionAnswers(question, request);
 
@@ -53,17 +55,18 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionResponse getQuestionDetails(Long questionId) {
+    public QuestionResponse getQuestionDetails(UUID questionId) {
         Question question = findQuestionById(questionId);
         return mapToQuestionResponse(question);
     }
 
     @Transactional
-    public QuestionResponse updateQuestion(Long questionId, QuestionUpdateRequest request, String authorEmail) {
+    public QuestionResponse updateQuestion(UUID questionId, QuestionUpdateRequest request, String authorEmail) {
         Question question = findQuestionById(questionId);
         checkQuestionOwnership(question, authorEmail);
 
         question.setQuestionText(request.getQuestionText());
+        question.setComment(request.getComment());
         
         clearExistingAnswers(question);
         processQuestionAnswers(question, request);
@@ -73,7 +76,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public void deleteQuestion(Long questionId, String authorEmail) {
+    public void deleteQuestion(UUID questionId, String authorEmail) {
         Question question = findQuestionById(questionId);
         checkQuestionOwnership(question, authorEmail);
         
@@ -81,12 +84,12 @@ public class QuestionService {
     }
 
     @Transactional
-    public void unlinkQuestionFromTest(Long testId, Long questionId, String authorEmail) {
+    public void unlinkQuestionFromTest(UUID testId, UUID questionId, String authorEmail) {
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
         checkTestOwnership(test, authorEmail);
 
-        TestQuestion testQuestion = testQuestionRepository.findByTestTestIdAndQuestionQuestionId(testId, questionId)
+        TestQuestion testQuestion = testQuestionRepository.findByTest_TestIdAndQuestion_QuestionId(testId, questionId)
                 .orElseThrow(() -> new EntityNotFoundException("Question is not linked to this test."));
         
         testQuestionRepository.delete(testQuestion);
@@ -169,11 +172,17 @@ public class QuestionService {
     
     private void createCodeAnswer(Question question, CodeAnswerDTO dto) {
         if (dto == null) throw new IllegalArgumentException("Code answer details are required.");
-        CodeAnswer answer = new CodeAnswer(question, dto.getTemplateCode(), dto.getTestCases());
+        CodeAnswer answer = new CodeAnswer(
+            question, 
+            dto.getTemplateCode(), 
+            dto.getTestCases(),
+            dto.getLanguage(),
+            dto.getMethodName()
+        );
         question.setCodeAnswer(answer);
     }
 
-    private Question findQuestionById(Long questionId) {
+    private Question findQuestionById(UUID questionId) {
         return questionRepository.findById(questionId)
                 .orElseThrow(() -> new EntityNotFoundException("Question not found with id: " + questionId));
     }
@@ -199,6 +208,7 @@ public class QuestionService {
         QuestionResponse.QuestionResponseBuilder builder = QuestionResponse.builder()
                 .questionId(question.getQuestionId())
                 .questionText(question.getQuestionText())
+                .comment(question.getComment())
                 .questionType(question.getQuestionType())
                 .authorEmail(question.getAuthor().getUsername());
 
@@ -226,7 +236,7 @@ public class QuestionService {
             case CODE:
                 if (question.getCodeAnswer() != null) {
                     CodeAnswer ca = question.getCodeAnswer();
-                    builder.codeAnswer(new CodeAnswerDTO(ca.getTemplateCode(), ca.getTestCases()));
+                    builder.codeAnswer(new CodeAnswerDTO(ca.getTemplateCode(), ca.getTestCases(), ca.getLanguage(), ca.getMethodName()));
                 }
                 break;
         }

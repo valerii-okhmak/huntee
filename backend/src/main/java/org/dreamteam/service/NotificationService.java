@@ -1,13 +1,18 @@
 package org.dreamteam.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.dreamteam.Entity.Notification;
 import org.dreamteam.Entity.User;
+import org.dreamteam.dto.NotificationResponse;
 import org.dreamteam.repository.NotificationRepository;
 import org.dreamteam.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +23,7 @@ public class NotificationService {
     private final EmailService emailService;
 
     @Transactional
-    public void sendNotification(Integer recipientId, Integer senderId, String title, String message) {
+    public void sendNotification(UUID recipientId, UUID senderId, String title, String message) {
         User recipient = userRepository.findById(recipientId)
                 .orElseThrow(() -> new RuntimeException("Recipient not found"));
         
@@ -39,16 +44,49 @@ public class NotificationService {
     }
     
     @Transactional
-    public void sendSystemNotification(Integer recipientId, String title, String message) {
+    public void sendSystemNotification(UUID recipientId, String title, String message) {
         sendNotification(recipientId, null, title, message);
     }
 
-    public List<Notification> getUserNotifications(Integer userId) {
-        return notificationRepository.findByRecipient_IdOrderByCreatedAtDesc(userId);
+    public List<NotificationResponse> getUserNotifications(UUID userId) {
+        List<Notification> notifications = notificationRepository.findByRecipient_IdOrderByCreatedAtDesc(userId);
+        
+        return notifications.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private NotificationResponse mapToDTO(Notification notification) {
+        NotificationResponse.SenderDTO senderDTO = null;
+        
+        if (notification.getSender() != null) {
+            String name = "Unknown";
+            String avatar = null;
+            
+            if (notification.getSender().getProfile() != null) {
+                name = notification.getSender().getProfile().getFirstName() + " " + 
+                       notification.getSender().getProfile().getLastName();
+                avatar = notification.getSender().getProfile().getProfileImageUrl();
+            }
+            
+            senderDTO = NotificationResponse.SenderDTO.builder()
+                    .name(name)
+                    .avatarUrl(avatar)
+                    .build();
+        }
+
+        return NotificationResponse.builder()
+                .id(notification.getId())
+                .title(notification.getTitle())
+                .message(notification.getMessage())
+                .isRead(notification.isRead())
+                .createdAt(notification.getCreatedAt())
+                .sender(senderDTO)
+                .build();
     }
     
     @Transactional
-    public void markAsRead(Long notificationId, Integer userId) {
+    public void markAsRead(Long notificationId, UUID userId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         

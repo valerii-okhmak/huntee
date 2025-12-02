@@ -2,6 +2,8 @@ package org.dreamteam.controller;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.UUID;
+
 import jakarta.persistence.EntityNotFoundException; 
 import org.dreamteam.dto.ProfileLinkRequest;
 import org.dreamteam.dto.ProfileLinkResponse;
@@ -52,7 +54,7 @@ public class ProfileLinkController {
     }
     
     @GetMapping("/user_id")
-    public List<ProfileLinkResponse> getLinksByUserId(@RequestParam Integer userId) {
+    public List<ProfileLinkResponse> getLinksByUserId(@RequestParam UUID  userId) {
         return profileService.getLinksByUserId(userId);
     }
 }

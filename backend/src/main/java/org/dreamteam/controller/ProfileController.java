@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.UUID;
 
 import org.dreamteam.dto.ProfileResponse;
 import org.dreamteam.service.ProfileService;
@@ -67,7 +68,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ProfileResponse> getProfile(@PathVariable Integer userId) {
+    public ResponseEntity<ProfileResponse> getProfile(@PathVariable UUID  userId) {
         return ResponseEntity.ok(profileService.getProfileByUserId(userId));
     }
 

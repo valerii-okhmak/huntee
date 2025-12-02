@@ -1,20 +1,28 @@
 import React from 'react';
 import './MessageList.css';
-import MessageItem from '../messageItem/MessageItem';
-import logo from "../../../img/softserve.png"; // Імпортуємо PNG-логотип
+import MessageItem from '../messageItem/MessageItem'; 
 
-const MessageList = () => {
+const MessageList = ({ messages = [], onMarkAsRead }) => {
+  
+  if (!messages || !Array.isArray(messages)) {
+    return <div className="message-list"></div>; 
+  }
+
   return (
     <div className="message-list">
-      <MessageItem logo={logo} testname="Повідомлення 1" read={false} />
-      <MessageItem logo={logo} testname="Повідомлення 2" read={false} />
-      <MessageItem logo={logo} testname="Повідомлення 3" read={true} />
-      <MessageItem logo={logo} testname="Повідомлення 1" read={false} />
-      <MessageItem logo={logo} testname="Повідомлення 2" read={false} />
-      <MessageItem logo={logo} testname="Повідомлення 3" read={true} />
-      <MessageItem logo={logo} testname="Повідомлення 1" read={false} />
-      <MessageItem logo={logo} testname="Повідомлення 2" read={false} />
-      <MessageItem logo={logo} testname="Повідомлення 3" read={true} />
+      {messages.length === 0 ? (
+        <div style={{padding: '20px', textAlign: 'center', color: '#888'}}>
+            Повідомлень немає
+        </div>
+      ) : (
+        messages.map((msg) => (
+          <MessageItem 
+            key={msg.id} 
+            message={msg} 
+            onRead={() => onMarkAsRead && onMarkAsRead(msg.id)}
+          />
+        ))
+      )}
     </div>
   );
 };

@@ -6,12 +6,18 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class NotificationDTO {
+public class NotificationResponse {
     private Long id;
     private String title;
     private String message;
     private boolean isRead;
     private LocalDateTime createdAt;
-    private String senderName; 
-    private String recipientEmail;
+    private SenderDTO sender;
+
+    @Data
+    @Builder
+    public static class SenderDTO {
+        private String name; 
+        private String avatarUrl;
+    }
 }

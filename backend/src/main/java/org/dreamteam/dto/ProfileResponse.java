@@ -3,6 +3,7 @@ package org.dreamteam.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import org.dreamteam.Entity.OAuthProvider;
 
@@ -12,7 +13,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ProfileResponse {
-    private Integer user_id;
+    private UUID user_id;
     private String firstName;
     private String lastName;
     private LocalDate birthDate; 

@@ -1,28 +1,41 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
 import SocialLogin from '../SocialLogin/SocialLogin';
-import { Link } from 'react-router-dom';
-import { login } from '../../services/authService'; // перевір шлях
-import { saveTokens } from '../../utils/auth'; // перевір шлях
+import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../../services/authService';
+import { saveTokens } from '../../utils/auth';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const AuthForm = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({ email: '', password: '', general: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const isEmailValid = (em) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setErrors({ email: '', password: '', general: '' });
+
+    let hasError = false;
+    const newErrors = { email: '', password: '', general: '' };
 
     if (!isEmailValid(email)) {
-      setError('Введіть коректну пошту.');
-      return;
+      newErrors.email = 'Введіть коректну пошту.';
+      hasError = true;
     }
     if (!password) {
-      setError('Введіть пароль.');
+      newErrors.password = 'Введіть пароль.';
+      hasError = true;
+    }
+    if (hasError) {
+      setErrors(newErrors);
       return;
     }
 
@@ -30,27 +43,28 @@ const AuthForm = () => {
     try {
       const response = await login({ email, password });
       saveTokens(response.data);
-      window.location.href = '/';
+      navigate('/');
     } catch (err) {
       const status = err.response?.status;
       const message = err.response?.data?.message;
 
       switch (status) {
         case 400:
-          setError(message || 'Некоректні дані. Перевірте введене.');
+          newErrors.general = message || 'Некоректні дані.';
           break;
         case 401:
-          setError(message || 'Невірна електронна пошта або пароль.');
+          newErrors.general = message || 'Невірна пошта або пароль.';
           break;
-        case 403: 
-          setError(message || 'Доступ заборонено. Дозволено лише пошти @lpnu.ua.');
+        case 403:
+          newErrors.general = message || 'Доступ тільки для @lpnu.ua.';
           break;
         case 500:
-          setError('Помилка сервера. Спробуйте пізніше.');
+          newErrors.general = 'Помилка сервера.';
           break;
         default:
-          setError('Сталася невідома помилка. Спробуйте ще раз.');
+          newErrors.general = 'Невідома помилка.';
       }
+      setErrors(newErrors);
     } finally {
       setIsSubmitting(false);
     }
@@ -66,30 +80,30 @@ const AuthForm = () => {
               Hun<span className="special-t">t</span>ee
             </h1>
           </div>
+
           <div className="right-side-auth">
             <div className="auth-input-box">
               <input
                 type="email"
                 id="email"
-                className={`auth-input ${email && isEmailValid(email) ? 'valid' : ''}`}
+                className={`auth-input ${errors.email ? 'input-error' : ''}`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder=" "
               />
-              <label
-                htmlFor="email"
-                className={`auth-input-label ${email ? 'filled' : ''}`}
-              >
+              <label htmlFor="email" className={`auth-input-label ${email ? 'filled' : ''}`}>
                 Пошта
               </label>
+              {errors.email && <span className="input-error-message">{errors.email}</span>}
             </div>
 
-            <div className="auth-input-box">
+            {/* ---------- ПАРОЛЬ З SVG-ІКОНКОЮ ---------- */}
+            <div className="auth-input-box password-box">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
-                className="auth-input"
+                className={`auth-input ${errors.password ? 'input-error' : ''}`}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -98,15 +112,26 @@ const AuthForm = () => {
               <label htmlFor="password" className="auth-input-label">
                 Пароль
               </label>
-            </div>
 
-            {error && <p className="error-message" style={{ color: '#d93025' }}>{error}</p>}
+              <span
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </span>
+
+              {errors.password && <span className="input-error-message">{errors.password}</span>}
+            </div>
+            {/* ------------------------------------------ */}
+
+            {errors.general && (
+              <span className="input-error-message">{errors.general}</span>
+            )}
 
             <button
               type="submit"
               className="auth-submit-button"
               disabled={isSubmitting}
-              aria-disabled={isSubmitting}
             >
               {isSubmitting ? 'Вхід...' : 'Увійти'}
             </button>
@@ -116,7 +141,7 @@ const AuthForm = () => {
         <div className="horizontal-line-auth"></div>
 
         <div className="bottom-part-auth">
-          <SocialLogin setError={setError} />
+          <SocialLogin setError={(msg) => setErrors({ ...errors, general: msg })} />
           <p className="auth-footer">
             Ще немає акаунту? <Link to="/reg">Зареєструватися</Link>
           </p>

@@ -4,6 +4,7 @@ import addImage_icon from '../../../img/testCreation/addImage.png'
 
 const TestCreationMainAnswers = ({
   selectedType,
+  comment, setComment, // Новий проп для коментаря
 
   // options
   options,
@@ -30,7 +31,13 @@ const TestCreationMainAnswers = ({
   openCommentText,
   setOpenCommentText,
 
-  // practical
+  // practical (Code) - НОВІ PROPS
+  codeLanguage, setCodeLanguage,
+  codeMethodName, setCodeMethodName,
+  codeTemplate, setCodeTemplate,
+  codeTestCasesJSON, setCodeTestCasesJSON,
+  
+  // practical (Text) - СТАРІ PROPS (для сумісності, якщо ви ще використовуєте текстовий варіант)
   prExpectedEnabled,
   setPrExpectedEnabled,
   prCommentEnabled,
@@ -72,6 +79,22 @@ const TestCreationMainAnswers = ({
     </div>
   );
 
+  // Рендер поля для коментаря (спільного для всіх)
+  const renderCommonComment = () => (
+     <div style={{marginTop: '20px'}}>
+        <label className="testCreationMainCreatorAnswers__text" style={{fontWeight: 'bold', marginBottom: '5px', display: 'block'}}>
+            Коментар (підказка для студента):
+        </label>
+        <input 
+            type="text" 
+            className="testCreationMainCreatorAnswers__input-open"
+            placeholder="Введіть коментар"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+        />
+    </div>
+  );
+
   switch (selectedType) {
     case "regular":
       return (
@@ -96,6 +119,8 @@ const TestCreationMainAnswers = ({
           <button className="testCreationMainCreatorAnswers__add" onClick={addOption}>
             Додати варіант відповіді <span>+</span>
           </button>
+          
+          {renderCommonComment()}
         </div>
       );
 
@@ -122,6 +147,8 @@ const TestCreationMainAnswers = ({
           <button className="testCreationMainCreatorAnswers__add" onClick={addOption}>
             Додати варіант відповіді <span>+</span>
           </button>
+          
+          {renderCommonComment()}
         </div>
       );
 
@@ -149,69 +176,69 @@ const TestCreationMainAnswers = ({
             onChange={e => setOpenExpectedText(e.target.value)}
           />
 
-          <label className='testCreationMainCreatorAnswers__text'>
-            <input
-              className='testCreationMainCreatorAnswers__none'
-              type="checkbox"
-              checked={openCommentEnabled}
-              onChange={(e) => setOpenCommentEnabled(e.target.checked)}
-            />
-            <span className='testCreationMainCreatorAnswers__radio-circle'></span>
-            Коментар
-          </label>
-          <input
-            type="text"
-            placeholder="Введіть коментар"
-            className="testCreationMainCreatorAnswers__input-open"
-            disabled={!openCommentEnabled}
-            value={openCommentText}
-            onChange={e => setOpenCommentText(e.target.value)}
-          />
+          {/* Старий коментар залишаємо, якщо хочете, або замінюємо на загальний */}
+          {renderCommonComment()}
         </div>
       );
 
     case "practical":
       return (
         <div className="testCreationMainCreatorAnswers testCreationMainCreatorAnswers-open">
-          <h3 className='testCreationMainCreatorAnswers__title'>Відповідь</h3>
+          <h3 className='testCreationMainCreatorAnswers__title'>Налаштування коду</h3>
 
-          <label className='testCreationMainCreatorAnswers__text'>
-            <input
-              className='testCreationMainCreatorAnswers__none'
-              type="checkbox"
-              checked={prExpectedEnabled}
-              onChange={(e) => setPrExpectedEnabled(e.target.checked)}
-            />
-            <span className='testCreationMainCreatorAnswers__radio-circle'></span>
-            Очікувана відповідь
-          </label>
-          <input
-            type="text"
-            placeholder="Введіть відповідь"
-            className="testCreationMainCreatorAnswers__input-open"
-            disabled={!prExpectedEnabled}
-            value={prExpectedText}
-            onChange={e => setPrExpectedText(e.target.value)}
-          />
+          <div style={{marginBottom: '15px'}}>
+              <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Мова програмування:</label>
+              <select 
+                className="testCreationMainCreatorAnswers__input-open" // Можна додати свій клас для select
+                style={{padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
+                value={codeLanguage}
+                onChange={(e) => setCodeLanguage(e.target.value)}
+              >
+                  <option value="java">Java</option>
+                  <option value="python">Python</option>
+                  <option value="javascript">JavaScript</option>
+              </select>
+          </div>
 
-          <label className='testCreationMainCreatorAnswers__text'>
-            <input
-              className='testCreationMainCreatorAnswers__none'
-              type="checkbox"
-              checked={prCommentEnabled}
-              onChange={(e) => setPrCommentEnabled(e.target.checked)}
-            />
-            <span className='testCreationMainCreatorAnswers__radio-circle'></span>
-            Коментар
-          </label>
-          <input
-            type="text"
-            placeholder="Введіть коментар"
-            className="testCreationMainCreatorAnswers__input-open"
-            disabled={!prCommentEnabled}
-            value={prCommentText}
-            onChange={e => setPrCommentText(e.target.value)}
-          />
+          <div style={{marginBottom: '15px'}}>
+              <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Назва методу (напр. "sum"):</label>
+              <input 
+                type="text" 
+                className="testCreationMainCreatorAnswers__input-open"
+                placeholder="sum"
+                value={codeMethodName}
+                onChange={(e) => setCodeMethodName(e.target.value)}
+              />
+          </div>
+
+          <div style={{marginBottom: '15px'}}>
+              <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Шаблон коду (для студента):</label>
+              <textarea 
+                rows="5"
+                className="testCreationMainCreatorAnswers__input-open" // Або textarea клас
+                style={{resize: 'vertical', fontFamily: 'monospace'}}
+                placeholder={`public int sum(int a, int b) {\n    return 0;\n}`}
+                value={codeTemplate}
+                onChange={(e) => setCodeTemplate(e.target.value)}
+              />
+          </div>
+
+          <div style={{marginBottom: '15px'}}>
+              <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Тест-кейси (JSON):</label>
+              <textarea 
+                rows="3"
+                className="testCreationMainCreatorAnswers__input-open"
+                style={{resize: 'vertical', fontFamily: 'monospace'}}
+                placeholder='[{"args": [1, 2], "expected": 3}]'
+                value={codeTestCasesJSON}
+                onChange={(e) => setCodeTestCasesJSON(e.target.value)}
+              />
+            <small style={{color: '#666', display: 'block', marginTop: '5px'}}>
+              Формат: {'[{"args": [arg1, arg2], "expected": result}]'}
+            </small>
+          </div>
+          
+          {renderCommonComment()}
         </div>
       );
 
@@ -220,4 +247,4 @@ const TestCreationMainAnswers = ({
   }
 }
 
-export default TestCreationMainAnswers
+export default TestCreationMainAnswers;

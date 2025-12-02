@@ -2,6 +2,7 @@ package org.dreamteam.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
 import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.User;
 import org.dreamteam.Entity.Question;
@@ -20,9 +21,11 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException; 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+
 import java.lang.Boolean;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +39,7 @@ public class TestService {
     private final NotificationService notificationService; 
 
     @Transactional
-    public void registerForTest(Long testId, String userEmail) {
+    public void registerForTest(UUID testId, String userEmail) {
         User user = findUserByEmail(userEmail);
         Test test = findTestById(testId);
 
@@ -81,13 +84,13 @@ public class TestService {
     }
 
     @Transactional(readOnly = true)
-    public TestDetailResponse getTestById(Long testId) {
+    public TestDetailResponse getTestById(UUID testId) {
         Test test = findTestById(testId);
         return mapToDetailResponse(test);
     }
 
     @Transactional
-    public TestDetailResponse updateTest(Long testId, TestUpdateRequest request, String userEmail) {
+    public TestDetailResponse updateTest(UUID testId, TestUpdateRequest request, String userEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, userEmail);
 
@@ -115,6 +118,10 @@ public class TestService {
             return MyTestDTO.builder()
                     .id(test.getTestId())
                     .title(test.getTestName())
+                    .sphere(test.getSphere())
+                    .level(test.getLevel())
+                    .city(test.getCity())
+                    .startTime(test.getStartTime())
                     .status("Active")
                     .candidatesCount(candidates)
                     .build();
@@ -136,7 +143,7 @@ public class TestService {
     }
 
     @Transactional
-    public void deleteTest(Long testId, String userEmail) {
+    public void deleteTest(UUID  testId, String userEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, userEmail);
         testRepository.delete(test);
@@ -188,7 +195,7 @@ public class TestService {
                     .build();
         }
 
-    private Test findTestById(Long testId) {
+    private Test findTestById(UUID testId) {
         return testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
     }
