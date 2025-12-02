@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getAccessToken } from '../utils/auth';
+import defaultLogo from '../img/default_logo.jpg';
 
 import CustomTitle from '../components/custom_title/CustomTitle';
 import BrowserWindow from '../components/browser_window/BrowserWindow';
 import BrowserWinText from '../components/browser_win_text/BrowserWinText';
-import defaultLogo from '../img/softserve.png';
 import MessageSenderInfo from '../components/message_sender_info/MessageSenderInfo';
 
 
