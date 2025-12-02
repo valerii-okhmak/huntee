@@ -137,6 +137,10 @@ public class TestService {
             return MyTestDTO.builder()
                     .id(reg.getTest().getTestId())
                     .title(reg.getTest().getTestName())
+                    .sphere(reg.getTest().getSphere())
+                    .level(reg.getTest().getLevel())
+                    .city(reg.getTest().getCity())
+                    .startTime(reg.getTest().getStartTime())
                     .status("Registered")
                     .build();
         }).collect(Collectors.toList());
