@@ -42,8 +42,8 @@ const MessagesPage = () => {
 
     return notifications.filter(notif => {
       let matchesReadStatus = true;
-      if (filterReadStatus === 'unread') matchesReadStatus = !notif.isRead;
-      if (filterReadStatus === 'read') matchesReadStatus = notif.isRead;
+      if (filterReadStatus === 'unread') matchesReadStatus = !notif.read;
+      if (filterReadStatus === 'read') matchesReadStatus = notif.read;
 
       let matchesSenderType = true;
       if (filterSenderType === 'system') matchesSenderType = (!notif.sender);
@@ -62,7 +62,7 @@ const MessagesPage = () => {
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       setNotifications(prev => prev.map(n => 
-        n.id === id ? { ...n, isRead: true } : n
+        n.id === id ? { ...n, read: true } : n
       ));
     } catch (error) {
       console.error("Помилка:", error);

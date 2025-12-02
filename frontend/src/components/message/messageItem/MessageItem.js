@@ -13,21 +13,19 @@ const MessageItem = ({ message, onRead }) => {
   };
 
   return (
-    <div className="message-item">
-      <div className="message-logo">
-        <img src={logoSrc} alt="Logo" />
+    <Link 
+      to={`/message/${message.id}`} 
+      className="message-item-link"
+      onClick={handleClick}
+    >
+      <div className="message-item">
+        <div className="message-logo">
+          {logoSrc && <img src={logoSrc} alt="Logo" />}
+        </div>
+        <div className="message-testname">{message.title}</div>
+        {!message.read && <div className='unread-message'></div>}
       </div>
-
-      <Link 
-        to={`/message/${message.id}`} 
-        className="message-testname"
-        onClick={handleClick}     
-      >
-        {message.title}
-      </Link>
-
-      {!message.isRead && <div className='unread-message'></div>}
-    </div>
+    </Link>
   );
 };
 

@@ -9,6 +9,7 @@
     font-optical-sizing: auto;
     font-weight: normal;
     font-style: normal;
+    transition: all 0.25s ease;
 }
 
 .testcard-top_row {
@@ -29,9 +30,6 @@
     font-size: clamp(22px, 2vw, 30px);
     text-decoration: none;
     font-family: 'Montserrat', sans-serif;
-}
-.testcard-title:hover {
-    text-decoration: underline; 
 }
 
 .testcard-bottom_row {
@@ -88,6 +86,17 @@
     font-weight: bold;
     cursor: pointer;
     font-family: 'Montserrat', sans-serif;
+}
+
+.testcard-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.testcard-container:hover {
+    transform: scale(1.01);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
 }
 
 @media screen and (max-width: 450px) {
