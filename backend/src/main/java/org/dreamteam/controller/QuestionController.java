@@ -1,6 +1,8 @@
 package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.UUID;
 
@@ -9,6 +11,8 @@ import org.dreamteam.dto.QuestionResponse;
 import org.dreamteam.dto.QuestionUpdateRequest;
 import org.dreamteam.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -17,6 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.method.P;
 
 @RestController
 @RequestMapping("/api")
@@ -38,6 +43,30 @@ public class QuestionController {
             questionService.createQuestionAndLinkToTest(testId, request, userDetails.getUsername());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Масовий імпорт питань до тесту")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Питання успішно імпортовано"),
+            @ApiResponse(responseCode = "400", description = "Помилка у форматі файлу або валідації")
+    })
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/tests/{testId}/questions/import")
+    public ResponseEntity<?> importQuestions(
+            @PathVariable UUID testId,
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetails userDetails){
+        try {
+            int count  = questionService.importQuestions(testId, file, userDetails.getUsername());
+            return ResponseEntity.ok("Імпортовано питань: " + count);
+        }
+        catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
