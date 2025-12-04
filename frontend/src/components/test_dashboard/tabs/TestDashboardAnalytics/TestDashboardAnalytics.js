@@ -60,14 +60,14 @@ const TestDashboardAnalytics = ({ testId }) => {
           <div className="testDashboard__analytics-icon">
             <FontAwesomeIcon icon={faCircleXmark}/>
           </div>
-          <strong>{analytics.totalCompleted - analytics.passedCount}</strong>
+          <strong>{analytics.failedCount}</strong>
           <p>Студентів не пройшло тест</p>
         </div>
         <div className="testDashboard__analytics-stat-card total">
           <div className="testDashboard__analytics-icon">
             <FontAwesomeIcon icon={faUsers}/>
           </div>
-          <strong>{analytics.totalRegistered}</strong>
+          <strong>{analytics.totalAttempts}</strong>
           <p>Загальна кількість</p>
         </div>
       </div>

@@ -12,10 +12,33 @@ const TestDashboardPage = () => {
   const [results, setResults] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [analytics, setAnalytics] = useState(null);
+  const [test, setTest] = useState(null); // Дані тесту
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Завантаження самого тесту
+  useEffect(() => {
+    const fetchTest = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (!res.ok) throw new Error('Помилка при завантаженні тесту');
+        const data = await res.json();
+        setTest(data);
+      } catch (err) {
+        console.error(err);
+        setError('Не вдалося завантажити тест');
+      }
+    };
+
+    fetchTest();
+  }, [id]);
+
+  // Завантаження вкладки
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -68,7 +91,7 @@ const TestDashboardPage = () => {
 
     switch (activeTab) {
       case 'analytics':
-        return <TestDashboardAnalytics analytics={analytics} />;
+        return <TestDashboardAnalytics analytics={analytics} testId={id}/>;
 
       case 'registered':
         return <TestDashboardList 
@@ -91,14 +114,16 @@ const TestDashboardPage = () => {
     }
   };
 
+  if (!test) return <p className="loading">Завантаження тесту...</p>;
+
   return (
     <div className='page'>
       <GeneralTestInfoHeader
-        field="Data Science"
-        title="JUNIOR DATA SCIENTIST"
-        location="Lviv"
-        date="21.03.2025"
-        time="18:00"
+        field={test.sphere}
+        title={test.testName}
+        location={test.city}
+        date={new Date(test.startTime).toLocaleDateString()}
+        time={new Date(test.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
       />
 
       <DashboardTabNavigation 
