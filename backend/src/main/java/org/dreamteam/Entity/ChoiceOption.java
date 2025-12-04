@@ -26,6 +26,9 @@ public class ChoiceOption {
     @Column(name = "option_text", columnDefinition = "TEXT", nullable = false)
     private String optionText;
 
+    @Column(name = "image_url") 
+    private String imageUrl; 
+
     @Column(name = "is_correct", nullable = false)
     private boolean isCorrect = false;
 

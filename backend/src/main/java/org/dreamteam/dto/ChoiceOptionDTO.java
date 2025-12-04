@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChoiceOptionDTO {
     private String optionText;
-
+    private String imageUrl;
     @JsonProperty("isCorrect") 
     private boolean isCorrect;
 
-    public ChoiceOptionDTO(String optionText, boolean isCorrect) {
+    public ChoiceOptionDTO(String optionText, String imageUrl, boolean isCorrect) {
         this.optionText = optionText;
         this.isCorrect = isCorrect;
+        this.imageUrl = imageUrl;
     }
 }
