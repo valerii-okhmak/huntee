@@ -65,8 +65,6 @@ const App = () => {
         <Route path="/generalinfo" element={<GeneralInfoPage/>} />
         <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="/pricingpage" element={<PricingPage />} />
-        <Route path="/forcompany" element={<ForCompany />} />
-        <Route path="/subscriptions" element={<Subscriptions />} />
         <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />

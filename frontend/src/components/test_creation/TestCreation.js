@@ -18,10 +18,10 @@ const TestCreation = () => {
               <p className='test-creation-steptext'>Обрати готовий тест</p>
           </div>
           <p className='test-creation-text'>Це оптимальний варіант для швидкого старту тестування без потреби самостійного наповнення. На платформі доступна колекція професійно підготовлених тестів, які охоплюють різні напрями ІТ: Front-End, Back-End, UI/UX Design, Data Science, QA, Game Development, Project Management, DevOps та інші. Кожен тест структуровано відповідно до сучасних підходів у HR, психології та освіті, з урахуванням аналітики результатів. Ви просто обираєте потрібний тест, а далі надсилаєте його кандидатам або студентам.</p>
-          <button className="test-creation-button">ПЕРЕГЛЯНУТИ ШАБЛОНИ</button>
+          <Link to='/templateshuntee' className="test-creation-button">ПЕРЕГЛЯНУТИ ШАБЛОНИ</Link>
           <div className='test-creation-gradient'>
               <p className='test-creation-gradient-title'>МАЄТЕ<br/>ЗАПИТАННЯ?</p>
-              <button className="test-creation-button test-creation-gradient-button">ЗВ’ЯЗАТИСЯ З НАМИ</button>
+              <Link to='/contacts' className="test-creation-button test-creation-gradient-button">ЗВ’ЯЗАТИСЯ З НАМИ</Link>
           </div>
           <div className='forspace'></div>
       </div>

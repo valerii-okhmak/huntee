@@ -26,7 +26,6 @@ const AllTestsPage = () => {
       try {
         setIsLoading(true);
         const token = getAccessToken();
-        if (!token) throw new Error('Користувач не авторизований');
 
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND}/api/tests`,

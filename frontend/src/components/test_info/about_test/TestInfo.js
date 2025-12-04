@@ -6,9 +6,6 @@ const TestInfo = ({category,logo,vacancy,location,date,time}) => {
        <div className="info-top-section">
              <div className="info-top-line">
                <div className="info-category">{category}</div>
-               <div className="info-logo">
-                   <img src={logo} alt="Фото компанії" />
-               </div>
                </div>
                <h1 className="info-title">{vacancy}</h1>
                <div className="info-top-line">

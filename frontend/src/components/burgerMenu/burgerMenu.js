@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './burgerMenu.css';
 import { getAccessToken, logout } from '../../utils/auth';
+import { Colors } from 'chart.js';
 
 const BurgerMenu = ({ menuRef, toggleMenu }) => {
   const isAuthenticated = !!getAccessToken();
@@ -35,20 +36,20 @@ const BurgerMenu = ({ menuRef, toggleMenu }) => {
           <li>
             <Link to="/starttest" onClick={toggleMenu} className='link'>
               <span className='digit'>4</span>
-              <span className='burger-text'>Пробні тести</span>
+              <span className='burger-text'>Пробний тести</span>
             </Link>
           </li>
 
           <li>
-            <Link to="/" onClick={toggleMenu} className='link'>
+            <Link to="" onClick={toggleMenu} className='link'>
               <span className='digit'>5</span>
-              <span className='burger-text'>Soft Skills test</span>
+              <span className='burger-text'>Soft Skills test<span style={{ color: 'red' }}> (Тимчасово не працює)</span></span>
             </Link>
           </li>
           <li>
-            <Link to="/" onClick={toggleMenu} className='link'>
+            <Link to="" onClick={toggleMenu} className='link'>
               <span className='digit'>6</span>
-              <span className='burger-text'>Як обрати напрям IT?</span>
+                          <span className='burger-text'>Як обрати напрям IT?<span style={{ color: 'red' }}> (Тимчасово не працює)</span></span>
             </Link>
           </li>
 
@@ -61,21 +62,15 @@ const BurgerMenu = ({ menuRef, toggleMenu }) => {
             </Link>
           </li>
           <li>
-            <Link to="/profile" onClick={toggleMenu} className='link'>
-              <span className='digit'>8</span>
-              <span className='burger-text'>Аккаунт</span>
-            </Link>
-          </li>
-          <li>
             <Link to="/testcreation" onClick={toggleMenu} className='link'>
-              <span className='digit'>9</span>
+              <span className='digit'>8</span>
               <span className='burger-text'>Як створити тест?</span>
             </Link>
           </li>
           <li>
-            <Link to="/" onClick={toggleMenu} className='link'>
-              <span className='digit'>10</span>
-              <span className='burger-text'>Процес оцінювання та результати</span>
+            <Link to="" onClick={toggleMenu} className='link'>
+              <span className='digit'>9</span>
+              <span className='burger-text'>Процес оцінювання та результати<span style={{ color: 'red' }}> (Тимчасово не працює)</span></span>
             </Link>
           </li>
         </ul>

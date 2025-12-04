@@ -1,7 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './AddTestsButton.css';
-import addtestbtn from '../../../img/test/addtestbtn.png';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 const AddTestsButton = () => {
   const navigate = useNavigate(); 
@@ -12,7 +14,7 @@ const AddTestsButton = () => {
 
   return (
     <button className="add-tests-button-block" onClick={handleClick}> 
-      <img src={addtestbtn} alt="add" className="addtestbtn" />
+      <FontAwesomeIcon icon={faFileCirclePlus} className="addtestbtn" />
       <span className="add-tests-button-text">Додати тест</span>
     </button>
   );
