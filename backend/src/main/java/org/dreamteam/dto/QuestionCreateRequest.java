@@ -10,6 +10,7 @@ import java.util.List;
 public class QuestionCreateRequest {
     private QuestionType questionType;
     private String questionText;
+    private String imageUrl;
     private String comment;
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;

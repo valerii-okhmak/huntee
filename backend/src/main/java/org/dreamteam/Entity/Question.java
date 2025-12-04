@@ -26,6 +26,9 @@ public class Question {
     @Column(name = "question_text", columnDefinition= "TEXT", nullable = false)
     private String questionText;
 
+    @Column(name = "image_url") 
+    private String imageUrl; 
+
     @Column(name = "comment", columnDefinition= "TEXT")
     private String comment;
 

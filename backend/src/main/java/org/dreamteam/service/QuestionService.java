@@ -216,7 +216,7 @@ public class QuestionService {
             case SINGLE_CHOICE, MULTIPLE_CHOICE:
                 if (question.getChoiceOptions() != null) {
                     builder.choiceOptions(question.getChoiceOptions().stream()
-                            .map(o -> new ChoiceOptionDTO(o.getOptionText(), o.isCorrect()))
+                            .map(o -> new ChoiceOptionDTO(o.getOptionText(), o.getImageUrl(), o.isCorrect()))
                             .collect(Collectors.toList()));
                 }
                 break;
