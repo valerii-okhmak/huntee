@@ -225,7 +225,7 @@ public class QuestionService {
         List<QuestionCreateRequest> questionRequests;
         String contentType = file.getContentType();
 
-        if(contentType != null && contentType.equals("aplication/json")){
+        if(contentType != null && contentType.equals("application/json")){
             questionRequests = parseJsonFile(file);
         }
         else if(contentType != null && (contentType.equals("text/csv") || file.getOriginalFilename().endsWith(".csv"))){
@@ -306,7 +306,7 @@ public class QuestionService {
                     }  
                 }
 
-                if(parts.lenght >= 3 && request.getQuestionType() == QuestionType.TEXT){
+                if(parts.length >= 3 && request.getQuestionType() == QuestionType.TEXT){
                     TextAnswerDTO textDto = new TextAnswerDTO();
                     textDto.setCorrectText(parts[2]);
                     textDto.setCaseSensitive(false); 
