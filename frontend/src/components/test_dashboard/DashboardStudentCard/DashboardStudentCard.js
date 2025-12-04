@@ -7,7 +7,7 @@ const DashboardStudentCard = ({ student, type }) => {
   return (
     <div className="testDashboard__student-card">
       <div className="testDashboard__card-content">
-        <h3 className="testDashboard__card-name">{student.name}</h3>
+        <h3 className="testDashboard__card-name">{student.fullName}</h3>
 
         {type === 'results' && (
           <>
