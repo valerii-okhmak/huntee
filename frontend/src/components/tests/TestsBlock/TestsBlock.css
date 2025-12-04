@@ -10,7 +10,7 @@
     align-items: center;
     background: #FFFBFB;
     border: 1px solid #e0e0e0;
-    padding: 0px 12px;
+    padding: 10px 12px;
     width: 100%;
     border-radius: 4px;
 }
@@ -21,10 +21,13 @@
     background: transparent;
     margin-left: 8px;
     font-size: 18px;
-    color: #000000;
+    color: #8F8D8D;
     width: 100%;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
+}
+.search-container input::placeholder{
+    color: #8F8D8D;
 }
 
 .search_icon {

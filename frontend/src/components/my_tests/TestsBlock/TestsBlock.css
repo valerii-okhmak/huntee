@@ -1,33 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-.testsBlock {
-    margin-bottom: 50px;
-    flex: 1 1 auto;
-}
 
-.search-container {
-    display: flex;
-    align-items: center;
-    background: #FFFBFB;
-    border: 1px solid #e0e0e0;
-    padding: 0px 12px;
-    width: 100%;
-    border-radius: 4px;
-}
 
-.search-container input {
-    border: none;
-    outline: none;
-    background: transparent;
-    margin-left: 8px;
-    font-size: 18px;
-    color: #000000;
-    width: 100%;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-}
-
-.search_icon {
-    width: 18px;
-    height: 18px;
-}

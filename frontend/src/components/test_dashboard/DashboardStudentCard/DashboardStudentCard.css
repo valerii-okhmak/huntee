@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.testDashboard__student-card {
+    background-color: #ffffff;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: stretch; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+.testDashboard__student-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+  
+.testDashboard__card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+  
+.testDashboard__card-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+}
+  
+.testDashboard__card-score {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+  
+.testDashboard__card-score-good {
+    color: #09AD00; 
+}
+  
+.testDashboard__card-score-bad {
+    color: #AD0003; 
+}
+
+.testDashboard__card-score-null {
+    font-size: 20px;
+}
+  
+.testDashboard__card-info {
+    font-size: 20px;
+    text-decoration: none;
+    margin-top: 8px;
+    transition: 0.2s;
+    color: black;
+}
+.testDashboard__card-info:hover {
+    color: #0084FF;
+}
+  
+
+.testDashboard__card-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end; 
+    gap: 10px;
+}
+  
+.testDashboard__card-btn {
+    background-color: #679C6A; 
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+  
+.testDashboard__card-btn:hover {
+    background-color: #468c63; 
+}
+  
+.testDashboard__card-btn-chat {
+    background: none;
+    border: none;
+    color: #4b5563;
+    cursor: pointer;
+    padding: 8px;
+    transition: color 0.2s;
+    margin-bottom: -8px; 
+    margin-right: -8px;
+}
+  
+.testDashboard__card-btn-chat:hover {
+    transform: scale(1.05);
+}

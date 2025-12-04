@@ -11,10 +11,16 @@
     gap: 50px;
 }
 
-.generalTestInfoHeader__left, .generalTestInfoHeader__right {
+.generalTestInfoHeader__left {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.generalTestInfoHeader__right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .generalTestInfoHeader__field {
