@@ -44,7 +44,7 @@ public class TestAttemptService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (!test.getIsFixedTime()) {
+        if (!Boolean.TRUE.equals(test.getIsFixedTime())) {
             if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
                 throw new AccessDeniedException("Test has not started yet.");
             }
@@ -56,7 +56,7 @@ public class TestAttemptService {
         LocalDateTime calculatedEndTime;
         if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
             LocalDateTime durationLimit = now.plusMinutes(test.getDurationMinutes());
-            if (!test.getIsFixedTime() && test.getEndTime() != null && test.getEndTime().isBefore(durationLimit)) {
+            if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null && test.getEndTime().isBefore(durationLimit)) {
                 calculatedEndTime = test.getEndTime();
             } else {
                 calculatedEndTime = durationLimit;
@@ -189,7 +189,7 @@ public class TestAttemptService {
     public TestAttemptReviewResponse getAttemptReview(UUID attemptId, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
         User requester = findUserByEmail(userEmail);
-        
+
         boolean isCandidate = attempt.getUser().getId().equals(requester.getId());
         boolean isOwner = attempt.getTest().getUser().getId().equals(requester.getId());
 
@@ -216,7 +216,7 @@ public class TestAttemptService {
 
         if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
             LocalDateTime personalDeadline = attempt.getStartedAt().plusMinutes(test.getDurationMinutes());
-            if (!test.getIsFixedTime() && test.getEndTime() != null) {
+            if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null) {
                 deadline = personalDeadline.isBefore(test.getEndTime()) ? personalDeadline : test.getEndTime();
             } else {
                 deadline = personalDeadline;

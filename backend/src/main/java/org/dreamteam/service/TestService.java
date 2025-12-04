@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -180,42 +181,41 @@ public class TestService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+@Transactional(readOnly = true)
     public TestAnalyticsDTO getTestAnalytics(UUID testId, String authorEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
 
-        List<TestRegistration> registrations = registrationRepository.findByTest_TestId(testId);
         List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
 
-        int totalRegistered = registrations.size();
-        int totalAttempts = attempts.size();
-
         List<UserTestAttempt> completedAttempts = attempts.stream()
-                .filter(a -> a.getCompletedAt() != null)
+                .filter(a -> a.getCompletedAt() != null && a.getScore() != null)
                 .collect(Collectors.toList());
 
-        int totalCompleted = completedAttempts.size();
-
+        int total = completedAttempts.size();
+        int passed = 0;
+        int failed = 0;
         double totalScoreSum = 0;
-        int passedCount = 0;
 
-        for (UserTestAttempt a : completedAttempts) {
-            if (a.getScore() != null) {
-                double s = a.getScore().doubleValue();
-                totalScoreSum += s;
-                if (s >= 60.0) passedCount++;
+        BigDecimal passingGrade = BigDecimal.valueOf(60);
+
+        for (UserTestAttempt attempt : completedAttempts) {
+            totalScoreSum += attempt.getScore().doubleValue();
+            
+            if (attempt.getScore().compareTo(passingGrade) >= 0) {
+                passed++;
+            } else {
+                failed++;
             }
         }
 
-        double averageScore = totalCompleted > 0 ? totalScoreSum / totalCompleted : 0;
+        double avg = total > 0 ? totalScoreSum / total : 0;
 
         return TestAnalyticsDTO.builder()
-                .totalRegistered(totalRegistered)
-                .totalAttempts(totalAttempts)
-                .totalCompleted(totalCompleted)
-                .passedCount(passedCount)
-                .averageScore(Math.round(averageScore * 100.0) / 100.0)
+                .totalAttempts(total)
+                .passedCount(passed)
+                .failedCount(failed)
+                .averageScore(Math.round(avg * 100.0) / 100.0) 
                 .build();
     }
 
