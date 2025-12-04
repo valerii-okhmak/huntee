@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.UUID;
+import org.springframework.http.MediaType;
 
 import org.dreamteam.dto.QuestionCreateRequest;
 import org.dreamteam.dto.QuestionResponse;
@@ -57,7 +58,8 @@ public class QuestionController {
             @ApiResponse(responseCode = "400", description = "Помилка у форматі файлу або валідації")
     })
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/tests/{testId}/questions/import")
+    @PostMapping(value = "/tests/{testId}/questions/import",
+                 consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> importQuestions(
             @PathVariable UUID testId,
             @RequestParam("file") MultipartFile file,

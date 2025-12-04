@@ -244,6 +244,7 @@ public class QuestionService {
         List <TestQuestion> testQuestions = new ArrayList<>();
 
         for(QuestionCreateRequest request : questionRequests){
+            validateQuestionRequest(request);
             Question question = new Question();
             question.setQuestionText(request.getQuestionText());
             question.setQuestionType(request.getQuestionType());
@@ -320,6 +321,62 @@ public class QuestionService {
         }
     }
     
+    private void validateQuestionRequest(QuestionCreateRequest request) {
+        if (request.getQuestionText() == null || request.getQuestionText().isEmpty()) {
+            throw new IllegalArgumentException("Question text cannot be empty.");
+        }
+        if (request.getQuestionType() == null) {
+            throw new IllegalArgumentException("Question type must be specified.");
+        }
+
+        switch (request.getQuestionType()) {
+            case SINGLE_CHOICE, MULTIPLE_CHOICE:
+                validateChoiceOptions(request.getChoiceOptions(), true);
+                break;
+            case TEXT:
+                validateChoiceOptions(request.getChoiceOptions(), false);
+                break;
+            case MATCHING:
+                if (request.getMatchingPairs() == null || request.getMatchingPairs().size() < 2) {
+                    throw new IllegalArgumentException("Для типу MATCHING необхідно мінімум 2 пари (matchingPairs).");
+                }
+                for (int i = 0; i < request.getMatchingPairs().size(); i++) {
+                    var pair = request.getMatchingPairs().get(i);
+                    if (pair.getPrompt() == null || pair.getPrompt().trim().isEmpty() ||
+                        pair.getAnswer() == null || pair.getAnswer().trim().isEmpty()) {
+                        throw new IllegalArgumentException("Пара #" + (i + 1) + " неповна: і запитання (prompt), і відповідь (answer) мають бути заповнені.");
+                    }
+                }
+                break;
+            case CODE:
+                if (request.getCodeAnswer() == null) {
+                    throw new IllegalArgumentException("Для типу CODE необхідний об'єкт codeAnswer.");
+                }
+                if (request.getCodeAnswer().getTestCases() == null || request.getCodeAnswer().getTestCases().isEmpty()) {
+                     throw new IllegalArgumentException("Для типу CODE необхідно надати хоча б один тест-кейс (testCases).");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported question type: " + request.getQuestionType());
+        }
+    }
+
+    private void validateChoiceOptions(List<ChoiceOptionDTO> options, boolean isSingleChoice) {
+        if (options == null || options.size() < 2) {
+            throw new IllegalArgumentException("Питання з вибором варіантів повинно мати мінімум 2 опції.");
+        }
+
+        Long correctCount = options.stream().filter(ChoiceOptionDTO::isCorrect).count();
+
+        if (correctCount == 0) {
+            throw new IllegalArgumentException("Питання повинно мати хоча б один правильний варіант.");
+        }
+
+        if (isSingleChoice && correctCount > 1) {
+            throw new IllegalArgumentException("Питання типу SINGLE_CHOICE може мати тільки один правильний варіант.");
+        }
+    }
+
     private QuestionResponse mapToQuestionResponse(Question question) {
         QuestionResponse.QuestionResponseBuilder builder = QuestionResponse.builder()
                 .questionId(question.getQuestionId())
