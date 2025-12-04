@@ -1,7 +1,17 @@
 package org.dreamteam.service;
 
+import java.io.BufferedReader;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import java.nio.charset.StandardCharsets;
+
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 import org.dreamteam.Entity.*;
 import org.dreamteam.dto.*;
 import org.dreamteam.repository.*;
@@ -15,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -203,7 +215,168 @@ public class QuestionService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
+
+    @Transactional
+    public int importQuestions(UUID testId, MultipartFile file, String authorEmail) throws Exception{
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file is empty.");
+        }
+
+        List<QuestionCreateRequest> questionRequests;
+        String contentType = file.getContentType();
+
+        if(contentType != null && contentType.equals("application/json")){
+            questionRequests = parseJsonFile(file);
+        }
+        else if(contentType != null && (contentType.equals("text/csv") || file.getOriginalFilename().endsWith(".csv"))){
+            questionRequests = parseCsvFile(file);
+        }
+        else {
+            throw new IllegalArgumentException("Unsupported file format. Please use JSON or CSV.");
+            
+        }
+        Test test = testRepository.findById(testId)
+                .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
+        User author = userRepository.findByEmail(authorEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + authorEmail));
+         
+        List<Question> questionsToSave = new ArrayList<>();
+        List <TestQuestion> testQuestions = new ArrayList<>();
+
+        for(QuestionCreateRequest request : questionRequests){
+            validateQuestionRequest(request);
+            Question question = new Question();
+            question.setQuestionText(request.getQuestionText());
+            question.setQuestionType(request.getQuestionType());
+            question.setComment(request.getComment());
+            question.setAuthor(author);
+            processQuestionAnswers(question, request);
+            questionsToSave.add(question);
+        }
+        List<Question> savedQuestions = questionRepository.saveAll(questionsToSave);
+
+        for(Question savedQuestion : savedQuestions){
+            TestQuestion testQuestion = new TestQuestion(test, savedQuestion);
+            testQuestions.add(testQuestion);
+        }
+        testQuestionRepository.saveAll(testQuestions);
+        return savedQuestions.size();
+    }
+
+    private List<QuestionCreateRequest> parseJsonFile(MultipartFile file) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(file.getInputStream(),
+                new TypeReference<List<QuestionCreateRequest>>() {});
+    }
+
+    private List<QuestionCreateRequest> parseCsvFile(MultipartFile file) throws Exception {
+        List<QuestionCreateRequest> questionRequests = new ArrayList<>();
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(),StandardCharsets.UTF_8))){
+            String line;
+            boolean isHeader = true;
+            while((line = reader.readLine()) != null){
+                if(isHeader){
+                    isHeader = false;
+                    continue;
+                }
+                String[] parts = line.split(";");
+                if(parts.length < 2) continue; 
+                
+                QuestionCreateRequest request = new QuestionCreateRequest();
+                request.setQuestionType(QuestionType.valueOf(parts[0].toUpperCase()));
+                request.setQuestionText(parts[1]);
+                
+                if(parts.length >= 4 && (request.getQuestionType() == QuestionType.SINGLE_CHOICE || request.getQuestionType() == QuestionType.MULTIPLE_CHOICE)){
+                    String[] options = parts[2].split("\\|");
+                    String[] corrects = parts[3].split("\\|");
+                    List<ChoiceOptionDTO> choiceDtos =  new ArrayList<>();
+
+                    for(String option : options){
+                        boolean isCorrect = false;
+                        for(String correct : corrects){
+                            if(option.equalsIgnoreCase(correct.trim())){
+                                isCorrect = true;
+                                break;
+                            }
+                            ChoiceOptionDTO dto = new ChoiceOptionDTO();
+                            dto.setOptionText(option);
+                            dto.setCorrect(isCorrect);
+                            choiceDtos.add(dto);
+                        }
+                    request.setChoiceOptions(choiceDtos);
+                    }  
+                }
+
+                if(parts.length >= 3 && request.getQuestionType() == QuestionType.TEXT){
+                    TextAnswerDTO textDto = new TextAnswerDTO();
+                    textDto.setCorrectText(parts[2]);
+                    textDto.setCaseSensitive(false); 
+                    request.setTextAnswer(textDto);
+                }
+                
+                questionRequests.add(request);
+            }
+            return questionRequests;
+
+        }
+    }
     
+    private void validateQuestionRequest(QuestionCreateRequest request) {
+        if (request.getQuestionText() == null || request.getQuestionText().isEmpty()) {
+            throw new IllegalArgumentException("Question text cannot be empty.");
+        }
+        if (request.getQuestionType() == null) {
+            throw new IllegalArgumentException("Question type must be specified.");
+        }
+
+        switch (request.getQuestionType()) {
+            case SINGLE_CHOICE, MULTIPLE_CHOICE:
+                validateChoiceOptions(request.getChoiceOptions(), true);
+                break;
+            case TEXT:
+                validateChoiceOptions(request.getChoiceOptions(), false);
+                break;
+            case MATCHING:
+                if (request.getMatchingPairs() == null || request.getMatchingPairs().size() < 2) {
+                    throw new IllegalArgumentException("Для типу MATCHING необхідно мінімум 2 пари (matchingPairs).");
+                }
+                for (int i = 0; i < request.getMatchingPairs().size(); i++) {
+                    var pair = request.getMatchingPairs().get(i);
+                    if (pair.getPrompt() == null || pair.getPrompt().trim().isEmpty() ||
+                        pair.getAnswer() == null || pair.getAnswer().trim().isEmpty()) {
+                        throw new IllegalArgumentException("Пара #" + (i + 1) + " неповна: і запитання (prompt), і відповідь (answer) мають бути заповнені.");
+                    }
+                }
+                break;
+            case CODE:
+                if (request.getCodeAnswer() == null) {
+                    throw new IllegalArgumentException("Для типу CODE необхідний об'єкт codeAnswer.");
+                }
+                if (request.getCodeAnswer().getTestCases() == null || request.getCodeAnswer().getTestCases().isEmpty()) {
+                     throw new IllegalArgumentException("Для типу CODE необхідно надати хоча б один тест-кейс (testCases).");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported question type: " + request.getQuestionType());
+        }
+    }
+
+    private void validateChoiceOptions(List<ChoiceOptionDTO> options, boolean isSingleChoice) {
+        if (options == null || options.size() < 2) {
+            throw new IllegalArgumentException("Питання з вибором варіантів повинно мати мінімум 2 опції.");
+        }
+
+        Long correctCount = options.stream().filter(ChoiceOptionDTO::isCorrect).count();
+
+        if (correctCount == 0) {
+            throw new IllegalArgumentException("Питання повинно мати хоча б один правильний варіант.");
+        }
+
+        if (isSingleChoice && correctCount > 1) {
+            throw new IllegalArgumentException("Питання типу SINGLE_CHOICE може мати тільки один правильний варіант.");
+        }
+    }
+
     private QuestionResponse mapToQuestionResponse(Question question) {
         QuestionResponse.QuestionResponseBuilder builder = QuestionResponse.builder()
                 .questionId(question.getQuestionId())
