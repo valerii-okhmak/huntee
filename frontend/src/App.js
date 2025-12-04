@@ -33,6 +33,7 @@ import TemplatesHunteePage from './pages/TemplatesHunteePage';
 import ScrollToTop from './components/ScrollToTop'; 
 import ViewingTestsPage from './pages/ViewingTestsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import TestDashboardPage from './pages/TestDashboardPage';
 
 
 const App = () => {
@@ -73,8 +74,10 @@ const App = () => {
         <Route path="/testcreation/main" element={<TestCreationMainPage />} />
         <Route path="/viewingtests" element={<ViewingTestsPage />} />
         <Route path="/*" element={<NotFoundPage />} />
-          <Route path="/messages" element={<MessagePage />} />
-          <Route path="/message/:id" element={<MessageTextPage />} />
+        <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
+        <Route path="/messages" element={<MessagePage />} />
+        <Route path="/message/:id" element={<MessageTextPage />} />
+          
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>

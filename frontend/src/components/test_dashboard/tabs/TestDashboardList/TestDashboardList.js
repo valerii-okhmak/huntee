@@ -1,52 +1,83 @@
-import React from 'react'
-import './TestDashboardList.css'
+import React, { useEffect, useState } from 'react';
+import './TestDashboardList.css';
 import DashboardStudentCard from '../../DashboardStudentCard/DashboardStudentCard';
 import lupa from '../../../../img/search-icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
+import axios from 'axios';
+import { getAccessToken } from '../../../../utils/auth';
 
-const TestDashboardList = ({ activeTab, students, setActiveTab }) => {
-    const description = activeTab === 'registered'
-    ? 'Тут ви можете переглянути зареєстрвоанх судентів. \nВи можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо.'
-    : 'Тут ви можете переглянути результати тестування студентів. \nВи можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо, щоб повідомити про результат чи надати зворотний зв’язок.';
+const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    return (
-        <div className='container'>
-            <div className="testDashboard__description">
-                <p>{description}</p>
-                <div className="testDashboard__quote">
-                    <p>Щоб надіслати повідомлення всім студентам, натисніть кнопку повідомлення поруч з пошуком.</p>
-                    <p>Щоб зв’язатися з окремим студентом, використовуйте кнопку «Повідомлення» поруч із його результатом.</p>
-                </div>
-            </div>
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        const token = getAccessToken();
+        const endpoint = activeTab === 'registered' 
+          ? `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/candidates`
+          : `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/results`;
+        
+        const response = await axios.get(endpoint, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-            <div className="testDashboard__toolbar">
-                <div className="search-container">
-                    <img src={lupa} alt='search' className='search_icon' />
-                    <input 
-                    type="text" 
-                    placeholder="Пошук"
-                    />
-                </div>
-                <button className="testDashboard__message">
-                    <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
-                </button>
-                <button className="testDashboard__btn-analytics" onClick={() => setActiveTab('analytics')}>
-                    Переглянути аналітику
-                </button>
-            </div>
+        setStudents(response.data);
+      } catch (err) {
+        console.error(err);
+        setError("Не вдалося завантажити студентів");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            <div className="testDashboard__cards-list">
-                {students.map(student => (
-                    <DashboardStudentCard 
-                        key={student.id} 
-                        student={student} 
-                        type={activeTab}
-                    />
-                ))}
-            </div>
+    fetchStudents();
+  }, [activeTab, testId]);
+
+  const description = activeTab === 'registered'
+    ? 'Тут ви можете переглянути зареєстрованих студентів. Ви можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо.'
+    : 'Тут ви можете переглянути результати тестування студентів. Ви можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо, щоб повідомити про результат чи надати зворотний зв’язок.';
+
+  if (loading) return <div className='container'>Завантаження студентів...</div>;
+  if (error) return <div className='container'>{error}</div>;
+
+  return (
+    <div className='container'>
+      <div className="testDashboard__description">
+        <p>{description}</p>
+        <div className="testDashboard__quote">
+          <p>Щоб надіслати повідомлення всім студентам, натисніть кнопку повідомлення поруч з пошуком.</p>
+          <p>Щоб зв’язатися з окремим студентом, використовуйте кнопку «Повідомлення» поруч із його результатом.</p>
         </div>
-    )
+      </div>
+
+      <div className="testDashboard__toolbar">
+        <div className="search-container">
+          <img src={lupa} alt='search' className='search_icon' />
+          <input type="text" placeholder="Пошук"/>
+        </div>
+        <button className="testDashboard__message">
+          <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
+        </button>
+        <button className="testDashboard__btn-analytics" onClick={() => setActiveTab('analytics')}>
+          Переглянути аналітику
+        </button>
+      </div>
+
+      <div className="testDashboard__cards-list">
+        {students.map(student => (
+          <DashboardStudentCard 
+            key={student.userId} 
+            student={student} 
+            type={activeTab}
+          />
+        ))}
+      </div>
+    </div>
+  )
 }
 
-export default TestDashboardList
+export default TestDashboardList;

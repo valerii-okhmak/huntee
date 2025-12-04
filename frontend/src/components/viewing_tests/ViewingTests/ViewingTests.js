@@ -49,7 +49,7 @@ const ViewingTests = () => {
                 time: timeStr,
                 candidatesCount: t.candidatesCount || 0,
                 status: t.status,
-                link: `/dashboard/test/${t.id || t.testId}`
+                link: `/test/${t.id || t.testId}/dashboard`
             };
         });
 
