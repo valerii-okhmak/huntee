@@ -8,7 +8,6 @@ const Test = ({ title, type, location, date, time, link }) => {
     <a href={link} className="test clickable-card">
       <div className='top_row'>
         <p className='type'>{type}</p>
-        <img alt='logo' className='logo' src={softserve} />
       </div>
 
       <p className='title'>{title}</p>

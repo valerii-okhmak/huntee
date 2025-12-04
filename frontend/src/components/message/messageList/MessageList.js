@@ -11,7 +11,7 @@ const MessageList = ({ messages = [], onMarkAsRead }) => {
   return (
     <div className="message-list">
       {messages.length === 0 ? (
-        <div style={{padding: '20px', textAlign: 'center', color: '#888'}}>
+        <div style={{padding: '20px', textAlign: 'center', color: '#888', fontSize: '24px', fontFamily: 'Montserrat, sans-serif'}}>
             Повідомлень немає
         </div>
       ) : (

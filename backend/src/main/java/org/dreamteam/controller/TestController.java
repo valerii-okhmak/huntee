@@ -2,7 +2,9 @@ package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
 
+import org.dreamteam.dto.CandidateDTO;
 import org.dreamteam.dto.MyTestDTO;
+import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
 import org.dreamteam.dto.TestSummaryResponse;
@@ -140,5 +142,33 @@ public class TestController {
         return ResponseEntity.ok(testService.getMyCandidateTests(userDetails.getUsername()));
     }
 
+    @Operation(summary = "Вкладка 'Зареєстровані'")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/{id}/candidates")
+    public ResponseEntity<List<CandidateDTO>> getRegisteredCandidates(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(testService.getRegisteredCandidates(id, userDetails.getUsername()));
+    }
+
+    @Operation(summary = "Вкладка 'Результати'")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/{id}/results")
+    public ResponseEntity<List<CandidateDTO>> getTestResults(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(testService.getTestResults(id, userDetails.getUsername()));
+    }
+
+    @Operation(summary = "Вкладка 'Аналітика'")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/{id}/analytics")
+    public ResponseEntity<TestAnalyticsDTO> getTestAnalytics(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(testService.getTestAnalytics(id, userDetails.getUsername()));
+    }
 }
+
+
 
