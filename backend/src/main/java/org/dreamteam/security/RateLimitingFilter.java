@@ -15,8 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RateLimitingFilter implements Filter {
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
-    private final Bandwidth limit = Bandwidth.classic(35, 
-        Refill.intervally(35, Duration.ofMinutes(1)));
+    private final Bandwidth limit = Bandwidth.classic(1000, 
+        Refill.intervally(1000, Duration.ofMinutes(1)));
     
     private Bucket resolveBucket(String ip) {
         return buckets.computeIfAbsent(ip, k -> Bucket.builder()
