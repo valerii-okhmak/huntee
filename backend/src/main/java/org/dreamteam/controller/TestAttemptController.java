@@ -40,7 +40,7 @@ public class TestAttemptController {
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/attempts/{attemptId}/questions/{questionId}/run")
     public ResponseEntity<?> runCode(
-            @PathVariable Long attemptId,
+            @PathVariable UUID attemptId,
             @PathVariable UUID questionId,
             @RequestBody String userCode,
             @AuthenticationPrincipal UserDetails userDetails) {

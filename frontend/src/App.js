@@ -59,7 +59,7 @@ const App = () => {
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/starttest' element={<StartTestPage />} />
         <Route path="/testrules" element={<TestRulesPage />} />
-        <Route path="/test" element={<FullTest testType="trial" textData={tryTest} time={3600} questionsLink={tryTestQuestions} />} />
+        <Route path="/test/:testId" element={<FullTest/>} />
         <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/contacts" element={<Contacts/>} />
         <Route path="/startIT" element={<StartIT/>} />

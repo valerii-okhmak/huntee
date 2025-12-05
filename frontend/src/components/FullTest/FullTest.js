@@ -1,291 +1,314 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getAccessToken } from "../../utils/auth";
 import "./FullTest.css";
-import logo from "../../img/softserve.png";
-import rawQuestions from "../../data/questions.json";
 
 
+const TestPage = ({ testType }) => { 
+  const { testId } = useParams(); 
+  const navigate = useNavigate();
 
-const JUDGE0_API = "https://judge0-ce.p.rapidapi.com/submissions";
-const RAPIDAPI_HEADERS = {
-  "content-type": "application/json",
-  "X-RapidAPI-Host": "judge0-ce.p.rapidapi.com",
-  "X-RapidAPI-Key": "41a9f024efmsh1a0ad3ef3f1f9b0p162680jsnad4442fec743", 
-};
+  const [attemptData, setAttemptData] = useState(null); 
+  const [current, setCurrent] = useState(0); 
+  const [answers, setAnswers] = useState({}); 
+  const [codeOutput, setCodeOutput] = useState({}); 
 
-const TestPage = ({testType, textData, time, questionsLink}) => {
-  const [outputMap, setOutputMap] = useState({});
-  const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(time); 
-
-  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(null); 
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   useEffect(() => {
-    setQuestions(questionsLink);
-  }, []);
+    const startTest = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/start`,
+          {}, 
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        
+        setAttemptData(response.data);
+        
+        const endTime = new Date(response.data.endTime).getTime();
+        const now = new Date().getTime();
+        setTimeLeft(Math.floor((endTime - now) / 1000));
+        
+        setLoading(false);
+      } catch (error) {
+        console.error("Помилка старту тесту:", error);
+        alert("Не вдалося розпочати тест. Можливо, час вичерпано або ви не зареєстровані.");
+        navigate('/viewingtests'); 
+      }
+    };
 
-  // Таймер
+    if (testId) startTest();
+  }, [testId, navigate]);
+
   useEffect(() => {
-    if (submitted) return;
-    if (timeLeft == 0) return;
+    if (timeLeft === null) return;
+    if (timeLeft <= 0) {
+        handleFinishTest(); 
+        return;
+    }
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleSubmit(); 
-          return 0;
-        }
-        return prev - 1;
-      });
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [submitted]);
+  }, [timeLeft]);
 
-  const handleAnswerChange = (value) => {
-    setAnswers({ ...answers, [questions[current].id]: value });
-  };
-
-  const handleSubmit = async () => {
-    if (submitted) return;
-    setLoading(true);
-    let total = 0;
-
-    for (const q of questions) {
-      const ans = answers[q.id];
-
-      if ((q.type === "choice" || q.type === "text") && ans != null) {
-        if (ans === q.correctAnswer) total++;
-      }
-
-      if (q.type === "multiple" && Array.isArray(ans)) {
-        const correct = q.correctAnswer || [];
-        // перевіряємо, чи масиви збігаються (однакові елементи, порядок не важливий)
-        const isCorrect =
-          ans.length === correct.length &&
-          ans.every(a => correct.includes(a));
-        if (isCorrect) total++;
-      }
-
-
-      if (q.type === "code" && ans?.trim()) {
-        try {
-          // Об'єднуємо код користувача і runTemplate
-          const fullCode = `${ans}\n${q.runTemplate}`;
-
-          const response = await axios.post(
-            `${JUDGE0_API}?base64_encoded=false&wait=true`,
-            {
-              source_code: fullCode,
-              language_id: q.language_id,
-              stdin: q.stdin || "",
-            },
-            { headers: RAPIDAPI_HEADERS }
-          );
-
-          const { stdout, stderr, compile_output, status } = response.data;
-
-          const cleanOutput = (stdout || "").trim();
-          const expected = q.expectedOutput.trim();
-
-          if (
-            status?.description === "Accepted" &&
-            cleanOutput === expected
-          ) {
-            total++;
-          } else {
-            console.warn("Код не пройшов перевірку:", {
-              question: q.id,
-              output: cleanOutput,
-              expected,
-              stderr,
-              compile_output,
-              status,
-            });
-          }
-        } catch (err) {
-          console.error("Помилка під час перевірки коду:", err);
-        }
-      }
-    }
-
-    setScore(total);
-    setSubmitted(true);
-    setLoading(false);
-  };
-
-  
-
-  const renderQuestion = (q) => {
-    const answer = answers[q.id];
-  
-    const content = (() => {
-      switch (q.type) {
-        case "choice":
-          return (
-            <div className="choices">
-              {q.options.map((opt, i) => (
-                <label className="custom-radio" key={i}>
-                  <input
-                    className="choices-input"
-                    type="radio"
-                    value={i}
-                    checked={answer === i}
-                    onChange={() => handleAnswerChange(i)}
-                  />
-                  <span className="radio-circle-blue" />
-                  {opt}
-                </label>
-              ))}
-            </div>
-          );
-          case "multiple":
-            const selectedAnswers = Array.isArray(answers[q.id]) ? answers[q.id] : [];
-
-            return (
-              <div className="choices">
-                {q.options.map((opt, i) => (
-                  <label className="custom-checkbox" key={i}>
-                    <input
-                      className="choices-input"
-                      type="checkbox"
-                      value={i}
-                      checked={selectedAnswers.includes(i)} // перевірка по масиву
-                      onChange={() => {
-                        let newAnswers;
-                        if (selectedAnswers.includes(i)) {
-                          // зняти вибір
-                          newAnswers = selectedAnswers.filter(idx => idx !== i);
-                        } else {
-                          // додати вибір
-                          newAnswers = [...selectedAnswers, i];
-                        }
-                        handleAnswerChange(newAnswers);
-                      }}
-                    />
-                    <span className="checkbox-square-blue" />
-                    {opt}
-                  </label>
-                ))}
-              </div>
-            );
-        case "text":
-          return (
-            <textarea
-              value={answer}
-              onChange={(e) => handleAnswerChange(e.target.value)}
-              onInput={(e) => {
-                e.target.style.height = 'auto'; 
-                e.target.style.height = `${e.target.scrollHeight}px`; 
-              }}
-            />
-          );
-        case "code":
-          return (
-            <>
-              <div className="code-run-button-container">
-                <button
-                  className="run-button"
-                  onClick={async () => {
-                    setLoading(true);
-                    try {
-                      const fullCode = `${answer}\n${q.runTemplate || ""}`;
-                      const submission = await axios.post(
-                        JUDGE0_API + "?base64_encoded=false&wait=true",
-                        {
-                          source_code: fullCode,
-                          language_id: q.language_id,
-                          stdin: "",
-                        },
-                        { headers: RAPIDAPI_HEADERS }
-                      );
-
-                      const result =
-                        submission.data.stdout?.trim() ||
-                        submission.data.stderr?.trim() ||
-                        submission.data.compile_output?.trim() ||
-                        "Немає виводу";
-
-                      setOutputMap((prev) => ({
-                        ...prev,
-                        [q.id]: result,
-                      }));
-                    } catch (e) {
-                      setOutputMap((prev) => ({
-                        ...prev,
-                        [q.id]: "Помилка під час виконання коду",
-                      }));
-                      console.error("Run code error:", e);
-                    }
-                    setLoading(false);
-                  }}
-                >
-                  Run
-                </button>
-              </div>
-
-              <textarea
-                rows="10"
-                value={answer}
-                onChange={(e) => handleAnswerChange(e.target.value)}
-                placeholder={q.placeholder || ""}
-              />
-
-              <p className="note">Очікуваний вивід: {q.expectedOutput?.trim()}</p>
-
-              {outputMap[q.id] && (
-                <div className="code-output">
-                  <strong>Результат виконання:</strong>
-                  <pre>{outputMap[q.id]}</pre>
-                </div>
-              )}
-            </>
-          );
-        default:
-          return null;
-      }
-    })();
-  
-    if (q.image) {
-      return (
-        <div className="question-with-image">
-          <img src={q.image} alt="зображення до питання" className="question-image" />
-          <div className="question-content">{content}</div>
-        </div>
-      );
-    }
-  
-    return content;
-  };
-  
-
-  // Форматування часу
   const formatTime = (sec) => {
+    if (sec < 0) sec = 0;
     const h = Math.floor(sec / 3600);
     const m = Math.floor((sec % 3600) / 60);
     const s = sec % 60;
     return { h, m, s };
   };
 
-  const { h, m, s } = formatTime(timeLeft);
+  const handleAnswerChange = (questionId, value) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
+  };
+
+  const saveCurrentAnswer = async () => {
+    if (!attemptData) return;
+    
+    const question = attemptData.questions[current];
+    const currentAnswer = answers[question.questionId];
+
+    if (currentAnswer === undefined || currentAnswer === null || (Array.isArray(currentAnswer) && currentAnswer.length === 0)) {
+        return; 
+    }
+
+    try {
+      const token = getAccessToken();
+      
+      let body = { questionType: question.questionType };
+
+      if (question.questionType === 'SINGLE_CHOICE') {
+         body.selectedOptionIds = [currentAnswer]; 
+      } else if (question.questionType === 'MULTIPLE_CHOICE') {
+         body.selectedOptionIds = currentAnswer;
+      } else if (question.questionType === 'TEXT' || question.questionType === 'CODE') {
+         body.givenText = currentAnswer;
+      }
+
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/answer`,
+        body,
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+      
+      console.log("Відповідь збережено");
+    } catch (error) {
+      console.error("Помилка збереження відповіді:", error);
+    }
+  };
+
+  const handleRunCode = async (question) => {
+    const code = answers[question.questionId];
+    if (!code) return;
+
+    try {
+        setOutputMap(prev => ({ ...prev, [question.questionId]: "Compiling..." }));
+        
+        const token = getAccessToken();
+        const response = await axios.post(
+            `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/run`,
+            code, 
+            { 
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'text/plain' 
+                } 
+            }
+        );
+
+        const result = response.data; 
+        
+        let outputText = result.allPassed ? "✅ All tests passed!\n" : "❌ Some tests failed.\n";
+        
+        result.results.forEach((res, idx) => {
+            outputText += `\nTest Case #${idx + 1}:\n`;
+            outputText += `Input: ${res.input}\n`;
+            outputText += `Expected: ${res.expectedOutput}\n`;
+            outputText += `Actual:   ${res.actualOutput}\n`;
+            if (res.error) outputText += `Error: ${res.error}\n`;
+            outputText += res.passed ? "Result: PASS\n" : "Result: FAIL\n";
+        });
+
+        setOutputMap(prev => ({ ...prev, [question.questionId]: outputText }));
+
+    } catch (error) {
+        console.error("Run code error:", error);
+        setOutputMap(prev => ({ ...prev, [question.questionId]: "Error running code." }));
+    }
+  };
+
+  const [outputMap, setOutputMap] = useState({});
+
+  const handleNext = async () => {
+    setIsSubmitting(true);
+    await saveCurrentAnswer(); 
+    if (current < attemptData.questions.length - 1) {
+      setCurrent(prev => prev + 1);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleFinishTest = async () => {
+    setIsSubmitting(true);
+    await saveCurrentAnswer(); 
+    try {
+        const token = getAccessToken();
+        const response = await axios.post(
+            `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptData.attemptId}/finish`,
+            {},
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        
+        alert(`Тест завершено! Ваш бал: ${response.data.score}`);
+        navigate(`/test-result/${response.data.attemptId}`);
+
+    } catch (error) {
+        console.error("Помилка завершення:", error);
+        alert("Помилка при завершенні тесту.");
+    } finally {
+        setIsSubmitting(false);
+    }
+  };
+
+  const renderQuestion = (q) => {
+    const answer = answers[q.questionId];
+
+    const content = (() => {
+      switch (q.questionType) {
+        case "SINGLE_CHOICE":
+          return (
+            <div className="choices">
+              {q.choiceOptions.map((opt) => (
+                <label className="custom-radio" key={opt.optionId}>
+                  <input
+                    className="choices-input"
+                    type="radio"
+                    name={`q-${q.questionId}`} 
+                    value={opt.optionId}
+                    checked={answer === opt.optionId}
+                    onChange={() => handleAnswerChange(q.questionId, opt.optionId)}
+                  />
+                  <span className="radio-circle-blue" />
+                  {opt.optionText}
+                </label>
+              ))}
+            </div>
+          );
+
+        case "MULTIPLE_CHOICE":
+          const selectedIds = Array.isArray(answer) ? answer : [];
+          return (
+            <div className="choices">
+              {q.choiceOptions.map((opt) => (
+                <label className="custom-checkbox" key={opt.optionId}>
+                  <input
+                    className="choices-input"
+                    type="checkbox"
+                    value={opt.optionId}
+                    checked={selectedIds.includes(opt.optionId)}
+                    onChange={() => {
+                      let newIds;
+                      if (selectedIds.includes(opt.optionId)) {
+                        newIds = selectedIds.filter(id => id !== opt.optionId);
+                      } else {
+                        newIds = [...selectedIds, opt.optionId];
+                      }
+                      handleAnswerChange(q.questionId, newIds);
+                    }}
+                  />
+                  <span className="checkbox-square-blue" />
+                  {opt.optionText}
+                </label>
+              ))}
+            </div>
+          );
+
+        case "TEXT":
+          return (
+            <textarea
+              rows="6"
+              value={answer || ""}
+              onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
+              placeholder="Введіть вашу відповідь..."
+              onInput={(e) => {
+                e.target.style.height = 'auto';
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+            />
+          );
+
+        case "CODE":
+          return (
+            <>
+              <div className="code-run-button-container" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px'}}>
+                <span style={{fontWeight: 'bold', color: '#555'}}>Мова: {q.codeLanguage}</span>
+                <button
+                  className="run-button"
+                  onClick={() => handleRunCode(q)}
+                  disabled={!answer} 
+                >
+                  Run Code
+                </button>
+              </div>
+
+              <textarea
+                rows="12"
+                style={{fontFamily: 'monospace', backgroundColor: '#f5f5f5', border: '1px solid #ccc'}}
+                value={answer || q.templateCode || ""}
+                onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
+                placeholder="// Пишіть код тут..."
+                spellCheck="false"
+              />
+
+              {outputMap[q.questionId] && (
+                <div className="code-output" style={{marginTop: '15px', padding: '10px', background: '#222', color: '#fff', borderRadius: '5px', fontFamily: 'monospace', whiteSpace: 'pre-wrap'}}>
+                  {outputMap[q.questionId]}
+                </div>
+              )}
+            </>
+          );
+        
+        default:
+          return <p>Невідомий тип питання</p>;
+      }
+    })();
+
+
+    return content;
+  };
+
+
+  if (loading) return <div className="page"><div className="container">Завантаження тесту...</div></div>;
+  if (!attemptData) return null;
+
+  const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
+
+  const currentQuestion = attemptData.questions[current];
 
   return (
     <div className={`FullTest ${testType === "softskills" ? 'FullTest-gradient' : 'FullTest-regular'}`}>
-      {testType != "softskills" &&
+      {testType !== "softskills" &&
         <div className="header-bar">
             <div className="top-section">
               <div className="top-line">
-                <div className="category">{textData.category}</div>
+                <div className="category">Test</div> 
               </div>
-              <h1 className="fulltest-title">{textData.title}</h1>
-              <div className="top-line">
-              </div>
+              <h1 className="fulltest-title">{attemptData.testName}</h1>
+              <div className="top-line"></div>
             </div>
+          
           <div className="timer-box">
             <div className="time">
               <span className="time-val">{h}</span>
@@ -304,10 +327,13 @@ const TestPage = ({testType, textData, time, questionsLink}) => {
       }
 
       <div className={`Num ${testType === "softskills" ? 'Num-bg' : 'Num-regular'}`}>
-        {questions.map((_, i) => (
+        {attemptData.questions.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrent(i)}
+            onClick={async () => {
+                await saveCurrentAnswer(); 
+                setCurrent(i);
+            }}
             className={i === current ? "active" : ""}
           >
             {i + 1}
@@ -316,51 +342,37 @@ const TestPage = ({testType, textData, time, questionsLink}) => {
       </div>
 
       <div className={`test-container ${testType === "softskills" ? 'test-container-transparent' : ''}`}>
-        {questions.length > 0 && (
-          <>
-            <h2 className="question">{questions[current].question}</h2>
-            <div className="answer">{renderQuestion(questions[current])}</div>
-          </>
-        )}
+        <>
+          <h2 className="question">
+            {currentQuestion.questionText}
+            {currentQuestion.comment && <p className="hint">{currentQuestion.comment}</p>}
+          </h2>
+          <div className="answer">
+            {renderQuestion(currentQuestion)}
+          </div>
+        </>
 
         <div className="test-buttons">
-          {current < questions.length - 1 && (
+          {current < attemptData.questions.length - 1 ? (
             <button
               className={`next-button ${testType === "softskills" ? 'finish-button' : ''}`}
-              onClick={() =>
-                setCurrent((prev) => Math.min(prev + 1, questions.length - 1))
-              }
+              onClick={handleNext}
+              disabled={isSubmitting}
             >
               Наступне питання
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="34"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 38 24"
-                style={{ marginLeft: "8px", verticalAlign: "middle" }}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 38 24" style={{ marginLeft: "8px", verticalAlign: "middle" }}>
               <line x1="4" y1="12" x2="34" y2="12" />
               <polyline points="26 6 34 12 26 18" />
               </svg>
             </button>
-          )}
-
-          {current === questions.length - 1 && (
-            <button className="next-button finish-button" onClick={handleSubmit} disabled={loading || submitted}>
+          ) : (
+            <button 
+                className="next-button finish-button" 
+                onClick={handleFinishTest} 
+                disabled={isSubmitting}
+            >
               Завершити тест
             </button>
-          )}
-
-          {loading && <p>Перевірка відповідей...</p>}
-          {submitted && !loading && (
-            <p className="result">
-              Результат: {score} / {questions.length}
-            </p>
           )}
         </div>
       </div>
