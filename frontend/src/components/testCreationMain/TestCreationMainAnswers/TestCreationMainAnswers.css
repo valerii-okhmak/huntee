@@ -14,9 +14,6 @@
     margin-bottom: 20px;
 }
 
-
-
-
 .testCreationMainCreatorAnswers__option {
     margin-bottom: 15px;
     display: flex;
@@ -49,11 +46,11 @@
 }
   
 .testCreationMainCreatorAnswers__none:checked + .testCreationMainCreatorAnswers__radio-circle {
-    background-color: #737373;
+    background-color: #3599C3;
 }
 
 .testCreationMainCreatorAnswers__none:checked + .testCreationMainCreatorAnswers__radio-square {
-    background-color: #737373;
+    background-color: #3599C3;
 }
 
 

@@ -63,6 +63,16 @@ const TestPage = ({testType, textData, time, questionsLink}) => {
         if (ans === q.correctAnswer) total++;
       }
 
+      if (q.type === "multiple" && Array.isArray(ans)) {
+        const correct = q.correctAnswer || [];
+        // перевіряємо, чи масиви збігаються (однакові елементи, порядок не важливий)
+        const isCorrect =
+          ans.length === correct.length &&
+          ans.every(a => correct.includes(a));
+        if (isCorrect) total++;
+      }
+
+
       if (q.type === "code" && ans?.trim()) {
         try {
           // Об'єднуємо код користувача і runTemplate
@@ -128,12 +138,42 @@ const TestPage = ({testType, textData, time, questionsLink}) => {
                     checked={answer === i}
                     onChange={() => handleAnswerChange(i)}
                   />
-                  <span className="radio-square" />
+                  <span className="radio-circle-blue" />
                   {opt}
                 </label>
               ))}
             </div>
           );
+          case "multiple":
+            const selectedAnswers = Array.isArray(answers[q.id]) ? answers[q.id] : [];
+
+            return (
+              <div className="choices">
+                {q.options.map((opt, i) => (
+                  <label className="custom-checkbox" key={i}>
+                    <input
+                      className="choices-input"
+                      type="checkbox"
+                      value={i}
+                      checked={selectedAnswers.includes(i)} // перевірка по масиву
+                      onChange={() => {
+                        let newAnswers;
+                        if (selectedAnswers.includes(i)) {
+                          // зняти вибір
+                          newAnswers = selectedAnswers.filter(idx => idx !== i);
+                        } else {
+                          // додати вибір
+                          newAnswers = [...selectedAnswers, i];
+                        }
+                        handleAnswerChange(newAnswers);
+                      }}
+                    />
+                    <span className="checkbox-square-blue" />
+                    {opt}
+                  </label>
+                ))}
+              </div>
+            );
         case "text":
           return (
             <textarea

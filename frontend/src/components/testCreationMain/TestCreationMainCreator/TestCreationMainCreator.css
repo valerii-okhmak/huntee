@@ -92,7 +92,7 @@
 }
   
 .testCreationMainCreator__addToJar input:checked + .testCreationMainCreator__addToJar_radio-circle {
-    background-color: #737373;
+    background-color: #3599C3;
 }
 
 

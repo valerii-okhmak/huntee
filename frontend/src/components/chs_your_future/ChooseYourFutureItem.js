@@ -3,7 +3,7 @@ import './ChooseYourFutureItem.css';
 import { Link } from 'react-router-dom';
 
 const ChooseYourFutureItem = ({ testname }) => {
-  // передаємо сферу через query param
+
   const query = new URLSearchParams({ sphere: testname }).toString();
 
   return (

@@ -49,32 +49,48 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
     ) : null;
 
     switch (q.questionType) {
-      case "SINGLE_CHOICE":
-      case "MULTIPLE_CHOICE":
-        return (
-          <>
-            <div className="choices">
-              {(q.choiceOptions || []).map((opt, i) => (
-                <label 
-                  className={"custom-radio"} 
-                  key={i}
-                >
-                  <input
-                    className="choices-input"
-                    type={'radio'}
-                    name={`preview-q-${safeIndex}`}
-                    disabled
-                    checked={opt.isCorrect}
-                  />
-                  <span className={"radio-square"} />
-                  
-                  {opt.optionText}
-                </label>
-              ))}
-            </div>
-            {commentBlock}
-          </>
-        );
+    case "SINGLE_CHOICE":
+      return (
+        <>
+          <div className="choices">
+            {(q.choiceOptions || []).map((opt, i) => (
+              <label className="custom-radio" key={i}>
+                <input
+                  className="choices-input"
+                  type="radio"
+                  name={`preview-q-${safeIndex}`}
+                  disabled
+                  checked={opt.isCorrect}
+                />
+                <span className="radio-circle-blue" />
+                {opt.optionText}
+              </label>
+            ))}
+          </div>
+          {commentBlock}
+        </>
+      );
+
+    case "MULTIPLE_CHOICE":
+      return (
+        <>
+          <div className="choices">
+            {(q.choiceOptions || []).map((opt, i) => (
+              <label className="custom-checkbox" key={i}>
+                <input
+                  className="choices-input"
+                  type="checkbox"
+                  disabled
+                  checked={opt.isCorrect} 
+                />
+                <span className="checkbox-square-blue" />
+                {opt.optionText}
+              </label>
+            ))}
+          </div>
+          {commentBlock}
+        </>
+      );
 
       case "TEXT":
         return (
