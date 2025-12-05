@@ -1,34 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './ChooseYourFuture.css';
 import ChooseYourFutureItem from './ChooseYourFutureItem';
 import BrowserWindow from '../browser_window/BrowserWindow';
+import axios from 'axios';
+import { getAccessToken } from '../../utils/auth';
 
 const ChooseYourFuture = () => {
+  const [spheres, setSpheres] = useState([]);
+
+  useEffect(() => {
+    const fetchSpheres = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND}/api/tests`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        // отримуємо унікальні сфери
+        const uniqueSpheres = [...new Set(response.data.map(test => test.sphere))];
+        setSpheres(uniqueSpheres);
+      } catch (err) {
+        console.error('Помилка завантаження сфер:', err);
+      }
+    };
+
+    fetchSpheres();
+  }, []);
+
   return (
     <div className="choose-your-future">
       <div className='choose-your-future-title'>
         <h2>CHOOSE YOUR<br />FUTURE</h2>
       </div>
 
-        <BrowserWindow>
-            <ChooseYourFutureItem testname='Frontend'/>
-            <ChooseYourFutureItem testname='Backend'/>
-            <ChooseYourFutureItem testname='Full-Stack'/>
-            <ChooseYourFutureItem testname='Mobile'/>
-            <ChooseYourFutureItem testname='DevOps'/>
-            <ChooseYourFutureItem testname='Data Science'/>
-            <ChooseYourFutureItem testname='QA'/>
-            <ChooseYourFutureItem testname='UI/UX Design'/>
-            <ChooseYourFutureItem testname='Cybersecurity'/>
-            <ChooseYourFutureItem testname='Game'/>
-            <ChooseYourFutureItem testname='Artificial Intelligence'/>
-            <ChooseYourFutureItem testname='Machine Learning'/>
-            <ChooseYourFutureItem testname='Systems Administration'/>
-            <ChooseYourFutureItem testname='Systems Programming'/>
-            <ChooseYourFutureItem testname='Robotics'/>
-            <ChooseYourFutureItem testname='Simulation'/>
-            <ChooseYourFutureItem testname='Webflow'/>
-        </BrowserWindow>
+      <BrowserWindow>
+        {spheres.map((sphere) => (
+          <ChooseYourFutureItem 
+            key={sphere} 
+            testname={sphere} 
+          />
+        ))}
+      </BrowserWindow>
     </div>
   );
 };

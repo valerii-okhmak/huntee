@@ -4,6 +4,7 @@ import { getAccessToken } from '../utils/auth';
 import Filters from '../components/tests/Filters/Filters';
 import TestsBlock from '../components/tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';
+import { useLocation } from 'react-router-dom';
 
 const AllTestsPage = () => {
   const object = {
@@ -21,15 +22,25 @@ const AllTestsPage = () => {
   const [selectedSpheres, setSelectedSpheres] = useState([]);
   const [selectedTimes, setSelectedTimes] = useState([]);
 
+  const location = useLocation();
+
+  // Читання query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const sphereParam = params.get('sphere');
+    if (sphereParam) {
+      setSelectedSpheres([sphereParam]);
+    }
+  }, [location.search]);
+
   useEffect(() => {
     const fetchTests = async () => {
       try {
         setIsLoading(true);
         const token = getAccessToken();
-
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND}/api/tests`,
-          { headers: { 'Authorization': `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const mappedTests = response.data.map(test => {
@@ -63,7 +74,6 @@ const AllTestsPage = () => {
       const locationMatch = selectedLocations.length === 0 || selectedLocations.includes(test.location);
       const sphereMatch = selectedSpheres.length === 0 || selectedSpheres.includes(test.type);
       const timeMatch = selectedTimes.length === 0 || selectedTimes.includes(test.time);
-      
       return locationMatch && sphereMatch && timeMatch;
     });
   }, [allTests, selectedLocations, selectedSpheres, selectedTimes]);
