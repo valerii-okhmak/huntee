@@ -69,6 +69,10 @@
     margin-left: 15px;
 }
 
+.testDashboard__analytics-btn-green{
+    
+}
+
 @media screen and (max-width: 450px) {
     .test {
         padding: 20px;
