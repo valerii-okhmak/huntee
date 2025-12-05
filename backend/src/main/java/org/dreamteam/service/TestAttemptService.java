@@ -33,7 +33,7 @@ public class TestAttemptService {
     private final ChoiceOptionRepository choiceOptionRepository;
     private final TextAnswerRepository textAnswerRepository;
     private final MatchingPairRepository matchingPairRepository;
-
+    
     private static final long TIME_BUFFER_SECONDS = 30;
 
     @Transactional
@@ -189,7 +189,7 @@ public class TestAttemptService {
     public TestAttemptReviewResponse getAttemptReview(UUID attemptId, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
         User requester = findUserByEmail(userEmail);
-
+        
         boolean isCandidate = attempt.getUser().getId().equals(requester.getId());
         boolean isOwner = attempt.getTest().getUser().getId().equals(requester.getId());
 

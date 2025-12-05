@@ -21,8 +21,7 @@ public class ScheduledTaskService {
 
     private final UserTestAttemptRepository attemptRepository;
     private final UserAnswerRepository userAnswerRepository;
-    private final TestAttemptService testAttemptService; 
-
+    
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void autoFinishExpiredTests() {
@@ -31,6 +30,8 @@ public class ScheduledTaskService {
 
         for (UserTestAttempt attempt : activeAttempts) {
             Test test = attempt.getTest();
+            if (test == null) continue;
+
             LocalDateTime deadline = calculateDeadline(attempt, test);
 
             if (deadline != null && now.isAfter(deadline.plusMinutes(2))) {
@@ -45,7 +46,7 @@ public class ScheduledTaskService {
         if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
             LocalDateTime personalDeadline = attempt.getStartedAt().plusMinutes(test.getDurationMinutes());
             
-            if (!test.getIsFixedTime() && test.getEndTime() != null) {
+            if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null) {
                 deadline = personalDeadline.isBefore(test.getEndTime()) ? personalDeadline : test.getEndTime();
             } else {
                 deadline = personalDeadline;
