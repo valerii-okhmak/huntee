@@ -34,6 +34,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ViewingTestsPage from './pages/ViewingTestsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TestDashboardPage from './pages/TestDashboardPage';
+import TestReviewPage from './pages/TestReviewPage';
 
 
 const App = () => {
@@ -73,6 +74,7 @@ const App = () => {
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
         <Route path="/testcreation/main" element={<TestCreationMainPage />} />
         <Route path="/viewingtests" element={<ViewingTestsPage />} />
+        <Route path="/testreview" element={<TestReviewPage />} />
         <Route path="/*" element={<NotFoundPage />} />
         <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
         <Route path="/messages" element={<MessagePage />} />

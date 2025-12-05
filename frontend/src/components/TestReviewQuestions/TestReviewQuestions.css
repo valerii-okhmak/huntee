@@ -1,0 +1,28 @@
+.testReviewQuestionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.testReviewQuestionsTests {
+    width: 100%;
+}
+
+
+
+.custom-radio input[type="radio"]:checked+.radio-circle-green::after {
+    background-color: #1DAD00;
+}
+
+.custom-radio input[type="radio"]:checked+.radio-circle-red::after {
+    background-color: #C32C2C;
+}
+
+
+.custom-checkbox input[type="checkbox"]:checked+.checkbox-square-green::after {
+    background-color: #1DAD00;
+}
+
+.custom-checkbox input[type="checkbox"]:checked+.checkbox-square-red::after {
+    background-color: #C32C2C;
+}
