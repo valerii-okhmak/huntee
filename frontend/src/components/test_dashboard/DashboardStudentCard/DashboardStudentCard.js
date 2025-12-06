@@ -1,9 +1,28 @@
-import React from 'react'
-import './DashboardStudentCard.css'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './DashboardStudentCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 const DashboardStudentCard = ({ student, type }) => {
+  const navigate = useNavigate();
+
+  const handleViewProfile = () => {
+    if (student.userId) {
+      navigate(`/profile/${student.userId}`);
+    }
+  };
+
+  const handleViewResults = () => {
+    if (student.attemptId) {
+      navigate(`/testreview/${student.attemptId}`);
+    } else {
+      console.error("Не знайдено ID спроби (attemptId) для цього студента:", student);
+    }
+  };
+
+  const PASSING_SCORE = 60;
+
   return (
     <div className="testDashboard__student-card">
       <div className="testDashboard__card-content">
@@ -15,30 +34,42 @@ const DashboardStudentCard = ({ student, type }) => {
               className={`testDashboard__card-score ${
                 student.score === null 
                   ? 'testDashboard__card-score-null' 
-                  : student.score >= 50 
+                  : student.score >= PASSING_SCORE 
                     ? 'testDashboard__card-score-good' 
                     : 'testDashboard__card-score-bad' 
               }`}
             >
               {student.score === null ? 'Тест не пройдено' : `${student.score}%`}
             </div>
-            <a href="#" className="testDashboard__card-info">Переглянути інформацію про студента</a>
+            
+            <span 
+                onClick={handleViewResults} 
+                className="testDashboard__card-info" 
+                style={{cursor: 'pointer', textDecoration: 'underline'}}
+            >
+                Переглянути інформацію про студента
+            </span>
           </>
         )}
       </div>
 
       <div className="testDashboard__card-actions">
         {type === 'registered' ? (
-           <button className="testDashboard__card-btn">Переглянути профіль</button>
+           <button className="testDashboard__card-btn" onClick={handleViewProfile}>
+               Переглянути профіль
+           </button>
         ) : (
-           <button className="testDashboard__card-btn">Переглянути результати</button>
+           <button className="testDashboard__card-btn" onClick={handleViewResults}>
+               Переглянути результати
+           </button>
         )}
-        <button className="testDashboard__card-btn-chat">
+        
+        <button className="testDashboard__card-btn-chat" title="Написати повідомлення">
           <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardStudentCard
+export default DashboardStudentCard;

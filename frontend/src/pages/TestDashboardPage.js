@@ -6,21 +6,22 @@ import TestDashboardList from '../components/test_dashboard/tabs/TestDashboardLi
 import TestDashboardAnalytics from '../components/test_dashboard/tabs/TestDashboardAnalytics/TestDashboardAnalytics';
 
 const TestDashboardPage = () => {
-  const { id } = useParams(); // Отримуємо testId з URL
+  const { id } = useParams(); 
   const [activeTab, setActiveTab] = useState('registered');
 
   const [results, setResults] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [analytics, setAnalytics] = useState(null);
-  const [test, setTest] = useState(null); // Дані тесту
+  const [test, setTest] = useState(null); 
 
   const [loading, setLoading] = useState(true);
+  const [testLoading, setTestLoading] = useState(true); 
   const [error, setError] = useState(null);
 
-  // Завантаження самого тесту
   useEffect(() => {
     const fetchTest = async () => {
       try {
+        setTestLoading(true); 
         const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -32,45 +33,38 @@ const TestDashboardPage = () => {
       } catch (err) {
         console.error(err);
         setError('Не вдалося завантажити тест');
+      } finally {
+        setTestLoading(false); 
       }
     };
 
-    fetchTest();
+    if (id) fetchTest();
   }, [id]);
 
-  // Завантаження вкладки
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       setError(null);
 
       try {
+        const headers = {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        };
+
         if (activeTab === 'results') {
-          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/results`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
+          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/results`, { headers });
           const data = await res.json();
           setResults(data);
         }
 
         if (activeTab === 'registered') {
-          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/candidates`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
+          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/candidates`, { headers });
           const data = await res.json();
           setCandidates(data);
         }
 
         if (activeTab === 'analytics') {
-          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/analytics`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
+          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/analytics`, { headers });
           const data = await res.json();
           setAnalytics(data);
         }
@@ -82,12 +76,11 @@ const TestDashboardPage = () => {
       }
     };
 
-    loadData();
+    if (id) loadData();
   }, [activeTab, id]);
 
   const renderContent = () => {
-    if (loading) return <p className="loading">Завантаження...</p>;
-    if (error) return <p className="error">{error}</p>;
+    if (loading) return <div>Завантаження даних вкладки...</div>;
 
     switch (activeTab) {
       case 'analytics':
@@ -114,7 +107,13 @@ const TestDashboardPage = () => {
     }
   };
 
-  if (!test) return <p className="loading">Завантаження тесту...</p>;
+  if (testLoading) {
+      return <div className='page'><div className='container'>Завантаження інформації про тест...</div></div>;
+  }
+
+  if (!test) {
+      return <div className='page'><div className='container'>Тест не знайдено</div></div>;
+  }
 
   return (
     <div className='page'>
@@ -122,8 +121,8 @@ const TestDashboardPage = () => {
         field={test.sphere}
         title={test.testName}
         location={test.city}
-        date={new Date(test.startTime).toLocaleDateString()}
-        time={new Date(test.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        date={test.startTime ? new Date(test.startTime).toLocaleDateString() : ''}
+        time={test.startTime ? new Date(test.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
       />
 
       <DashboardTabNavigation 

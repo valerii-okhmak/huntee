@@ -16,4 +16,5 @@ public class CandidateDTO {
     private String status; 
     private BigDecimal score; 
     private LocalDateTime date;
+    private UUID attemptId;
 }

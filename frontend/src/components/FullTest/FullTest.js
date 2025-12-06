@@ -172,7 +172,7 @@ const TestPage = ({ testType }) => {
         );
         
         alert(`Тест завершено! Ваш бал: ${response.data.score}`);
-        navigate(`/test-result/${response.data.attemptId}`);
+        navigate(`/testreview/${response.data.attemptId}`);
 
     } catch (error) {
         console.error("Помилка завершення:", error);

@@ -1,14 +1,21 @@
-import React from 'react'
-import './TestReviewGrading.css'
-import {  Link } from 'react-router-dom';
+import React from 'react';
+import './TestReviewGrading.css';
+import { Link } from 'react-router-dom';
 
-const TestReviewGrading = () => {
+const TestReviewGrading = ({ score }) => {
+  const isPassed = score >= 60; 
+  const containerClass = isPassed ? 'testReviewGrading testReviewGrading-green' : 'testReviewGrading testReviewGrading-red';
+  const scoreClass = isPassed ? 'testReviewGrading__title-green' : 'testReviewGrading__title-red'; // Припускаємо, що у вас є клас для червоного тексту
+
   return (
-    <div className='testReviewGrading testReviewGrading-green'>
+    <div className={containerClass}>
         <div className='container'>
-            <h2 className='testReviewGrading__title'>Ваша оцінка: <span className='testReviewGrading__title-green'>89%</span></h2>
-            <p className='testReviewGrading__text'>Для заліку необхідно отримати принаймі 80%</p>
-            <Link to="/mytests">
+            <h2 className='testReviewGrading__title'>
+                Ваша оцінка: <span className={scoreClass}>{score}%</span>
+            </h2>
+            <p className='testReviewGrading__text'>Для заліку необхідно отримати принаймні 60%</p>
+            
+            <Link to="/viewingtests">
                 <button className="testDashboard__analytics-btn-dark">
                     До моїх тестів
                     <svg
@@ -34,4 +41,4 @@ const TestReviewGrading = () => {
   )
 }
 
-export default TestReviewGrading
+export default TestReviewGrading;

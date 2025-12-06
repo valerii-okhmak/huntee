@@ -20,7 +20,7 @@ const TestCreationMainPage = () => {
   const creatorRef = useRef(null);
 
   const [testMeta, setTestMeta] = useState(() => ({
-    testName: passed?.testName || 'unknown',
+    testName: passed?.vacancyDescription ? passed.vacancyDescription.slice(0, 50) : 'Нова вакансія',
     sphere: passed?.field || 'unknown',
     level: (passed?.level || 'JUNIOR')?.toUpperCase(),
     city: passed?.city || 'online',
@@ -35,7 +35,7 @@ const TestCreationMainPage = () => {
   useEffect(() => {
     if (passed) {
       setTestMeta(prev => ({
-        testName: passed.testName || prev.testName,
+        ...prev,
         sphere: passed.field || prev.sphere,
         level: passed.level || prev.level,
         city: passed.city || prev.city,

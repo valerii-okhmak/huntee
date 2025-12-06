@@ -286,6 +286,7 @@ public class TestService {
                 .status("COMPLETED")
                 .date(attempt.getCompletedAt())
                 .score(attempt.getScore())
+                .attemptId(attempt.getAttemptId())
                 .build();
     }
 
