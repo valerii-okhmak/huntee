@@ -189,7 +189,7 @@ public class TestAttemptService {
     public TestAttemptReviewResponse getAttemptReview(UUID attemptId, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
         User requester = findUserByEmail(userEmail);
-        
+
         boolean isCandidate = attempt.getUser().getId().equals(requester.getId());
         boolean isOwner = attempt.getTest().getUser().getId().equals(requester.getId());
 
@@ -197,16 +197,38 @@ public class TestAttemptService {
             throw new AccessDeniedException("Access denied");
         }
 
+        int correctCount = (int) attempt.getUserAnswers().stream()
+                .filter(a -> Boolean.TRUE.equals(a.getIsCorrect()))
+                .count();
+        
+        int totalQuestions = attempt.getTest().getTestQuestions().size();
+
         List<TestAttemptReviewResponse.QuestionReviewDTO> questions = attempt.getUserAnswers().stream()
                 .map(this::mapToQuestionReview)
                 .collect(Collectors.toList());
 
         return TestAttemptReviewResponse.builder()
                 .attemptId(attempt.getAttemptId())
-                .candidateName(attempt.getUser().getProfile().getFirstName() + " " + attempt.getUser().getProfile().getLastName())
+                .candidateName(getFullName(attempt.getUser()))
+                .candidateEmail(attempt.getUser().getEmail()) 
+                
+                .testName(attempt.getTest().getTestName())    
+                .sphere(attempt.getTest().getSphere())       
+                
+                .completedAt(attempt.getCompletedAt())        
                 .score(attempt.getScore())
+                .totalQuestions(totalQuestions)               
+                .correctAnswersCount(correctCount)           
+                
                 .questions(questions)
                 .build();
+    }
+
+    private String getFullName(User user) {
+        if (user.getProfile() != null) {
+            return user.getProfile().getFirstName() + " " + user.getProfile().getLastName();
+        }
+        return "User";
     }
 
     private void validateTimeLimit(UserTestAttempt attempt) {
@@ -316,33 +338,70 @@ public class TestAttemptService {
         return builder.build();
     }
 
+    
     private TestAttemptReviewResponse.QuestionReviewDTO mapToQuestionReview(UserAnswer answer) {
-        String userAnsStr = "";
-        String correctAnsStr = "";
+        Question q = answer.getQuestion();
+        
+        TestAttemptReviewResponse.QuestionReviewDTO.QuestionReviewDTOBuilder builder = TestAttemptReviewResponse.QuestionReviewDTO.builder()
+                .questionId(q.getQuestionId())
+                .questionText(q.getQuestionText())
+                .type(q.getQuestionType())
+                .comment(q.getComment())
+                .isCorrect(Boolean.TRUE.equals(answer.getIsCorrect()));
 
-        if (answer.getQuestion().getQuestionType() == QuestionType.SINGLE_CHOICE ||
-                answer.getQuestion().getQuestionType() == QuestionType.MULTIPLE_CHOICE) {
+        switch (q.getQuestionType()) {
+            case SINGLE_CHOICE:
+            case MULTIPLE_CHOICE:
+                List<ChoiceOptionDTO> allOptions = q.getChoiceOptions().stream()
+                        .map(o -> new ChoiceOptionDTO(o.getOptionId(), o.getOptionText(), o.getImageUrl(), o.isCorrect()))
+                        .collect(Collectors.toList());
+                
+                List<Long> userSelectedIds = answer.getChoices().stream()
+                        .map(c -> c.getSelectedOption().getOptionId())
+                        .collect(Collectors.toList());
 
-            userAnsStr = answer.getChoices().stream()
-                    .map(c -> c.getSelectedOption().getOptionText())
-                    .collect(Collectors.joining(", "));
+                List<Long> correctIds = choiceOptionRepository.findByQuestionAndIsCorrectTrue(q)
+                        .stream().map(ChoiceOption::getOptionId)
+                        .collect(Collectors.toList());
 
-            correctAnsStr = choiceOptionRepository.findByQuestionAndIsCorrectTrue(answer.getQuestion())
-                    .stream().map(ChoiceOption::getOptionText)
-                    .collect(Collectors.joining(", "));
-        } else if (answer.getQuestion().getQuestionType() == QuestionType.TEXT) {
-            userAnsStr = answer.getGivenText();
-            correctAnsStr = textAnswerRepository.findByQuestion_QuestionId(answer.getQuestion().getQuestionId())
-                    .map(TextAnswer::getCorrectText).orElse("");
+                builder.options(allOptions)
+                       .selectedOptionIds(userSelectedIds)
+                       .correctOptionIds(correctIds);
+                
+                builder.userAnswer(""); 
+                builder.correctAnswer("");
+                break;
+
+            case TEXT:
+                builder.userAnswer(answer.getGivenText());
+                textAnswerRepository.findByQuestion_QuestionId(q.getQuestionId())
+                        .ifPresent(ta -> builder.correctAnswer(ta.getCorrectText()));
+                break;
+
+            case MATCHING:
+                String userMatches = answer.getMatchings().stream()
+                        .map(m -> m.getMatchingPair().getPrompt() + " — " + m.getSelectedAnswerText())
+                        .collect(Collectors.joining("\n"));
+                String correctMatches = q.getMatchingPairs().stream()
+                        .map(p -> p.getPrompt() + " — " + p.getAnswer())
+                        .collect(Collectors.joining("\n"));
+                
+                builder.userAnswer(userMatches)
+                       .correctAnswer(correctMatches);
+                break;
+
+            case CODE:
+                builder.userCode(answer.getGivenText());
+                if (q.getCodeAnswer() != null) {
+                    builder.language(q.getCodeAnswer().getLanguage());
+                    builder.templateCode(q.getCodeAnswer().getTemplateCode());
+                    builder.testCases(q.getCodeAnswer().getTestCases());
+                    builder.correctAnswer("Див. тест-кейси");
+                }
+                break;
         }
 
-        return TestAttemptReviewResponse.QuestionReviewDTO.builder()
-                .questionText(answer.getQuestion().getQuestionText())
-                .type(answer.getQuestion().getQuestionType())
-                .isCorrect(answer.getIsCorrect() != null && answer.getIsCorrect())
-                .userAnswer(userAnsStr)
-                .correctAnswer(correctAnsStr)
-                .build();
+        return builder.build();
     }
 
     private TestResultResponse calculateResult(UserTestAttempt attempt) {
