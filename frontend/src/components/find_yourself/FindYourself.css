@@ -85,6 +85,12 @@ flex-wrap: wrap;
 .direction__img {
   width: 14%;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.direction__img:hover {
+  transform: translateY(-6px);
 }
 
 .find-yourself__button {

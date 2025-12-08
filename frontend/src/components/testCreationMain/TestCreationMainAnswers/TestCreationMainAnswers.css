@@ -39,6 +39,7 @@
     background-color: #F1F0F0;
     position: relative;
     transition: 0.2s;
+    cursor: pointer;
 }
 
 .testCreationMainCreatorAnswers__radio-circle {
@@ -130,6 +131,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    cursor: pointer;
 }
 
 .testCreationMainCreatorAnswers__input-open {
@@ -142,6 +144,7 @@
     transition: 0.2s;
     color: #737373;
     font-weight: 700;
+    cursor: pointer;
 }
 .testCreationMainCreatorAnswers__input-open::placeholder {
     color: #737373;

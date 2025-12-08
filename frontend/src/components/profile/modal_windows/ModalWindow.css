@@ -63,6 +63,7 @@
     color: #000000;
     font-family: 'Montserrat', sans-serif;
     width: 100%;
+    cursor: pointer;
   }
 
   .modal-select:focus{
