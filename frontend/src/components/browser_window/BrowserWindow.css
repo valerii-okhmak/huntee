@@ -21,6 +21,11 @@
 
 .circle {
  padding: 0 4px;
+ cursor: pointer;
+}
+
+.circle:hover {
+  filter: brightness(0.9);
 }
 
 .box {
