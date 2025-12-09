@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './TestCreationStartContainer.css'
 import SelectField from '../testCreation_SelectField/TestCreation_SelectField'
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
   
 const fieldOptions = [
@@ -24,14 +24,46 @@ const cityOptions = [
 ];
 
 const TestCreationStartContainer = () => {
+    const [testName, setTestName] = useState('');
     const [selectedField, setSelectedField] = useState(null);
     const [selectedLevel, setSelectedLevel] = useState(null);
     const [selectedCity, setSelectedCity] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [description, setDescription] = useState(null);
+    const [responsibilities, setResponsibilities] = useState(null);
+    const [startingDate, setStartingDate] = useState(new Date());
+    const [finishingDate, setFinishingDate] = useState(new Date());
     const [selectedTime, setSelectedTime] = useState(0);
+    const [classes, setClasses] = useState([]);
+    const [selectedQuestions, setSelectedQuestions] = useState([]);
+
+    const navigate = useNavigate();
+
+    const handleNext = () => {
+        const payload = {
+          testName: (testName || '').trim(),
+          field: selectedField?.value || null,
+          level: selectedLevel?.value || null,
+          city: selectedCity?.value || null,
+          vacancyDescription: description || '',
+          responsibilities: responsibilities || '',
+          startTime: startingDate ? new Date(startingDate).toISOString() : null,
+          endTime: finishingDate ? new Date(finishingDate).toISOString() : null,
+          durationMinutes: Number(selectedTime) || 0,
+          classes
+        }
+    
+        navigate('/testcreation/main', { state: { testMeta: payload } })
+    }
 
   return (
-    <div className='testCreationStartContainer container'>
+    <div className='testCreationStartContainer'>
+        <SelectField
+            type={'input'}
+            selectedOption={testName}
+            setSelectedOption={setTestName}
+            fieldName="Введіть назву тесту"
+            fieldOptions={{}}
+        />
         <SelectField
             type={'select'}
             selectedOption={selectedField}
@@ -54,10 +86,31 @@ const TestCreationStartContainer = () => {
             fieldOptions={cityOptions}
         />
         <SelectField
+            type={'textarea'}
+            selectedOption={description}
+            setSelectedOption={setDescription}
+            fieldName="Напишіть опис вакансії"
+            fieldOptions={{}}
+        />
+        <SelectField
+            type={'list'}
+            selectedOption={responsibilities}
+            setSelectedOption={setResponsibilities}
+            fieldName="Напишіть обов’язки"
+            fieldOptions={{}}
+        />
+        <SelectField
             type={'date'}
-            selectedOption={selectedDate}
-            setSelectedOption={setSelectedDate}
-            fieldName="Оберіть дату"
+            selectedOption={startingDate}
+            setSelectedOption={setStartingDate}
+            fieldName="Дата початку тестування"
+            fieldOptions={{}}
+        />
+        <SelectField
+            type={'date'}
+            selectedOption={finishingDate}
+            setSelectedOption={setFinishingDate}
+            fieldName="Дата кінця тестування"
             fieldOptions={{}}
         />
         <SelectField
@@ -67,7 +120,23 @@ const TestCreationStartContainer = () => {
             fieldName="Таймер"
             fieldOptions={{}}
         />
-        <Link to="/starttest" className={`testCreationStartContainer__next-button`}>
+        <SelectField
+            type={'class'}
+            selectedOption={classes}
+            setSelectedOption={setClasses}
+            fieldName="Класифікації питань"
+            fieldOptions={fieldOptions}
+        />
+        <SelectField
+            type={'add'}
+            selectedOption={selectedQuestions}
+            setSelectedOption={setSelectedQuestions}
+            fieldName="Додати запитання з банки запитань"
+            fieldOptions={{}}
+        />
+
+
+        <button className={`testCreationStartContainer__next-button`} onClick={handleNext} >
             Наступна сторінка
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +153,7 @@ const TestCreationStartContainer = () => {
             <line x1="4" y1="12" x2="34" y2="12" />
             <polyline points="26 6 34 12 26 18" />
             </svg>
-        </Link>
+        </button>
         
     </div>
   )

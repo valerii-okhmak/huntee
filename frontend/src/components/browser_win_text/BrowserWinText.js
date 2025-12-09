@@ -1,16 +1,15 @@
-import React from 'react'
-import './BrowserWinText.css'
+import React from 'react';
+import './BrowserWinText.css';
 
-const BrowserWinText = ({who, text, company}) => {
+const BrowserWinText = ({ text, title }) => {
   return (
-    <div className='browser-text-container'>
-        <h2 className='browser-text-title'>Доброго дня, {who}</h2>
-        {text.split('\n').map((paragraph, index) => (
-            <p className='browser-text-content' key={index}>{paragraph}</p>
-        ))}
-        <p className='browser-text-company'>З повагою, {company}</p>
+    <div className="browser-win-text">
+      <h1 className='browser-win-title'>{title}</h1>
+      {text.split('\n').map((paragraph, index) => (
+        paragraph ? <p key={index} className="browser-text-p">{paragraph}</p> : <br key={index} />
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default BrowserWinText
+export default BrowserWinText;

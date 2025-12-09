@@ -50,6 +50,12 @@
     font-family: "Cousine", monospace;
     font-size: clamp(14px, 2.5vw, 18px); 
     font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.companyAboutUs__benefit:hover {
+    background-color: #B0B0B0;
 }
 
 .companyAboutUs__benefit-small {

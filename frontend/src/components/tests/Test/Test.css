@@ -1,15 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap');
 
 .test {
+    display: block;
     background-color: #fff;
     border-radius: 3px;
-    box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
     padding: 35px;
     margin-top: 25px;
     font-family: "MyFont", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: normal;
-    font-style: normal;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.test:hover {
+    transform: scale(1.01);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
 }
 
 .top_row {
@@ -32,10 +38,6 @@
     font-weight: bold;
     color: #000;
     font-size: clamp(22px, 2vw, 30px);
-    text-decoration: none;
-}
-.title:hover {
-    text-decoration: underline; 
 }
 
 .bottom_row {
@@ -45,7 +47,7 @@
     align-items: center;
 }
 
-.location p{
+.location p {
     color: #848282;
     font-size: clamp(16px, 2vw, 18px);
 }
@@ -57,7 +59,8 @@
 .date {
     display: flex;
 }
-.date p{
+
+.date p {
     color: #848282;
     font-size: clamp(16px, 2vw, 18px);
 }
@@ -66,14 +69,15 @@
     margin-left: 15px;
 }
 
-
 @media screen and (max-width: 450px) {
     .test {
         padding: 20px;
     }
+
     .logo {
         height: 30px;
     }
+
     .location_icon {
         height: 20px;
     }

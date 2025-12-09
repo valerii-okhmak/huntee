@@ -1,26 +1,84 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { getAccessToken } from '../utils/auth';
+import defaultLogo from '../img/default_logo.jpg';
+
 import CustomTitle from '../components/custom_title/CustomTitle';
-import softserve from '../img/softserve.png'
 import BrowserWindow from '../components/browser_window/BrowserWindow';
 import BrowserWinText from '../components/browser_win_text/BrowserWinText';
+import MessageSenderInfo from '../components/message_sender_info/MessageSenderInfo';
+
 
 const MessageTextPage = () => {
+  const { id } = useParams();
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const object = {
-    logo: softserve,
-    line: false,
-    strong: null,
-    p: null
-  }
+  useEffect(() => {
+    const fetchMessage = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND}/api/notifications`,
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+
+        const foundMessage = response.data.find(msg => msg.id === Number(id));
+        
+        if (foundMessage) {
+          setMessage(foundMessage);
+          if (!foundMessage.isRead) {
+             await axios.put(
+                `${process.env.REACT_APP_BACKEND}/api/notifications/${id}/read`,
+                {},
+                { headers: { 'Authorization': `Bearer ${token}` } }
+             );
+          }
+        } else {
+          setError("Повідомлення не знайдено");
+        }
+
+      } catch (err) {
+        console.error("Помилка:", err);
+        setError("Не вдалося завантажити повідомлення");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMessage();
+  }, [id]);
+
+  if (loading) return <div className="page"><div className='container'>Завантаження...</div></div>;
+  if (error || !message) return <div className="page"><div className='container'>{error || "Помилка"}</div></div>;
+
+
+  const logoSrc = message.sender?.avatarUrl 
+    ? `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${message.sender.avatarUrl}`
+    : defaultLogo;
+
+  const senderName = message.sender?.name || "Системне повідомлення";
+  
+  const date = new Date(message.createdAt).toLocaleDateString('uk-UA', {
+      day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+  });
 
   return (
     <div className="page">
-        <CustomTitle title='JUNIOR DATA SCIENTIST' data={object} />
-        <BrowserWindow>
-          <BrowserWinText company={'SoftServe'} text = {'Ми раді повідомити, що за результатами виконаного тестового завдання та загального оцінювання вашого підходу,  ми прийняли рішення запросити вас приєднатися до нашої команди. Ваш рівень професіоналізму, увага до деталей і вміння аналітично мислити справили на нас позитивне враження. Ми впевнені, що ваші навички та підхід до роботи чудово доповнять нашу команду та допоможуть у реалізації спільних проєктів.\n Очікуємо Вас о 9:00, 13.04.2025 за адресою вул.Садова 2Д.\nВітаємо вас з успішним проходженням відбору — попереду цікаві виклики та можливості для професійного зростання!'} />
-        </BrowserWindow>
+        <MessageSenderInfo 
+          logoSrc={logoSrc} 
+          senderName={senderName} 
+          date={date} 
+        />
+        <div className='container' style={{marginTop: '30px'}}>
+            <BrowserWindow>
+              <BrowserWinText title={message.title} text={message.message} />
+            </BrowserWindow>
+        </div>
     </div>
-  )
-}
+  );
+};
 
-export default MessageTextPage
+export default MessageTextPage;

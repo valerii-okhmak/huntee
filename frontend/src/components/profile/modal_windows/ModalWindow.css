@@ -18,7 +18,7 @@
     background: white;
     border-radius: 10px;
     padding: 1.5rem;
-    width: 80%;
+    width: 70%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
     font-family: 'MyFont', sans-serif;
@@ -54,15 +54,22 @@
 }
 
   .modal-select {
+    background-color: #f5f5f5;
     padding: 0.5rem;
-    border: 1px solid #000000;
+    border: none;
     border-radius: 5px;
     font-size: clamp(12px, 2vw, 16px);
     font-weight: bold;
     color: #000000;
     font-family: 'Montserrat', sans-serif;
     width: 100%;
+    cursor: pointer;
   }
+
+  .modal-select:focus{
+      border: 1px solid #000000 !important;
+       outline: none !important;
+    }
 
   
   .modal-select-option {
@@ -71,17 +78,24 @@
   }
   
   .modal-input {
+    background-color: #f5f5f5;
     padding: 0.5rem;
-   border: 1px solid #000000;
+    border: none;
     border-radius: 5px;
     font-size: clamp(12px, 2vw, 16px);
     width: 100%; 
     font-family: 'Montserrat', sans-serif;
   }
+
+    .modal-input:focus{
+      border: 1px solid #000000 !important;
+        outline: none !important;
+    }
   
   .modal-textarea {
+    background-color: #f5f5f5;
     padding: 0.5rem;
-    border: 1px solid #000000;
+    border: none;
     border-radius: 5px;
     font-size: clamp(10px, 2vw, 14px);
     color: #000000;
@@ -89,6 +103,11 @@
     height: 100px; 
     width: 100%; 
     font-family: 'Montserrat', sans-serif;
+  }
+
+  .modal-textarea:focus{
+      border: 1px solid #000000 !important;
+        outline: none !important;
   }
   
   .modal-buttons {
@@ -98,34 +117,67 @@
     width: 100%;
   }
   
- .modal-button {
+.modal-button {
   padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 4vw, 2rem);
-  border-radius: 2px;
+  border-radius: 34px;
   font-size: clamp(14px, 2.5vw, 18px);
   cursor: pointer;
   font-family: 'MyFont', sans-serif;
+  position: relative;
+  overflow: hidden;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-  
-  .modal-button-cancel {
-    background: transparent;
-    border: 1px solid #000000;
-    color: #000000;
-  }
-  
-  .modal-button-cancel:hover {
-  background: #e2e2e2;
-  }
-  
-  .modal-button-submit {
-    background: #000000;
-    border: 1px solid #000000;
-    color: #ffffff;
-  }
-  
-  .modal-button-submit:hover {
-      background: #000000;
-  }
+.modal-button-submit {
+  background: #ffffff;
+  border: 2px solid #000000;
+  color: #000000;
+}
+
+/* Блокована кнопка */
+.modal-button-submit.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+/* Активна кнопка із ефектом Uiverse */
+.modal-button-submit.active {
+  background-color: transparent;
+  border: 2px solid rgb(0, 0, 0);
+  color: rgb(0, 0, 0);
+}
+
+.modal-button-submit.active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  border-radius: inherit;
+  scale: 0;
+  z-index: -1;
+  background-color: rgb(0, 0, 0);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.modal-button-submit.active:hover::before {
+  scale: 3;
+}
+
+.modal-button-submit.active:hover {
+  color: #ffffff;
+  scale: 1;
+  box-shadow: 0 0px 20px rgba(0, 0, 0, 0.4);
+}
+
+.modal-button-submit.active:active {
+  scale: 1;
+}
+
 
   .linkes{
     display: flex;
@@ -242,10 +294,42 @@ transform: rotate(180deg);
 }
 
 .modal-photo-link{
+  text-align: center;
   text-decoration: none;
   color: #0650ac;
-  font-size: 28px;
+  font-size: clamp(20px, 3vw, 28px);
   font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.modal-photo-link:hover{
+  color: #5798e9;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #e6e6e6;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
 }
 
 .hidden-file-input {
@@ -268,17 +352,18 @@ transform: rotate(180deg);
 
 .modal-label-subinfo{
   flex: 0 0 50%;
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vw, 20px);
   font-family: 'Montserrat', sans-serif;
   color: black;
 }
 
 .modal-info-input{
-   border: none;
+   border: none !important;
+   outline: none !important;
    color: #000000;
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vw, 20px);
   font-family: 'Montserrat', sans-serif;
-
+  
 }
 
 .modal-calendar{

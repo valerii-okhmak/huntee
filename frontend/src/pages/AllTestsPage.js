@@ -1,57 +1,110 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
+import { getAccessToken } from '../utils/auth'; 
 import Filters from '../components/tests/Filters/Filters';
 import TestsBlock from '../components/tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';
-import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const AllTestsPage = () => {
-
   const object = {
     logo: null,
     line: true,
     strong: 'Вакансії для початківців в IT',
     p: 'Обери найкращу сферу для себе та зроби перший крок!'
-  }
+  };
 
-  const allTests = [
-  {
-    id: 1,
-    title: 'JUNIOR DATA SCIENTIST',
-    type: 'Data Science',
-    location: 'Львів',
-    date: '21.03.2025',
-    time: '18:00',
-    link: '/testpage',
-  },
-  {
-    id: 2,
-    title: 'ML Specialist',
-    type: 'AI',
-    location: 'Тернопіль',
-    date: '22.03.2025',
-    time: '14:00',
-    link: '/testpage',
-  },
-];
+  const [allTests, setAllTests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedSpheres, setSelectedSpheres] = useState([]);
+  const [selectedTimes, setSelectedTimes] = useState([]);
+
+  const location = useLocation();
+
+  // Читання query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const sphereParam = params.get('sphere');
+    if (sphereParam) {
+      setSelectedSpheres([sphereParam]);
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    const fetchTests = async () => {
+      try {
+        setIsLoading(true);
+        const token = getAccessToken();
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND}/api/tests`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const mappedTests = response.data.map(test => {
+          const startDate = new Date(test.startTime);
+          return {
+            id: test.testId,
+            title: test.testName,
+            type: test.sphere,
+            location: test.city,
+            date: startDate.toLocaleDateString('uk-UA'),
+            time: startDate.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+            link: `/testpage/${test.testId}`
+          };
+        });
+
+        setAllTests(mappedTests);
+        setError(null);
+      } catch (err) {
+        console.error("Помилка завантаження тестів:", err);
+        setError(err.message || 'Не вдалося завантажити тести');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTests();
+  }, []);
+
+  const filteredTests = useMemo(() => {
+    return allTests.filter(test => {
+      const locationMatch = selectedLocations.length === 0 || selectedLocations.includes(test.location);
+      const sphereMatch = selectedSpheres.length === 0 || selectedSpheres.includes(test.type);
+      const timeMatch = selectedTimes.length === 0 || selectedTimes.includes(test.time);
+      return locationMatch && sphereMatch && timeMatch;
+    });
+  }, [allTests, selectedLocations, selectedSpheres, selectedTimes]);
 
   return (
     <div className="page">
       <CustomTitle title='Приєднуйся!' data={object} />
       <div className='testsMain container'>
         <Filters 
-        selectedLocations={selectedLocations}
-        setSelectedLocations={setSelectedLocations}
-        />
-        <TestsBlock 
-          selectedLocations={selectedLocations}
           allTests={allTests}
+          selectedLocations={selectedLocations}
+          setSelectedLocations={setSelectedLocations}
+          selectedSpheres={selectedSpheres}
+          setSelectedSpheres={setSelectedSpheres}
+          selectedTimes={selectedTimes}
+          setSelectedTimes={setSelectedTimes}
         />
-
+        
+        {isLoading ? (
+          <div>Завантаження...</div>
+        ) : error ? (
+          <div>Помилка: {error}</div>
+        ) : (
+          <TestsBlock 
+            allTests={filteredTests}
+            selectedLocations={selectedLocations} 
+          />
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default AllTestsPage
+export default AllTestsPage;

@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.testReviewGrading {
+    padding: 20px 0 15px;
+}
+.testReviewGrading-green {
+    background-color: #D0FAEC;
+}
+.testReviewGrading-red {
+    background-color: #FAD0D7
+}
+
+.testReviewGrading__title {
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(16px, 5vw, 30px);
+    color: black;
+}
+.testReviewGrading__title-green {
+    color: #1DAD00;
+}
+.testReviewGrading__title-red {
+    color: #E20307;
+}
+
+.testReviewGrading__text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(12px, 5vw, 20px);
+    color: black;
+    margin: 10px 0;
+}

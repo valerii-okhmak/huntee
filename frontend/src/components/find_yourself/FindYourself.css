@@ -62,8 +62,8 @@
 }
 
 .find-yourself__img {
-  width: 30px; 
-  flex-shrink: 0;
+  font-size: 20px;
+  color: #000;
 }
 
 .find-yourself__text {
@@ -85,6 +85,12 @@ flex-wrap: wrap;
 .direction__img {
   width: 14%;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.direction__img:hover {
+  transform: translateY(-6px);
 }
 
 .find-yourself__button {
@@ -129,7 +135,6 @@ flex-wrap: wrap;
 .start-test-button:hover::before {
   transform: scaleX(1);
 }
-
 
 @media screen and (max-width: 595px) {
     .direction__img {

@@ -1,9 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-.responsibilities-info {
-  min-height: 100vh;
-}
-
 .responsibilities-info-container {
   padding: clamp(20px, 5vw, 60px) clamp(20px, 8vw, 100px);
 }

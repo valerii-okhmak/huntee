@@ -13,11 +13,70 @@
   width: 100%;
 }
 
+.icon_and_title_container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.achievement-profile-info-section{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.analytics-profile-info-section{
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+}
+
+.analytics-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: clamp(12px, 1.2vw, 15px);
+  padding: clamp(4px, 0.6vw, 6px) clamp(8px, 1vw, 12px);
+  background-color: transparent; 
+  border: 1px solid #0650AC;
+  color: #0650AC;   
+  border-radius: 7px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.analytics-btn:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
 .profile-info-bottom-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   width: 100%;
+}
+
+.choose-profile-type-container{
+  width: 100%;
+}
+
+.choose-profile-type{
+  display: flex;
+  gap: clamp(20px, 5vw, 50px);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 2vw, 24px);
+  cursor: pointer;
+}
+
+.active-profile-tab {
+    color: #0084FF;
+    border-bottom: 2px solid #0084FF;
+}
+
+.profile-horizontal-line{
+  width: 100%;
+  height: 1px;
+  background-color: #000000;
 }
 
 .profile-columns {
@@ -79,10 +138,14 @@
 }
 
 .edit-icon {
- max-width: 19px;
-  height: 19px;
+  font-size: 24px;
   cursor: pointer;
   transition: transform 0.3s ease;
+}
+
+.edit-icon:hover {
+  transition: transform 0.3s ease;
+  transform: scale(1.05);
 }
 
 .profile-avatar {
@@ -128,7 +191,7 @@
   font-size: 25px;
   font-family: 'MyFont', sans-serif;
   font-weight: 700;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   color: #000000;
 }
 
@@ -238,6 +301,7 @@
   font-weight: 700;
   transition:max-width 0.3s ease;
   width: 100%;
+  gap: 10px;
 }
 
 #exit{
@@ -333,6 +397,43 @@
   animation: gradientAnimation 20s infinite linear;
 }
 
+.admin-panel-tests-info-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.admin-panel-tests-info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background-color: #FFFFFF33;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px 15px;
+  border-radius: 10px;
+  flex: 1;
+}
+
+.admin-panel-tests-label{
+  font-family: 'MyFont', sans-serif;
+  font-size: 16px;
+  text-align: left;
+}
+
+.admin-panel-tests-value{
+  font-size: 32px;
+  font-weight: bold;
+  background: linear-gradient(45deg, #000f37, #2dacda, #3800b2, #0ddfd4,#1c278f);
+  background-size: 400% 400%; 
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 20s infinite linear;
+}
+
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -377,12 +478,12 @@ padding: 30px;
   top: 20px;
   right: 20px;
   cursor: pointer; 
-  width: 40px;
+  font-size: 24px;
 }
 
 .plus-icon:hover {
   transition: transform 0.3s ease;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .editInfo-icon:hover {
@@ -586,6 +687,11 @@ padding: 30px;
 
 @media (max-width: 576px) {
 
+  .analytics-profile-info-section{
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .editInfo-icon{
     right: 10px;
   }
@@ -622,11 +728,6 @@ padding: 30px;
   .aditional-text {
     font-size: 12px;
     margin-bottom: 20px;
-  }
-
-  .edit-icon {
-   max-width: 15px;
-    height: 15px;
   }
 
   .link-icon {

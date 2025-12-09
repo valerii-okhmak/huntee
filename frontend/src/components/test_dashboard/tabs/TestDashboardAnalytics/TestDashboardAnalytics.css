@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.testDashboard__analytics-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+}
+
+.testDashboard__analytics-btn-dark {
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    background-color: black;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    align-self: flex-start;
+}
+
+.testDashboard__analytics-btn-dark::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease;
+}
+
+.testDashboard__analytics-btn-dark:hover {
+    color: #000000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+}
+
+.testDashboard__analytics-btn-dark:hover::before {
+    transform: scaleX(1);
+}
+
+
+.testDashboard__analytics-stats-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+.testDashboard__analytics-stat-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid black;
+    color: black;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
+    gap: 25px;
+}
+
+.testDashboard__analytics-stat-card strong {
+    font-size: 30px;
+}
+
+.testDashboard__analytics-icon {
+    font-size: 30px;
+}
+
+.testDashboard__analytics-stat-card.success .testDashboard__analytics-icon {
+    color: #8BC34A;
+}
+.testDashboard__analytics-stat-card.danger .testDashboard__analytics-icon {
+    color: #F44336;
+}

@@ -1,6 +1,5 @@
 /* About Work секція */
 .about-work {
-  min-height: 100vh;
   background: linear-gradient(to right, #001aff, #5f77ff);
   padding: clamp(20px, 5vw, 70px);
   color: white;

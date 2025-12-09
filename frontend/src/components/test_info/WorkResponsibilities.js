@@ -1,12 +1,13 @@
 import React from "react";
 import "./WorkResponsibilities.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
-const WorkResponsibilities = ({ responsibilities }) => {
+const WorkResponsibilities = ({ responsibilities, testId }) => { 
  
     const navigate = useNavigate();
+
     const handleRegistration = () => {
-    navigate('/');
+        navigate('/testrules', { state: { testId: testId } }); 
     };
 
   return (
@@ -19,8 +20,10 @@ const WorkResponsibilities = ({ responsibilities }) => {
           ))}
         </ul>
       </div>
-      <div className="reg-button">
-        <button onClick={handleRegistration}>Зареєструватися</button>
+      <div className='reg-button'>
+        <button className="reg-button" onClick={handleRegistration}>
+            Зареєструватися
+        </button>
       </div>
     </div>
   );

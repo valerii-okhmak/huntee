@@ -83,7 +83,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64URL.decode(jwtSecret); // використовуємо BASE64URL замість BASE64
+        byte[] keyBytes = Decoders.BASE64URL.decode(jwtSecret); 
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -91,7 +91,7 @@ public class JwtService {
         String headerAuth = request.getHeader("Authorization");
 
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7); // Обрізаємо "Bearer " щоб отримати токен
+            return headerAuth.substring(7); 
         }
 
         return null;

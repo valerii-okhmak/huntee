@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'; // Видалено 'use', оскільки він не використовувався
+import React, { useState, useEffect } from 'react'; 
 import Modal from './Modal';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
 const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetchMediaLinks }) => {
   const [text, setText] = useState('');
-  const [link, setLink] = useState(''); // Це буде 'name' для посилання, наприклад 'Instagram'
-  const [url, setUrl] = useState('');   // Це буде сама URL-адреса
+  const [link, setLink] = useState(''); 
+  const [url, setUrl] = useState('');   
 
   useEffect(() => {
     if (isOpen) {
       setText(profileData?.about || '');
-      // Скидаємо поля для посилання при кожному відкритті модального вікна
       setLink('');
       setUrl('');
     }
@@ -26,33 +25,32 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
       const token = getAccessToken();
 
       if (newAboutText) {
-      await axios.patch(
-        `${process.env.REACT_APP_BACKEND}/api/profile/about?token=${encodeURIComponent(token)}`,
-        newAboutText,
-        {
-          headers: {
-            'Content-Type': 'text/plain',
-          },
-        }
-      );
-
-      if (fetchProfile) {
-        fetchProfile();
-      }
-    }
-
-      // Запит на додавання нового посилання, якщо поля заповнені
-      if (link && url) {
-        // --- ОСНОВНЕ ВИПРАВЛЕННЯ ТУТ ---
-        // Бекенд очікує об'єкт з полями `name` та `url`.
-        const linkPayload = { type: link, url };
-
-        await axios.post(
-          `${process.env.REACT_APP_BACKEND}/api/profile/links?token=${encodeURIComponent(token)}`,
-          linkPayload, // Надсилаємо виправлений об'єкт
+        await axios.patch(
+          `${process.env.REACT_APP_BACKEND}/api/profile/about`,
+          { about: newAboutText },
           {
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+          }
+        );
+
+        if (fetchProfile) {
+          fetchProfile();
+        }
+      }
+
+      if (link && url) {
+        const linkPayload = { type: link, url };
+
+        await axios.post(
+          `${process.env.REACT_APP_BACKEND}/api/profile/links`,
+          linkPayload, 
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
             },
           }
         );
@@ -62,11 +60,10 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
         }
       }
 
-      onClose(); // Закрити модальне вікно після успішного виконання
+      onClose(); 
 
     } catch (error) {
       console.error('Сервер повернув помилку:', error);
-      // Можна додати сповіщення для користувача про помилку
     }
   };
 
@@ -80,8 +77,19 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
     'X', 'Twitch', 'TikTok', 'Gmail', 'Discord', 'WhatsApp'
   ];
 
+  const isSaveDisabled =
+    text === (profileData?.about || "") &&
+    (link === "" || url === "");
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
+      
+      <button className="modal-close" onClick={onClose} aria-label="Закрити">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M14.2548 4.75488C14.5282 4.48152 14.9717 4.48152 15.2451 4.75488C15.5184 5.02825 15.5184 5.47175 15.2451 5.74512L10.9902 10L15.2451 14.2549C15.5184 14.5283 15.5184 14.9717 15.2451 15.2451C14.9717 15.5184 14.5282 15.5184 14.2548 15.2451L10 10.9902L5.74512 15.2451C5.47175 15.5184 5.02825 15.5184 4.75488 15.2451C4.48146 14.9717 4.48146 14.5283 4.75488 14.2549L9.00977 10L4.75488 5.74512C4.48146 5.47175 4.48146 5.02825 4.75488 4.75488C5.02825 4.48152 5.47175 4.48152 5.74512 4.75488L10 9.00977L14.2548 4.75488Z"/>
+        </svg>
+      </button>
+
       <h3 className="modal-title">Додаткова інформація</h3>
 
       <label className="modal-label">Про вас</label>
@@ -103,7 +111,7 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
         <select
           className="modal-select"
           value={link}
-          onChange={handleSelect} // Видалено зайвий onSelect, onChange достатньо
+          onChange={handleSelect}
         >
           <option value="">Виберіть платформу</option>
           {options.map((option, index) => (
@@ -114,7 +122,6 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
         </select>
       </div>
 
-      {/* Показати input, якщо вибрано платформу */}
       {link && (
         <div className="modal-section">
           <label className="modal-label">Посилання</label>
@@ -129,15 +136,13 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
       )}
 
       <div className="modal-buttons">
-        <button className="modal-button modal-button-cancel" onClick={onClose}>
-          Скасувати
-        </button>
-        <button
-          className="modal-button modal-button-submit"
-          onClick={() => updateAbout(text)}
-        >
-          Зберегти
-        </button>
+      <button
+        className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+        disabled={isSaveDisabled}
+        onClick={() => !isSaveDisabled && updateAbout(text)}
+      >
+        Зберегти
+      </button>
       </div>
     </Modal>
   );

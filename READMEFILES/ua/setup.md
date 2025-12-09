@@ -1,83 +1,68 @@
-# Встановлення та запуск Huntee
 
-Цей документ описує покроковий процес локального розгортання платформи Huntee.
+# ІНСТРУКЦІЯ З ЛОКАЛЬНОГО ЗАПУСКУ ПРОЄКТУ HUNTEE
+Цей файл містить покрокову інструкцію для розгортання проєкту на вашому
+комп'ютері. Проєкт складається з двох частин:
+1. Backend (Java Spring Boot)
+2. Frontend (React.js)
 
+# 1. ПОПЕРЕДНІ ВИМОГИ 
+Переконайтеся, що у вас встановлено:
+- Java JDK 17 (або новіше)
+- Node.js та npm
+- MySQL Server
+- Git
+- Maven 
 
-## 1. Клонування репозиторію
-
-Склонуйте проєкт із GitHub:
-
+# 2. ЗАВАНТАЖЕННЯ КОДУ
 ```bash
 git clone https://github.com/DONAT1N/huntee.git 
 ```
 
-## 2. Встановлення та запуск фронтенду
+# 3. НАЛАШТУВАННЯ БАЗИ ДАНИХ
+1. Увійдіть у свій MySQL клієнт
+2. Виконайте SQL-команду для створення бази:
+```sql
+   CREATE DATABASE huntee;
+```
+*Примітка: Після запуску бекенду таблиці автоматично створяться, після чого потрібно виконайти наступний sql-запит:*
+```sql
+    INSERT INTO user_types (id, name) VALUES
+    (1, 'USER'),
+    (2, 'ADMIN');
 
-1. Перейдіть у директорію з фронтендом:
-
-```bash
-cd huntee/frontend
+    INSERT INTO auth_providers (id, name) VALUES
+    (1, 'LOCAL'),
+    (2, 'GOOGLE'),
+    (3, 'FACEBOOK'),
+    (4, 'LINKEDIN');
 ```
 
-2. Встановіть залежності:
+# 4. ЗАПУСК БЕКЕНДУ
+1. Перейдіть у папку з бекендом:
+   cd huntee/backend
 
-```bash
-npm install
-```
+2. Налаштуйте конфігурацію.
+   Відкрийте файл src/main/resources/application.properties та внесіть надані дані.
 
-3. Запустіть фронтенд:
+3. Запустіть сервер:
+   
+   mvn spring-boot:run
 
-```bash
-npm run dev
-```
-Інтерфейс буде доступний за адресою: http://localhost:3000
+   Або запустіть клас `BackendApplication.java` через вашу IDE (IntelliJ IDEA).
+   Дочекайтеся повідомлення: "Tomcat started on port(s): 8080".
 
-## 3. Встановлення та запуск бекенду
-1. Переконайтесь, що у вас встановлено Java 17+ і Maven.
-2. Перейдіть у директорію з бекендом:
+# 5. ЗАПУСК ФРОНТЕНДУ 
+1. Відкрийте новий термінал і перейдіть у папку фронтенду:
+   cd huntee/frontend
 
-```bash
-cd ../backend
-```
+2. Встановіть необхідні бібліотеки (тільки перший раз):
+   npm install
 
-3. Зберіть проєкт:
+3. Створіть файл конфігурації.
+   Створіть файл з назвою ".env" у папці frontend і додайте туди рядок:
+   
+   REACT_APP_BACKEND=http://localhost:8080
 
-```bash
-./mvnw clean install
-```
+4. Запустіть клієнтську частину:
 
-4. Запустіть сервер:
-
-```bash
-./mvnw spring-boot:run
-```
-API буде доступне за адресою: http://localhost:8080
-
-## 4. Примітка
-
-> Перевірте, що порти 3000 (фронт) та 8080 (бек) не зайняті іншими процесами.
-> Для коректної взаємодії між фронтендом і бекендом переконайтесь, що у frontend/package.json вказано правильний proxy.
-
-## Структура директорій
-
-```bash
-huntee/
-├── backend/         # Backend server
-├── frontend/        # Frontend application
-├── README.md        # Frontend application
-└── READMEFILES      # Documentation
-    ├── ua/
-        ├── companies.md
-        ├── setup.md
-        ├── students.md
-        ├── technologies.md
-        └── test-format.md
-
-    └── eng/
-        ├── companies.md
-        ├── setup.md
-        ├── students.md
-        ├── technologies.md
-        └── test-format.md
-
-```
+   npm start

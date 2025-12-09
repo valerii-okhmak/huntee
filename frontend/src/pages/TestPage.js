@@ -1,25 +1,84 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { getAccessToken } from '../utils/auth';
+
 import AboutTest from '../components/test_info/about_test/AboutTest';
 import AboutWork from '../components/test_info/AboutWork';
 import WorkResponsibilities from '../components/test_info/WorkResponsibilities';
 
 const TestPage = () => {
+    const { testId } = useParams();
 
-const responsibilitiesList = [
-  "Виступати в ролі лідера в галузі генеративного ШІ, визначаючи бізнес-сценарії, де генеративний ШІ може бути ефективно застосований.",
-  "Досліджувати, розробляти та створювати прототипи передових підходів до генеративного ШІ, оцінювати їхню доцільність, вивчати існуючі наукові дослідження, а також впроваджувати та перевіряти рішення для реальних кейсів використання.",
-  "Тісно співпрацювати з командою інженерів ML на всіх етапах, від досліджень до впровадження рішень для генеративного ШІ.",
-  "Співпрацювати з продакт-менеджерами та іншими зацікавленими сторонами, щоб сформувати чітке бачення технології та її практичного застосування.",
-  "Презентувати результати зацікавленим сторонам, ефективно висвітлюючи як технічні, так і бізнес-аспекти рішень."
-];
+    const [testData, setTestData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  return (
-    <div className="page">
-      <AboutTest/>
-      <AboutWork/>
-      <WorkResponsibilities responsibilities={responsibilitiesList}/>
-    </div>
-  );
+    useEffect(() => {
+        const fetchTestDetails = async () => {
+            if (!testId) return;
+
+            setIsLoading(true);
+            try {
+                const token = getAccessToken();
+                if (!token) throw new Error("Користувач не авторизований");
+
+                const response = await axios.get(
+                    `${process.env.REACT_APP_BACKEND}/api/tests/${testId}`,
+                    {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }
+                );
+
+                setTestData(response.data);
+                setError(null);
+            } catch (err) {
+                console.error("Помилка завантаження тесту:", err);
+                setError(err.response?.data?.message || err.message || "Не вдалося завантажити дані тесту");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchTestDetails();
+    }, [testId]);
+
+    if (isLoading) {
+        return <div className="page"><div>Завантаження...</div></div>;
+    }
+
+    if (error) {
+        return <div className="page"><div>Помилка: {error}</div></div>;
+    }
+
+    if (!testData) {
+        return <div className="page"><div>Тест не знайдено.</div></div>;
+    }
+
+    let responsibilitiesList = [];
+    if (testData.responsibilities) {
+        if (typeof testData.responsibilities === 'string') {
+            try {
+                responsibilitiesList = JSON.parse(testData.responsibilities);
+            } catch (err) {
+                console.warn("Не вдалося розпарсити responsibilities:", err);
+                responsibilitiesList = [];
+            }
+        } else if (Array.isArray(testData.responsibilities)) {
+            responsibilitiesList = testData.responsibilities;
+        }
+    }
+
+    return (
+        <div className="page">
+            <AboutTest testData={testData} />
+            <AboutWork vacancyDescription={testData.vacancyDescription} />
+            <WorkResponsibilities 
+                responsibilities={responsibilitiesList} 
+                testId={testId} 
+            />
+        </div>
+    );
 };
 
 export default TestPage;

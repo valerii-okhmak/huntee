@@ -5,9 +5,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; 
-  background-color: #F5F5F5;
+  background-color: #F1F1F1;
   position: relative;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
 }
 
 .FullTest-gradient {
@@ -19,7 +20,7 @@
 
 
 .header-bar {
-  padding: 80px 0 30px;
+  padding: 80px 0 0;
   display: flex;
   justify-content: space-between;
   
@@ -31,14 +32,13 @@
 
 .timer-box {
   height: 66px;
-  /* width: 352px; */
   gap: 24px;
   padding: 16px 24px;
-  border: 2px solid white;
   border-radius: 20px;
   background: transparent;
-  color: white;
-  font-family: sans-serif;
+  color: rgb(0, 0, 0);
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -51,12 +51,13 @@
 }
 
 .time-val {
-  font-size: clamp(1.5rem, 2vw + 0.5rem, 2.5rem);
+  font-size: 35px;
   line-height: 1.2;
+  font-weight: 300;
 }
 
 .time-label {
-  font-size: clamp(0.5rem, 2vw + 0.5rem, 1rem);
+  font-size: 12px;
   opacity: 0.8;
   margin-top: -5px;
 }
@@ -66,8 +67,47 @@
   justify-content: center;
   flex-wrap: wrap;
   margin: 1rem 0;
-  gap: 0.5rem;
+  gap: clamp(4px, 1vw, 8px);
+  max-width: 90%;
 }
+
+.Num-regular {
+  position: relative;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+/* Лівий бордер */
+.Num-regular::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  /* товщина бордера */
+  height: 100%;
+  background: #3599C3;
+}
+
+/* Верхній + нижній бордери з плавним згасанням */
+.Num-regular::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* два градієнти — верхній і нижній */
+  background-image:
+    linear-gradient(to right, #3599C3 1%, rgba(53, 153, 195, 0) 60%),
+    linear-gradient(to right, #3599C3 1%, rgba(53, 153, 195, 0) 60%);
+
+  background-repeat: no-repeat, no-repeat;
+
+  /* верх і низ */
+  background-position: 3px 0, 3px 100%;
+  background-size: calc(100% - 3px) 3px, calc(100% - 3px) 3px;
+}
+
 .Num-bg {
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 10px;
@@ -79,14 +119,14 @@
   border: none;
   cursor: pointer;
   font-weight: 300;
-  font-size: clamp(1rem, 2vw + 0.5rem, 2rem);
+  font-size: clamp(20px, 3vw, 30px);
   cursor: pointer;
   font-family: "Montserrat", sans-serif;
-  color: grey;
+  color: rgb(0, 0, 0);
 }
 .Num button.active {
-  font-weight: 800;
-  color: black;
+  font-weight: 600;
+  color: #3599C3;
 }
 
 .test-title {
@@ -126,18 +166,47 @@
     color: white;
 }
 
-
 .test-container {
   min-height: 55vh;
   z-index: 2;
   width: 90%;
   padding: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  background: #f9f9f9;
+  border-top: 3px solid #3599C3;
+  border-radius: 20px 20px 0 0;
+  background: #ffffff;
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  /* щоб псевдоелементи не виступали за межі */
+}
+
+/* Лівий бордер */
+.test-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  /* товщина бордера */
+  height: 100%;
+  border-radius: 20px 0 0 0;
+  /* тільки верхній лівий кут заокруглений */
+  background: linear-gradient(to bottom, #3599C3 0%, rgba(53, 153, 195, 0.8) 40%, rgba(53, 153, 195, 0.4) 70%, rgba(53, 153, 195, 0) 100%);
+}
+
+/* Правий бордер */
+.test-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  /* товщина бордера */
+  height: 100%;
+  border-radius: 0 20px 0 0;
+  /* тільки верхній правий кут заокруглений */
+  background: linear-gradient(to bottom, #3599C3 0%, rgba(53, 153, 195, 0.8) 40%, rgba(53, 153, 195, 0.4) 70%, rgba(53, 153, 195, 0) 100%);
 }
 
 .test-container-transparent {
@@ -176,8 +245,12 @@
   .custom-radio input[type="radio"] {
     display: none;
   }
+
+    .custom-radio input[type="checkbox"] {
+      display: none;
+    }
   
-  .radio-square {
+  .checkbox-square-blue {
     display: block;
     width: 28px;
     height: 28px;
@@ -187,15 +260,58 @@
     flex: 0 0 auto;
   }
   
-  .custom-radio input[type="radio"]:checked + .radio-square::after {
+  /* .custom-radio input[type="radio"]:checked + .checkbox-square-blue::after {
     content: "";
     position: absolute;
     top: 4px;
     left: 4px;
     width: 20px;
     height: 20px;
-    background-color: black;
-  }
+    background-color: #3599C3;
+  } */
+
+  
+  /* .custom-radio input[type="checkbox"]:checked + .checkbox-square-blue::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 20px;
+    height: 20px;
+    background-color: #3599C3;
+  } */
+
+    .custom-checkbox input[type="checkbox"]:checked+.checkbox-square-blue::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 20px;
+      height: 20px;
+      background-color: #3599C3;
+    }
+
+    .radio-circle-blue {
+      display: block;
+      width: 28px;
+      height: 28px;
+      background-color: #D9D9D9;
+      margin-right: 10px;
+      position: relative;
+      flex: 0 0 auto;
+      border-radius: 50%;
+    }
+  
+    .custom-radio input[type="radio"]:checked+.radio-circle-blue::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 20px;
+      height: 20px;
+      background-color: #3599C3;
+      border-radius: 50%;
+    }
 
   .result {
     font-weight: bold;
@@ -225,21 +341,6 @@
   
 .answer {
   flex: 1;
-}
-
-
-.FullTest-regular::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, #001a61, #160dc2, #26e3ed, #f0ed15,#fffd87);
-  background-size: 200% 200%;
-  animation: gradientAnimation 20s infinite linear;
-  clip-path: polygon(0 0, 100% 0,100% 30%, 0 90%);
-  z-index: 1; /* Встановлюємо на задній план */
 }
 
 @keyframes gradientAnimation {
@@ -292,7 +393,7 @@
   
   
   .fulltest-title {
-    font-size: 35px;
+    font-size: 25px;
     font-weight: bold;
     color: #000;
   }

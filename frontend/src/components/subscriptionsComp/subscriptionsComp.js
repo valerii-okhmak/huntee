@@ -13,7 +13,7 @@ const Subscriptions = () => {
         <div className="subscriptions__plans">
           <div className="subscription__plan-item">
             <p className="plan__desc">Ідеально для знайомства.</p>
-            <Link to="/" className="plan__button">
+            <Link to="/pricingpage" className="plan__button">
               <span className="plan__number">1</span>
               <span className="plan__price">$0</span>
             </Link>
@@ -21,7 +21,7 @@ const Subscriptions = () => {
 
           <div className="subscription__plan-item">
             <p className="plan__desc">Для тих, хто хоче більше.</p>
-            <Link to="/" className="plan__button">
+            <Link to="/pricingpage" className="plan__button">
               <span className="plan__number">2</span>
               <span className="plan__price">$12</span>
             </Link>
@@ -29,7 +29,7 @@ const Subscriptions = () => {
 
           <div className="subscription__plan-item">
             <p className="plan__desc">Для тих, хто серйозно.</p>
-            <Link to="/" className="plan__button">
+            <Link to="/pricingpage" className="plan__button">
               <span className="plan__number">3</span>
               <span className="plan__price">$30</span>
             </Link>

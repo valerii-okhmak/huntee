@@ -28,10 +28,10 @@
   },
   {
     "id": 5,
-    "type": "choice",
+    "type": "multiple",
     "question": "Що повертає useEffect, якщо потрібне очищення ефекту?",
     "options": ["undefined", "число", "функцію", "рядок"],
-    "correctAnswer": 2
+    "correctAnswer": [2, 3]
   },
   {
     "id": 6,

@@ -12,6 +12,8 @@ import VerticalStepper from '../components/VerticalStepper/VerticalStepper';
 import SoftSkills from '../components/soft_skills_trial/SoftSkillsTrial';
 import ForCompany from '../components/ForCompany/ForCompany';
 import Subscriptions from '../components/subscriptionsComp/subscriptionsComp';
+import CompanyBanner from '../components/company_banner/CompanyBanner';
+
 
 
 const HomePage = () => {
@@ -22,6 +24,7 @@ const HomePage = () => {
         <Welcome/>
         <Slider/>
       </div>
+      <CompanyBanner />
       <div id="section-02"><Find_yourself/></div>
       <div id="section-03"><Main_start/></div>
       <div id="section-04"><SoftSkills/></div>

@@ -11,6 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "profiles")
@@ -20,13 +23,14 @@ import java.util.List;
 @AllArgsConstructor
 public class Profile {
     
-    @Id
+    @Id 
     @Column(name = "user_id")
-    private Integer userId;
+    private UUID userId;
     
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
     
     @Column(name = "profile_image_url")

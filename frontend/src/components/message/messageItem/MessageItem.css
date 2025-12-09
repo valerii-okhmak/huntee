@@ -1,24 +1,33 @@
+.message-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .message-item {
     background-color: #F1F1F1;
     padding: 20px 15px 40px 15px;
     border-radius: 8px;
     position: relative;
+    transition: 0.25s ease;
+}
+
+.message-item:hover {
+    background-color: #E0E0E0;
+    transform: scale(1.01);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
 }
 
 .message-logo img {
-    height: 45px; /* або який потрібно розмір */
+    height: 45px;
+    /* або який потрібно розмір */
     object-fit: contain;
 }
 
 .message-testname {
     color: black;
     font-family: 'MyFont', sans-serif;
-    font-size: clamp(24px, 2vw, 30px);   
-    text-decoration: none;
-}
-
-.message-testname:hover {
-    text-decoration: underline;
+    font-size: clamp(24px, 2vw, 30px);
 }
 
 .unread-message {
@@ -30,7 +39,6 @@
     top: 10px;
     right: 10px;
 }
-
 
 @media screen and (max-width: 660px) {
     .message-item {

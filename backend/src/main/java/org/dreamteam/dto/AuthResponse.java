@@ -1,5 +1,7 @@
 package org.dreamteam.dto;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +17,7 @@ public class AuthResponse {
     @Builder.Default
     private final String tokenType = "Bearer";
     private String userType;
-    private Integer userId;
+    private UUID userId;
     private String email;
     private String firstName;
     private String lastName;

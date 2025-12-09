@@ -10,70 +10,100 @@
 .select-field-tc.expanded {
     height: 250px; 
 }
-.select-field-tc.expanded-big {
-  height: 360px; 
+.select-field-tc.class-expanded {
+  height: 430px; 
 }
 
 .select-field-tc__right {
   flex: 0 0 calc(60% - 30px);
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
 }
 
-    .select-field-tc__label {
-      font-family: 'Montserrat', sans-serif;
-      flex: 0 0 40%;
-      font-weight: bold;
-      font-size: 28px;
-      display: block;
-      border-bottom: 1px solid #000;
-      padding-bottom: 5px;
-    }
-  
-    .select-field-tc__custom-select__control {
-      border: none !important;
-      border-radius: 0 !important;
-      box-shadow: none;
-      background-color: #F1F1F1 !important;
-      padding: 5px 10px;
-      outline: none !important;
-      box-shadow: none !important;
-      border-color: #ccc !important;
-    }
+.select-field-tc__label {
+  font-family: 'Montserrat', sans-serif;
+  flex: 0 0 40%;
+  font-weight: bold;
+  font-size: clamp(20px, 4vw, 28px);
+  display: block;
+  border-bottom: 1px solid #000;
+  padding-bottom: 5px;
+}
+.select-field-tc__label.adding {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 100%;
+}
 
-    .select-field-tc__custom-select__indicator-separator {
-      display: none;
-    }
-  
-    .select-field-tc__custom-select__menu {
-      background-color: #F1F1F1 !important;
-      max-height: 170px;
-      overflow: scroll;
-      border-radius: 0 !important;
-    }
+.select-field-tc__label.adding span{
+  cursor: pointer;
+}
 
-    .select-field-tc__custom-select__single-value {
-      color: #000 !important;
-      font-size: 18px !important;
-      font-family: 'Montserrat', sans-serif;
-    }
-  
-    .select-field-tc__custom-select__option {
-      padding: 10px !important;
-      cursor: pointer !important;
-      color: rgba(92, 89, 89, 0.7) !important;
-      font-size: 18px !important;
-      font-family: 'Montserrat', sans-serif;
-      opacity: 0.7;
-    }
-  
-    .select-field-tc__custom-select__option--is-focused {
-      background: #dad9d9 !important;
-      color: #000 !important;
-    }
-  
-    .select-field-tc__custom-select__option--is-selected {
-      background: #dad9d9 !important;
-      color: #000 !important;
-    }
+.select-field-tc__label.adding p{
+  text-align: left;
+}
+.select-field-tc__label.adding span{
+  font-size: 46px;
+}
+
+.select-field-tc__custom-select {
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.select-field-tc__custom-select__control {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none;
+  background-color: #F1F1F1 !important;
+  padding: 5px 10px;
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #ccc !important;
+    cursor: pointer !important;
+}
+
+.select-field-tc__custom-select__indicator-separator {
+  display: none;
+}
+
+.select-field-tc__custom-select__menu {
+  background-color: #F1F1F1 !important;
+  max-height: 170px;
+  overflow: scroll;
+  border-radius: 0 !important;
+}
+
+.select-field-tc__custom-select__single-value {
+  color: #000 !important;
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.select-field-tc__custom-select__option {
+  padding: 10px !important;
+  cursor: pointer !important;
+  color: rgba(92, 89, 89, 0.7) !important;
+  font-size: 18px !important;
+  font-family: 'Montserrat', sans-serif;
+  opacity: 0.7;
+}
+
+.select-field-tc__custom-select__option--is-focused {
+  background: #dad9d9 !important;
+  color: #000 !important;
+}
+
+.select-field-tc__custom-select__option--is-selected {
+  background: #dad9d9 !important;
+  color: #000 !important;
+}
+
+.select-field-tc__custom-select__placeholder {
+  font-family: 'Montserrat', sans-serif;
+}
 
   
 .form-control {
@@ -83,6 +113,7 @@
   border-radius: 0;
   font-size: 18px;
   padding: 10px 18px;
+  font-family: 'Montserrat', sans-serif;
 }
 .rdtPicker {
   width: 100%;
@@ -116,8 +147,8 @@ td.rdtActive {
   align-items: center;
   justify-content: center;
   background-color: #F1F1F1 ;
-  padding: 10px 30px;
-  gap: 30px;
+  padding: clamp(6px, 2vw, 10px) clamp(8px, 3vw, 30px);
+  gap: clamp(10px, 3vw, 30px);
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -127,10 +158,159 @@ td.rdtActive {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 32px;
+  font-size: clamp(24px, 3vw, 32px);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .select-field-tc__time-input span {
   font-weight: bold;
-  font-size: 32px;
+  font-size: clamp(24px, 3vw, 32px);
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+.select-field-tc__custom-textarea {
+  width: 100%;
+  height: 200px;
+  border: none;
+  background-color: #F1F1F1;
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  resize: none;
+}
+.select-field-tc__custom-textarea::placeholder {
+  color: #5C5959;
+  opacity: 1; 
+}
+
+.select-field-tc__custom-input {
+  width: 100%;
+  border: none;
+  background-color: #F1F1F1;
+  padding: 12px 22px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+}
+.select-field-tc__custom-input::placeholder {
+  color: #5C5959;
+  opacity: 1; 
+}
+
+
+.question-classification {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.question-classification__option {
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.question-classification__option input[type='radio'] {
+  accent-color: #333;
+  cursor: pointer;
+}
+
+.question-classification__label {
+  width: 100%;
+  background-color: #F1F1F1;
+  padding: 20px;
+}
+
+.question-classification__select {
+  margin-left: 15px;
+}
+
+
+.responsibilities-list__row { 
+  display:flex; 
+  gap:8px; 
+  align-items:center; 
+  margin-bottom:8px; 
+}
+
+.responsibilities-list__input { 
+  flex:1; 
+  width: 100%;
+  border: none;
+  background-color: #F1F1F1;
+  padding: 15px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+}
+.responsibilities-list__input::placeholder {
+  color: #5C5959;
+  opacity: 1; 
+}
+
+.responsibilities-list__remove { 
+  background:transparent; 
+  border:0; 
+  cursor:pointer; 
+  font-size:18px; 
+  color: red;
+}
+
+.responsibilities-list__add { 
+  background-color: #F1F1F1;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #737373;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  transition: .3s; 
+}
+.responsibilities-list__add span {
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 100;
+  margin-top: -2px;
+}
+.responsibilities-list__add:hover {
+  background-color: #c3c3c3;
+}
+
+
+
+@media screen  and (max-width: 678px) {
+  .select-field-tc {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .select-field-tc__label {
+    width: 100%;
+    text-align: center;
+  }
+
+  .select-field-tc__right{
+    width: 100% !important;
+  }
+
+  .select-field-tc.expanded {
+    height: auto; 
+}
+
+  .select-field-tc.expanded-big {
+    height: auto; 
+}
+
+  .select-field-tc.class-expanded {
+    height: auto; 
+}
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import "./Header.css";
 import logo from "../../img/logo.png"; 
 import BurgerMenu from "../burgerMenu/burgerMenu"; 
@@ -12,13 +12,35 @@ const Header = () => {
   const location = useLocation();
   const isAllTestsPage = location.pathname === "/alltests";
 
-  function menuBtn() {
-    const burgerContainer = document.querySelector('.burger-container');
-    burgerContainer.classList.toggle('active');
-  }
+  const menuRef = useRef(null);
+  const btnRef = useRef(null);
 
-  React.useEffect(() => {
-    function onScroll() {
+  const toggleMenu = () => {
+    if (menuRef.current) {
+      menuRef.current.classList.toggle("active");
+    }
+  };
+
+  // Закриття меню при кліку поза ним
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        btnRef.current &&
+        !btnRef.current.contains(event.target)
+      ) {
+        menuRef.current.classList.remove("active");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Зміна стилю хедера при скролі
+  useEffect(() => {
+    const onScroll = () => {
       const header = document.querySelector('header');
       const set = document.querySelector('.set');
       if (window.scrollY > 0) {
@@ -28,7 +50,7 @@ const Header = () => {
         header.classList.remove('scrolled');
         set?.classList.remove('scrolled');
       }
-    }
+    };
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -50,25 +72,25 @@ const Header = () => {
             </li>
           )}
           <div className="header-icons">
-          <li>
-            <Link to="/messages" className="headermenu" aria-label="Повідомлення">
-              <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
-            </Link>
-          </li>
-          <li>
-            <Link to="/profile" className="headermenu" aria-label="Профіль">
-              <FontAwesomeIcon icon={faUser} className="header-icon" />
-            </Link>
-          </li>
-          <li>
-            <button onClick={menuBtn} className="headermenu burger" aria-label="Бургер меню">
-              <FontAwesomeIcon icon={faBars} className="header-icon"/>
-            </button>
-          </li>
+            <li>
+              <Link to="/messages" className="headermenu" aria-label="Повідомлення">
+                <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" className="headermenu" aria-label="Профіль">
+                <FontAwesomeIcon icon={faUser} className="header-icon" />
+              </Link>
+            </li>
+            <li>
+              <button ref={btnRef} onClick={toggleMenu} className="headermenu burger" aria-label="Бургер меню">
+                <FontAwesomeIcon icon={faBars} className="header-icon"/>
+              </button>
+            </li>
           </div>
         </ul>
       </nav>
-      <BurgerMenu menuBtn={menuBtn}/>
+      <BurgerMenu menuRef={menuRef} toggleMenu={toggleMenu} />
     </header>
   );
 };

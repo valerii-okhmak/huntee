@@ -20,12 +20,6 @@
     z-index: -1;
 }
 
-
-.companyOptions_bd {
-    position: absolute;
-    filter: grayscale(100%) brightness(0.6);
-
-}
 .companyOptions__title {
     font-family: 'Montserrat', sans-serif;
     color: rgb(190, 190, 190);
@@ -33,6 +27,7 @@
     font-weight: 700;
     margin-bottom: 30px;
     margin-top: 80px;
+    text-align: center;
 }
 
 .companyOptions__buttons {

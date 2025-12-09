@@ -24,12 +24,18 @@ import PricingPage from './pages/PricingPage';
 import CompanyMainPage from './pages/CompanyMainPage';
 import TestCreationPage from './pages/TestCreationPage';
 import TestCreationStartPage from './pages/TestCreationStartPage';
+import TestCreationMainPage from './pages/TestCreationMainPage';
 import ForCompany from './components/ForCompany/ForCompany';
 import Subscriptions from './components/subscriptionsComp/subscriptionsComp';
 import tryTestLogo from "./img/softserve.png";
 import tryTestQuestions from "./data/questions.json";
 import TemplatesHunteePage from './pages/TemplatesHunteePage';
-import Reg2Page from './pages/Reg2Page';
+import ScrollToTop from './components/ScrollToTop'; 
+import ViewingTestsPage from './pages/ViewingTestsPage';
+import NotFoundPage from './pages/NotFoundPage';
+import TestDashboardPage from './pages/TestDashboardPage';
+import TestReviewPage from './pages/TestReviewPage';
+
 
 const App = () => {
 
@@ -42,6 +48,7 @@ const App = () => {
 
   return (
     <Router>
+    <ScrollToTop /> 
     <GoogleOAuthProvider clientId="1081513846462-lhcffrki4nfgq2imdr4qdkfg9dgrmhh1.apps.googleusercontent.com">
     <div className="App">
       <Header />
@@ -49,34 +56,34 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/reg" element={<RegPage />} />
-        <Route path="/reg2" element={<Reg2Page />} />
-        <Route path="/testpage" element={<TestPage />} />
+        <Route path="/testpage/:testId" element={<TestPage />} />
         <Route path="/alltests" element={<AllTestsPage />} />
         <Route path='/starttest' element={<StartTestPage />} />
         <Route path="/testrules" element={<TestRulesPage />} />
-        <Route path="/test" element={<FullTest testType="trial" textData={tryTest} time={3600} questionsLink={tryTestQuestions} />} />
+        <Route path="/test/:testId" element={<FullTest/>} />
         <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/contacts" element={<Contacts/>} />
         <Route path="/startIT" element={<StartIT/>} />
         <Route path="/generalinfo" element={<GeneralInfoPage/>} />
         <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="/pricingpage" element={<PricingPage />} />
-        <Route path="/forcompany" element={<ForCompany />} />
-        <Route path="/subscriptions" element={<Subscriptions />} />
-
         <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
-
         <Route path="/companymain" element={<CompanyMainPage />} />
         <Route path="/testcreation" element={<TestCreationPage />} />
         <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
         <Route path="/testcreation/start" element={<TestCreationStartPage />} />
-        
+        <Route path="/testcreation/main" element={<TestCreationMainPage />} />
+        <Route path="/viewingtests" element={<ViewingTestsPage />} />
+        <Route path="/testreview/:attemptId" element={<TestReviewPage />} />
+        <Route path="/*" element={<NotFoundPage />} />
+        <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
+        <Route path="/messages" element={<MessagePage />} />
+        <Route path="/message/:id" element={<MessageTextPage />} />
+          
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/messages" element={<MessagePage />} />
-          <Route path="/message" element={<MessageTextPage />} />
         </Route>
       </Routes>
       <Footer />

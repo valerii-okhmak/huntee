@@ -1,42 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './MessageType.css';
 
-const MessageType = () => {
-  const [activeType, setActiveType] = useState('all');
-  const [activeType2, setActiveType2] = useState('all');
-
-  const types1 = [
+const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType }) => {
+  
+  const readFilters = [
     { id: 'all', label: 'Всі' },
     { id: 'unread', label: 'Непрочитані' },
     { id: 'read', label: 'Прочитані' }
   ];
 
-  const types2 = [
+  const typeFilters = [
     { id: 'all', label: 'Всі' },
-    { id: 'company', label: 'Компанія' },
-    { id: 'user', label: 'Користувач' },
+    { id: 'user', label: 'Користувач' }, 
     { id: 'system', label: 'Системні' }
   ];
 
   return (
     <div className="message-type">
       <div className="message-type__container">
-        {types1.map((type) => (
+        {readFilters.map((type) => (
           <div
             key={type.id}
-            className={`message-type__item ${activeType === type.id ? 'message-type__item--active' : ''}`}
-            onClick={() => setActiveType(type.id)}
+            className={`message-type__item ${activeRead === type.id ? 'message-type__item--active' : ''}`}
+            onClick={() => setActiveRead(type.id)}
           >
             {type.label}
           </div>
         ))}
       </div>
+
       <div className="message-type__container">
-        {types2.map((type) => (
+        {typeFilters.map((type) => (
           <div
             key={type.id}
-            className={`message-type__item ${activeType2 === type.id ? 'message-type__item--active' : ''}`}
-            onClick={() => setActiveType2(type.id)}
+            className={`message-type__item ${activeType === type.id ? 'message-type__item--active' : ''}`}
+            onClick={() => setActiveType(type.id)}
           >
             {type.label}
           </div>

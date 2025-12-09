@@ -28,6 +28,7 @@
   overflow: hidden;
   z-index: 1;
   align-self: flex-start;
+  text-decoration: none;
 }
 
 .test-creation-button::before {
