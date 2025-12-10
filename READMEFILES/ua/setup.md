@@ -30,7 +30,7 @@ git clone https://github.com/DONAT1N/huntee.git
     (1, 'USER'),
     (2, 'ADMIN');
 
-    INSERT INTO auth_providers (id, name) VALUES
+    INSERT INTO oauth_providers (id, name) VALUES
     (1, 'LOCAL'),
     (2, 'GOOGLE'),
     (3, 'FACEBOOK'),
@@ -45,9 +45,9 @@ git clone https://github.com/DONAT1N/huntee.git
    Відкрийте файл src/main/resources/application.properties та внесіть надані дані.
 
 3. Запустіть сервер:
-   
+```cmd
    mvn spring-boot:run
-
+```
    Або запустіть клас `BackendApplication.java` через вашу IDE (IntelliJ IDEA).
    Дочекайтеся повідомлення: "Tomcat started on port(s): 8080".
 
