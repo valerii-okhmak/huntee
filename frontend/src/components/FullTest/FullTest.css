@@ -259,27 +259,6 @@
     position: relative;
     flex: 0 0 auto;
   }
-  
-  /* .custom-radio input[type="radio"]:checked + .checkbox-square-blue::after {
-    content: "";
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 20px;
-    height: 20px;
-    background-color: #3599C3;
-  } */
-
-  
-  /* .custom-radio input[type="checkbox"]:checked + .checkbox-square-blue::after {
-    content: "";
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 20px;
-    height: 20px;
-    background-color: #3599C3;
-  } */
 
     .custom-checkbox input[type="checkbox"]:checked+.checkbox-square-blue::after {
       content: "";

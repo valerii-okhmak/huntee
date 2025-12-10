@@ -32,7 +32,7 @@ const TestPage = ({ testType }) => {
         
         const endTime = new Date(response.data.endTime).getTime();
         const now = new Date().getTime();
-        setTimeLeft(Math.floor((endTime - now) / 1000));
+        setTimeLeft(Math.floor((endTime - now) / 60000));
         
         setLoading(false);
       } catch (error) {
