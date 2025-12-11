@@ -6,7 +6,7 @@ const Filters = ({
   allTests,
   selectedLocations, setSelectedLocations,
   selectedSpheres, setSelectedSpheres,
-  selectedTimes, setSelectedTimes
+  // selectedTimes, setSelectedTimes
 }) => {
   return (
     <div className='filters'>
@@ -24,13 +24,13 @@ const Filters = ({
         selectedValues={selectedSpheres}
         setSelectedValues={setSelectedSpheres}
       />
-      <Filter
+      {/* <Filter
         title="ЧАС"
         allTests={allTests}
         propertyToFilter="time" 
         selectedValues={selectedTimes}
         setSelectedValues={setSelectedTimes}
-      />
+      /> */}
     </div>
   );
 }

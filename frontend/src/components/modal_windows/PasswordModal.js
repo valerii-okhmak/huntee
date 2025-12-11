@@ -3,7 +3,7 @@ import Modal from './Modal';
 import PasswordInput from './PasswordInput';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import { jwtDecode } from 'jwt-decode'; 
-import { getAccessToken, getRefreshToken, saveAccessToken } from '../../../utils/auth';
+import { getAccessToken, getRefreshToken, saveAccessToken } from '../../utils/auth';
 import axios from 'axios';
 
 const PasswordModal = ({ isOpen, onClose }) => {

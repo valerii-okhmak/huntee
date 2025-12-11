@@ -1,7 +1,10 @@
 import React from "react";
 import './TestReviewQuestions.css';
+import { useNavigate } from "react-router-dom";
 
 const TestReviewQuestions = ({ questionsLink = [] }) => {
+
+    const navigate = useNavigate();
 
     const renderQuestion = (q) => {
         if (!q) return null;
@@ -91,7 +94,7 @@ case "TEXT":
                     color: isCorrect ? '#28a745' : '#C32C2C',
                     fontWeight: 'bold'
                 }}>
-                    {isCorrect ? "Відповідь правильна" : "Відповідь непраавильна"}
+                    {isCorrect ? "Відповідь правильна" : "Відповідь неправильна"}
                 </small>
             </div>
 
@@ -179,7 +182,7 @@ case "TEXT":
                 <div className="testDashboard__analytics-actions">
                     <button
                         className="testDashboard__analytics-btn-dark"
-                        onClick={() => window.history.back()}
+                        onClick={() => navigate('/')}
                     >
                         Завершити перегляд
                     </button>
