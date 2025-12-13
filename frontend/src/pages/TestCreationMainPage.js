@@ -20,13 +20,13 @@ const TestCreationMainPage = () => {
   const creatorRef = useRef(null);
 
   const [testMeta, setTestMeta] = useState(() => ({
-    testName: passed?.vacancyDescription ? passed.vacancyDescription.slice(0, 50) : 'Нова вакансія',
+    testName: passed?.testName || 'Новий тест',
     sphere: passed?.field || 'unknown',
     level: (passed?.level || 'JUNIOR')?.toUpperCase(),
     city: passed?.city || 'online',
     vacancyDescription: passed?.vacancyDescription || '',
     responsibilities: passed?.responsibilities || '',
-    fixedTime: true,
+    isFixedTime: true,
     startTime: passed?.startTime ? new Date(passed.startTime) : null,
     endTime: passed?.endTime ? new Date(passed.endTime) : null,
     durationMinutes: passed?.durationMinutes || 0
@@ -35,10 +35,11 @@ const TestCreationMainPage = () => {
   useEffect(() => {
     if (passed) {
       setTestMeta(prev => ({
-        ...prev,
+        testName: passed.testName || prev.testName,
         sphere: passed.field || prev.sphere,
         level: passed.level || prev.level,
         city: passed.city || prev.city,
+        isFixedTime: true,
         vacancyDescription: passed.vacancyDescription || prev.vacancyDescription,
         responsibilities: passed.responsibilities || prev.responsibilities,
         startTime: passed.startTime ? new Date(passed.startTime) : prev.startTime,
@@ -91,7 +92,7 @@ const TestCreationMainPage = () => {
         city: testMeta.city,
         vacancyDescription: testMeta.vacancyDescription,
         responsibilities: testMeta.responsibilities,
-        fixedTime: testMeta.fixedTime, 
+        isFixedTime: testMeta.isFixedTime, 
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
         durationMinutes: testMeta.durationMinutes
@@ -167,7 +168,7 @@ const TestCreationMainPage = () => {
                 className='testCreationMainButtons__next white-btn'
                 onClick={handleNextQuestion}
               >
-                Наступне запитання
+                Додати запитання
               </button>
               <button
                 className='testCreationMainButtons__finish black-btn'

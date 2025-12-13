@@ -1,0 +1,19 @@
+import React from 'react';
+import "./ModalWindow.css"
+
+const ModalMini = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div 
+        className="modalmini-content" 
+        onClick={(e) => e.stopPropagation()}  // блокує клік всередині
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default ModalMini;

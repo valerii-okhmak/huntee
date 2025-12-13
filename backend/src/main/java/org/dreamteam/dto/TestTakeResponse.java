@@ -14,6 +14,7 @@ public class TestTakeResponse {
     private UUID attemptId;
     private UUID testId;
     private String testName;
+    private String sphere; 
     private LocalDateTime endTime; 
     private List<QuestionTakeResponse> questions;
 }

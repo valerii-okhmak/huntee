@@ -20,7 +20,7 @@ const AllTestsPage = () => {
 
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedSpheres, setSelectedSpheres] = useState([]);
-  const [selectedTimes, setSelectedTimes] = useState([]);
+  // const [selectedTimes, setSelectedTimes] = useState([]); // закоментовано фільтр часу
 
   const location = useLocation();
 
@@ -73,10 +73,10 @@ const AllTestsPage = () => {
     return allTests.filter(test => {
       const locationMatch = selectedLocations.length === 0 || selectedLocations.includes(test.location);
       const sphereMatch = selectedSpheres.length === 0 || selectedSpheres.includes(test.type);
-      const timeMatch = selectedTimes.length === 0 || selectedTimes.includes(test.time);
-      return locationMatch && sphereMatch && timeMatch;
+      // const timeMatch = selectedTimes.length === 0 || selectedTimes.includes(test.time); // закоментовано
+      return locationMatch && sphereMatch; // && timeMatch; закоментовано фільтр часу
     });
-  }, [allTests, selectedLocations, selectedSpheres, selectedTimes]);
+  }, [allTests, selectedLocations, selectedSpheres /*, selectedTimes */]); // закоментовано
 
   return (
     <div className="page">
@@ -88,8 +88,8 @@ const AllTestsPage = () => {
           setSelectedLocations={setSelectedLocations}
           selectedSpheres={selectedSpheres}
           setSelectedSpheres={setSelectedSpheres}
-          selectedTimes={selectedTimes}
-          setSelectedTimes={setSelectedTimes}
+          // selectedTimes={selectedTimes}
+          // setSelectedTimes={setSelectedTimes} 
         />
         
         {isLoading ? (

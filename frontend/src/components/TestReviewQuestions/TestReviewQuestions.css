@@ -8,8 +8,6 @@
     width: 100%;
 }
 
-
-
 .custom-radio input[type="radio"]:checked+.radio-circle-green::after {
     background-color: #1DAD00;
 }

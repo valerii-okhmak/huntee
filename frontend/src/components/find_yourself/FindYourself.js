@@ -36,7 +36,7 @@ const FindYourself = () => {
         </div>
 
         <div className='find-yourself__button'>
-          <Link to="/login">
+          <Link to="/">
             <button className="start-test-button">Пройти тест</button>
           </Link>
         </div>

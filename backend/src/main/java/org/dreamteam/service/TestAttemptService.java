@@ -75,6 +75,7 @@ public class TestAttemptService {
         return TestTakeResponse.builder()
                 .attemptId(savedAttempt.getAttemptId())
                 .testId(test.getTestId())
+                .sphere(test.getSphere())
                 .testName(test.getTestName())
                 .endTime(calculatedEndTime)
                 .questions(questionResponses)

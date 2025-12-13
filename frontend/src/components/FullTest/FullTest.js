@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getAccessToken } from "../../utils/auth";
 import "./FullTest.css";
+import ConfirmTestEndModal from '../modal_windows/ConfirmTestEndModal';
 
 
 const TestPage = ({ testType }) => { 
@@ -18,6 +19,11 @@ const TestPage = ({ testType }) => {
   const [timeLeft, setTimeLeft] = useState(null); 
   const [isSubmitting, setIsSubmitting] = useState(false); 
 
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [finalScore, setFinalScore] = useState(null);
+  const [attemptIdForReview, setAttemptIdForReview] = useState(null);
+
+
   useEffect(() => {
     const startTest = async () => {
       try {
@@ -32,7 +38,7 @@ const TestPage = ({ testType }) => {
         
         const endTime = new Date(response.data.endTime).getTime();
         const now = new Date().getTime();
-        setTimeLeft(Math.floor((endTime - now) / 1000));
+        setTimeLeft(Math.floor((endTime - now) / 60000));
         
         setLoading(false);
       } catch (error) {
@@ -171,8 +177,10 @@ const TestPage = ({ testType }) => {
             { headers: { 'Authorization': `Bearer ${token}` } }
         );
         
-        alert(`Тест завершено! Ваш бал: ${response.data.score}`);
-        navigate(`/testreview/${response.data.attemptId}`);
+        // Зберігаємо дані для модалки
+        setFinalScore(response.data.score);
+        setAttemptIdForReview(response.data.attemptId);
+        setIsConfirmModalOpen(true);  // відкриваємо модалку
 
     } catch (error) {
         console.error("Помилка завершення:", error);
@@ -303,7 +311,7 @@ const TestPage = ({ testType }) => {
         <div className="header-bar">
             <div className="top-section">
               <div className="top-line">
-                <div className="category">Test</div> 
+                <div className="category">{attemptData.sphere}</div> 
               </div>
               <h1 className="fulltest-title">{attemptData.testName}</h1>
               <div className="top-line"></div>
@@ -376,6 +384,12 @@ const TestPage = ({ testType }) => {
           )}
         </div>
       </div>
+    <ConfirmTestEndModal
+      isOpen={isConfirmModalOpen}
+      onClose={() => setIsConfirmModalOpen(false)}
+      score={finalScore}
+      onViewResults={() => navigate(`/testreview/${attemptIdForReview}`)}
+    />
     </div>
   );
 };

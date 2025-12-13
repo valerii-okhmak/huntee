@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import axios from 'axios';
-import { getAccessToken } from '../../../utils/auth';
+import { getAccessToken } from '../../utils/auth';
 
 const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) => {
   const [projectName, setProjectName] = useState('');
