@@ -1,23 +1,27 @@
 package org.dreamteam.security;
+
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class RateLimitingFilter implements Filter {
+@Component
+public class RateLimitingFilter extends OncePerRequestFilter {
+
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
-    private final Bandwidth limit = Bandwidth.classic(1000, 
-        Refill.intervally(1000, Duration.ofMinutes(1)));
-    
+    private final Bandwidth limit = Bandwidth.classic(100, Refill.greedy(60, Duration.ofMinutes(1)));
+
     private Bucket resolveBucket(String ip) {
         return buckets.computeIfAbsent(ip, k -> Bucket.builder()
                 .addLimit(limit)
@@ -25,25 +29,38 @@ public class RateLimitingFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String ip = request.getRemoteAddr();
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-        if (request instanceof HttpServletRequest httpRequest){
-            String xForwardedFor = httpRequest.getHeader("X-Forwarded-For");
-            if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-                ip = xForwardedFor.split(",")[0].trim();
-            }
+        String path = request.getRequestURI();
+        if (path.startsWith("/swagger-ui") || 
+            path.startsWith("/v3/api-docs") || 
+            path.startsWith("/static") || 
+            path.startsWith("/favicon.ico") ||
+            path.startsWith("/error")) { 
+            
+            filterChain.doFilter(request, response);
+            return;
         }
+        String ip = getClientIp(request);
 
         Bucket bucket = resolveBucket(ip);
 
         if (bucket.tryConsume(1)) {
-            chain.doFilter(request, response);
+            response.addHeader("X-Rate-Limit-Remaining", String.valueOf(bucket.getAvailableTokens()));
+            filterChain.doFilter(request, response);
         } else {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-            httpResponse.getWriter().write("Too many requests - Rate limit exceeded");
+            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Too many requests. Please wait a moment.\"}");
         }
+    }
 
+    private String getClientIp(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }
