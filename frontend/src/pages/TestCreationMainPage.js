@@ -26,25 +26,26 @@ const TestCreationMainPage = () => {
     city: passed?.city || 'online',
     vacancyDescription: passed?.vacancyDescription || '',
     responsibilities: passed?.responsibilities || '',
-    isFixedTime: true,
     startTime: passed?.startTime ? new Date(passed.startTime) : null,
     endTime: passed?.endTime ? new Date(passed.endTime) : null,
-    durationMinutes: passed?.durationMinutes || 0
+    durationMinutes: passed?.durationMinutes || 0,
+    isFixedTime: (passed?.durationMinutes ?? 0) > 0
   }));
 
   useEffect(() => {
     if (passed) {
       setTestMeta(prev => ({
+        ...prev,
         testName: passed.testName || prev.testName,
         sphere: passed.field || prev.sphere,
         level: passed.level || prev.level,
         city: passed.city || prev.city,
-        isFixedTime: true,
         vacancyDescription: passed.vacancyDescription || prev.vacancyDescription,
         responsibilities: passed.responsibilities || prev.responsibilities,
         startTime: passed.startTime ? new Date(passed.startTime) : prev.startTime,
         endTime: passed.endTime ? new Date(passed.endTime) : prev.endTime,
-        durationMinutes: passed.durationMinutes || prev.durationMinutes
+        durationMinutes: passed.durationMinutes || 0,
+        isFixedTime: (passed.durationMinutes ?? 0) > 0
       }));
     }
   }, [passed]);
@@ -92,10 +93,10 @@ const TestCreationMainPage = () => {
         city: testMeta.city,
         vacancyDescription: testMeta.vacancyDescription,
         responsibilities: testMeta.responsibilities,
-        isFixedTime: testMeta.isFixedTime, 
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
-        durationMinutes: testMeta.durationMinutes
+        durationMinutes: testMeta.durationMinutes > 0 ? testMeta.durationMinutes : 0,
+        isFixedTime: testMeta.durationMinutes > 0
       };
 
       const testResponse = await axios.post(

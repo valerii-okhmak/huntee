@@ -9,6 +9,8 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
   const [menuDateOpen, setMenuDateOpen] = useState(true);
   const [bigMenuOpen, setBigMenuOpen] = useState(false);
   const [classification, setClassification] = useState('none');
+  const [timerType, setTimerType] = useState('none'); // none | fixed
+
 
   // Локальний стан для time (як раніше) — використовує переданий selectedOption
   const handleTimeChange = (typePart, value) => {
@@ -137,33 +139,71 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
           />
         }
 
-        {type === 'time' &&
-          <div className="select-field-tc__time-input">
-            <input
-              type="number"
-              min="0"
-              max="23"
-              value={String(Math.floor((Number(selectedOption) || 0) / 3600)).padStart(2, '0')}
-              onChange={(e) => handleTimeChange('hours', e.target.value)}
-            />
-            <span>:</span>
-            <input
-              type="number"
-              min="0"
-              max="59"
-              value={String(Math.floor(((Number(selectedOption) || 0) % 3600) / 60)).padStart(2, '0')}
-              onChange={(e) => handleTimeChange('minutes', e.target.value)}
-            />
-            <span>:</span>
-            <input
-              type="number"
-              min="0"
-              max="59"
-              value={String((Number(selectedOption) || 0) % 60).padStart(2, '0')}
-              onChange={(e) => handleTimeChange('seconds', e.target.value)}
-            />
+        {type === 'time' && (
+          <div className="question-classification">
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="timerType"
+                value="none"
+                checked={timerType === 'none'}
+                onChange={() => {
+                  setTimerType('none');
+                  setSelectedOption(null);
+                }}
+              />
+              <div className="question-classification__label">
+                Без обмеження часу
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="timerType"
+                value="fixed"
+                checked={timerType === 'fixed'}
+                onChange={() => {
+                  setTimerType('fixed');
+                  setSelectedOption(0);
+                }}
+              />
+              <div className="question-classification__label">
+                Фіксований час
+              </div>
+            </label>
+
+            {timerType === 'fixed' && (
+              <div className="select-field-tc__time-input">
+                <input
+                  type="number"
+                  min="0"
+                  max="23"
+                  value={String(Math.floor((Number(selectedOption) || 0) / 3600)).padStart(2, '0')}
+                  onChange={(e) => handleTimeChange('hours', e.target.value)}
+                />
+                <span>:</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={String(Math.floor(((Number(selectedOption) || 0) % 3600) / 60)).padStart(2, '0')}
+                  onChange={(e) => handleTimeChange('minutes', e.target.value)}
+                />
+                <span>:</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={String((Number(selectedOption) || 0) % 60).padStart(2, '0')}
+                  onChange={(e) => handleTimeChange('seconds', e.target.value)}
+                />
+              </div>
+            )}
+
           </div>
-        }
+        )}
 
         {type === 'class' && 
           <div className='question-classification'>
