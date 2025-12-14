@@ -24,32 +24,40 @@ const TestPage = ({ testType }) => {
   const [attemptIdForReview, setAttemptIdForReview] = useState(null);
 
 
-  useEffect(() => {
-    const startTest = async () => {
-      try {
-        const token = getAccessToken();
-        const response = await axios.post(
-          `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/start`,
-          {}, 
-          { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        
-        setAttemptData(response.data);
-        
-        const endTime = new Date(response.data.endTime).getTime();
-        const now = new Date().getTime();
-        setTimeLeft(Math.floor((endTime - now) / 60000));
-        
-        setLoading(false);
-      } catch (error) {
-        console.error("Помилка старту тесту:", error);
-        alert("Не вдалося розпочати тест. Можливо, час вичерпано або ви не зареєстровані.");
-        navigate('/viewingtests'); 
-      }
-    };
+useEffect(() => {
+  const startTest = async () => {
+    try {
+      const token = getAccessToken();
+      
+      // Запит до бекенду, щоб або створити нову спробу, або отримати існуючу
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/start`,
+        {}, 
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
 
-    if (testId) startTest();
-  }, [testId, navigate]);
+      const attempt = response.data;
+      setAttemptData(attempt);
+
+      // Беремо збережений endTime для цієї спроби
+      if (attempt.endTime) {
+        const endTime = new Date(attempt.endTime).getTime();
+        const now = new Date().getTime();
+        setTimeLeft(Math.floor((endTime - now) / 1000)); // таймер у секундах
+      } else {
+        setTimeLeft(0); // на випадок, якщо endTime немає
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Помилка старту тесту:", error);
+      alert("Не вдалося розпочати тест. Можливо, час вичерпано або ви не зареєстровані.");
+      navigate('/viewingtests'); 
+    }
+  };
+
+  if (testId) startTest();
+}, [testId, navigate]);
 
   useEffect(() => {
     if (timeLeft === null) return;

@@ -45,6 +45,7 @@ public class TestAttemptService {
 
         OffsetDateTime now = OffsetDateTime.now();
 
+        // Перевірка доступності тесту для нефіксованого часу
         if (!Boolean.TRUE.equals(test.getIsFixedTime())) {
             if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
                 throw new AccessDeniedException("Test has not started yet.");
@@ -54,27 +55,43 @@ public class TestAttemptService {
             }
         }
 
+        // Створюємо або отримуємо існуючу спробу
+        UserTestAttempt attempt = attemptRepository
+                .findByUserAndTestAndCompletedAtIsNull(user, test)
+                .orElseGet(() -> {
+                    UserTestAttempt newAttempt = new UserTestAttempt(user, test);
+                    // зберігаємо дату старту
+                    newAttempt.setStartedAt(OffsetDateTime.now());
+                    return attemptRepository.save(newAttempt);
+                });
+
+        // Тепер обчислюємо calculatedEndTime
         OffsetDateTime calculatedEndTime;
-        if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
-            OffsetDateTime durationLimit = now.plusMinutes(test.getDurationMinutes());
-            if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null && test.getEndTime().isBefore(durationLimit)) {
-                calculatedEndTime = test.getEndTime();
-            } else {
+
+        if (Boolean.TRUE.equals(test.getIsFixedTime())) {
+            // Фіксований час: беремо мінімум між startedAt + duration та endTime
+            OffsetDateTime durationLimit = test.getDurationMinutes() != null 
+                    ? attempt.getStartedAt().plusSeconds(test.getDurationMinutes()) 
+                    : null;
+
+            if (durationLimit != null && test.getEndTime() != null) {
+                calculatedEndTime = durationLimit.isBefore(test.getEndTime()) ? durationLimit : test.getEndTime();
+            } else if (durationLimit != null) {
                 calculatedEndTime = durationLimit;
+            } else {
+                calculatedEndTime = test.getEndTime();
             }
         } else {
+            // Нефіксований час: просто повертаємо endTime
             calculatedEndTime = test.getEndTime();
         }
-
-        UserTestAttempt attempt = new UserTestAttempt(user, test);
-        UserTestAttempt savedAttempt = attemptRepository.save(attempt);
 
         List<QuestionTakeResponse> questionResponses = test.getTestQuestions().stream()
                 .map(testQuestion -> mapToQuestionTakeResponse(testQuestion.getQuestion()))
                 .collect(Collectors.toList());
 
         return TestTakeResponse.builder()
-                .attemptId(savedAttempt.getAttemptId())
+                .attemptId(attempt.getAttemptId())
                 .testId(test.getTestId())
                 .sphere(test.getSphere())
                 .testName(test.getTestName())
@@ -239,7 +256,7 @@ public class TestAttemptService {
         OffsetDateTime deadline;
 
         if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
-            OffsetDateTime personalDeadline = attempt.getStartedAt().plusMinutes(test.getDurationMinutes());
+            OffsetDateTime personalDeadline = attempt.getStartedAt().plusSeconds(test.getDurationMinutes());
             if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null) {
                 deadline = personalDeadline.isBefore(test.getEndTime()) ? personalDeadline : test.getEndTime();
             } else {
