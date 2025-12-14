@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
@@ -14,7 +15,7 @@ public class MyTestDTO {
     private String sphere;
     private String level;
     private String city;
-    private LocalDateTime startTime;
+    private OffsetDateTime startTime;
     private String status; 
     private int candidatesCount; 
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.dreamteam.Entity.QuestionType;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +20,8 @@ public class TestDetailResponse {
     private String vacancyDescription;
     private String responsibilities;
     private Boolean isFixedTime;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private OffsetDateTime startTime;
+    private OffsetDateTime endTime;
     private Integer durationMinutes;
     private String authorUsername;
     private List<QuestionSummary> questions;

@@ -3,6 +3,7 @@ package org.dreamteam.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +16,8 @@ public class TestCreateRequest {
     private String vacancyDescription;
     private String responsibilities;
     private Boolean isFixedTime;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private OffsetDateTime startTime;
+    private OffsetDateTime endTime;
     private Integer durationMinutes;
     
 }

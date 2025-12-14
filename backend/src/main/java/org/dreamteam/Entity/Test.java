@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -50,10 +51,10 @@ public class Test {
     private Boolean isFixedTime; 
 
     @Column(name = "start_time")
-    private LocalDateTime startTime; 
+    private OffsetDateTime startTime; 
 
     @Column(name = "end_time")
-    private LocalDateTime endTime; 
+    private OffsetDateTime endTime; 
 
     @Column(name = "duration_minutes") 
     private Integer durationMinutes; 

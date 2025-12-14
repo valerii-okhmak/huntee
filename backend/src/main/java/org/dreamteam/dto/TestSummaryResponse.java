@@ -3,6 +3,7 @@ package org.dreamteam.dto;
 import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
@@ -13,8 +14,8 @@ public class TestSummaryResponse {
     private String sphere;
     private String level;
     private String city;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private OffsetDateTime startTime;
+    private OffsetDateTime endTime;
     private Boolean isFixedTime;
     private String authorUsername;
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class TestAttemptService {
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found: " + testId));
 
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now();
 
         if (!Boolean.TRUE.equals(test.getIsFixedTime())) {
             if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
@@ -53,9 +54,9 @@ public class TestAttemptService {
             }
         }
 
-        LocalDateTime calculatedEndTime;
+        OffsetDateTime calculatedEndTime;
         if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
-            LocalDateTime durationLimit = now.plusMinutes(test.getDurationMinutes());
+            OffsetDateTime durationLimit = now.plusMinutes(test.getDurationMinutes());
             if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null && test.getEndTime().isBefore(durationLimit)) {
                 calculatedEndTime = test.getEndTime();
             } else {
@@ -153,7 +154,7 @@ public class TestAttemptService {
             return calculateResult(attempt);
         }
 
-        attempt.setCompletedAt(LocalDateTime.now());
+        attempt.setCompletedAt(OffsetDateTime.now());
 
         List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attemptId);
         int totalQuestions = attempt.getTest().getTestQuestions().size();
@@ -234,11 +235,11 @@ public class TestAttemptService {
 
     private void validateTimeLimit(UserTestAttempt attempt) {
         Test test = attempt.getTest();
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime deadline;
+        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime deadline;
 
         if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
-            LocalDateTime personalDeadline = attempt.getStartedAt().plusMinutes(test.getDurationMinutes());
+            OffsetDateTime personalDeadline = attempt.getStartedAt().plusMinutes(test.getDurationMinutes());
             if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null) {
                 deadline = personalDeadline.isBefore(test.getEndTime()) ? personalDeadline : test.getEndTime();
             } else {

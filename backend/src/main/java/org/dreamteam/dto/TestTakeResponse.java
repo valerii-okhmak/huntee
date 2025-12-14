@@ -5,6 +5,7 @@ import lombok.Data;
 import org.dreamteam.Entity.QuestionType;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,6 @@ public class TestTakeResponse {
     private UUID testId;
     private String testName;
     private String sphere; 
-    private LocalDateTime endTime; 
+    private OffsetDateTime endTime; 
     private List<QuestionTakeResponse> questions;
 }

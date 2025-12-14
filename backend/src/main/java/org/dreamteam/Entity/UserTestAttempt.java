@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -32,10 +33,10 @@ public class UserTestAttempt {
     private Test test;
 
     @Column(name = "started_at", nullable = false)
-    private LocalDateTime startedAt;
+    private OffsetDateTime startedAt;
 
     @Column(name = "completed_at") 
-    private LocalDateTime completedAt;
+    private OffsetDateTime completedAt;
 
     @Column(precision = 5, scale = 2) 
     private BigDecimal score;
@@ -46,6 +47,6 @@ public class UserTestAttempt {
     public UserTestAttempt(User user, Test test) {
         this.user = user;
         this.test = test;
-        this.startedAt = LocalDateTime.now();
+        this.startedAt = OffsetDateTime.now();
     }    
 }
