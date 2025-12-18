@@ -11,6 +11,12 @@
   font-family: "Cousine", monospace;
 }
 
+.browser-text-p{
+  font-family: "Cousine", monospace;
+  font-size: clamp(12px, 2vw, 18px);
+  line-height: 1.5;
+}
+
 .browser-text-company {
   font-family: "Cousine", monospace;
   font-size: clamp(14px, 2.5vw, 22px);

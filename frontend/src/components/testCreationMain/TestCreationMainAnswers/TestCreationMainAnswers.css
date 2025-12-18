@@ -63,7 +63,7 @@
     font-size: 18px;
     outline: none;
     transition: 0.2s;
-    color: #737373;
+    color: #000000;
     font-weight: 700;
 }
 .testCreationMainCreatorAnswers__input::placeholder {
@@ -142,7 +142,7 @@
     font-size: 18px;
     outline: none;
     transition: 0.2s;
-    color: #737373;
+    color: #000000;
     font-weight: 700;
     cursor: pointer;
 }

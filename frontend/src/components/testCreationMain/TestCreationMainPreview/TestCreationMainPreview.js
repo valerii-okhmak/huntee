@@ -172,7 +172,8 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
                 border: 'none',
                 padding: '10px 16px',
                 borderRadius: '8px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                fontFamily: 'Montserrat, sans-serif',
               }}
             >
               Видалити запитання

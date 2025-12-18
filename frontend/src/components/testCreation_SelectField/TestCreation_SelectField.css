@@ -178,6 +178,7 @@ td.rdtActive {
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
   resize: none;
+  color: #000;
 }
 .select-field-tc__custom-textarea::placeholder {
   color: #5C5959;
@@ -191,6 +192,7 @@ td.rdtActive {
   padding: 12px 22px;
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
+  color: #000;
 }
 .select-field-tc__custom-input::placeholder {
   color: #5C5959;
@@ -246,7 +248,9 @@ td.rdtActive {
   padding: 15px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
+  color: #000;
 }
+
 .responsibilities-list__input::placeholder {
   color: #5C5959;
   opacity: 1; 
