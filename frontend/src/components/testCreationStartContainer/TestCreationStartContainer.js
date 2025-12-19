@@ -9,6 +9,7 @@ const fieldOptions = [
     { value: 'backend', label: 'BACKEND' },
     { value: 'devops', label: 'DEVOPS' },
     { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
+    { value: 'dataanalyst', label: 'DATA ANALYST' }
 ];
 const levelOptions = [
   { value: 'junior', label: 'JUNIOR' },
