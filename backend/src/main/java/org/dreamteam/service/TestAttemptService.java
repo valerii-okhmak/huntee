@@ -325,7 +325,8 @@ public class TestAttemptService {
         QuestionTakeResponse.QuestionTakeResponseBuilder builder = QuestionTakeResponse.builder()
                 .questionId(question.getQuestionId())
                 .questionText(question.getQuestionText())
-                .questionType(question.getQuestionType());
+                .questionType(question.getQuestionType())
+                .comment(question.getComment());
 
         switch (question.getQuestionType()) {
             case SINGLE_CHOICE:

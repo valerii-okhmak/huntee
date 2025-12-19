@@ -23,7 +23,6 @@ const TestPage = ({ testType }) => {
   const [finalScore, setFinalScore] = useState(null);
   const [attemptIdForReview, setAttemptIdForReview] = useState(null);
 
-
 useEffect(() => {
   const startTest = async () => {
     try {
@@ -199,12 +198,21 @@ useEffect(() => {
   };
 
   const renderQuestion = (q) => {
+
+      const commentBlock = q.comment ? (
+        <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
+            <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
+            <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
+        </div>
+    ) : null;
+
     const answer = answers[q.questionId];
 
     const content = (() => {
       switch (q.questionType) {
         case "SINGLE_CHOICE":
           return (
+            <>
             <div className="choices">
               {q.choiceOptions.map((opt) => (
                 <label className="custom-radio" key={opt.optionId}>
@@ -221,11 +229,14 @@ useEffect(() => {
                 </label>
               ))}
             </div>
+            {commentBlock}
+            </>
           );
 
         case "MULTIPLE_CHOICE":
           const selectedIds = Array.isArray(answer) ? answer : [];
           return (
+            <>
             <div className="choices">
               {q.choiceOptions.map((opt) => (
                 <label className="custom-checkbox" key={opt.optionId}>
@@ -249,10 +260,13 @@ useEffect(() => {
                 </label>
               ))}
             </div>
+            {commentBlock}
+            </>
           );
 
         case "TEXT":
           return (
+            <>
             <textarea
               rows="6"
               value={answer || ""}
@@ -263,6 +277,8 @@ useEffect(() => {
                 e.target.style.height = `${e.target.scrollHeight}px`;
               }}
             />
+            {commentBlock}
+            </>
           );
 
         case "CODE":
@@ -293,6 +309,7 @@ useEffect(() => {
                   {outputMap[q.questionId]}
                 </div>
               )}
+              {commentBlock}
             </>
           );
         
@@ -361,7 +378,6 @@ useEffect(() => {
         <>
           <h2 className="question">
             {currentQuestion.questionText}
-            {currentQuestion.comment && <p className="hint">{currentQuestion.comment}</p>}
           </h2>
           <div className="answer">
             {renderQuestion(currentQuestion)}

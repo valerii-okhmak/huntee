@@ -14,6 +14,7 @@ public class QuestionTakeResponse {
     private UUID questionId;
     private String questionText;
     private QuestionType questionType;
+    private String comment;
 
     private List<ChoiceOptionTakeDTO> choiceOptions;
     private List<MatchingPromptDTO> matchingPrompts;
