@@ -57,8 +57,10 @@ public class Test {
     private OffsetDateTime endTime; 
 
     @Column(name = "duration_minutes") 
-    private Integer durationMinutes; 
+    private Integer durationMinutes;
     
+    @Column(name = "is_private")
+    private Boolean isPrivate = false;
 
     @OneToMany(mappedBy= "test", cascade= CascadeType.ALL, orphanRemoval= true)
     private Set<TestQuestion> testQuestions = new HashSet<>();
