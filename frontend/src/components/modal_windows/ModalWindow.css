@@ -27,11 +27,9 @@
   
   .modalmini-content {
     background: white;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 34px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
     position: relative;
-    font-family: 'MyFont', sans-serif;
     margin-top: 7%;
   }
 
@@ -45,6 +43,12 @@
   color: black;
   margin-bottom: 1.5rem;
   text-align: center;
+}
+
+.modalmini-title {
+  font-size: clamp(18px, 4vw, 30px);
+  font-weight: bold;
+  color: black;
 }
 
 .modal-label {
@@ -126,6 +130,13 @@
     gap: 2rem;
     width: 100%;
   }
+
+    .modalmini-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: clamp(10px, 2vw, 20px);
+    width: 100%;
+  }
   
 .modal-button {
   padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 4vw, 2rem);
@@ -137,6 +148,41 @@
   overflow: hidden;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.modalmini-button{
+  font-size: clamp(14px, 2vw, 20px);
+  padding: clamp(10px, 2vw, 15px) clamp(15px, 2vw, 20px);
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+}
+
+.modalmini-button-submit{
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid rgb(0, 0, 0);
+  font-weight: 600;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.modalmini-button-submit:hover{
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+
+.modalmini-button-cancel{
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid rgb(0, 0, 0);
+  font-weight: 600;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.modalmini-button-cancel:hover{
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
 }
 
 .modal-button-submit {
@@ -197,10 +243,11 @@
 }
 
 .confirm-modal{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 65px 75px;
+  gap:clamp(15px, 3vw, 25px);
 }
 
 .modal-subtitle{
@@ -210,6 +257,20 @@
   font-size: clamp(18px, 3vw, 24px);
   color: #333;
   margin-bottom: 1.5rem;
+}
+
+.modalmini-subtitle{
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(14px, 2vw, 20px);
+  color: #333;
+}
+
+.modalmini-minisubtitle{
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(12px, 2vw, 15px);
+  color: #333;
 }
 
   .linkes{

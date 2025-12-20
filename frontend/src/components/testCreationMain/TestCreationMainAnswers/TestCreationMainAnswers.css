@@ -79,6 +79,7 @@
 .testCreationMainCreatorAnswers__btn--remove {
     color: red;
     font-size: 36px;
+    font-weight: 800;
     margin-left: 30px;
     transition: .1s;
 }

@@ -124,6 +124,12 @@
     cursor: pointer;
     color: #ADADAD;
     font-size: clamp(24px, 4vw, 35px);
+    transition: 0.2s;
+}
+
+.testCreationMainCreator__questionField-btn:hover {
+    transform: scale(1.2);
+    color: #000000;
 }
 
 /* Червоний плейсхолдер */

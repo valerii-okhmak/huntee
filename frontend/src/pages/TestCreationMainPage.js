@@ -5,6 +5,7 @@ import GeneralTestInfoHeader from '../components/GeneralTestInfoHeader/GeneralTe
 import TestCreationMainCount from '../components/testCreationMain/TestCreationMainCount/TestCreationMainCount';
 import TestCreationMainCreator from '../components/testCreationMain/TestCreationMainCreator/TestCreationMainCreator';
 import TestCreationMainPreview from '../components/testCreationMain/TestCreationMainPreview/TestCreationMainPreview';
+import ConfirmationTestCreateModal from '../components/modal_windows/ConfirmTestCreateModal';
 import { getAccessToken } from '../utils/auth';
 
 const TestCreationMainPage = () => {
@@ -12,10 +13,12 @@ const TestCreationMainPage = () => {
   const navigate = useNavigate();
   const passed = location.state?.testMeta || null;
 
-  const [mode, setMode] = useState('create'); 
+  const [mode, setMode] = useState('create');
   const [questionsCount, setQuestionsCount] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const creatorRef = useRef(null);
 
@@ -50,16 +53,26 @@ const TestCreationMainPage = () => {
     }
   }, [passed]);
 
-  const handleNextQuestion = () => {
+  /**
+   * 👉 ЄДИНА функція додавання поточного питання
+   * Працює і для "Додати запитання", і для "Переглянути результат"
+   */
+  const addCurrentQuestionIfExists = () => {
     const q = creatorRef.current?.getCurrentQuestionAndReset();
-    
-    if (!q) return;
+
+    if (!q) return false;
 
     setQuestions(prev => {
       const updated = [...prev, q];
       setQuestionsCount(updated.length);
       return updated;
     });
+
+    return true;
+  };
+
+  const handleNextQuestion = () => {
+    addCurrentQuestionIfExists();
   };
 
   const handleDeleteQuestion = (index) => {
@@ -105,11 +118,10 @@ const TestCreationMainPage = () => {
         { headers }
       );
 
-      const createdTest = testResponse.data;
-      const testId = createdTest?.testId;
+      const testId = testResponse.data?.testId;
 
       if (!testId) {
-        throw new Error('Сервер не повернув testId при створенні тесту');
+        throw new Error('Сервер не повернув testId');
       }
 
       for (const questionPayload of questions) {
@@ -120,16 +132,13 @@ const TestCreationMainPage = () => {
         );
       }
 
-      console.log('Тест і питання успішно збережені, testId =', testId);
       alert('✅ Тест успішно створено!');
-
       setQuestions([]);
       setQuestionsCount(0);
-      setMode("create");
+      setMode('create');
       navigate('/viewingtests');
 
     } catch (error) {
-      console.error("Помилка при збереженні тесту:", error);
       const msg = error.response?.data?.message || error.response?.data || error.message;
       alert(`❌ Помилка: ${msg}`);
     } finally {
@@ -150,10 +159,7 @@ const TestCreationMainPage = () => {
       <TestCreationMainCount questionsCount={questionsCount} />
 
       {mode === 'create' ? (
-        <TestCreationMainCreator
-          ref={creatorRef}
-          onQuestionsChange={setQuestionsCount}
-        />
+        <TestCreationMainCreator ref={creatorRef} />
       ) : (
         <TestCreationMainPreview
           questions={questions}
@@ -171,9 +177,13 @@ const TestCreationMainPage = () => {
               >
                 Додати запитання
               </button>
+
               <button
                 className='testCreationMainButtons__finish black-btn'
-                onClick={() => setMode('preview')}
+                onClick={() => {
+                  addCurrentQuestionIfExists();
+                  setMode('preview');
+                }}
               >
                 Переглянути результат
               </button>
@@ -187,17 +197,27 @@ const TestCreationMainPage = () => {
               >
                 Повернутися до створення
               </button>
+
               <button
                 className='testCreationMainButtons__publish black-btn'
-                onClick={handlePublish}
+                onClick={() => setIsModalOpen(true)}
                 disabled={loading}
               >
-                {loading ? "Збереження..." : "Завершити створення"}
+                Завершити створення
               </button>
             </>
           )}
         </div>
       </div>
+      <ConfirmationTestCreateModal
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      onConfirm={() => {
+        setIsModalOpen(false);
+        handlePublish();
+      }}
+      loading={loading}
+    />
     </div>
   );
 };

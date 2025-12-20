@@ -2,7 +2,7 @@ import React from "react";
 import ModalMini from "./ModalMini"; // твій існуючий базовий модал
 import "./ModalWindow.css";
 
-const ConfirmTestEndModal = ({ isOpen, onClose, score, onViewResults }) => {
+const ConfirmTestEndModal = ({ isOpen, onClose, score, onViewResults, text }) => {
   return (
     <ModalMini isOpen={isOpen} onClose={onClose}>
       <button className="modal-close" onClick={onClose} aria-label="Закрити">
@@ -11,20 +11,19 @@ const ConfirmTestEndModal = ({ isOpen, onClose, score, onViewResults }) => {
         </svg>
       </button>
       <div className="confirm-modal">
-        <h3 className="modal-title">Увага!</h3>
-        <p className="modal-subtitle">Чи ви впевнені, що хочете завершити спробу?</p>
-        <div className="modal-buttons">
+        <h3 className="modalmini-title">УВАГА!</h3>
+        <div>
+          <p className="modalmini-subtitle">Ви впевнені, що хочете завершити тест?</p>
+          <p className="modalmini-minisubtitle">Після підтвердження змінити відповіді буде неможливо.</p>
+        </div>
+        <p className="modalmini-subtitle">Запитання без відповіді: <strong>ТУТ ЦИФРА МАЄ БУТИ</strong></p>
+        <p className="modalmini-minisubtitle">Після завершення тест буде збережено в розділі «Мої тести».</p>
+        <div className="modalmini-buttons">
           <button
-            className="modal-button modal-button-submit red-hover active"
-            onClick={onClose}
-          >
-            Ні
-          </button>
-          <button
-            className="modal-button modal-button-submit green-hover active"
+            className="modalmini-button modalmini-button-submit"
             onClick={onViewResults}
           >
-            Так
+            Завершити тест
           </button>
         </div>
       </div>

@@ -216,6 +216,7 @@
   .question {
     font-size: 1.2rem;
     margin-bottom: 1rem;
+    user-select: none;
   }
   .answer textarea {
     width: 100%;

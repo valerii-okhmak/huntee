@@ -413,6 +413,7 @@ useEffect(() => {
       onClose={() => setIsConfirmModalOpen(false)}
       score={finalScore}
       onViewResults={() => navigate(`/testreview/${attemptIdForReview}`)}
+      text={"Чи ви впевнені, що хочете завершити спробу?"}
     />
     </div>
   );
