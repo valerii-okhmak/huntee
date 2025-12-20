@@ -126,3 +126,23 @@
     font-size: clamp(24px, 4vw, 35px);
 }
 
+/* Червоний плейсхолдер */
+.input-error-placeholder::placeholder {
+    color: #e53935 !important;
+    opacity: 1;
+}
+
+/* Червона рамка для контейнера інпуту, якщо потрібно */
+.input-error-placeholder {
+    border: 1px solid #e53935 !important;
+}
+
+/* Текстова помилка під полями */
+.test-creator__error-message {
+    color: #e53935;
+    font-size: clamp(12px, 2vw, 18px);
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 10px;
+    font-weight: 700;
+}
+

@@ -164,17 +164,8 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
             </button>
 
             <button
-              className="delete-button"
+              className="test-creation-main-preview__delete-button"
               onClick={handleDelete}
-              style={{
-                backgroundColor: '#ff3b30',
-                color: 'white',
-                border: 'none',
-                padding: '10px 16px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontFamily: 'Montserrat, sans-serif',
-              }}
             >
               Видалити запитання
             </button>

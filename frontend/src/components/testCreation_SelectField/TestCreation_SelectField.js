@@ -4,7 +4,7 @@ import './TestCreation_SelectField.css'
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 
-const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fieldName, fieldOptions }) => {
+const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fieldName, fieldOptions, error}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuDateOpen, setMenuDateOpen] = useState(true);
   const [bigMenuOpen, setBigMenuOpen] = useState(false);
@@ -99,22 +99,24 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
             value={selectedOption}
             onChange={(e) => setSelectedOption(e.target.value)}
             placeholder={fieldName}
-            className="select-field-tc__custom-input"  
+            className={`select-field-tc__custom-input ${error ? 'error' : ''}`}   
           />
         }
 
-        {type === 'select' && 
+        {type === 'select' && (
           <Select
             options={fieldOptions}
             value={selectedOption}
             onChange={setSelectedOption}
             isSearchable
             placeholder="Пошук"
-            classNamePrefix="select-field-tc__custom-select"  
+            // Додаємо клас has-error безпосередньо селекту
+            className={`select-field-tc__custom-select-container ${error ? 'has-error' : ''}`}
+            classNamePrefix="select-field-tc__custom-select"
             onMenuOpen={() => setMenuOpen(true)}
             onMenuClose={() => setMenuOpen(false)}
           />
-        }
+        )}
 
         {type === 'textarea' && 
           <textarea
