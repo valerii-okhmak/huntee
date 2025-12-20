@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -31,22 +33,15 @@ public class TestInvitation {
     @Column(nullable = false)
     private InvitationStatus status;
 
-    // Створимо токен автоматично при створенні об'єкта
-    /*@PrePersist
-    public void generateToken() {
-        if (this.token == null) {
-            this.token = UUID.randomUUID().toString();
-        }
-        if (this.status == null) {
-            this.status = InvitationStatus.PENDING;
-        }
-    }
- */
-    public TestInvitation(Test test, String email, String token, InvitationStatus status) {
+    @Column(name = "expires_at")
+    private OffsetDateTime expiresAt;
+
+    public TestInvitation(Test test, String email, String token, InvitationStatus status, OffsetDateTime expiresAt) {
         this.test = test;
         this.email = email;
         this.token = token;
         this.status = status;
+        this.expiresAt = expiresAt;
     }
 }
 

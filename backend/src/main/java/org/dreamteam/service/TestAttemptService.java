@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -34,36 +33,33 @@ public class TestAttemptService {
     private final ChoiceOptionRepository choiceOptionRepository;
     private final TextAnswerRepository textAnswerRepository;
     private final MatchingPairRepository matchingPairRepository;
+    private final TestInvitationRepository invitationRepository;
+    private final TestInvitationService invitationService;
     
     private static final long TIME_BUFFER_SECONDS = 30;
 
     @Transactional
-    public TestTakeResponse startTest(UUID testId, String userEmail) {
+    public TestTakeResponse startTest(UUID testId, String userEmail, String invitationToken) {
         User user = findUserByEmail(userEmail);
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found: " + testId));
 
         OffsetDateTime now = OffsetDateTime.now();
 
-        // Перевірка доступності тесту для нефіксованого часу
-        if (!Boolean.TRUE.equals(test.getIsFixedTime())) {
-            if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
-                throw new AccessDeniedException("Test has not started yet.");
-            }
-            if (test.getEndTime() != null && now.isAfter(test.getEndTime())) {
-                throw new AccessDeniedException("Test has already finished.");
-            }
-        }
+        checkTestAvailabilityDates(test, now);
 
         // Створюємо або отримуємо існуючу спробу
         UserTestAttempt attempt = attemptRepository
                 .findByUserAndTestAndCompletedAtIsNull(user, test)
-                .orElseGet(() -> {
-                    UserTestAttempt newAttempt = new UserTestAttempt(user, test);
-                    // зберігаємо дату старту
-                    newAttempt.setStartedAt(OffsetDateTime.now());
-                    return attemptRepository.save(newAttempt);
-                });
+                .orElse(null);
+        if (attempt == null) {
+            if (Boolean.TRUE.equals(test.getIsPrivate())){
+                validateTokenForTest(invitationToken, test, userEmail);
+            }
+            attempt = new UserTestAttempt(user, test);
+            attempt.setStartedAt(OffsetDateTime.now());
+            attempt = attemptRepository.save(attempt);
+        }
 
         // Тепер обчислюємо calculatedEndTime
         OffsetDateTime calculatedEndTime;
@@ -451,6 +447,36 @@ public class TestAttemptService {
     private void checkAttemptOwnership(UserTestAttempt attempt, String email) {
         if (!attempt.getUser().getEmail().equals(email)) {
             throw new AccessDeniedException("You do not have permission to access this test attempt.");
+        }
+    }
+
+
+private void checkTestAvailabilityDates(Test test, OffsetDateTime now) {
+        if (!Boolean.TRUE.equals(test.getIsFixedTime())) {
+            if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
+                throw new AccessDeniedException("Тест ще не розпочався.");
+            }
+            if (test.getEndTime() != null && now.isAfter(test.getEndTime())) {
+                throw new AccessDeniedException("Тест вже завершився.");
+            }
+        }
+}
+
+
+private void validateTokenForTest(String token, Test test, String userEmail) {
+        if (token == null || token.isBlank()) {
+            throw new AccessDeniedException("Цей тест є приватним. Потрібен токен запрошення.");
+        }
+
+        TestInvitation invitation = invitationService.validateAndConsumeToken(token);
+
+        
+        if (!invitation.getTest().getTestId().equals(test.getTestId())) {
+            throw new AccessDeniedException("Цей токен не підходить до цього тесту.");
+        }
+
+        if (!invitation.getEmail().equalsIgnoreCase(userEmail)) {
+            throw new AccessDeniedException("Ви повинні увійти з пошти, на яку прийшло запрошення (" + invitation.getEmail() + ").");
         }
     }
 }
