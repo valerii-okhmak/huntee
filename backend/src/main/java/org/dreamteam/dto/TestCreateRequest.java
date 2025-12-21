@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Data
 @NoArgsConstructor
 public class TestCreateRequest {
@@ -19,5 +21,6 @@ public class TestCreateRequest {
     private OffsetDateTime startTime;
     private OffsetDateTime endTime;
     private Integer durationMinutes;
+    @JsonProperty("is_private")
     private Boolean isPrivate;
 }

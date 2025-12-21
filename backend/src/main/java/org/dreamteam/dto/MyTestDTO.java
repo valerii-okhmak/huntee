@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Data
 @Builder
 public class MyTestDTO {
@@ -18,5 +20,6 @@ public class MyTestDTO {
     private OffsetDateTime startTime;
     private String status; 
     private int candidatesCount;
+    @JsonProperty("is_private")
     private Boolean isPrivate;
 }

@@ -72,6 +72,7 @@ public class TestService {
         test.setStartTime(request.getStartTime());
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
+        test.setIsPrivate(request.getIsPrivate());
 
         Test savedTest = testRepository.save(test);
         return mapToDetailResponse(savedTest);
@@ -106,6 +107,7 @@ public class TestService {
         test.setStartTime(request.getStartTime());
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
+        test.setIsPrivate(request.getIsPrivate());
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
@@ -245,6 +247,7 @@ public class TestService {
                 .endTime(test.getEndTime())
                 .durationMinutes(test.getDurationMinutes())
                 .authorUsername(test.getUser().getUsername())
+                .isPrivate(test.getIsPrivate())
                 .questions(questionSummaries)
                 .build();
     }
@@ -260,6 +263,7 @@ public class TestService {
                 .endTime(test.getEndTime())
                 .isFixedTime(test.getIsFixedTime())
                 .authorUsername(test.getUser().getUsername())
+                .isPrivate(test.getIsPrivate())
                 .build();
     }
 
