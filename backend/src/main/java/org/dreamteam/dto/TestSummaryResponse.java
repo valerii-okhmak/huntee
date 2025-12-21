@@ -18,4 +18,6 @@ public class TestSummaryResponse {
     private OffsetDateTime endTime;
     private Boolean isFixedTime;
     private String authorUsername;
+    @JsonProperty("is_private")
+    private Boolean isPrivate;
 }

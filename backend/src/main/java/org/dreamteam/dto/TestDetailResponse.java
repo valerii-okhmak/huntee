@@ -3,6 +3,9 @@ package org.dreamteam.dto;
 import lombok.Builder;
 import lombok.Data;
 import org.dreamteam.Entity.QuestionType;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -24,7 +27,8 @@ public class TestDetailResponse {
     private OffsetDateTime endTime;
     private Integer durationMinutes;
     private String authorUsername;
-    private boolean isPrivate;  
+    @JsonProperty("is_private")
+    private Boolean isPrivate;  
     private List<QuestionSummary> questions;
 
     @Data
