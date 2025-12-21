@@ -210,14 +210,18 @@ const TestCreationMainPage = () => {
         </div>
       </div>
       <ConfirmationTestCreateModal
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-      onConfirm={() => {
-        setIsModalOpen(false);
-        handlePublish();
-      }}
-      loading={loading}
-    />
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => {
+          setIsModalOpen(false);
+          handlePublish();
+        }}
+        loading={loading}
+        // Передаємо реальні дані зі стану сторінки
+        questionsCount={questions.length}
+        startDate={testMeta.startTime ? testMeta.startTime.toLocaleDateString('uk-UA') : 'не вказано'}
+        startTime={testMeta.startTime ? testMeta.startTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }) : 'не вказано'}
+      />
     </div>
   );
 };

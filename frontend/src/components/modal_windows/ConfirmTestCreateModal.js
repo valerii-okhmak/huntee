@@ -2,7 +2,15 @@ import React from "react";
 import ModalMini from "./ModalMini";
 import "./ModalWindow.css";
 
-const ConfirmTestCreateModal = ({isOpen, onClose, onConfirm, questionsCount, startDate, startTime, loading = false,}) => {
+const ConfirmTestCreateModal = ({
+  isOpen, 
+  onClose, 
+  onConfirm, 
+  questionsCount, // отримуємо кількість
+  startDate,      // отримуємо дату
+  startTime,      // отримуємо час
+  loading = false,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -22,12 +30,17 @@ const ConfirmTestCreateModal = ({isOpen, onClose, onConfirm, questionsCount, sta
         <h3 className="modalmini-title">ЗАВЕРШИТИ СТВОРЕННЯ ТЕСТУ?</h3>
 
         <p className="modalmini-subtitle">
-          Ваш тест містить <strong>ЦИФРА</strong> запитань.
+          Ваш тест містить таку кількість запитань: <strong>{questionsCount}</strong>
         </p>
 
+        {/* Відображаємо дату, тільки якщо вона є */}
+        {startDate !== 'не вказано' ? (
           <p className="modalmini-subtitle">
-            Тест заплановано на <strong>ДАТА</strong> о <strong>ЧАС</strong>.
+            Тест заплановано на <strong>{startDate}</strong> о <strong>{startTime}</strong>.
           </p>
+        ) : (
+          <p className="modalmini-subtitle">Дата та час початку не вказані.</p>
+        )}
 
         <p className="modalmini-subtitle">
           Ви зможете відредагувати тест пізніше.
