@@ -20,6 +20,5 @@ public class MyTestDTO {
     private OffsetDateTime startTime;
     private String status; 
     private int candidatesCount;
-    @JsonProperty("is_private")
     private Boolean isPrivate;
 }

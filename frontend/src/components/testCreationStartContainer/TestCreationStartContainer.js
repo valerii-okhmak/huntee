@@ -83,10 +83,10 @@ const TestCreationStartContainer = () => {
             startTime: startingDate ? new Date(startingDate).toISOString() : null,
             endTime: finishingDate ? new Date(finishingDate).toISOString() : null,
             durationMinutes: Number(selectedTime) || 0,
-            isPrivate: selectedTestType.value === 'private', // Додаємо в об'єкт відправки
+            isPrivate: selectedTestType?.value === 'private',
             classes
         };
-
+        console.log("Дані для бекенду:", payload);
         navigate('/testcreation/main', { state: { testMeta: payload } });
     };
 

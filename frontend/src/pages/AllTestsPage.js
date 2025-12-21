@@ -20,11 +20,9 @@ const AllTestsPage = () => {
 
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedSpheres, setSelectedSpheres] = useState([]);
-  // const [selectedTimes, setSelectedTimes] = useState([]); // закоментовано фільтр часу
 
   const location = useLocation();
 
-  // Читання query params
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const sphereParam = params.get('sphere');
@@ -43,7 +41,10 @@ const AllTestsPage = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const mappedTests = response.data.map(test => {
+        // Фільтруємо тести: залишаємо лише ті, де isPrivate === false
+        const publicTestsOnly = response.data.filter(test => test.isPrivate === false);
+
+        const mappedTests = publicTestsOnly.map(test => {
           const startDate = new Date(test.startTime);
           return {
             id: test.testId,
@@ -73,10 +74,9 @@ const AllTestsPage = () => {
     return allTests.filter(test => {
       const locationMatch = selectedLocations.length === 0 || selectedLocations.includes(test.location);
       const sphereMatch = selectedSpheres.length === 0 || selectedSpheres.includes(test.type);
-      // const timeMatch = selectedTimes.length === 0 || selectedTimes.includes(test.time); // закоментовано
-      return locationMatch && sphereMatch; // && timeMatch; закоментовано фільтр часу
+      return locationMatch && sphereMatch;
     });
-  }, [allTests, selectedLocations, selectedSpheres /*, selectedTimes */]); // закоментовано
+  }, [allTests, selectedLocations, selectedSpheres]);
 
   return (
     <div className="page">
@@ -88,8 +88,6 @@ const AllTestsPage = () => {
           setSelectedLocations={setSelectedLocations}
           selectedSpheres={selectedSpheres}
           setSelectedSpheres={setSelectedSpheres}
-          // selectedTimes={selectedTimes}
-          // setSelectedTimes={setSelectedTimes} 
         />
         
         {isLoading ? (

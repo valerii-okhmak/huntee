@@ -27,7 +27,6 @@ public class TestDetailResponse {
     private OffsetDateTime endTime;
     private Integer durationMinutes;
     private String authorUsername;
-    @JsonProperty("is_private")
     private Boolean isPrivate;  
     private List<QuestionSummary> questions;
 

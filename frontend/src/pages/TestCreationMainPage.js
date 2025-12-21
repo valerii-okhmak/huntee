@@ -19,7 +19,6 @@ const TestCreationMainPage = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   const creatorRef = useRef(null);
 
   const [testMeta, setTestMeta] = useState(() => ({
@@ -32,7 +31,8 @@ const TestCreationMainPage = () => {
     startTime: passed?.startTime ? new Date(passed.startTime) : null,
     endTime: passed?.endTime ? new Date(passed.endTime) : null,
     durationMinutes: passed?.durationMinutes || 0,
-    isFixedTime: (passed?.durationMinutes ?? 0) > 0
+    isFixedTime: (passed?.durationMinutes ?? 0) > 0,
+    isPrivate: passed?.isPrivate || false
   }));
 
   useEffect(() => {
@@ -48,7 +48,8 @@ const TestCreationMainPage = () => {
         startTime: passed.startTime ? new Date(passed.startTime) : prev.startTime,
         endTime: passed.endTime ? new Date(passed.endTime) : prev.endTime,
         durationMinutes: passed.durationMinutes || 0,
-        isFixedTime: (passed.durationMinutes ?? 0) > 0
+        isFixedTime: (passed.durationMinutes ?? 0) > 0,
+        isPrivate: passed.isPrivate ?? prev.isPrivate
       }));
     }
   }, [passed]);
@@ -109,7 +110,8 @@ const TestCreationMainPage = () => {
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
         durationMinutes: testMeta.durationMinutes > 0 ? testMeta.durationMinutes : 0,
-        isFixedTime: testMeta.durationMinutes > 0
+        isFixedTime: testMeta.durationMinutes > 0,
+        isPrivate: testMeta.isPrivate
       };
 
       const testResponse = await axios.post(

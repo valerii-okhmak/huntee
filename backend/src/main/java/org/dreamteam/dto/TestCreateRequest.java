@@ -21,6 +21,5 @@ public class TestCreateRequest {
     private OffsetDateTime startTime;
     private OffsetDateTime endTime;
     private Integer durationMinutes;
-    @JsonProperty("is_private")
     private Boolean isPrivate;
 }

@@ -49,7 +49,24 @@
   font-size: clamp(18px, 4vw, 30px);
   font-weight: bold;
   color: black;
+  font-family: 'Montserrat', sans-serif;
 }
+
+.modal-input.invite-link-display{
+  cursor: pointer;
+  color: #000000;
+}
+
+.invite-message.success{
+  font-family: 'Montserrat', sans-serif;
+  color: green;
+}
+
+.invite-message.error{
+  font-family: 'Montserrat', sans-serif;
+  color: red;
+}
+
 
 .modal-label {
   display: block;
@@ -248,6 +265,37 @@
   align-items: flex-start;
   padding: 65px 75px;
   gap:clamp(15px, 3vw, 25px);
+}
+
+.invite-modal{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 65px 75px;
+  gap:clamp(15px, 3vw, 25px);
+}
+
+.invite-modal-list {
+    list-style-type: disc; /* Стандартна заповнена крапка */
+    list-style-position: inside; /* Крапка стає частиною текстового блоку, а не виноситься ліворуч */
+    padding: 0; 
+    text-align: left;
+}
+
+.invite-modal-list li {
+    text-indent: -1.2em; /* Вирівнює другий і наступні рядки під першим словом, а не під крапкою */
+    padding-left: 1.2em; /* Компенсує відступ для крапки */
+    display: list-item; /* Гарантує відображення маркера */
+}
+
+/* Якщо хочете, щоб крапка була кольоровою */
+.invite-modal-list li::marker {
+    color: #000000; /* Ваш колір */
+    font-size: 15px;
+}
+
+.invite-input-container {
+  width: 100%;
 }
 
 .modal-subtitle{

@@ -4,6 +4,7 @@ import DashboardStudentCard from '../../DashboardStudentCard/DashboardStudentCar
 import lupa from '../../../../img/search-icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
+import InviteParticipantsModal from '../../../modal_windows/InviteParticipantsModal';
 import axios from 'axios';
 import { getAccessToken } from '../../../../utils/auth';
 
@@ -11,6 +12,9 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // 1. Стейт для керування модалкою
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -67,6 +71,16 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         </button>
       </div>
 
+      <div className="testDashboard__btn-invite-container">
+        {/* 2. Прив'язка функції відкриття до кнопки */}
+        <button 
+          className="testDashboard__btn-invite" 
+          onClick={() => setIsInviteModalOpen(true)}
+        >
+            Запросити учасників
+        </button>
+      </div>
+
       <div className="testDashboard__cards-list">
         {students.map(student => (
           <DashboardStudentCard 
@@ -76,6 +90,13 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
           />
         ))}
       </div>
+
+      {/* 3. Передача стейту та функції закриття в модалку */}
+      <InviteParticipantsModal 
+        isOpen={isInviteModalOpen} 
+        onClose={() => setIsInviteModalOpen(false)} 
+        testId={testId} 
+      />
     </div>
   )
 }
