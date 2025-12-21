@@ -24,6 +24,7 @@ public class TestDetailResponse {
     private OffsetDateTime endTime;
     private Integer durationMinutes;
     private String authorUsername;
+    private boolean isPrivate;  
     private List<QuestionSummary> questions;
 
     @Data
