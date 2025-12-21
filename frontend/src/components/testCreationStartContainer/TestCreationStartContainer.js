@@ -37,6 +37,7 @@ const TestCreationStartContainer = () => {
     const [classes, setClasses] = useState([]);
     const [selectedQuestions, setSelectedQuestions] = useState([]);
     const [errors, setErrors] = useState({});
+    const [selectedTestType, setSelectedTestType] = useState({ value: 'public', label: 'Публічний' });
 
     const refs = {
       testName: useRef(null),
@@ -82,6 +83,7 @@ const TestCreationStartContainer = () => {
             startTime: startingDate ? new Date(startingDate).toISOString() : null,
             endTime: finishingDate ? new Date(finishingDate).toISOString() : null,
             durationMinutes: Number(selectedTime) || 0,
+            isPrivate: selectedTestType.value === 'private', // Додаємо в об'єкт відправки
             classes
         };
 
@@ -168,6 +170,13 @@ const TestCreationStartContainer = () => {
                 selectedOption={selectedTime}
                 setSelectedOption={setSelectedTime}
                 fieldName="Таймер"
+                fieldOptions={{}}
+            />
+            <SelectField
+                type="testtype"
+                selectedOption={selectedTestType}
+                setSelectedOption={setSelectedTestType}
+                fieldName="Тип тесту"
                 fieldOptions={{}}
             />
 

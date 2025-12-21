@@ -249,6 +249,43 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
           </div>
         }
 
+        {type === 'testtype' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testType"
+                value="public"
+                // Перевіряємо за значенням об'єкта або просто стейтом
+                checked={selectedOption?.value === 'public'}
+                onChange={() => setSelectedOption({ value: 'public', label: 'Публічний' })}
+              />
+              <div className="question-classification__label">
+                Публічний
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testType"
+                value="private"
+                checked={selectedOption?.value === 'private'}
+                onChange={() => setSelectedOption({ value: 'private', label: 'Приватний' })}
+              />
+              <div className="question-classification__label">
+                Приватний
+              </div>
+            </label>
+            
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'public' 
+                ? "Доступний усім користувачам платформи" 
+                : "Доступний лише за прямим посиланням або інвайтом"}
+            </p>
+          </div>
+        )}
+
         {type === 'list' && (
           <div className="responsibilities-list">
 

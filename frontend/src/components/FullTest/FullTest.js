@@ -23,6 +23,10 @@ const TestPage = ({ testType }) => {
   const [finalScore, setFinalScore] = useState(null);
   const [attemptIdForReview, setAttemptIdForReview] = useState(null);
 
+  // --- НОВІ СТЕЙТИ ДЛЯ ПІДРАХУНКУ ---
+  const [unansweredCount, setUnansweredCount] = useState(0);
+  const [unansweredLabels, setUnansweredLabels] = useState("");
+
 useEffect(() => {
   const startTest = async () => {
     try {
@@ -173,9 +177,37 @@ useEffect(() => {
     setIsSubmitting(false);
   };
 
+  // --- НОВА ФУНКЦІЯ ПІДРАХУНКУ ---
+  const getUnansweredDetails = () => {
+    if (!attemptData) return { count: 0, labels: "" };
+    const indices = attemptData.questions
+      .map((q, index) => {
+        const ans = answers[q.questionId];
+        const isEmpty = (
+          ans === undefined || 
+          ans === null || 
+          ans === "" || 
+          (Array.isArray(ans) && ans.length === 0)
+        );
+        return isEmpty ? index + 1 : null;
+      })
+      .filter(num => num !== null);
+
+    return {
+      count: indices.length,
+      labels: indices.length > 0 ? ` (${indices.join(", ")})` : ""
+    };
+  };
+
   const handleFinishTest = async () => {
     setIsSubmitting(true);
     await saveCurrentAnswer(); 
+
+    // Рахуємо пропущені перед відкриттям модалки
+    const details = getUnansweredDetails();
+    setUnansweredCount(details.count);
+    setUnansweredLabels(details.labels);
+
     try {
         const token = getAccessToken();
         const response = await axios.post(
@@ -413,6 +445,8 @@ useEffect(() => {
       onClose={() => setIsConfirmModalOpen(false)}
       score={finalScore}
       onViewResults={() => navigate(`/testreview/${attemptIdForReview}`)}
+      unansweredCount={unansweredCount}
+      unansweredLabels={unansweredLabels}
       text={"Чи ви впевнені, що хочете завершити спробу?"}
     />
     </div>
