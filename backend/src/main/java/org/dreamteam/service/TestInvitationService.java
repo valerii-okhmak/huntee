@@ -66,13 +66,16 @@ public class TestInvitationService {
     @Transactional
     public TestInvitation validateAndConsumeToken(String token) {
         TestInvitation invitation = invitationRepository.findByToken(token)
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new AccessDeniedException("Недійсний токен запрошення."));
 
         if (invitation.getStatus() != InvitationStatus.PENDING) {
             throw new AccessDeniedException("Запрошення було вже використано або скасовано.");
         }
         
-        if (invitation.getExpiresAt().isBefore(LocalDateTime.now())) {
+        // 2. Виправлено: використовуємо OffsetDateTime.now() замість LocalDateTime
+        if (invitation.getExpiresAt().isBefore(OffsetDateTime.now())) {
             invitation.setStatus(InvitationStatus.EXPIRED);
             invitationRepository.save(invitation);
             throw new AccessDeniedException("Термін дії запрошення минув.");
