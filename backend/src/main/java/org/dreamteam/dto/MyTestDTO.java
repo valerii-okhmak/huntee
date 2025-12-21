@@ -17,5 +17,6 @@ public class MyTestDTO {
     private String city;
     private OffsetDateTime startTime;
     private String status; 
-    private int candidatesCount; 
+    private int candidatesCount;
+    private Boolean isPrivate; 
 }
