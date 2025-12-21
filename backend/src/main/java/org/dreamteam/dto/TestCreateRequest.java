@@ -19,5 +19,5 @@ public class TestCreateRequest {
     private OffsetDateTime startTime;
     private OffsetDateTime endTime;
     private Integer durationMinutes;
-    
+    private Boolean isPrivate;
 }
