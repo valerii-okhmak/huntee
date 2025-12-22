@@ -101,6 +101,7 @@ const TestCreationMainPage = () => {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
 
+      // 1. Публікуємо мета-дані тесту
       const testPayload = {
         ...testMeta,
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
@@ -114,7 +115,15 @@ const TestCreationMainPage = () => {
       );
 
       const testId = testResponse.data?.testId;
-      for (const questionPayload of questions) {
+
+      // 2. Публікуємо питання з додаванням orderIndex
+      // Використовуємо звичайний цикл з індексом або entries()
+      for (let i = 0; i < questions.length; i++) {
+        const questionPayload = {
+          ...questions[i],
+          orderIndex: i // Передаємо порядковий номер (0, 1, 2...)
+        };
+
         await axios.post(
           `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/questions`,
           questionPayload,
