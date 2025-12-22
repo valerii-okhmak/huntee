@@ -86,6 +86,8 @@ const TestCreationStartContainer = () => {
             endTime: finishingDate ? new Date(finishingDate).toISOString() : null,
             durationMinutes: Number(selectedTime) || 0,
             isPrivate: selectedTestType?.value === 'private',
+            isFixedQuestionOrder: selectedTestQuestionsSorting?.value === 'fixed',
+            isFixedAnswerOrder: selectedTestAnswersSorting?.value === 'fixed',
             classes
         };
         console.log("Дані для бекенду:", payload);
