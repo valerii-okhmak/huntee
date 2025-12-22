@@ -81,13 +81,18 @@ public class TestAttemptService {
             // Нефіксований час: просто повертаємо endTime
             calculatedEndTime = test.getEndTime();
         }
-
-        List<QuestionTakeResponse> questionResponses = test.getTestQuestions().stream()
-                 .sorted((q1, q2) -> {
-                    int idx1 = q1.getOrderIndex() != null ? q1.getOrderIndex() : Integer.MAX_VALUE;
-                    int idx2 = q2.getOrderIndex() != null ? q2.getOrderIndex() : Integer.MAX_VALUE;
-                    return Integer.compare(idx1, idx2);
-                })
+        List<TestQuestion> questionsList = new java.util.ArrayList<>(test.getTestQuestions());
+        if (Boolean.FALSE.equals(test.getIsFixedQuestionOrder())) {
+            java.util.Collections.shuffle(questionsList);
+        } else {
+            // Якщо TRUE або NULL -> сортуємо за індексом (стандартна поведінка)
+            questionsList.sort((q1, q2) -> {
+                int idx1 = q1.getOrderIndex() != null ? q1.getOrderIndex() : Integer.MAX_VALUE;
+                int idx2 = q2.getOrderIndex() != null ? q2.getOrderIndex() : Integer.MAX_VALUE;
+                return Integer.compare(idx1, idx2);
+            });
+        }
+        List<QuestionTakeResponse> questionResponses = questionsList.stream()
                 .map(testQuestion -> mapToQuestionTakeResponse(testQuestion.getQuestion()))
                 .collect(Collectors.toList());
 
