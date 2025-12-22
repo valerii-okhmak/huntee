@@ -93,7 +93,10 @@ public class TestAttemptService {
             });
         }
         List<QuestionTakeResponse> questionResponses = questionsList.stream()
-                .map(testQuestion -> mapToQuestionTakeResponse(testQuestion.getQuestion()))
+                .map(testQuestion -> mapToQuestionTakeResponse(
+                        testQuestion.getQuestion(), 
+                        test.getIsFixedAnswerOrder()
+                    ))
                 .collect(Collectors.toList());
 
         return TestTakeResponse.builder()
@@ -366,7 +369,7 @@ public class TestAttemptService {
         }
     }
 
-    private QuestionTakeResponse mapToQuestionTakeResponse(Question question) {
+    private QuestionTakeResponse mapToQuestionTakeResponse(Question question, Boolean isFixedAnswerOrder) {
         QuestionTakeResponse.QuestionTakeResponseBuilder builder = QuestionTakeResponse.builder()
                 .questionId(question.getQuestionId())
                 .questionText(question.getQuestionText())
@@ -376,15 +379,32 @@ public class TestAttemptService {
         switch (question.getQuestionType()) {
             case SINGLE_CHOICE:
             case MULTIPLE_CHOICE:
-                builder.choiceOptions(question.getChoiceOptions().stream()
+                java.util.List<ChoiceOption> optionsList = new java.util.ArrayList<>(question.getChoiceOptions());
+                if (Boolean.FALSE.equals(isFixedAnswerOrder)) {
+                    // Якщо false -> Перемішуємо (Рандом)
+                    java.util.Collections.shuffle(optionsList);
+                } else {
+                    // Якщо true -> Сортуємо стабільно за ID
+                    optionsList.sort(java.util.Comparator.comparing(ChoiceOption::getOptionId));
+                }
+                builder.choiceOptions(optionsList.stream()
                         .map(o -> QuestionTakeResponse.ChoiceOptionTakeDTO.builder()
                                 .optionId(o.getOptionId())
                                 .optionText(o.getOptionText())
+                                // додайте imageUrl, якщо він є в DTO
                                 .build())
                         .collect(Collectors.toList()));
                 break;
             case MATCHING:
-                builder.matchingPrompts(question.getMatchingPairs().stream()
+                java.util.List<MatchingPair> pairsList = new java.util.ArrayList<>(question.getMatchingPairs());
+
+                if (Boolean.FALSE.equals(isFixedAnswerOrder)) {
+                    java.util.Collections.shuffle(pairsList);
+                } else {
+                    pairsList.sort(java.util.Comparator.comparing(MatchingPair::getPairId));
+                }
+
+                builder.matchingPrompts(pairsList.stream()
                         .map(p -> QuestionTakeResponse.MatchingPromptDTO.builder()
                                 .pairId(p.getPairId())
                                 .prompt(p.getPrompt())
