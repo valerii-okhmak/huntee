@@ -230,6 +230,7 @@ public class TestService {
                             .questionId(q.getQuestionId())
                             .questionText(q.getQuestionText())
                             .questionType(q.getQuestionType())
+                            .weight(q.getWeight() != null ? q.getWeight() : 1.0)
                             .build();
                 })
                 .collect(Collectors.toList());

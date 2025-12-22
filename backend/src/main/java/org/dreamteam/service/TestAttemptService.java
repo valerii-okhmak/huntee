@@ -91,6 +91,7 @@ public class TestAttemptService {
                 .testId(test.getTestId())
                 .sphere(test.getSphere())
                 .testName(test.getTestName())
+                .isFixedTime(test.getIsFixedTime())
                 .endTime(calculatedEndTime)
                 .questions(questionResponses)
                 .build();
@@ -170,32 +171,51 @@ public class TestAttemptService {
         attempt.setCompletedAt(OffsetDateTime.now());
 
         List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attemptId);
-        int totalQuestions = attempt.getTest().getTestQuestions().size();
+        double totalMaxScore = 0.0;
+        double earnedScore = 0.0;
         int correctCount = 0;
 
-        for (UserAnswer answer : answers) {
-            boolean isCorrect = gradeAnswer(answer);
-            answer.setIsCorrect(isCorrect);
-            if (isCorrect) {
-                correctCount++;
+        List<Question> allQuestions = attempt.getTest().getTestQuestions().stream()
+                .map(TestQuestion::getQuestion)
+                .collect(Collectors.toList());
+
+        for (Question q : allQuestions) {
+            double weight = (q.getWeight() != null) ? q.getWeight() : 1.0;
+            totalMaxScore += weight;
+        
+
+        UserAnswer answer = answers.stream()
+                    .filter(a -> a.getQuestion().getQuestionId().equals(q.getQuestionId()))
+                    .findFirst()
+                    .orElse(null);
+  
+
+            if (answer != null) {
+                boolean isCorrect = gradeAnswer(answer);
+                answer.setIsCorrect(isCorrect);
+                userAnswerRepository.save(answer);
+
+                if (isCorrect) {
+                    correctCount++;
+                    earnedScore += weight;
+                }
             }
-            userAnswerRepository.save(answer);
         }
 
-        BigDecimal score = BigDecimal.ZERO;
-        if (totalQuestions > 0) {
-            score = BigDecimal.valueOf(correctCount)
+        BigDecimal finalScore = BigDecimal.ZERO;
+        if (totalMaxScore > 0) {
+            finalScore = BigDecimal.valueOf(earnedScore)
                     .multiply(BigDecimal.valueOf(100))
-                    .divide(BigDecimal.valueOf(totalQuestions), 2, RoundingMode.HALF_UP);
+                    .divide(BigDecimal.valueOf(totalMaxScore), 2, RoundingMode.HALF_UP);
         }
 
-        attempt.setScore(score);
+        attempt.setScore(finalScore);
         attemptRepository.save(attempt);
 
         return TestResultResponse.builder()
                 .attemptId(attemptId)
-                .score(score)
-                .totalQuestions(totalQuestions)
+                .score(finalScore)
+                .totalQuestions(allQuestions.size())
                 .correctAnswers(correctCount)
                 .build();
     }

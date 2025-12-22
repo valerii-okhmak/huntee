@@ -15,6 +15,7 @@ public class QuestionResponse {
     private String questionText;
     private String comment;
     private QuestionType questionType;
+    private Double weight;
     private String authorEmail;
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;
