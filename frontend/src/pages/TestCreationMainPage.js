@@ -33,7 +33,9 @@ const TestCreationMainPage = () => {
     endTime: passed?.endTime ? new Date(passed.endTime) : null,
     durationMinutes: passed?.durationMinutes || 0,
     isFixedTime: (passed?.durationMinutes ?? 0) > 0,
-    isPrivate: passed?.isPrivate || false
+    isPrivate: passed?.isPrivate || false,
+    isFixedQuestionOrder: passed?.isFixedQuestionOrder || false,
+    isFixedAnswerOrder: passed?.isFixedAnswerOrder || false
   }));
 
   useEffect(() => {
@@ -50,7 +52,9 @@ const TestCreationMainPage = () => {
         endTime: passed.endTime ? new Date(passed.endTime) : prev.endTime,
         durationMinutes: passed.durationMinutes || 0,
         isFixedTime: (passed.durationMinutes ?? 0) > 0,
-        isPrivate: passed.isPrivate ?? prev.isPrivate
+        isPrivate: passed.isPrivate ?? prev.isPrivate,
+        isFixedQuestionOrder: passed.isFixedQuestionOrder ?? prev.isFixedQuestionOrder,
+        isFixedAnswerOrder: passed.isFixedAnswerOrder ?? prev.isFixedAnswerOrder
       }));
     }
   }, [passed]);

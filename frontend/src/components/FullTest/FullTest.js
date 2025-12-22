@@ -24,19 +24,18 @@ const TestPage = ({ testType }) => {
   const [finalScore, setFinalScore] = useState(null);
   const [attemptIdForReview, setAttemptIdForReview] = useState(null);
 
-  // --- НОВІ СТЕЙТИ ДЛЯ ПІДРАХУНКУ ---
   const [unansweredCount, setUnansweredCount] = useState(0);
   const [unansweredLabels, setUnansweredLabels] = useState("");
 
   const [isStartTestErrorModalOpen, setIsStartTestErrorModalOpen] = useState(false);
   const [startErrorMessage, setStartErrorMessage] = useState("");
 
-const handleCloseErrorModal = () => {
+  const handleCloseErrorModal = () => {
     setIsStartTestErrorModalOpen(false);
     navigate(-1);
   };
 
-useEffect(() => {
+  useEffect(() => {
     const startTest = async () => {
       try {
         const token = getAccessToken();
@@ -49,21 +48,21 @@ useEffect(() => {
         const attempt = response.data;
         setAttemptData(attempt);
 
-        if (attempt.endTime) {
+        // Ініціалізуємо таймер тільки якщо час фіксований
+        if (attempt.isFixedTime && attempt.endTime) {
           const endTime = new Date(attempt.endTime).getTime();
           const now = new Date().getTime();
           setTimeLeft(Math.floor((endTime - now) / 1000));
         } else {
-          setTimeLeft(0);
+          setTimeLeft(null); 
         }
         setLoading(false);
       } catch (error) {
         console.error("Помилка старту тесту:", error);
-        // Замість alert встановлюємо текст помилки та відкриваємо модалку
-        const msg = error.response?.data?.message || "Не вдалося розпочати тест. Можливо, час вичерпано або ви не зареєстровані.";
+        const msg = error.response?.data?.message || "Не вдалося розпочати тест.";
         setStartErrorMessage(msg);
         setIsStartTestErrorModalOpen(true);
-        setLoading(false); // зупиняємо лоадер
+        setLoading(false);
       }
     };
 
@@ -71,6 +70,7 @@ useEffect(() => {
   }, [testId]);
 
   useEffect(() => {
+    // Якщо таймер не встановлений (null) або час вийшов
     if (timeLeft === null) return;
     if (timeLeft <= 0) {
         handleFinishTest(); 
@@ -127,8 +127,6 @@ useEffect(() => {
         body,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
-      
-      console.log("Відповідь збережено");
     } catch (error) {
       console.error("Помилка збереження відповіді:", error);
     }
@@ -140,36 +138,20 @@ useEffect(() => {
 
     try {
         setOutputMap(prev => ({ ...prev, [question.questionId]: "Compiling..." }));
-        
         const token = getAccessToken();
         const response = await axios.post(
             `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/run`,
             code, 
-            { 
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'text/plain' 
-                } 
-            }
+            { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'text/plain' } }
         );
 
         const result = response.data; 
-        
         let outputText = result.allPassed ? "✅ All tests passed!\n" : "❌ Some tests failed.\n";
-        
         result.results.forEach((res, idx) => {
-            outputText += `\nTest Case #${idx + 1}:\n`;
-            outputText += `Input: ${res.input}\n`;
-            outputText += `Expected: ${res.expectedOutput}\n`;
-            outputText += `Actual:   ${res.actualOutput}\n`;
-            if (res.error) outputText += `Error: ${res.error}\n`;
-            outputText += res.passed ? "Result: PASS\n" : "Result: FAIL\n";
+            outputText += `\nTest Case #${idx + 1}:\nInput: ${res.input}\nExpected: ${res.expectedOutput}\nActual: ${res.actualOutput}\n${res.passed ? "Result: PASS" : "Result: FAIL"}\n`;
         });
-
         setOutputMap(prev => ({ ...prev, [question.questionId]: outputText }));
-
     } catch (error) {
-        console.error("Run code error:", error);
         setOutputMap(prev => ({ ...prev, [question.questionId]: "Error running code." }));
     }
   };
@@ -185,18 +167,12 @@ useEffect(() => {
     setIsSubmitting(false);
   };
 
-  // --- НОВА ФУНКЦІЯ ПІДРАХУНКУ ---
   const getUnansweredDetails = () => {
     if (!attemptData) return { count: 0, labels: "" };
     const indices = attemptData.questions
       .map((q, index) => {
         const ans = answers[q.questionId];
-        const isEmpty = (
-          ans === undefined || 
-          ans === null || 
-          ans === "" || 
-          (Array.isArray(ans) && ans.length === 0)
-        );
+        const isEmpty = (ans === undefined || ans === null || ans === "" || (Array.isArray(ans) && ans.length === 0));
         return isEmpty ? index + 1 : null;
       })
       .filter(num => num !== null);
@@ -211,7 +187,6 @@ useEffect(() => {
     setIsSubmitting(true);
     await saveCurrentAnswer(); 
 
-    // Рахуємо пропущені перед відкриттям модалки
     const details = getUnansweredDetails();
     setUnansweredCount(details.count);
     setUnansweredLabels(details.labels);
@@ -224,10 +199,9 @@ useEffect(() => {
             { headers: { 'Authorization': `Bearer ${token}` } }
         );
         
-        // Зберігаємо дані для модалки
         setFinalScore(response.data.score);
         setAttemptIdForReview(response.data.attemptId);
-        setIsConfirmModalOpen(true);  // відкриваємо модалку
+        setIsConfirmModalOpen(true); 
 
     } catch (error) {
         console.error("Помилка завершення:", error);
@@ -237,130 +211,102 @@ useEffect(() => {
   };
 
   const renderQuestion = (q) => {
-
-      const commentBlock = q.comment ? (
-        <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
-            <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
-            <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
-        </div>
+    const commentBlock = q.comment ? (
+      <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
+          <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
+          <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
+      </div>
     ) : null;
 
     const answer = answers[q.questionId];
 
-    const content = (() => {
-      switch (q.questionType) {
-        case "SINGLE_CHOICE":
-          return (
-            <>
-            <div className="choices">
-              {q.choiceOptions.map((opt) => (
-                <label className="custom-radio" key={opt.optionId}>
-                  <input
-                    className="choices-input"
-                    type="radio"
-                    name={`q-${q.questionId}`} 
-                    value={opt.optionId}
-                    checked={answer === opt.optionId}
-                    onChange={() => handleAnswerChange(q.questionId, opt.optionId)}
-                  />
-                  <span className="radio-circle-blue" />
-                  {opt.optionText}
-                </label>
-              ))}
+    switch (q.questionType) {
+      case "SINGLE_CHOICE":
+        return (
+          <>
+          <div className="choices">
+            {q.choiceOptions.map((opt) => (
+              <label className="custom-radio" key={opt.optionId}>
+                <input
+                  className="choices-input"
+                  type="radio"
+                  name={`q-${q.questionId}`} 
+                  value={opt.optionId}
+                  checked={answer === opt.optionId}
+                  onChange={() => handleAnswerChange(q.questionId, opt.optionId)}
+                />
+                <span className="radio-circle-blue" />
+                {opt.optionText}
+              </label>
+            ))}
+          </div>
+          {commentBlock}
+          </>
+        );
+      case "MULTIPLE_CHOICE":
+        const selectedIds = Array.isArray(answer) ? answer : [];
+        return (
+          <>
+          <div className="choices">
+            {q.choiceOptions.map((opt) => (
+              <label className="custom-checkbox" key={opt.optionId}>
+                <input
+                  className="choices-input"
+                  type="checkbox"
+                  value={opt.optionId}
+                  checked={selectedIds.includes(opt.optionId)}
+                  onChange={() => {
+                    let newIds = selectedIds.includes(opt.optionId) 
+                      ? selectedIds.filter(id => id !== opt.optionId) 
+                      : [...selectedIds, opt.optionId];
+                    handleAnswerChange(q.questionId, newIds);
+                  }}
+                />
+                <span className="checkbox-square-blue" />
+                {opt.optionText}
+              </label>
+            ))}
+          </div>
+          {commentBlock}
+          </>
+        );
+      case "TEXT":
+        return (
+          <>
+          <textarea
+            rows="6"
+            value={answer || ""}
+            onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
+            placeholder="Введіть вашу відповідь..."
+          />
+          {commentBlock}
+          </>
+        );
+      case "CODE":
+        return (
+          <>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px'}}>
+              <span style={{fontWeight: 'bold', color: '#555'}}>Мова: {q.codeLanguage}</span>
+              <button className="run-button" onClick={() => handleRunCode(q)} disabled={!answer}>Run Code</button>
             </div>
-            {commentBlock}
-            </>
-          );
-
-        case "MULTIPLE_CHOICE":
-          const selectedIds = Array.isArray(answer) ? answer : [];
-          return (
-            <>
-            <div className="choices">
-              {q.choiceOptions.map((opt) => (
-                <label className="custom-checkbox" key={opt.optionId}>
-                  <input
-                    className="choices-input"
-                    type="checkbox"
-                    value={opt.optionId}
-                    checked={selectedIds.includes(opt.optionId)}
-                    onChange={() => {
-                      let newIds;
-                      if (selectedIds.includes(opt.optionId)) {
-                        newIds = selectedIds.filter(id => id !== opt.optionId);
-                      } else {
-                        newIds = [...selectedIds, opt.optionId];
-                      }
-                      handleAnswerChange(q.questionId, newIds);
-                    }}
-                  />
-                  <span className="checkbox-square-blue" />
-                  {opt.optionText}
-                </label>
-              ))}
-            </div>
-            {commentBlock}
-            </>
-          );
-
-        case "TEXT":
-          return (
-            <>
             <textarea
-              rows="6"
-              value={answer || ""}
+              rows="12"
+              style={{fontFamily: 'monospace', backgroundColor: '#f5f5f5', border: '1px solid #ccc'}}
+              value={answer || q.templateCode || ""}
               onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
-              placeholder="Введіть вашу відповідь..."
-              onInput={(e) => {
-                e.target.style.height = 'auto';
-                e.target.style.height = `${e.target.scrollHeight}px`;
-              }}
             />
-            {commentBlock}
-            </>
-          );
-
-        case "CODE":
-          return (
-            <>
-              <div className="code-run-button-container" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px'}}>
-                <span style={{fontWeight: 'bold', color: '#555'}}>Мова: {q.codeLanguage}</span>
-                <button
-                  className="run-button"
-                  onClick={() => handleRunCode(q)}
-                  disabled={!answer} 
-                >
-                  Run Code
-                </button>
+            {outputMap[q.questionId] && (
+              <div className="code-output" style={{marginTop: '15px', padding: '10px', background: '#222', color: '#fff', borderRadius: '5px', fontFamily: 'monospace', whiteSpace: 'pre-wrap'}}>
+                {outputMap[q.questionId]}
               </div>
-
-              <textarea
-                rows="12"
-                style={{fontFamily: 'monospace', backgroundColor: '#f5f5f5', border: '1px solid #ccc'}}
-                value={answer || q.templateCode || ""}
-                onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
-                placeholder="// Пишіть код тут..."
-                spellCheck="false"
-              />
-
-              {outputMap[q.questionId] && (
-                <div className="code-output" style={{marginTop: '15px', padding: '10px', background: '#222', color: '#fff', borderRadius: '5px', fontFamily: 'monospace', whiteSpace: 'pre-wrap'}}>
-                  {outputMap[q.questionId]}
-                </div>
-              )}
-              {commentBlock}
-            </>
-          );
-        
-        default:
-          return <p>Невідомий тип питання</p>;
-      }
-    })();
-
-
-    return content;
+            )}
+            {commentBlock}
+          </>
+        );
+      default:
+        return <p>Невідомий тип питання</p>;
+    }
   };
-
 
   if (loading) return <div className="page"><div className="container">Завантаження тесту...</div></div>;
   if (!attemptData) {
@@ -374,7 +320,6 @@ useEffect(() => {
   }
 
   const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
-
   const currentQuestion = attemptData.questions[current];
 
   return (
@@ -382,27 +327,19 @@ useEffect(() => {
       {testType !== "softskills" &&
         <div className="header-bar">
             <div className="top-section">
-              <div className="top-line">
-                <div className="category">{attemptData.sphere}</div> 
-              </div>
+              <div className="top-line"><div className="category">{attemptData.sphere}</div></div>
               <h1 className="fulltest-title">{attemptData.testName}</h1>
               <div className="top-line"></div>
             </div>
           
-          <div className="timer-box">
-            <div className="time">
-              <span className="time-val">{h}</span>
-              <span className="time-label">годин</span>
+          {/* Умовний рендеринг таймера на основі isFixedTime */}
+          {attemptData.isFixedTime && (
+            <div className="timer-box">
+              <div className="time"><span className="time-val">{h}</span><span className="time-label">годин</span></div>
+              <div className="time"><span className="time-val">{m}</span><span className="time-label">хвилин</span></div>
+              <div className="time"><span className="time-val">{s}</span><span className="time-label">секунд</span></div>
             </div>
-            <div className="time">
-              <span className="time-val">{m}</span>
-              <span className="time-label">хвилин</span>
-            </div>
-            <div className="time">
-              <span className="time-val">{s}</span>
-              <span className="time-label">секунд</span>
-            </div>
-          </div>
+          )}
         </div>
       }
 
@@ -410,10 +347,7 @@ useEffect(() => {
         {attemptData.questions.map((_, i) => (
           <button
             key={i}
-            onClick={async () => {
-                await saveCurrentAnswer(); 
-                setCurrent(i);
-            }}
+            onClick={async () => { await saveCurrentAnswer(); setCurrent(i); }}
             className={i === current ? "active" : ""}
           >
             {i + 1}
@@ -422,48 +356,30 @@ useEffect(() => {
       </div>
 
       <div className={`test-container ${testType === "softskills" ? 'test-container-transparent' : ''}`}>
-        <>
-          <h2 className="question">
-            {currentQuestion.questionText}
-          </h2>
-          <div className="answer">
-            {renderQuestion(currentQuestion)}
-          </div>
-        </>
-
+        <h2 className="question">{currentQuestion.questionText}</h2>
+        <div className="answer">{renderQuestion(currentQuestion)}</div>
         <div className="test-buttons">
           {current < attemptData.questions.length - 1 ? (
-            <button
-              className={`next-button ${testType === "softskills" ? 'finish-button' : ''}`}
-              onClick={handleNext}
-              disabled={isSubmitting}
-            >
+            <button className={`next-button ${testType === "softskills" ? 'finish-button' : ''}`} onClick={handleNext} disabled={isSubmitting}>
               Наступне питання
-              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 38 24" style={{ marginLeft: "8px", verticalAlign: "middle" }}>
-              <line x1="4" y1="12" x2="34" y2="12" />
-              <polyline points="26 6 34 12 26 18" />
-              </svg>
             </button>
           ) : (
-            <button 
-                className="next-button finish-button" 
-                onClick={handleFinishTest} 
-                disabled={isSubmitting}
-            >
+            <button className="next-button finish-button" onClick={handleFinishTest} disabled={isSubmitting}>
               Завершити тест
             </button>
           )}
         </div>
       </div>
-    <ConfirmTestEndModal
-      isOpen={isConfirmModalOpen}
-      onClose={() => setIsConfirmModalOpen(false)}
-      score={finalScore}
-      onViewResults={() => navigate(`/testreview/${attemptIdForReview}`)}
-      unansweredCount={unansweredCount}
-      unansweredLabels={unansweredLabels}
-      text={"Чи ви впевнені, що хочете завершити спробу?"}
-    />
+
+      <ConfirmTestEndModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        score={finalScore}
+        onViewResults={() => navigate(`/testreview/${attemptIdForReview}`)}
+        unansweredCount={unansweredCount}
+        unansweredLabels={unansweredLabels}
+        text={"Чи ви впевнені, що хочете завершити спробу?"}
+      />
       <StartTestErrorModal
         isOpen={isStartTestErrorModalOpen}
         onClose={handleCloseErrorModal}
