@@ -4,6 +4,7 @@ import axios from "axios";
 import { getAccessToken } from "../../utils/auth";
 import "./FullTest.css";
 import ConfirmTestEndModal from '../modal_windows/ConfirmTestEndModal';
+import StartTestErrorModal from '../modal_windows/StartTestErrorModal';
 
 
 const TestPage = ({ testType }) => { 
@@ -27,40 +28,47 @@ const TestPage = ({ testType }) => {
   const [unansweredCount, setUnansweredCount] = useState(0);
   const [unansweredLabels, setUnansweredLabels] = useState("");
 
-useEffect(() => {
-  const startTest = async () => {
-    try {
-      const token = getAccessToken();
-      
-      // Запит до бекенду, щоб або створити нову спробу, або отримати існуючу
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/start`,
-        {}, 
-        { headers: { 'Authorization': `Bearer ${token}` } }
-      );
+  const [isStartTestErrorModalOpen, setIsStartTestErrorModalOpen] = useState(false);
+  const [startErrorMessage, setStartErrorMessage] = useState("");
 
-      const attempt = response.data;
-      setAttemptData(attempt);
-
-      // Беремо збережений endTime для цієї спроби
-      if (attempt.endTime) {
-        const endTime = new Date(attempt.endTime).getTime();
-        const now = new Date().getTime();
-        setTimeLeft(Math.floor((endTime - now) / 1000)); // таймер у секундах
-      } else {
-        setTimeLeft(0); // на випадок, якщо endTime немає
-      }
-
-      setLoading(false);
-    } catch (error) {
-      console.error("Помилка старту тесту:", error);
-      alert("Не вдалося розпочати тест. Можливо, час вичерпано або ви не зареєстровані.");
-      navigate('/mytests'); 
-    }
+const handleCloseErrorModal = () => {
+    setIsStartTestErrorModalOpen(false);
+    navigate(-1);
   };
 
-  if (testId) startTest();
-}, [testId, navigate]);
+useEffect(() => {
+    const startTest = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/start`,
+          {}, 
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+
+        const attempt = response.data;
+        setAttemptData(attempt);
+
+        if (attempt.endTime) {
+          const endTime = new Date(attempt.endTime).getTime();
+          const now = new Date().getTime();
+          setTimeLeft(Math.floor((endTime - now) / 1000));
+        } else {
+          setTimeLeft(0);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Помилка старту тесту:", error);
+        // Замість alert встановлюємо текст помилки та відкриваємо модалку
+        const msg = error.response?.data?.message || "Не вдалося розпочати тест. Можливо, час вичерпано або ви не зареєстровані.";
+        setStartErrorMessage(msg);
+        setIsStartTestErrorModalOpen(true);
+        setLoading(false); // зупиняємо лоадер
+      }
+    };
+
+    if (testId) startTest();
+  }, [testId]);
 
   useEffect(() => {
     if (timeLeft === null) return;
@@ -355,7 +363,15 @@ useEffect(() => {
 
 
   if (loading) return <div className="page"><div className="container">Завантаження тесту...</div></div>;
-  if (!attemptData) return null;
+  if (!attemptData) {
+    return (
+      <StartTestErrorModal
+        isOpen={isStartTestErrorModalOpen}
+        onClose={handleCloseErrorModal}
+        errorMessage={startErrorMessage}
+      />
+    );
+  }
 
   const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
 
@@ -448,6 +464,11 @@ useEffect(() => {
       unansweredLabels={unansweredLabels}
       text={"Чи ви впевнені, що хочете завершити спробу?"}
     />
+      <StartTestErrorModal
+        isOpen={isStartTestErrorModalOpen}
+        onClose={handleCloseErrorModal}
+        errorMessage={startErrorMessage}
+      />
     </div>
   );
 };

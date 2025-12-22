@@ -8,6 +8,13 @@
     box-sizing: border-box;
   }
 
+.App {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 100vh;
+}
+
 html{
     height: 100%;
     overflow-x: hidden;

@@ -38,6 +38,8 @@ const TestCreationStartContainer = () => {
     const [selectedQuestions, setSelectedQuestions] = useState([]);
     const [errors, setErrors] = useState({});
     const [selectedTestType, setSelectedTestType] = useState({ value: 'public', label: 'Публічний' });
+    const [selectedTestQuestionsSorting, setSelectedTestQuestionsSorting] = useState({ value: 'fixed', label: 'Фіксований порядок' });
+    const [selectedTestAnswersSorting, setSelectedTestAnswersSorting] = useState({ value: 'fixed', label: 'Фіксований порядок' });
 
     const refs = {
       testName: useRef(null),
@@ -177,6 +179,20 @@ const TestCreationStartContainer = () => {
                 selectedOption={selectedTestType}
                 setSelectedOption={setSelectedTestType}
                 fieldName="Тип тесту"
+                fieldOptions={{}}
+            />
+            <SelectField
+                type="testquestionssorting"
+                selectedOption={selectedTestQuestionsSorting}
+                setSelectedOption={setSelectedTestQuestionsSorting}
+                fieldName="Порядок запитань"
+                fieldOptions={{}}
+            />
+            <SelectField
+                type="testanswerssorting"
+                selectedOption={selectedTestAnswersSorting}
+                setSelectedOption={setSelectedTestAnswersSorting}
+                fieldName="Порядок відповідей"
                 fieldOptions={{}}
             />
 

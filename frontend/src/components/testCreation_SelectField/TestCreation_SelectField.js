@@ -323,6 +323,80 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
           </div>
         )}
 
+        {type === 'testquestionssorting' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testQuestionsSorting"
+                value="fixed"
+                // Перевіряємо за значенням об'єкта або просто стейтом
+                checked={selectedOption?.value === 'fixed'}
+                onChange={() => setSelectedOption({ value: 'fixed', label: 'Фіксований порядок' })}
+              />
+              <div className="question-classification__label">
+                Фіксований порядок
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testQuestionsSorting"
+                value="random"
+                checked={selectedOption?.value === 'random'}
+                onChange={() => setSelectedOption({ value: 'random', label: 'Випадковий порядок' })}
+              />
+              <div className="question-classification__label">
+                Випадковий порядок
+              </div>
+            </label>
+            
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'fixed' 
+                ? "Порядок запитань не змінюється, збережено той, що створений" 
+                : "Порядок запитань змінюється випадковим чином при кожному проходженні тесту"}
+            </p>
+          </div>
+        )}
+
+        {type === 'testanswerssorting' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testAnswersSorting"
+                value="fixed"
+                // Перевіряємо за значенням об'єкта або просто стейтом
+                checked={selectedOption?.value === 'fixed'}
+                onChange={() => setSelectedOption({ value: 'fixed', label: 'Фіксований порядок' })}
+              />
+              <div className="question-classification__label">
+                Фіксований порядок
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testAnswersSorting"
+                value="random"
+                checked={selectedOption?.value === 'random'}
+                onChange={() => setSelectedOption({ value: 'random', label: 'Випадковий порядок' })}
+              />
+              <div className="question-classification__label">
+                Випадковий порядок
+              </div>
+            </label>
+            
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'fixed' 
+                ? "Порядок відповідей не змінюється, збережено той, що створений" 
+                : "Порядок відповідей змінюється випадковим чином при кожному проходженні тесту"}
+            </p>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -91,6 +91,7 @@ public class TestAttemptService {
                 .testId(test.getTestId())
                 .sphere(test.getSphere())
                 .testName(test.getTestName())
+                
                 .endTime(calculatedEndTime)
                 .questions(questionResponses)
                 .build();

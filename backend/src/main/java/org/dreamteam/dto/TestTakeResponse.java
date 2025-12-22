@@ -16,6 +16,7 @@ public class TestTakeResponse {
     private UUID testId;
     private String testName;
     private String sphere; 
+    private Boolean isFixedTime;
     private OffsetDateTime endTime; 
     private List<QuestionTakeResponse> questions;
 }
