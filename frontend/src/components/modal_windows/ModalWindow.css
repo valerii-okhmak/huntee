@@ -514,7 +514,15 @@ transform: rotate(180deg);
   background-size: 20px 20px;
 }
 
+.modalmini-button-submit-danger{
+  background-color: #dc3545;
+  color: white;
+}
 
+.modalmini-button-submit-danger:hover {
+  background-color: #a71d2a;
+  color: white;
+}
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0; /* приховує стандартну іконку */

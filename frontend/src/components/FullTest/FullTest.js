@@ -55,7 +55,7 @@ useEffect(() => {
     } catch (error) {
       console.error("Помилка старту тесту:", error);
       alert("Не вдалося розпочати тест. Можливо, час вичерпано або ви не зареєстровані.");
-      navigate('/viewingtests'); 
+      navigate('/mytests'); 
     }
   };
 
@@ -223,7 +223,6 @@ useEffect(() => {
 
     } catch (error) {
         console.error("Помилка завершення:", error);
-        alert("Помилка при завершенні тесту.");
     } finally {
         setIsSubmitting(false);
     }

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import './TestCreationMainPreview.css'
+import './TestCreationMainPreview.css';
+import ConfirmDeleteQuestionModal from "../../modal_windows/ConfirmDeleteQuestionModal";
 
-const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
+const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, showError }) => {
   const [current, setCurrent] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (questions.length === 0) {
@@ -12,23 +14,30 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
     }
   }, [questions]);
 
-  const handleDelete = () => {
+  const handleConfirmDelete = () => {
     if (questions.length === 0) return;
-    const confirmDelete = window.confirm("Ви впевнені, що хочете видалити це запитання?");
-    if (!confirmDelete) return;
-
-    if (current === questions.length - 1) {
-      setCurrent(prev => Math.max(0, prev - 1));
-    }
     onDeleteQuestion(current);
+    if (current === questions.length - 1 && current > 0) {
+      setCurrent(prev => prev - 1);
+    }
+    setIsModalOpen(false);
   };
 
+  // ЯКЩО ПИТАНЬ НЕМАЄ
   if (!questions.length) {
     return (
       <div className="testCreationMainPreview">
         <div className='container'>
           <div className="test-container">
-            <h2 className="question">Немає питань для перегляду</h2>
+            <h2 
+              className="question" 
+              style={{ 
+                color: showError ? '#dc3545' : 'inherit', 
+                transition: 'color 0.3s ease',
+              }}
+            >
+              Немає питань для перегляду
+            </h2>
           </div>
         </div>
       </div>
@@ -40,102 +49,66 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
 
   const renderQuestion = (q) => {
     if (!q) return null;
-
     const commentBlock = q.comment ? (
-        <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
-            <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
-            <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
-        </div>
+      <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
+        <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
+        <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
+      </div>
     ) : null;
 
     switch (q.questionType) {
-    case "SINGLE_CHOICE":
-      return (
-        <>
-          <div className="choices">
-            {(q.choiceOptions || []).map((opt, i) => (
-              <label className="custom-radio" key={i}>
-                <input
-                  className="choices-input"
-                  type="radio"
-                  name={`preview-q-${safeIndex}`}
-                  disabled
-                  checked={opt.isCorrect}
-                />
-                <span className="radio-circle-blue" />
-                {opt.optionText}
-              </label>
-            ))}
-          </div>
-          {commentBlock}
-        </>
-      );
-
-    case "MULTIPLE_CHOICE":
-      return (
-        <>
-          <div className="choices">
-            {(q.choiceOptions || []).map((opt, i) => (
-              <label className="custom-checkbox" key={i}>
-                <input
-                  className="choices-input"
-                  type="checkbox"
-                  disabled
-                  checked={opt.isCorrect} 
-                />
-                <span className="checkbox-square-blue" />
-                {opt.optionText}
-              </label>
-            ))}
-          </div>
-          {commentBlock}
-        </>
-      );
-
+      case "SINGLE_CHOICE":
+        return (
+          <>
+            <div className="choices">
+              {(q.choiceOptions || []).map((opt, i) => (
+                <label className="custom-radio" key={i}>
+                  <input className="choices-input" type="radio" disabled checked={opt.isCorrect} />
+                  <span className="radio-circle-blue" />
+                  {opt.optionText}
+                </label>
+              ))}
+            </div>
+            {commentBlock}
+          </>
+        );
+      case "MULTIPLE_CHOICE":
+        return (
+          <>
+            <div className="choices">
+              {(q.choiceOptions || []).map((opt, i) => (
+                <label className="custom-checkbox" key={i}>
+                  <input className="choices-input" type="checkbox" disabled checked={opt.isCorrect} />
+                  <span className="checkbox-square-blue" />
+                  {opt.optionText}
+                </label>
+              ))}
+            </div>
+            {commentBlock}
+          </>
+        );
       case "TEXT":
         return (
           <>
             <textarea rows="4" placeholder="Ваша відповідь..." disabled className="preview-textarea" />
             <div style={{marginTop: '10px', color: '#28a745'}}>
-                <small>Правильна відповідь: <strong>{q.textAnswer?.correctText}</strong></small>
+              <small>Правильна відповідь: <strong>{q.textAnswer?.correctText}</strong></small>
             </div>
             {commentBlock}
           </>
         );
-
       case "CODE":
         return (
-          <>
-            <div className="code-preview" style={{
-                background: '#ffffff',
-                color: '#333333',
-                border: '1px solid #ccc',
-                padding: '15px', 
-                borderRadius: '5px', 
-                fontFamily: 'monospace', 
-                overflowX: 'auto'
-            }}>
-                <div style={{marginBottom: '10px', color: '#007bff', fontWeight: 'bold', borderBottom: '1px solid #eee', paddingBottom: '5px'}}>
-                    Мова: {q.codeAnswer?.language}
-                </div>
-                <pre style={{whiteSpace: 'pre-wrap', margin: 0, fontSize: '14px'}}>
-                    {q.codeAnswer?.templateCode || "// Тут буде код студента"}
-                </pre>
-                
-                <div style={{marginTop: '15px', borderTop: '1px solid #eee', paddingTop: '10px', fontSize: '12px', color: '#666'}}>
-                    <strong>Тест-кейси:</strong> {q.codeAnswer?.testCases}
-                </div>
+          <div className="code-block">
+            <div className="code-preview" style={{background: '#ffffff', border: '1px solid #ccc', padding: '15px', borderRadius: '5px', fontFamily: 'monospace'}}>
+              <div style={{marginBottom: '10px', color: '#007bff', fontWeight: 'bold'}}>Мова: {q.codeAnswer?.language}</div>
+              <pre style={{whiteSpace: 'pre-wrap', margin: 0}}>{q.codeAnswer?.templateCode || "// Код"}</pre>
             </div>
             {commentBlock}
-          </>
+          </div>
         );
-
       default:
-        return (
-            <div style={{color: 'red'}}>
-                Невідомий тип питання: {q.questionType}
-            </div>
-        );
+        return <div style={{color: 'red'}}>Невідомий тип питання</div>;
     }
   };
 
@@ -154,18 +127,14 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
             <button
               className="next-button"
               disabled={safeIndex >= questions.length - 1}
-              onClick={() => setCurrent(prev => Math.min(prev + 1, questions.length - 1))}
+              onClick={() => setCurrent(prev => prev + 1)}
             >
               Наступне питання
-              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 38 24" style={{ marginLeft: "8px", verticalAlign: "middle" }}>
-                <line x1="4" y1="12" x2="34" y2="12" />
-                <polyline points="26 6 34 12 26 18" />
-              </svg>
             </button>
 
             <button
               className="test-creation-main-preview__delete-button"
-              onClick={handleDelete}
+              onClick={() => setIsModalOpen(true)}
             >
               Видалити запитання
             </button>
@@ -174,9 +143,9 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
 
         <div className="Num">
           {questions.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
+            <button 
+              key={i} 
+              onClick={() => setCurrent(i)} 
               className={i === safeIndex ? "active" : ""}
             >
               {i + 1}
@@ -184,8 +153,15 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion }) => {
           ))}
         </div>
       </div>
-    </div>
-  )
-}
 
-export default TestCreationMainPreview
+      <ConfirmDeleteQuestionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        questionNumber={safeIndex + 1}
+      />
+    </div>
+  );
+};
+
+export default TestCreationMainPreview;

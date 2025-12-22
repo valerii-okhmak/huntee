@@ -18,6 +18,7 @@ const TestCreationMainPage = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showError, setShowError] = useState(false); // Стан для підсвітки помилки
 
   const creatorRef = useRef(null);
 
@@ -54,21 +55,14 @@ const TestCreationMainPage = () => {
     }
   }, [passed]);
 
-  /**
-   * 👉 ЄДИНА функція додавання поточного питання
-   * Працює і для "Додати запитання", і для "Переглянути результат"
-   */
   const addCurrentQuestionIfExists = () => {
     const q = creatorRef.current?.getCurrentQuestionAndReset();
-
     if (!q) return false;
-
     setQuestions(prev => {
       const updated = [...prev, q];
       setQuestionsCount(updated.length);
       return updated;
     });
-
     return true;
   };
 
@@ -85,33 +79,28 @@ const TestCreationMainPage = () => {
     });
   };
 
-  const handlePublish = async () => {
-    if (!questions.length) {
-      alert("Немає питань для збереження!");
+  // Перевірка перед відкриттям модалки публікації
+  const handleTryPublish = () => {
+    if (questions.length === 0) {
+      setShowError(true);
       return;
     }
+    setIsModalOpen(true);
+  };
 
+  const handlePublish = async () => {
     try {
       setLoading(true);
       const token = getAccessToken();
-
       const headers = {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
 
       const testPayload = {
-        testName: testMeta.testName,
-        sphere: testMeta.sphere,
-        level: testMeta.level,
-        city: testMeta.city,
-        vacancyDescription: testMeta.vacancyDescription,
-        responsibilities: testMeta.responsibilities,
+        ...testMeta,
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
-        durationMinutes: testMeta.durationMinutes > 0 ? testMeta.durationMinutes : 0,
-        isFixedTime: testMeta.durationMinutes > 0,
-        isPrivate: testMeta.isPrivate
       };
 
       const testResponse = await axios.post(
@@ -121,11 +110,6 @@ const TestCreationMainPage = () => {
       );
 
       const testId = testResponse.data?.testId;
-
-      if (!testId) {
-        throw new Error('Сервер не повернув testId');
-      }
-
       for (const questionPayload of questions) {
         await axios.post(
           `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/questions`,
@@ -134,15 +118,9 @@ const TestCreationMainPage = () => {
         );
       }
 
-      alert('✅ Тест успішно створено!');
-      setQuestions([]);
-      setQuestionsCount(0);
-      setMode('create');
       navigate('/viewingtests');
-
     } catch (error) {
-      const msg = error.response?.data?.message || error.response?.data || error.message;
-      alert(`❌ Помилка: ${msg}`);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -166,6 +144,7 @@ const TestCreationMainPage = () => {
         <TestCreationMainPreview
           questions={questions}
           onDeleteQuestion={handleDeleteQuestion}
+          showError={showError} 
         />
       )}
 
@@ -173,13 +152,9 @@ const TestCreationMainPage = () => {
         <div className='container testCreationMainButtons__container'>
           {mode === 'create' ? (
             <>
-              <button
-                className='testCreationMainButtons__next white-btn'
-                onClick={handleNextQuestion}
-              >
+              <button className='testCreationMainButtons__next white-btn' onClick={handleNextQuestion}>
                 Додати запитання
               </button>
-
               <button
                 className='testCreationMainButtons__finish black-btn'
                 onClick={() => {
@@ -192,17 +167,12 @@ const TestCreationMainPage = () => {
             </>
           ) : (
             <>
-              <button
-                className='testCreationMainButtons__back white-btn'
-                onClick={() => setMode('create')}
-                disabled={loading}
-              >
+              <button className='testCreationMainButtons__back white-btn' onClick={() => setMode('create')} disabled={loading}>
                 Повернутися до створення
               </button>
-
               <button
                 className='testCreationMainButtons__publish black-btn'
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleTryPublish} 
                 disabled={loading}
               >
                 Завершити створення
@@ -211,6 +181,7 @@ const TestCreationMainPage = () => {
           )}
         </div>
       </div>
+      
       <ConfirmationTestCreateModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -219,7 +190,6 @@ const TestCreationMainPage = () => {
           handlePublish();
         }}
         loading={loading}
-        // Передаємо реальні дані зі стану сторінки
         questionsCount={questions.length}
         startDate={testMeta.startTime ? testMeta.startTime.toLocaleDateString('uk-UA') : 'не вказано'}
         startTime={testMeta.startTime ? testMeta.startTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }) : 'не вказано'}

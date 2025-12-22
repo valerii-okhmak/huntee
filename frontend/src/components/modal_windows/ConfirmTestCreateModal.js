@@ -60,7 +60,7 @@ const ConfirmTestCreateModal = ({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? "Збереження..." : "Так, завершити тест"}
+            {loading ? "Збереження..." : "Так, завершити"}
           </button>
         </div>
       </div>
