@@ -68,6 +68,11 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserTestAttempt> userTestAttempts = new HashSet<>();
 
+    @Column(name = "is_fixed_question_order")
+    private Boolean isFixedQuestionOrder = true;
+
+    @Column(name = "is_fixed_answer_order")
+    private Boolean isFixedAnswerOrder = true;
 
     public Test(String testName, User user) {
         this.testName = testName;

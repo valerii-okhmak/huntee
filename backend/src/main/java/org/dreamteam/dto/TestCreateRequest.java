@@ -22,4 +22,6 @@ public class TestCreateRequest {
     private OffsetDateTime endTime;
     private Integer durationMinutes;
     private Boolean isPrivate;
+    private Boolean isFixedQuestionOrder;
+    private Boolean isFixedAnswerOrder;
 }

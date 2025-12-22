@@ -30,6 +30,8 @@ public class TestDetailResponse {
     private Boolean isPrivate;  
     private List<QuestionSummary> questions;
     private Double maxScore;
+    private Boolean isFixedQuestionOrder;
+    private Boolean isFixedAnswerOrder;
 
     @Data
     @Builder
