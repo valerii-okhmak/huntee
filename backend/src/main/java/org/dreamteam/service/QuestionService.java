@@ -61,7 +61,8 @@ public class QuestionService {
 
         Question savedQuestion = questionRepository.save(question);
 
-        TestQuestion testQuestion = new TestQuestion(test, savedQuestion);
+        int orderIndex = (test.getTestQuestions() != null) ? test.getTestQuestions().size() + 1 : 1;
+        TestQuestion testQuestion = new TestQuestion(test, savedQuestion, orderIndex);
         testQuestionRepository.save(testQuestion);
 
         return savedQuestion;
@@ -260,9 +261,9 @@ public class QuestionService {
             questionsToSave.add(question);
         }
         List<Question> savedQuestions = questionRepository.saveAll(questionsToSave);
-
+        int currentOrderIndex = (test.getTestQuestions() != null) ? test.getTestQuestions().size() + 1 : 1;
         for(Question savedQuestion : savedQuestions){
-            TestQuestion testQuestion = new TestQuestion(test, savedQuestion);
+            TestQuestion testQuestion = new TestQuestion(test, savedQuestion, currentOrderIndex++);
             testQuestions.add(testQuestion);
         }
         testQuestionRepository.saveAll(testQuestions);

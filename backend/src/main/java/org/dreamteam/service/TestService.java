@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -251,7 +252,7 @@ public class TestService {
 
         testQuestionRepository.saveAll(newLinks);
         if (test.getTestQuestions() == null) {
-            test.setTestQuestions(new ArrayList<>());
+            test.setTestQuestions(new HashSet<>());
         }
         test.getTestQuestions().addAll(newLinks);
     }
