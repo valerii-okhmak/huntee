@@ -265,7 +265,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
             <input
               type="number"
               step="0.1"
-              min="0.1"
+              min="0"
               placeholder={errors.points ? "Введіть вагу!" : "Введіть вагу запитання"}
               value={points}
               onKeyDown={blockInvalidChar}

@@ -121,7 +121,8 @@ const TestCreationMainPage = () => {
       for (let i = 0; i < questions.length; i++) {
         const questionPayload = {
           ...questions[i],
-          orderIndex: i // Передаємо порядковий номер (0, 1, 2...)
+          orderIndex: i, // Передаємо порядковий номер (0, 1, 2...)
+          weight: questions[i].points
         };
 
         await axios.post(
