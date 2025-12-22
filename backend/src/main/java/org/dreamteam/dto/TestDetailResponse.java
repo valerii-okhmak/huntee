@@ -29,6 +29,7 @@ public class TestDetailResponse {
     private String authorUsername;
     private Boolean isPrivate;  
     private List<QuestionSummary> questions;
+    private Double maxScore;
 
     @Data
     @Builder
@@ -36,5 +37,6 @@ public class TestDetailResponse {
         private UUID questionId;
         private String questionText;
         private QuestionType questionType;
+        private Double weight;
     }
 }

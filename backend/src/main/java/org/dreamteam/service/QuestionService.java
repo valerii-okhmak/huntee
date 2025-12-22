@@ -55,6 +55,7 @@ public class QuestionService {
 
         Question question = new Question(request.getQuestionText(), request.getQuestionType(), author);
         question.setComment(request.getComment());
+        question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
         
         processQuestionAnswers(question, request);
 
@@ -79,6 +80,10 @@ public class QuestionService {
 
         question.setQuestionText(request.getQuestionText());
         question.setComment(request.getComment());
+
+        if (request.getWeight() != null) {
+            question.setWeight(request.getWeight());
+        }
         
         clearExistingAnswers(question);
         processQuestionAnswers(question, request);
@@ -250,6 +255,7 @@ public class QuestionService {
             question.setQuestionType(request.getQuestionType());
             question.setComment(request.getComment());
             question.setAuthor(author);
+            question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
             processQuestionAnswers(question, request);
             questionsToSave.add(question);
         }
@@ -383,6 +389,7 @@ public class QuestionService {
                 .questionText(question.getQuestionText())
                 .comment(question.getComment())
                 .questionType(question.getQuestionType())
+                .weight(question.getWeight())
                 .authorEmail(question.getAuthor().getUsername());
 
         switch (question.getQuestionType()) {

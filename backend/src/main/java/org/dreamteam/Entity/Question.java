@@ -58,6 +58,9 @@ public class Question {
     @OneToMany(mappedBy= "question", cascade= CascadeType.ALL, orphanRemoval=true, fetch= FetchType.LAZY)
     private Set <TestQuestion> testQuestions = new HashSet<>();
 
+    @Column(name = "weight", nullable = false)
+    private Double weight = 1.0;
+
     public Question(String questionText, QuestionType questionType, User author) {
         this.questionText = questionText;
         this.questionType = questionType;
