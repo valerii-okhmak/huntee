@@ -40,5 +40,6 @@ public class TestDetailResponse {
         private String questionText;
         private QuestionType questionType;
         private Double weight;
+        private Integer orderIndex;
     }
 }

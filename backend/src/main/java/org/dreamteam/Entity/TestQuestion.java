@@ -27,13 +27,12 @@ public class TestQuestion {
     @JoinColumn(name= "question_id", nullable=false)
     private Question question;
 
-    /* Якщо знадобиться порядок питання у тесті
-    @Column(name = "order_number", nullable = false)
-    private int order;
-    */
+    @Column(name = "order_index")
+    private Integer orderIndex;
 
-    public TestQuestion(Test test, Question question) {
+    public TestQuestion(Test test, Question question, Integer orderIndex) {
         this.test = test;
         this.question = question;
+        this.orderIndex = orderIndex;
     }    
 }

@@ -17,6 +17,7 @@ import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
 import org.dreamteam.repository.TestQuestionRepository;
 import org.dreamteam.repository.TestRegistrationRepository;
+import org.dreamteam.repository.QuestionRepository;
 import org.dreamteam.repository.TestRepository;
 import org.dreamteam.repository.UserRepository;
 import org.dreamteam.repository.UserTestAttemptRepository;
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,7 @@ public class TestService {
     private final TestRegistrationRepository registrationRepository;
     private final UserTestAttemptRepository attemptRepository;
     private final NotificationService notificationService;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
@@ -77,6 +81,9 @@ public class TestService {
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
 
         Test savedTest = testRepository.save(test);
+
+        updateTestQuestions(savedTest, request.getQuestionIds());
+
         return mapToDetailResponse(savedTest);
     }
 
@@ -112,6 +119,10 @@ public class TestService {
         test.setIsPrivate(request.getIsPrivate());
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
+
+        test.getTestQuestions().clear();
+        testRepository.flush();
+        updateTestQuestions(test, request.getQuestionIds());
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
@@ -225,8 +236,32 @@ public class TestService {
                 .build();
     }
 
+    private void updateTestQuestions(Test test, List<UUID> questionIds) {
+        if (questionIds == null || questionIds.isEmpty()) return;
+
+        List<TestQuestion> newLinks = new ArrayList<>();
+
+        for (int i = 0; i < questionIds.size(); i++) {
+            UUID qId = questionIds.get(i);
+            Question question = questionRepository.findById(qId)
+                    .orElseThrow(() -> new EntityNotFoundException("Question not found: " + qId));
+
+            newLinks.add(new TestQuestion(test, question, i + 1));
+        }
+
+        testQuestionRepository.saveAll(newLinks);
+        if (test.getTestQuestions() == null) {
+            test.setTestQuestions(new ArrayList<>());
+        }
+        test.getTestQuestions().addAll(newLinks);
+    }
+
     private TestDetailResponse mapToDetailResponse(Test test) {
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());
+
+        testQuestions.sort(Comparator.comparingInt(tq -> 
+            tq.getOrderIndex() != null ? tq.getOrderIndex() : Integer.MAX_VALUE));
+
         List<TestDetailResponse.QuestionSummary> questionSummaries = testQuestions.stream()
                 .map(tq -> {
                     Question q = tq.getQuestion();
@@ -235,6 +270,7 @@ public class TestService {
                             .questionText(q.getQuestionText())
                             .questionType(q.getQuestionType())
                             .weight(q.getWeight() != null ? q.getWeight() : 1.0)
+                            .orderIndex(tq.getOrderIndex())
                             .build();
                 })
                 .collect(Collectors.toList());

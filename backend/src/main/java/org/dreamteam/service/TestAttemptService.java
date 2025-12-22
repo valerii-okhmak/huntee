@@ -83,6 +83,11 @@ public class TestAttemptService {
         }
 
         List<QuestionTakeResponse> questionResponses = test.getTestQuestions().stream()
+                 .sorted((q1, q2) -> {
+                    int idx1 = q1.getOrderIndex() != null ? q1.getOrderIndex() : Integer.MAX_VALUE;
+                    int idx2 = q2.getOrderIndex() != null ? q2.getOrderIndex() : Integer.MAX_VALUE;
+                    return Integer.compare(idx1, idx2);
+                })
                 .map(testQuestion -> mapToQuestionTakeResponse(testQuestion.getQuestion()))
                 .collect(Collectors.toList());
 
@@ -231,15 +236,34 @@ public class TestAttemptService {
             throw new AccessDeniedException("Access denied");
         }
 
+        java.util.Map<UUID, UserAnswer> answerMap = attempt.getUserAnswers().stream()
+            .collect(Collectors.toMap(
+                a -> a.getQuestion().getQuestionId(), 
+                a -> a,
+                (existing, replacement) -> existing // на випадок дублікатів
+            ));
+        
+        List<TestAttemptReviewResponse.QuestionReviewDTO> questions = attempt.getTest().getTestQuestions().stream()
+                .sorted((q1, q2) -> {
+                     int idx1 = q1.getOrderIndex() != null ? q1.getOrderIndex() : Integer.MAX_VALUE;
+                     int idx2 = q2.getOrderIndex() != null ? q2.getOrderIndex() : Integer.MAX_VALUE;
+                     return Integer.compare(idx1, idx2);
+                })
+                .map(tq -> {
+                    Question q = tq.getQuestion();
+                    UserAnswer answer = answerMap.get(q.getQuestionId());
+                    // Якщо відповіді немає, треба створити "порожнє" DTO або передати null в mapper
+                    // Тут припускаємо, що mapper впорається, якщо передати йому питання і null-відповідь
+                    // АБО краще адаптувати mapper:
+                    return mapToQuestionReview(q, answer); 
+                })
+                .collect(Collectors.toList());
+
         int correctCount = (int) attempt.getUserAnswers().stream()
                 .filter(a -> Boolean.TRUE.equals(a.getIsCorrect()))
                 .count();
         
         int totalQuestions = attempt.getTest().getTestQuestions().size();
-
-        List<TestAttemptReviewResponse.QuestionReviewDTO> questions = attempt.getUserAnswers().stream()
-                .map(this::mapToQuestionReview)
-                .collect(Collectors.toList());
 
         return TestAttemptReviewResponse.builder()
                 .attemptId(attempt.getAttemptId())
@@ -374,70 +398,89 @@ public class TestAttemptService {
     }
 
     
-    private TestAttemptReviewResponse.QuestionReviewDTO mapToQuestionReview(UserAnswer answer) {
-        Question q = answer.getQuestion();
-        
-        TestAttemptReviewResponse.QuestionReviewDTO.QuestionReviewDTOBuilder builder = TestAttemptReviewResponse.QuestionReviewDTO.builder()
-                .questionId(q.getQuestionId())
-                .questionText(q.getQuestionText())
-                .type(q.getQuestionType())
-                .comment(q.getComment())
-                .isCorrect(Boolean.TRUE.equals(answer.getIsCorrect()));
+    private TestAttemptReviewResponse.QuestionReviewDTO mapToQuestionReview(Question q, UserAnswer answer) {
+    // 1. Визначаємо, чи правильна відповідь (якщо відповіді немає — то false)
+    boolean isAnswerPresent = (answer != null);
+    boolean isCorrect = isAnswerPresent && Boolean.TRUE.equals(answer.getIsCorrect());
 
-        switch (q.getQuestionType()) {
-            case SINGLE_CHOICE:
-            case MULTIPLE_CHOICE:
-                List<ChoiceOptionDTO> allOptions = q.getChoiceOptions().stream()
-                        .map(o -> new ChoiceOptionDTO(o.getOptionId(), o.getOptionText(), o.getImageUrl(), o.isCorrect()))
-                        .collect(Collectors.toList());
-                
-                List<Long> userSelectedIds = answer.getChoices().stream()
+    // 2. Базове наповнення даними з питання
+    TestAttemptReviewResponse.QuestionReviewDTO.QuestionReviewDTOBuilder builder = TestAttemptReviewResponse.QuestionReviewDTO.builder()
+            .questionId(q.getQuestionId())
+            .questionText(q.getQuestionText())
+            .type(q.getQuestionType())
+            .comment(q.getComment())
+            .isCorrect(isCorrect);
+
+    // 3. Заповнення специфічних полів залежно від типу
+    switch (q.getQuestionType()) {
+        case SINGLE_CHOICE:
+        case MULTIPLE_CHOICE:
+            // Всі опції
+            List<ChoiceOptionDTO> allOptions = q.getChoiceOptions().stream()
+                    .map(o -> new ChoiceOptionDTO(o.getOptionId(), o.getOptionText(), o.getImageUrl(), o.isCorrect()))
+                    .collect(Collectors.toList());
+
+            // Опції, які вибрав юзер (безпечна перевірка на null)
+            List<Long> userSelectedIds = isAnswerPresent 
+                    ? answer.getChoices().stream()
                         .map(c -> c.getSelectedOption().getOptionId())
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList())
+                    : java.util.Collections.emptyList();
 
-                List<Long> correctIds = choiceOptionRepository.findByQuestionAndIsCorrectTrue(q)
-                        .stream().map(ChoiceOption::getOptionId)
-                        .collect(Collectors.toList());
+            // Правильні опції (фільтруємо з існуючого списку, не чіпаємо БД зайвий раз)
+            List<Long> correctIds = q.getChoiceOptions().stream()
+                    .filter(ChoiceOption::isCorrect)
+                    .map(ChoiceOption::getOptionId)
+                    .collect(Collectors.toList());
 
-                builder.options(allOptions)
-                       .selectedOptionIds(userSelectedIds)
-                       .correctOptionIds(correctIds);
-                
-                builder.userAnswer(""); 
-                builder.correctAnswer("");
-                break;
+            builder.options(allOptions)
+                    .selectedOptionIds(userSelectedIds)
+                    .correctOptionIds(correctIds)
+                    .userAnswer(isAnswerPresent ? "" : "(Немає відповіді)") // Текстовий маркер для зручності
+                    .correctAnswer("");
+            break;
 
-            case TEXT:
-                builder.userAnswer(answer.getGivenText());
-                textAnswerRepository.findByQuestion_QuestionId(q.getQuestionId())
-                        .ifPresent(ta -> builder.correctAnswer(ta.getCorrectText()));
-                break;
+        case TEXT:
+            // Відповідь юзера
+            builder.userAnswer(isAnswerPresent ? answer.getGivenText() : "(Немає відповіді)");
+            
+            // Правильна відповідь з БД
+            textAnswerRepository.findByQuestion_QuestionId(q.getQuestionId())
+                    .ifPresent(ta -> builder.correctAnswer(ta.getCorrectText()));
+            break;
 
-            case MATCHING:
-                String userMatches = answer.getMatchings().stream()
+        case MATCHING:
+            // Пари юзера
+            String userMatches = isAnswerPresent 
+                    ? answer.getMatchings().stream()
                         .map(m -> m.getMatchingPair().getPrompt() + " — " + m.getSelectedAnswerText())
-                        .collect(Collectors.joining("\n"));
-                String correctMatches = q.getMatchingPairs().stream()
-                        .map(p -> p.getPrompt() + " — " + p.getAnswer())
-                        .collect(Collectors.joining("\n"));
-                
-                builder.userAnswer(userMatches)
-                       .correctAnswer(correctMatches);
-                break;
+                        .collect(Collectors.joining("\n"))
+                    : "(Немає відповіді)";
+            
+            // Правильні пари (з питання)
+            String correctMatches = q.getMatchingPairs().stream()
+                    .map(p -> p.getPrompt() + " — " + p.getAnswer())
+                    .collect(Collectors.joining("\n"));
 
-            case CODE:
-                builder.userCode(answer.getGivenText());
-                if (q.getCodeAnswer() != null) {
-                    builder.language(q.getCodeAnswer().getLanguage());
-                    builder.templateCode(q.getCodeAnswer().getTemplateCode());
-                    builder.testCases(q.getCodeAnswer().getTestCases());
-                    builder.correctAnswer("Див. тест-кейси");
-                }
-                break;
-        }
+            builder.userAnswer(userMatches)
+                   .correctAnswer(correctMatches);
+            break;
 
-        return builder.build();
+        case CODE:
+            builder.userCode(isAnswerPresent ? answer.getGivenText() : "");
+            builder.userAnswer(isAnswerPresent ? "Code submitted" : "(Немає відповіді)");
+
+            if (q.getCodeAnswer() != null) {
+                builder.language(q.getCodeAnswer().getLanguage());
+                builder.templateCode(q.getCodeAnswer().getTemplateCode());
+                builder.testCases(q.getCodeAnswer().getTestCases());
+                builder.correctAnswer("Див. тест-кейси");
+            }
+            break;
     }
+
+    return builder.build();
+}
 
     private TestResultResponse calculateResult(UserTestAttempt attempt) {
         int totalQuestions = attempt.getTest().getTestQuestions().size();
