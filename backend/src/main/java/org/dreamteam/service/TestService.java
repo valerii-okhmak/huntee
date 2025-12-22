@@ -73,6 +73,8 @@ public class TestService {
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
         test.setIsPrivate(request.getIsPrivate());
+        test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
+        test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
 
         Test savedTest = testRepository.save(test);
         return mapToDetailResponse(savedTest);
@@ -108,6 +110,8 @@ public class TestService {
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
         test.setIsPrivate(request.getIsPrivate());
+        test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
+        test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
@@ -250,6 +254,8 @@ public class TestService {
                 .authorUsername(test.getUser().getUsername())
                 .isPrivate(test.getIsPrivate())
                 .questions(questionSummaries)
+                .isFixedQuestionOrder(test.getIsFixedQuestionOrder())
+                .isFixedAnswerOrder(test.getIsFixedAnswerOrder())
                 .build();
     }
 
