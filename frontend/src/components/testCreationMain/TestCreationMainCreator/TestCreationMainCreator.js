@@ -107,7 +107,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           }
           payload.choiceOptions = options.map((text, index) => ({
               optionText: text.trim(),
-              isCorrect: index === regularCorrect
+              isCorrect: index === regularCorrect,
+              orderIndex: index // Додано порядковий номер варіанту
           }));
         } else {
           if (!multipleCorrect.some(v => v)) {
@@ -115,7 +116,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           }
           payload.choiceOptions = options.map((text, index) => ({
               optionText: text.trim(),
-              isCorrect: multipleCorrect[index]
+              isCorrect: multipleCorrect[index],
+              orderIndex: index // Додано порядковий номер варіанту
           }));
         }
       }
@@ -263,7 +265,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           setCodeTestCasesJSON={(val) => { setCodeTestCasesJSON(val); clearError('codeTestCasesJSON'); }}
         />
 
-        {/* Секція для текстових помилок */}
         {(errors.optionsCount || errors.correctSelection || errors.codeTestCasesJSON) && (
           <div className="test-creator__error-message">
             {errors.optionsCount || errors.correctSelection}
