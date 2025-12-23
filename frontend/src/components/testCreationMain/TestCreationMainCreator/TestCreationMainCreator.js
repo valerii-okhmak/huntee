@@ -101,7 +101,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
 
       // Валідація балів
       const floatPoints = parseFloat(points);
-      if (!points || isNaN(floatPoints) || floatPoints <= 0) {
+      if (!points || isNaN(floatPoints) || floatPoints < 0) {
         newErrors.points = true;
       }
 

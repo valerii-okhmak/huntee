@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import './OurDataFilter.css';
 
-const OurDataFilter = ({ selected, onSelect, totalCount }) => {
+const OurDataFilter = ({ selected, onSelect, stats }) => {
   const [hidden, setHidden] = useState(false);
 
   const toggleFilter = () => {
     setHidden(!hidden);
   };
 
+  // ОНОВЛЕНО: Додано Scheduled статус
   const options = [
-    { label: 'Всі тести', count: totalCount || 0 }, 
-    { label: 'Активні тести', count: 0 }, 
-    { label: 'Завершені тести', count: 0 },
+    { label: 'Всі тести', count: stats?.total || 0 }, 
+    { label: 'Активні тести', count: stats?.active || 0 }, 
+    { label: 'Заплановані тести', count: stats?.scheduled || 0 },
+    { label: 'Завершені тести', count: stats?.closed || 0 },
   ];
 
   const handleSelect = (label) => {
-    onSelect(label); 
+    if (selected === label) {
+        onSelect('Всі тести');
+    } else {
+        onSelect(label);
+    }
   };
 
   return (
