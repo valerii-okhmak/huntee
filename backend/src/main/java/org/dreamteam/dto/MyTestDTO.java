@@ -18,7 +18,8 @@ public class MyTestDTO {
     private String level;
     private String city;
     private OffsetDateTime startTime;
-    private String status; 
+    private String status;
+    private String statusTest; 
     private int candidatesCount;
     private Boolean isPrivate;
 }
