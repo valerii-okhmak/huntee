@@ -16,6 +16,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   const [selectedType, setSelectedType] = useState("regular");
   const [questionText, setQuestionText] = useState("");
   const [comment, setComment] = useState("");
+  // Стан для балів (зберігаємо як рядок для зручності введення крапки)
+  const [points, setPoints] = useState("1"); 
   const [errors, setErrors] = useState({});
 
   const [options, setOptions] = useState(["", ""]);
@@ -41,7 +43,24 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
     }
   };
 
-  // Функції керування варіантами
+  // --- Логіка для поля балів ---
+  const handlePointsChange = (e) => {
+    const val = e.target.value;
+    // Дозволяємо порожній рядок (для видалення), цифри та одну крапку
+    if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
+      setPoints(val);
+      clearError('points');
+    }
+  };
+
+  const blockInvalidChar = (e) => {
+    // Блокуємо e, E (експонента), + та -
+    if (['e', 'E', '+', '-'].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+  // -----------------------------
+
   const addOption = () => {
     setOptions(prev => [...prev, ""]);
     setMultipleCorrect(prev => [...prev, false]);
@@ -80,6 +99,12 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         newErrors.questionText = true;
       }
 
+      // Валідація балів
+      const floatPoints = parseFloat(points);
+      if (!points || isNaN(floatPoints) || floatPoints <= 0) {
+        newErrors.points = true;
+      }
+
       let backendType;
       if (selectedType === "regular") backendType = "SINGLE_CHOICE";
       else if (selectedType === "multiple") backendType = "MULTIPLE_CHOICE";
@@ -90,7 +115,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
       let payload = { 
           questionText: questionText.trim(),
           comment: comment.trim(),
-          questionType: backendType 
+          questionType: backendType,
+          points: floatPoints // Відправляємо як число
       };
 
       if (selectedType === "regular" || selectedType === "multiple") {
@@ -108,7 +134,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           payload.choiceOptions = options.map((text, index) => ({
               optionText: text.trim(),
               isCorrect: index === regularCorrect,
-              orderIndex: index // Додано порядковий номер варіанту
+              orderIndex: index
           }));
         } else {
           if (!multipleCorrect.some(v => v)) {
@@ -117,7 +143,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           payload.choiceOptions = options.map((text, index) => ({
               optionText: text.trim(),
               isCorrect: multipleCorrect[index],
-              orderIndex: index // Додано порядковий номер варіанту
+              orderIndex: index
           }));
         }
       }
@@ -153,9 +179,10 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         return null;
       }
 
-      // Скидання
+      // Скидання станів
       setQuestionText("");
       setComment("");
+      setPoints("1"); 
       setOptions(["", ""]);
       setRegularCorrect(null);
       setMultipleCorrect([false, false]);
@@ -230,6 +257,22 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
               <FontAwesomeIcon icon={faImage} />
             </button>
           </div>
+
+          <div className="testCreationMainCreator__questionField-header">
+            <h2 className="testCreationMainCreator__questionField-title">Кількість балів за правильну відповідь:</h2>
+          </div>
+          <div className={`testCreationMainCreator__questionField-wrapper`}>
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              placeholder={errors.points ? "Введіть вагу!" : "Введіть вагу запитання"}
+              value={points}
+              onKeyDown={blockInvalidChar}
+              onChange={handlePointsChange}
+              className={`testCreationMainCreator__questionField-input ${errors.points ? 'input-error-placeholder' : ''}`}
+            />
+          </div>
         </div>
 
         <TestCreationMainAnswers
@@ -237,24 +280,19 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           comment={comment}
           setComment={setComment}
           errors={errors}
-
           options={options}
           updateOption={updateOption}
           addOption={addOption}
           removeOption={removeOption}
           minBase={MIN_BASE_OPTIONS}
-
           regularCorrect={regularCorrect}
           pickRegularCorrect={pickRegularCorrect}
-
           multipleCorrect={multipleCorrect}
           toggleMultipleCorrect={toggleMultipleCorrect}
-
           openExpectedEnabled={openExpectedEnabled}
           setOpenExpectedEnabled={setOpenExpectedEnabled}
           openExpectedText={openExpectedText}
           setOpenExpectedText={(val) => { setOpenExpectedText(val); clearError('openExpectedText'); }}
-
           codeLanguage={codeLanguage}
           setCodeLanguage={setCodeLanguage}
           codeMethodName={codeMethodName}
@@ -265,9 +303,9 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           setCodeTestCasesJSON={(val) => { setCodeTestCasesJSON(val); clearError('codeTestCasesJSON'); }}
         />
 
-        {(errors.optionsCount || errors.correctSelection || errors.codeTestCasesJSON) && (
+        {(errors.optionsCount || errors.correctSelection || errors.codeTestCasesJSON || errors.points) && (
           <div className="test-creator__error-message">
-            {errors.optionsCount || errors.correctSelection}
+            {errors.optionsCount || errors.correctSelection || (errors.points && "Введіть коректну кількість балів (напр. 1 або 1.5)")}
           </div>
         )}
       </div>

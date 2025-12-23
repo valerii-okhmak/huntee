@@ -43,6 +43,9 @@
 .testCreationMainCreator__questionField {
     background-color: #ffffff;
     padding: 20px 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .testCreationMainCreator__questionField-header {
@@ -100,7 +103,6 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-top: 20px;
 }
 
 .testCreationMainCreator__questionField-input {
