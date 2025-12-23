@@ -25,6 +25,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.OffsetDateTime;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -142,6 +143,7 @@ public class TestService {
 
         return tests.stream().map(test -> {
             int candidates = registrationRepository.findByTest_TestId(test.getTestId()).size();
+            String dynamicStatus = calculateTestStatus(test);
 
             return MyTestDTO.builder()
                     .id(test.getTestId())
@@ -150,7 +152,7 @@ public class TestService {
                     .level(test.getLevel())
                     .city(test.getCity())
                     .startTime(test.getStartTime())
-                    .status("Active")
+                    .status(dynamicStatus)
                     .candidatesCount(candidates)
                     .build();
         }).collect(Collectors.toList());
@@ -235,6 +237,20 @@ public class TestService {
                 .failedCount(failed)
                 .averageScore(Math.round(avg * 100.0) / 100.0) 
                 .build();
+    }
+
+    private String calculateTestStatus(Test test) {
+        OffsetDateTime now = OffsetDateTime.now();
+
+        if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
+            return "Scheduled";
+        }
+
+        if (test.getEndTime() != null && now.isAfter(test.getEndTime())) {
+            return "Closed"; 
+        }
+
+        return "Active"; 
     }
 
     private void updateTestQuestions(Test test, List<UUID> questionIds) {
