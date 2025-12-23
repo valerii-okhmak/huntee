@@ -225,12 +225,15 @@ public class TestAttemptService {
         attempt.setScore(finalScore);
         attemptRepository.save(attempt);
 
+        if (Boolean.FALSE.equals(attempt.getTest().getIsShowResult())) {
+     
         return TestResultResponse.builder()
                 .attemptId(attemptId)
                 .score(finalScore)
                 .totalQuestions(allQuestions.size())
                 .correctAnswers(correctCount)
                 .build();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -243,6 +246,10 @@ public class TestAttemptService {
 
         if (!isCandidate && !isOwner) {
             throw new AccessDeniedException("Access denied");
+        }
+
+        if (isCandidate && Boolean.FALSE.equals(attempt.getTest().getIsShowResult())) {
+             throw new AccessDeniedException("Результати цього тесту приховані автором.");
         }
 
         java.util.Map<UUID, UserAnswer> answerMap = attempt.getUserAnswers().stream()

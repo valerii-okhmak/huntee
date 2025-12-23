@@ -32,6 +32,7 @@ public class TestDetailResponse {
     private Double maxScore;
     private Boolean isFixedQuestionOrder;
     private Boolean isFixedAnswerOrder;
+    private Boolean isShowResult;
 
     @Data
     @Builder

@@ -20,4 +20,5 @@ public class TestSummaryResponse {
     private Boolean isFixedTime;
     private String authorUsername;
     private Boolean isPrivate;
+    private Boolean isShowResult;
 }

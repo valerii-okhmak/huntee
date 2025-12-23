@@ -24,5 +24,6 @@ public class TestUpdateRequest {
     private OffsetDateTime endTime;
     private Integer durationMinutes;
     private Boolean isPrivate;
-    
+    private Boolean isFixedAnswerOrder;
+    private Boolean isShowResult;
 }

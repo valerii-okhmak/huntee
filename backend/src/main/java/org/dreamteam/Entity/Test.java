@@ -73,6 +73,8 @@ public class Test {
 
     @Column(name = "is_fixed_answer_order")
     private Boolean isFixedAnswerOrder = true;
+    @Column(name = "is_show_result")
+    private Boolean isShowResult = true;
 
     public Test(String testName, User user) {
         this.testName = testName;
