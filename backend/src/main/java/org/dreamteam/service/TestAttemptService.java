@@ -255,8 +255,8 @@ public class TestAttemptService {
             throw new AccessDeniedException("Access denied");
         }
 
-        if (isCandidate && Boolean.FALSE.equals(attempt.getTest().getIsShowResult())) {
-             throw new AccessDeniedException("Результати цього тесту приховані автором.");
+        if (isCandidate && !isOwner && Boolean.FALSE.equals(attempt.getTest().getIsShowResult())) {
+         throw new AccessDeniedException("Результати приховані.");
         }
 
         java.util.Map<UUID, UserAnswer> answerMap = attempt.getUserAnswers().stream()
