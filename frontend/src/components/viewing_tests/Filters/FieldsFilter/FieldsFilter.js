@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './FieldsFilter.css';
 
-const FieldsFilter = ({ selected, onSelect }) => {
+const FieldsFilter = ({ selected, onSelect, spheres }) => {
   const [hidden, setHidden] = useState(false);
 
   const toggleFilter = () => {
@@ -28,20 +28,28 @@ const FieldsFilter = ({ selected, onSelect }) => {
 
       {!hidden && (
         <div className='fields_filter_section'>
-          {['Всі', 'Data Science', 'Frontend','Backend', 'QA', 'DevOps'].map((loc, i) => (
-          <label className='custom-checkbox' key={i}>
-            <input
-              type='checkbox'
-              className='custom-input'
-              value={loc}
-              id={`check_field_${i}`}
-              checked={selected.includes(loc)}
-              onChange={handleCheckboxChange}
-            />
-            <span className='checkbox-square'></span>
-            {loc}
-          </label>
+          {spheres.map((sphere, i) => (
+            <label className='custom-checkbox' key={i}>
+              <input
+                type='checkbox'
+                className='custom-input'
+                value={sphere.name}
+                id={`check_field_${i}`}
+                checked={selected.includes(sphere.name)}
+                onChange={handleCheckboxChange}
+              />
+              <span className='checkbox-square'></span>
+                <span className='fields_checkbox-label'>{sphere.name}</span>
+                <span className='fields_checkbox-count'>
+                  ({sphere.count})
+                </span>
+            </label>
           ))}
+          {spheres.length === 0 && (
+            <div style={{ fontSize: '12px', opacity: 0.5, padding: '5px 0' }}>
+              Немає доступних сфер
+            </div>
+          )}
         </div>
       )}
     </div>

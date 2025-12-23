@@ -179,9 +179,21 @@ const TestCreationMainAnswers = ({
       return (
         <div className="testCreationMainCreatorAnswers testCreationMainCreatorAnswers-open">
           <h3 className='testCreationMainCreatorAnswers__title'>Налаштування коду</h3>
+          <div style={{marginBottom: '15px'}}>
+              <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Мова програмування:</label>
+              <select 
+                className="testCreationMainCreatorAnswers__input-open" // Можна додати свій клас для select
+                style={{padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
+                value={codeLanguage}
+                onChange={(e) => setCodeLanguage(e.target.value)}
+              >
+                  <option value="java">Java</option>
+                  <option value="python">Python</option>
+                  <option value="javascript">JavaScript</option>
+              </select>
+          </div>
 
-          {/* Вибір мови зазвичай не буває порожнім, але назва методу - так */}
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{marginBottom: '15px'}}>
             <label className="testCreationMainCreatorAnswers__text" style={{ display: 'block', marginBottom: '5px' }}>Назва методу:</label>
             <input
               type="text"

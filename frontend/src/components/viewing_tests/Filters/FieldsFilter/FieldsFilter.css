@@ -21,6 +21,11 @@
     font-size: 16px;
 }
 
+.fields_checkbox-indicator{
+    display: flex;
+    justify-content: space-between;
+}
+
 .fields_filter_action {
     display: flex;
     justify-content: center;
@@ -94,5 +99,11 @@
   width: 8px;
   height: 8px;
   background-color: black;
+}
+
+.fields_checkbox-label {
+  flex: 1;
+  font-size: 20px;
+  color: #000;
 }
 

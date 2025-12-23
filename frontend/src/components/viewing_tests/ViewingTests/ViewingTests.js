@@ -16,7 +16,6 @@ const ViewingTests = () => {
   const [selectedFields, setSelectedFields] = useState([]); 
   const [selectedDataFilter, setSelectedDataFilter] = useState('Всі тести'); 
 
-// 1. Завантаження тестів з API
   useEffect(() => {
     const fetchMyTests = async () => {
       try {
@@ -26,8 +25,6 @@ const ViewingTests = () => {
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         
-        console.log("Дані з сервера:", response.data); 
-
         const mappedTests = response.data.map(t => {
             let dateStr = 'Дата не вказана';
             let timeStr = '';
@@ -48,7 +45,7 @@ const ViewingTests = () => {
                 date: dateStr,
                 time: timeStr,
                 candidatesCount: t.candidatesCount || 0,
-                status: t.status,
+                status: t.status, // Очікуємо "Active", "Scheduled", "Closed"
                 link: `/test/${t.id || t.testId}/dashboard`
             };
         });
@@ -64,19 +61,46 @@ const ViewingTests = () => {
     fetchMyTests();
   }, []);
 
+  // ОНОВЛЕНО: Підрахунок для 3-х статусів
+  const stats = useMemo(() => {
+    return {
+      total: tests.length,
+      active: tests.filter(t => t.status === 'Active').length,
+      scheduled: tests.filter(t => t.status === 'Scheduled').length,
+      closed: tests.filter(t => t.status === 'Closed').length
+    };
+  }, [tests]);
+
+  // ОНОВЛЕНО: Логіка фільтрації
   const filteredTests = useMemo(() => {
     return tests.filter(test => {
       const matchesSearch = test.title.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesField = selectedFields.length === 0 || 
-                           selectedFields.includes('Всі') || 
-                           selectedFields.includes(test.type);
+                          selectedFields.includes(test.type);
 
       let matchesData = true;
-      if (selectedDataFilter === 'Активні тести') matchesData = test.status === 'Active';
+      if (selectedDataFilter === 'Активні тести') {
+          matchesData = test.status === 'Active';
+      } else if (selectedDataFilter === 'Заплановані тести') {
+          matchesData = test.status === 'Scheduled';
+      } else if (selectedDataFilter === 'Завершені тести') {
+          matchesData = test.status === 'Closed';
+      }
+      
       return matchesSearch && matchesField && matchesData;
     });
   }, [tests, searchQuery, selectedFields, selectedDataFilter]);
+
+  const spheresWithCounts = useMemo(() => {
+    const counts = {};
+    tests.forEach(t => {
+      if (t.type) {
+        counts[t.type] = (counts[t.type] || 0) + 1;
+      }
+    });
+    return Object.entries(counts).map(([name, count]) => ({ name, count }));
+  }, [tests]);
 
   return (
     <div className="viewing-tests-page container">
@@ -100,11 +124,12 @@ const ViewingTests = () => {
           <OurDataFilter 
             selected={selectedDataFilter} 
             onSelect={setSelectedDataFilter}
-            totalCount={tests.length} 
+            stats={stats} 
           />
           <FieldsFilter 
             selected={selectedFields}
             onSelect={setSelectedFields}
+            spheres={spheresWithCounts}
           />
         </div>
       </div>
