@@ -229,11 +229,18 @@ public class TestAttemptService {
      
         return TestResultResponse.builder()
                 .attemptId(attemptId)
+                .score(null)
+                .totalQuestions(allQuestions.size())
+                .correctAnswers(0)
+                .build();
+        }
+
+        return TestResultResponse.builder()
+                .attemptId(attemptId)
                 .score(finalScore)
                 .totalQuestions(allQuestions.size())
                 .correctAnswers(correctCount)
                 .build();
-        }
     }
 
     @Transactional(readOnly = true)
