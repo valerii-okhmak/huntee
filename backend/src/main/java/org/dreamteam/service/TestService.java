@@ -161,9 +161,11 @@ public class TestService {
     public List<MyTestDTO> getMyCandidateTests(String userEmail) {
         User user = findUserByEmail(userEmail);
         List<TestRegistration> registrations = registrationRepository.findByUser_Id(user.getId());
+        
 
         return registrations.stream().map(reg -> {
             Test test = reg.getTest();
+            String timeStatus = calculateTestStatus(test);
             return MyTestDTO.builder()
                     .id(test.getTestId())
                     .title(test.getTestName())
@@ -172,6 +174,8 @@ public class TestService {
                     .city(test.getCity())
                     .startTime(test.getStartTime())
                     .status("Registered")
+                    .statusTest(timeStatus) 
+
                     .build();
         }).collect(Collectors.toList());
     }
