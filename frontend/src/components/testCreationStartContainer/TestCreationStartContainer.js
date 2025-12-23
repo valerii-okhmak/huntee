@@ -40,6 +40,7 @@ const TestCreationStartContainer = () => {
     const [selectedTestType, setSelectedTestType] = useState({ value: 'public', label: 'Публічний' });
     const [selectedTestQuestionsSorting, setSelectedTestQuestionsSorting] = useState({ value: 'fixed', label: 'Фіксований порядок' });
     const [selectedTestAnswersSorting, setSelectedTestAnswersSorting] = useState({ value: 'fixed', label: 'Фіксований порядок' });
+    const [selectedShowResults, setSelectedShowResults] = useState({ value: 'yes', label: 'Так' });
 
     const refs = {
       testName: useRef(null),
@@ -195,6 +196,13 @@ const TestCreationStartContainer = () => {
                 selectedOption={selectedTestAnswersSorting}
                 setSelectedOption={setSelectedTestAnswersSorting}
                 fieldName="Порядок відповідей"
+                fieldOptions={{}}
+            />
+            <SelectField
+                type="showresults"
+                selectedOption={selectedShowResults}
+                setSelectedOption={setSelectedShowResults}
+                fieldName="Показувати результати після завершення тесту"
                 fieldOptions={{}}
             />
 

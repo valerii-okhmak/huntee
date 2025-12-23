@@ -3,17 +3,13 @@ import './TestCard.css';
 import location_icon from '../../../img/test/location.png';
 import { Link } from 'react-router-dom';
 
-const TestCard = ({ title, type, location, date, time, link, isActive, candidatesCount }) => {
+const TestCard = ({ title, type, location, date, time, link, candidatesCount }) => {
   return (
     <Link to={link} className='testcard-link'>
       <div className='testcard-container'>
         <div className='testcard-top_row'>
           <p className='testcard-type'>{type}</p>
-          {isActive ? (
             <p className='testcard-status-active'>Зареєстровано: {candidatesCount}</p>
-          ) : (
-            <p className='testcard-status-unactive'>Переглянути результати</p>
-          )}
         </div>
 
         <div className='testcard-title'>{title}</div>

@@ -18,7 +18,6 @@ const TestsList = ({ tests }) => {
             date={test.date}
             time={test.time}
             link={test.link}
-            isActive={test.candidatesCount > 0} 
             candidatesCount={test.candidatesCount}
         />
       ))}

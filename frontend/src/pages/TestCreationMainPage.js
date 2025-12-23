@@ -34,6 +34,7 @@ const TestCreationMainPage = () => {
     durationMinutes: passed?.durationMinutes || 0,
     isFixedTime: (passed?.durationMinutes ?? 0) > 0,
     isPrivate: passed?.isPrivate || false,
+    isShowResult: passed?.isShowResult || true,
     isFixedQuestionOrder: passed?.isFixedQuestionOrder || false,
     isFixedAnswerOrder: passed?.isFixedAnswerOrder || false
   }));
@@ -53,6 +54,7 @@ const TestCreationMainPage = () => {
         durationMinutes: passed.durationMinutes || 0,
         isFixedTime: (passed.durationMinutes ?? 0) > 0,
         isPrivate: passed.isPrivate ?? prev.isPrivate,
+        isShowResult: passed.isShowResult ?? prev.isShowResult,
         isFixedQuestionOrder: passed.isFixedQuestionOrder ?? prev.isFixedQuestionOrder,
         isFixedAnswerOrder: passed.isFixedAnswerOrder ?? prev.isFixedAnswerOrder
       }));

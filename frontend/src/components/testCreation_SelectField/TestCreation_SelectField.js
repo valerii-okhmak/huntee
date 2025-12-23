@@ -397,6 +397,41 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
           </div>
         )}
 
+        {type === 'showresults' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="showResults"
+                value="yes"
+                checked={selectedOption?.value === 'yes'}
+                onChange={() => setSelectedOption({ value: 'yes', label: 'Так' })}
+              />
+              <div className="question-classification__label">
+                Так, показувати результати
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="showResults"
+                value="no"
+                checked={selectedOption?.value === 'no'}
+                onChange={() => setSelectedOption({ value: 'no', label: 'Ні' })}
+              />
+              <div className="question-classification__label">
+                Ні, не показувати результати
+              </div>
+            </label>
+
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'yes'
+                ? "Результати тесту будуть показані після завершення"
+                : "Результати тесту не будуть показані після завершення"}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
