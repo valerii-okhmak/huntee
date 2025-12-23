@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
 import SocialLogin from '../SocialLogin/SocialLogin';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Додано useLocation
 import { login } from '../../services/authService';
 import { saveTokens } from '../../utils/auth';
 
@@ -10,6 +10,10 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const AuthForm = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Отримуємо об'єкт локації для відстеження шляху "звідки прийшли"
+
+  // Визначаємо цільовий шлях: або той, що зберіг ProtectedRoute, або головна сторінка
+  const from = location.state?.from?.pathname || "/";
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +47,11 @@ const AuthForm = () => {
     try {
       const response = await login({ email, password });
       saveTokens(response.data);
-      navigate('/');
+      
+      // Навігація на попередню сторінку (наприклад, /messages), 
+      // replace: true потрібен, щоб видалити сторінку логіну з історії переходів
+      navigate(from, { replace: true });
+      
     } catch (err) {
       const status = err.response?.status;
       const message = err.response?.data?.message;
@@ -56,7 +64,7 @@ const AuthForm = () => {
           newErrors.general = message || 'Невірна пошта або пароль.';
           break;
         case 403:
-          newErrors.general = message || 'Доступ тільки для @lpnu.ua.';
+          newErrors.general = message || 'Доступ заборонено.';
           break;
         case 500:
           newErrors.general = 'Помилка сервера.';
@@ -98,7 +106,6 @@ const AuthForm = () => {
               {errors.email && <span className="input-error-message">{errors.email}</span>}
             </div>
 
-            {/* ---------- ПАРОЛЬ З SVG-ІКОНКОЮ ---------- */}
             <div className="auth-input-box password-box">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -122,7 +129,6 @@ const AuthForm = () => {
 
               {errors.password && <span className="input-error-message">{errors.password}</span>}
             </div>
-            {/* ------------------------------------------ */}
 
             {errors.general && (
               <span className="input-error-message">{errors.general}</span>
@@ -143,7 +149,7 @@ const AuthForm = () => {
         <div className="bottom-part-auth">
           <SocialLogin setError={(msg) => setErrors({ ...errors, general: msg })} />
           <p className="auth-footer">
-            Ще немає акаунту? <Link to="/reg">Зареєструватися</Link>
+            Ще немає акаунту? <Link to="/reg" state={{ from: location.state?.from }}>Зареєструватися</Link>
           </p>
         </div>
       </form>

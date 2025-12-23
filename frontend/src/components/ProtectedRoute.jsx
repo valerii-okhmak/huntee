@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom'; // Додано useLocation
 import { getAccessToken, getRefreshToken, saveAccessToken } from '../utils/auth';
 import { jwtDecode } from 'jwt-decode'; 
 import { refreshToken as requestNewAccessToken } from '../services/authService';
@@ -9,11 +9,7 @@ const isTokenValid = (token) => {
 
   try {
     const { exp } = jwtDecode(token);
-    const expirationDate = new Date(exp * 1000);
-    const currentDate = new Date();
-    const daysUntilExpiration = (expirationDate - currentDate) / (1000 * 60 * 60 * 24);
-    console.log('Days until token expires:', daysUntilExpiration.toFixed(2));
-    return exp * 1000 > Date.now(); // exp в секундах → мілісекунди
+    return exp * 1000 > Date.now(); 
   } catch (e) {
     return false;
   }
@@ -22,6 +18,7 @@ const isTokenValid = (token) => {
 const ProtectedRoute = () => {
   const [authChecked, setAuthChecked] = useState(false);
   const [authorized, setAuthorized] = useState(false);
+  const location = useLocation(); // 1. Отримуємо поточну локацію (наприклад, /messages)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,8 +27,6 @@ const ProtectedRoute = () => {
 
       const accessValid = isTokenValid(accessToken);
 
-      console.log('Access Token Valid:', accessValid);
-      console.log('Refresh Token Valid:', isTokenValid(refreshToken));
       if (accessValid) {
         setAuthorized(true);
         setAuthChecked(true);
@@ -63,7 +58,9 @@ const ProtectedRoute = () => {
     return <div>Завантаження...</div>; 
   }
 
-  return authorized ? <Outlet /> : <Navigate to="/login" />;
+  // 2. ДОДАНО state={{ from: location }}
+  // Це "записує" адресу /messages, щоб логін міг її прочитати
+  return authorized ? <Outlet /> : <Navigate to="/login" state={{ from: location }} replace />;
 };
 
 export default ProtectedRoute;
