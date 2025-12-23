@@ -87,6 +87,7 @@ const TestCreationStartContainer = () => {
             endTime: finishingDate ? new Date(finishingDate).toISOString() : null,
             durationMinutes: Number(selectedTime) || 0,
             isPrivate: selectedTestType?.value === 'private',
+            isShowResult: selectedShowResults?.value === 'yes',
             isFixedQuestionOrder: selectedTestQuestionsSorting?.value === 'fixed',
             isFixedAnswerOrder: selectedTestAnswersSorting?.value === 'fixed',
             classes
