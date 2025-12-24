@@ -32,36 +32,47 @@ public class TestInvitationService {
         }
 
         boolean invitationExists = invitationRepository.existsByTestAndEmailAndStatus(test, userEmail, InvitationStatus.PENDING);
-
         if (invitationExists) {
             throw new IllegalStateException("Активне запрошення вже надіслано на " + userEmail);
         }
 
+        // Створення запрошення
         TestInvitation invitation = new TestInvitation();
         invitation.setTest(test);
         invitation.setEmail(userEmail);
         invitation.setStatus(InvitationStatus.PENDING);
-        invitation.setExpiresAt(OffsetDateTime.now().plusDays(2)); // уточнити формат дати
-
+        invitation.setExpiresAt(OffsetDateTime.now().plusDays(2));
+        
         if(invitation.getToken() == null) {
             invitation.setToken(UUID.randomUUID().toString());
         }
 
         invitationRepository.save(invitation);
 
+        String frontendUrl = "http://localhost:3000"; 
+        
+        String inviteLink = String.format("%s/testpage/%s?token=%s", 
+                                          frontendUrl, 
+                                          test.getTestId(), 
+                                          invitation.getToken());
+
         String title = "Запрошення до участі в тесті: " + test.getTestName();
-        String message = "Вас запрошено до участі в тесті \"" + test.getTestName() + "\".";
-        message += "\nЩоб прийняти запрошення, будь ласка, скористайтеся наступним посиланням: ";
-        message += "\nhttp://your-frontend-url.com/accept-invitation?token=" + invitation.getToken();
-        message += "\nЗапрошення дійсне до: " + invitation.getExpiresAt().toString();
+        String message = String.format(
+                "Вас запрошено до участі в тесті \"%s\".\n" +
+                "Щоб прийняти запрошення, перейдіть за посиланням:\n%s\n" +
+                "Запрошення дійсне до: %s",
+                test.getTestName(),
+                inviteLink,
+                invitation.getExpiresAt().toString()
+        );
 
         try {
             emailService.sendEmail(userEmail, title, message);
         } catch (Exception e) {
             System.err.println("Error sending invitation email: " + e.getMessage());
         }
-        
     }
+    
 
     @Transactional
     public TestInvitation validateAndConsumeToken(String token) {
@@ -74,7 +85,6 @@ public class TestInvitationService {
             throw new AccessDeniedException("Запрошення було вже використано або скасовано.");
         }
         
-        // 2. Виправлено: використовуємо OffsetDateTime.now() замість LocalDateTime
         if (invitation.getExpiresAt().isBefore(OffsetDateTime.now())) {
             invitation.setStatus(InvitationStatus.EXPIRED);
             invitationRepository.save(invitation);
