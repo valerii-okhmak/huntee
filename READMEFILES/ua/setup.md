@@ -14,61 +14,9 @@
 ## 🛠 Крок 1: Створення файлу конфігурації
 
 Вам не потрібно клонувати репозиторій або встановлювати Java/Node.js вручну.
-Просто створіть папку (наприклад, `huntee_deploy`) і створіть у ній файл з назвою **`docker-compose.yml`**.
+Просто створіть папку (наприклад, `huntee_deploy`) і додайте до неї **`docker-compose.yml`** файл.
 
 Вставте наступний код у файл `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-
-services:
-  db:
-    image: mysql:8.0
-    container_name: huntee_db
-    environment:
-      MYSQL_DATABASE: huntee
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3306:3306" 
-    volumes:
-      - db_data:/var/lib/mysql
-    restart: always
-    networks:
-      - huntee-network
-
-  backend:
-    image: ghcr.io/donat1n/huntee-backend:latest
-    container_name: huntee_backend
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/huntee?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SERVER_SERVLET_CONTEXT_PATH=/api
-    depends_on:
-      - db
-    restart: always
-    networks:
-      - huntee-network
-
-  frontend:
-    image: ghcr.io/donat1n/huntee-frontend:latest
-    container_name: huntee_frontend
-    ports:
-      - "80:80" 
-    depends_on:
-      - backend
-    restart: always
-    networks:
-      - huntee-network
-
-volumes:
-  db_data:
-
-networks:
-  huntee-network:
-    driver: bridge
-```
 
 ## Крок 2: Запуск проекту
 Відкрийте термінал у папці, де знаходиться файл docker-compose.yml, і виконайте команду:
