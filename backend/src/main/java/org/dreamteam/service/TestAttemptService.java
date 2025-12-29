@@ -48,7 +48,11 @@ public class TestAttemptService {
 
         checkTestAvailabilityDates(test, now);
 
-        // Створюємо або отримуємо існуючу спробу
+        boolean hasCompletedAttempt = attemptRepository.existsByUserAndTestAndCompletedAtIsNotNull(user, test);
+        if (hasCompletedAttempt) {
+            throw new AccessDeniedException("Ви вже пройшли цей тест. Повторне проходження заборонено.");
+        }
+
         UserTestAttempt attempt = attemptRepository
                 .findByUserAndTestAndCompletedAtIsNull(user, test)
                 .orElse(null);
@@ -218,8 +222,7 @@ public class TestAttemptService {
         BigDecimal finalScore = BigDecimal.ZERO;
         if (totalMaxScore > 0) {
             finalScore = BigDecimal.valueOf(earnedScore)
-                    .multiply(BigDecimal.valueOf(100))
-                    .divide(BigDecimal.valueOf(totalMaxScore), 2, RoundingMode.HALF_UP);
+                    .setScale(2, RoundingMode.HALF_UP);
         }
 
         attempt.setScore(finalScore);

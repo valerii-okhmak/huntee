@@ -15,4 +15,5 @@ public interface UserTestAttemptRepository extends JpaRepository<UserTestAttempt
     List<UserTestAttempt> findByTest_TestId(UUID testId);
     List<UserTestAttempt> findByCompletedAtIsNull();
     Optional<UserTestAttempt> findByUserAndTestAndCompletedAtIsNull(User user, Test test);
+    boolean existsByUserAndTestAndCompletedAtIsNotNull(User user, Test test);
 }
