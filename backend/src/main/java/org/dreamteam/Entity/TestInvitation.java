@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -35,6 +36,8 @@ public class TestInvitation {
 
     @Column(name = "expires_at")
     private OffsetDateTime expiresAt;
+
+    
 
     public TestInvitation(Test test, String email, String token, InvitationStatus status, OffsetDateTime expiresAt) {
         this.test = test;

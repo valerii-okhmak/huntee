@@ -71,6 +71,9 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TestRegistration> registrations = new HashSet<>();
 
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TestInvitation> testInvitations = new HashSet<>();
+
     @Column(name = "is_fixed_question_order")
     private Boolean isFixedQuestionOrder = true;
 

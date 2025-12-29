@@ -4,6 +4,8 @@ import location_icon from '../../../img/test/location.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAccessToken } from '../../../utils/auth';
 import ConfirmDeleteTestModal from '../../modal_windows/ConfirmDeleteTestModal';
+import ErrorModal from '../../modal_windows/ErrorModal';
+
 
 const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, onDeleteSuccess }) => {
   const navigate = useNavigate();
@@ -85,7 +87,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
 
             <button
               className="testcard-button testcard-button-submit testcard-button-submit-danger"
-              onClick={handleDelete}
+              onClick={openDeleteModal}
             >
               Видалити
             </button>
@@ -107,11 +109,11 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
       <ConfirmDeleteTestModal 
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
-        onConfirm={confirmDelete}
+        onConfirm={handleDelete}
         testTitle={title}
       />
 
-      <ErrorModal 
+      <ErrorModal
         isOpen={errorState.isOpen}
         onClose={closeErrorModal}
         title="ПОМИЛКА ВИДАЛЕННЯ"
