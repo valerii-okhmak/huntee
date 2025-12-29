@@ -188,8 +188,8 @@ public class TestAttemptService {
         attempt.setCompletedAt(OffsetDateTime.now());
 
         List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attemptId);
-        double totalMaxScore = 0.0;
-        double earnedScore = 0.0;
+        BigDecimal totalMaxScore = BigDecimal.ZERO;
+        BigDecimal earnedScore = BigDecimal.ZERO;
         int correctCount = 0;
 
         List<Question> allQuestions = attempt.getTest().getTestQuestions().stream()
@@ -197,8 +197,11 @@ public class TestAttemptService {
                 .collect(Collectors.toList());
 
         for (Question q : allQuestions) {
-            double weight = (q.getWeight() != null) ? q.getWeight() : 1.0;
-            totalMaxScore += weight;
+        BigDecimal weight = (q.getWeight() != null) 
+                ? BigDecimal.valueOf(q.getWeight()) 
+                : BigDecimal.ONE;
+
+        totalMaxScore = totalMaxScore.add(weight);
         
 
         UserAnswer answer = answers.stream()
@@ -214,16 +217,13 @@ public class TestAttemptService {
 
                 if (isCorrect) {
                     correctCount++;
-                    earnedScore += weight;
+                    earnedScore = earnedScore.add(weight);
                 }
             }
         }
 
-        BigDecimal finalScore = BigDecimal.ZERO;
-        if (totalMaxScore > 0) {
-            finalScore = BigDecimal.valueOf(earnedScore)
-                    .setScale(2, RoundingMode.HALF_UP);
-        }
+        BigDecimal finalScore = earnedScore.setScale(2, RoundingMode.HALF_UP);
+        totalMaxScore = totalMaxScore.setScale(2, RoundingMode.HALF_UP);
 
         attempt.setScore(finalScore);
         attemptRepository.save(attempt);
@@ -235,6 +235,7 @@ public class TestAttemptService {
                 .score(null)
                 .totalQuestions(allQuestions.size())
                 .correctAnswers(0)
+                .totalMaxScore(null)
                 .build();
         }
 
@@ -243,6 +244,7 @@ public class TestAttemptService {
                 .score(finalScore)
                 .totalQuestions(allQuestions.size())
                 .correctAnswers(correctCount)
+                .totalMaxScore(totalMaxScore)
                 .build();
     }
 
@@ -291,6 +293,15 @@ public class TestAttemptService {
         
         int totalQuestions = attempt.getTest().getTestQuestions().size();
 
+        BigDecimal totalMaxScore = attempt.getTest().getTestQuestions().stream()
+         .map(tq -> {
+         Double w = tq.getQuestion().getWeight();
+         return (w != null) ? BigDecimal.valueOf(w) 
+                            : BigDecimal.ONE; 
+    })
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
         return TestAttemptReviewResponse.builder()
                 .attemptId(attempt.getAttemptId())
                 .candidateName(getFullName(attempt.getUser()))
@@ -301,6 +312,7 @@ public class TestAttemptService {
                 
                 .completedAt(attempt.getCompletedAt())        
                 .score(attempt.getScore())
+                .totalMaxScore(totalMaxScore)
                 .totalQuestions(totalQuestions)               
                 .correctAnswersCount(correctCount)           
                 
@@ -530,11 +542,20 @@ public class TestAttemptService {
         long correctCount = attempt.getUserAnswers().stream()
                 .filter(a -> Boolean.TRUE.equals(a.getIsCorrect()))
                 .count();
+                
+        BigDecimal totalMaxScore = attempt.getTest().getTestQuestions().stream()
+            .map(tq -> {
+                Double w = tq.getQuestion().getWeight();
+                return (w != null) ? BigDecimal.valueOf(w) : BigDecimal.ONE;
+            })
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .setScale(2, RoundingMode.HALF_UP);
 
         return TestResultResponse.builder()
                 .attemptId(attempt.getAttemptId())
                 .score(attempt.getScore())
                 .totalQuestions(totalQuestions)
+                .totalMaxScore(totalMaxScore)
                 .correctAnswers((int) correctCount)
                 .build();
     }

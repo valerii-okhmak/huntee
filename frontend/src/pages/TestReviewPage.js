@@ -42,9 +42,9 @@ const TestReviewPage = () => {
             title={resultData.testName || "Назва тесту"}
             name={resultData.candidateName || "Кандидат"}
         />
-        
-        <TestReviewGrading score={resultData.score} />
-        
+
+        <TestReviewGrading score={resultData.score} totalMaxScore={resultData.totalMaxScore} />
+
         <TestReviewQuestions questionsLink={resultData.questions} />
     </div>
   )

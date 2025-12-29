@@ -2,8 +2,10 @@ import React from 'react';
 import './TestReviewGrading.css';
 import { Link } from 'react-router-dom';
 
-const TestReviewGrading = ({ score }) => {
-  const isPassed = score >= 60; 
+const TestReviewGrading = ({ score, totalMaxScore}) => {
+  const safeMaxScore = totalMaxScore > 0 ? totalMaxScore : 1;
+  const percentage = (score / safeMaxScore) * 100;
+  const isPassed = percentage >= 60; 
   const containerClass = isPassed ? 'testReviewGrading testReviewGrading-green' : 'testReviewGrading testReviewGrading-red';
   const scoreClass = isPassed ? 'testReviewGrading__title-green' : 'testReviewGrading__title-red'; // Припускаємо, що у вас є клас для червоного тексту
 
@@ -11,7 +13,7 @@ const TestReviewGrading = ({ score }) => {
     <div className={containerClass}>
         <div className='container'>
             <h2 className='testReviewGrading__title'>
-                Ваша оцінка: <span className={scoreClass}>{score}%</span>
+                Ваша оцінка: <span className={scoreClass}>{score}/{totalMaxScore}</span>
             </h2>
             <p className='testReviewGrading__text'>Для заліку необхідно отримати принаймні 60%</p>
             

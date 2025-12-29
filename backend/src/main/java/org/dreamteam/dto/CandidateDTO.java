@@ -15,7 +15,8 @@ public class CandidateDTO {
     private String email;
     private String profileImageUrl;
     private String status; 
-    private BigDecimal score; 
+    private BigDecimal score;
+    private BigDecimal totalMaxScore; 
     private OffsetDateTime date;
     private UUID attemptId;
 }

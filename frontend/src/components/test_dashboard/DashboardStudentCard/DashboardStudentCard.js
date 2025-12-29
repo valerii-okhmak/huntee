@@ -21,7 +21,10 @@ const DashboardStudentCard = ({ student, type }) => {
     }
   };
 
-  const PASSING_SCORE = 60;
+  const maxScore = student.totalMaxScore || 100;
+  const successPercentage = student.score ? (student.score / maxScore) * 100 : 0;
+  const isPassed = successPercentage >= 60;
+
 
   return (
     <div className="testDashboard__student-card">
@@ -34,12 +37,15 @@ const DashboardStudentCard = ({ student, type }) => {
               className={`testDashboard__card-score ${
                 student.score === null 
                   ? 'testDashboard__card-score-null' 
-                  : student.score >= PASSING_SCORE 
+                  : isPassed
                     ? 'testDashboard__card-score-good' 
                     : 'testDashboard__card-score-bad' 
               }`}
             >
-              {student.score === null ? 'Тест не пройдено' : `${student.score}%`}
+              {student.score === null 
+                  ? 'Тест не пройдено' 
+                  : `${student.score}/${student.totalMaxScore || '?'}`
+              }
             </div>
             
             <span 

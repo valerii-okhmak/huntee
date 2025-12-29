@@ -23,6 +23,7 @@ public class TestAttemptReviewResponse {
     private BigDecimal score;
     private Integer totalQuestions;
     private Integer correctAnswersCount;
+    private BigDecimal totalMaxScore;
 
     private List<QuestionReviewDTO> questions;
 

@@ -13,4 +13,5 @@ public class TestResultResponse {
     private BigDecimal score; 
     private int totalQuestions;
     private int correctAnswers;
+    private BigDecimal totalMaxScore;
 }

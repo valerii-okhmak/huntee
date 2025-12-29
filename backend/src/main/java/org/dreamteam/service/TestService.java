@@ -199,11 +199,18 @@ public class TestService {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
 
+        BigDecimal totalMaxScore = test.getTestQuestions().stream()
+                .map(tq -> {
+                    Double weight = tq.getQuestion().getWeight();
+                    return BigDecimal.valueOf(weight != null ? weight : 1.0);
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
 
         return attempts.stream()
                 .filter(a -> a.getCompletedAt() != null)
-                .map(this::mapAttemptToCandidate)
+                .map(attempt -> mapAttemptToCandidate(attempt, totalMaxScore))
                 .collect(Collectors.toList());
     }
 
@@ -348,7 +355,7 @@ public class TestService {
                 .build();
     }
 
-    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt) {
+    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt, BigDecimal totalMaxScore) {
         User u = attempt.getUser();
         return CandidateDTO.builder()
                 .userId(u.getId())
@@ -358,6 +365,7 @@ public class TestService {
                 .status("COMPLETED")
                 .date(attempt.getCompletedAt())
                 .score(attempt.getScore())
+                .totalMaxScore(totalMaxScore)
                 .attemptId(attempt.getAttemptId())
                 .build();
     }
