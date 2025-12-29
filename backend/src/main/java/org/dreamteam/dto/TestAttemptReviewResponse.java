@@ -24,6 +24,7 @@ public class TestAttemptReviewResponse {
     private Integer totalQuestions;
     private Integer correctAnswersCount;
     private BigDecimal totalMaxScore;
+    private Boolean isShown;
 
     private List<QuestionReviewDTO> questions;
 

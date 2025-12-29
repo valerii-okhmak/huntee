@@ -79,13 +79,14 @@ const App = () => {
         <Route path="/testreview/:attemptId" element={<TestReviewPage />} />
         <Route path="/*" element={<NotFoundPage />} />
         <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
-        <Route path="/messages" element={<MessagePage />} />
-        <Route path="/message/:id" element={<MessageTextPage />} />
+        
           
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/messages" element={<MessagePage />} />
+          <Route path="/message/:id" element={<MessageTextPage />} />
         </Route>
       </Routes>
       <Footer />

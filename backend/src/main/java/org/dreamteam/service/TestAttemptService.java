@@ -228,16 +228,6 @@ public class TestAttemptService {
         attempt.setScore(finalScore);
         attemptRepository.save(attempt);
 
-        if (Boolean.FALSE.equals(attempt.getTest().getIsShowResult())) {
-     
-        return TestResultResponse.builder()
-                .attemptId(attemptId)
-                .score(null)
-                .totalQuestions(allQuestions.size())
-                .correctAnswers(0)
-                .totalMaxScore(null)
-                .build();
-        }
 
         return TestResultResponse.builder()
                 .attemptId(attemptId)
@@ -245,6 +235,7 @@ public class TestAttemptService {
                 .totalQuestions(allQuestions.size())
                 .correctAnswers(correctCount)
                 .totalMaxScore(totalMaxScore)
+                .isShown(attempt.getTest().getIsShowResult())
                 .build();
     }
 
@@ -257,12 +248,15 @@ public class TestAttemptService {
         boolean isOwner = attempt.getTest().getUser().getId().equals(requester.getId());
 
         if (!isCandidate && !isOwner) {
-            throw new AccessDeniedException("Access denied");
+            attempt.getTest().setIsShowResult(false);
+            
         }
 
         if (isCandidate && !isOwner && Boolean.FALSE.equals(attempt.getTest().getIsShowResult())) {
-         throw new AccessDeniedException("Результати приховані.");
+            attempt.getTest().setIsShowResult(false);
         }
+
+        
 
         java.util.Map<UUID, UserAnswer> answerMap = attempt.getUserAnswers().stream()
             .collect(Collectors.toMap(
@@ -314,7 +308,8 @@ public class TestAttemptService {
                 .score(attempt.getScore())
                 .totalMaxScore(totalMaxScore)
                 .totalQuestions(totalQuestions)               
-                .correctAnswersCount(correctCount)           
+                .correctAnswersCount(correctCount)
+                .isShown(attempt.getTest().getIsShowResult())           
                 
                 .questions(questions)
                 .build();
