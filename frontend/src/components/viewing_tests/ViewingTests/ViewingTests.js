@@ -102,6 +102,10 @@ const ViewingTests = () => {
     return Object.entries(counts).map(([name, count]) => ({ name, count }));
   }, [tests]);
 
+  const handleDeleteTest = (id) => {
+    setTests(prevTests => prevTests.filter(test => test.id !== id));
+  };
+
   return (
     <div className="viewing-tests-page container">
       <div className="viewing-tests-left-side">
@@ -112,7 +116,7 @@ const ViewingTests = () => {
           {isLoading ? (
             <div>Завантаження...</div>
           ) : (
-            <TestsList tests={filteredTests} />
+            <TestsList tests={filteredTests} onDeleteTest={handleDeleteTest}/>
           )}
         </div>
       </div>
