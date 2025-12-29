@@ -13,7 +13,7 @@ const TestReviewPage = () => {
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [isTestResultModalOpen, setIsTestResultModalOpen] = useState(false);
+  // Видаляємо зайвий стейт isTestResultModalOpen, він тут не потрібен
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -39,8 +39,10 @@ const TestReviewPage = () => {
   if (loading) return <div className="page"><div className="container">Завантаження...</div></div>;
   if (!resultData) return <div className="page"><div className="container">Результати не знайдено</div></div>;
 
+  // --- ЛОГІКА ВІДОБРАЖЕННЯ ---
 
   if (resultData.isShown) {
+    // Варіант 1: Результати доступні для перегляду
     return (
       <div className='page'>
           <GeneralTestInfoHeader
@@ -52,24 +54,28 @@ const TestReviewPage = () => {
           <TestReviewGrading score={resultData.score} totalMaxScore={resultData.totalMaxScore} />
   
           <TestReviewQuestions questionsLink={resultData.questions} />
-  
       </div>
-    )
+    );
   } else {
-    setIsTestResultModalOpen(true)
+    // Варіант 2: Результати приховані -> показуємо тільки модалку
+    // Ми просто рендеримо модалку з isOpen={true}.
+    
+    const handleClose = () => {
+        // Якщо користувач закриває модалку, куди йому йти? 
+        // Логічно перекинути його на список тестів, бо результати дивитись не можна.
+        navigate('/mytests');
+    };
 
     return (
       <FinishTestInfoModal
-          isOpen={isTestResultModalOpen}
-          onClose={() => setIsTestResultModalOpen(false)}
-          score={resultData.finalScore}
+          isOpen={true} // Завжди відкрито, якщо ми потрапили в цей блок else
+          onClose={handleClose} 
+          score={resultData.score} // Перевірте, чи тут finalScore чи score
           totalMaxScore={resultData.totalMaxScore}
           onSubmitting={() => navigate(`/mytests`)}
         />
-    )
+    );
   }
-
-  
-}
+};
 
 export default TestReviewPage;

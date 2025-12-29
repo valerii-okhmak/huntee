@@ -49,9 +49,7 @@ public class TestAttemptService {
         checkTestAvailabilityDates(test, now);
 
         boolean hasCompletedAttempt = attemptRepository.existsByUserAndTestAndCompletedAtIsNotNull(user, test);
-        if (hasCompletedAttempt) {
-            throw new AccessDeniedException("Ви вже пройшли цей тест. Повторне проходження заборонено.");
-        }
+        
 
         UserTestAttempt attempt = attemptRepository
                 .findByUserAndTestAndCompletedAtIsNull(user, test)
@@ -111,6 +109,7 @@ public class TestAttemptService {
                 .isFixedTime(test.getIsFixedTime())
                 .endTime(calculatedEndTime)
                 .questions(questionResponses)
+                .hasCompletedAttempt(hasCompletedAttempt)
                 .build();
     }
 

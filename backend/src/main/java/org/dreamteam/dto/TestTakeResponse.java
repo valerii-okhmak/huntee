@@ -18,5 +18,6 @@ public class TestTakeResponse {
     private String sphere; 
     private Boolean isFixedTime;
     private OffsetDateTime endTime; 
+    private Boolean hasCompletedAttempt;
     private List<QuestionTakeResponse> questions;
 }
