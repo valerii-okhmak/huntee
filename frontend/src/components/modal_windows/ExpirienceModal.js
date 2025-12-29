@@ -23,7 +23,7 @@ const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) =
       const body = { projectName, projectUrl, description };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/experiences`,
+        `/api/profile/experiences`,
         body,
         {
           headers: {

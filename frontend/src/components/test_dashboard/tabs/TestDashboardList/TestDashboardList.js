@@ -22,8 +22,8 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         setLoading(true);
         const token = getAccessToken();
         const endpoint = activeTab === 'registered' 
-          ? `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/candidates`
-          : `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/results`;
+          ? `/api/tests/${testId}/candidates`
+          : `/api/tests/${testId}/results`;
         
         const response = await axios.get(endpoint, {
           headers: { 'Authorization': `Bearer ${token}` }

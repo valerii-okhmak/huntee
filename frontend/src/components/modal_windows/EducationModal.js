@@ -29,7 +29,7 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
       const body = { institution, specialities };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/education`,
+        `/api/profile/education`,
         body,
         {
           headers: {

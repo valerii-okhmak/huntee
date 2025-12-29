@@ -38,7 +38,7 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
       const formData = new FormData();
       formData.append('file', selectedAvatarFile);
 
-      await axios.post(`${process.env.REACT_APP_BACKEND}/api/profile/upload-avatar`, formData, {
+      await axios.post(`/api/profile/upload-avatar`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
@@ -54,19 +54,19 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
       const token = getAccessToken();
 
       if (firstName) {
-        await axios.patch(`${process.env.REACT_APP_BACKEND}/api/profile/first-name`, { firstName }, {
+        await axios.patch(`/api/profile/first-name`, { firstName }, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
       }
 
       if (lastName) {
-        await axios.patch(`${process.env.REACT_APP_BACKEND}/api/profile/last-name`, { lastName }, {
+        await axios.patch(`/api/profile/last-name`, { lastName }, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
       }
 
       if (birthDate) {
-        await axios.patch(`${process.env.REACT_APP_BACKEND}/api/profile/birth-date`, { birthDate }, {
+        await axios.patch(`/api/profile/birth-date`, { birthDate }, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
       }

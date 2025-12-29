@@ -3,7 +3,7 @@ import { getAccessToken, getRefreshToken, saveTokens, clearTokens } from '../uti
 import { refreshToken } from '../services/authService';
 
 const instance = axios.create({
-  baseURL: `${process.env.REACT_APP_BACKEND}/api`,
+  baseURL: `/api`,
   withCredentials: true, 
 });
 

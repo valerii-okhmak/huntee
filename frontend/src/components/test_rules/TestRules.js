@@ -31,7 +31,7 @@ const TestRules = () => {
         }
 
         await axios.post(
-            `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/register`,
+            `/api/tests/${testId}/register`,
             {}, 
             { headers: { 'Authorization': `Bearer ${token}` } }
         );

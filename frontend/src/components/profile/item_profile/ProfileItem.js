@@ -11,7 +11,7 @@ const ProfileItem = ({ id, title, description, url, fetch,type , isMyProfile}) =
     try {
       const token = getAccessToken();
       const response = await axios.delete(
-        `${process.env.REACT_APP_BACKEND}/api/profile/${type}/${id}`,
+        `/api/profile/${type}/${id}`,
         {headers: {'Authorization': `Bearer ${token}`}}
       );
 

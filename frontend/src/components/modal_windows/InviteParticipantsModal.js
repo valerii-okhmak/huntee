@@ -38,7 +38,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
       const token = getAccessToken();
       
       await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/invite`,
+        `/api/tests/${testId}/invite`,
         { email: email.trim() }, 
         { 
           headers: { 

@@ -15,7 +15,7 @@ const TestDashboardAnalytics = ({ testId }) => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/analytics`,
+          `/api/tests/${testId}/analytics`,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         setAnalytics(response.data);

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const MessageItem = ({ message, onRead }) => {
 
   const logoSrc = message.sender?.profile?.profileImageUrl 
-    ? `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${message.sender.profile.profileImageUrl}` 
+    ? `/api/profile/avatar/${message.sender.profile.profileImageUrl}` 
     : null;
 
   const handleClick = () => {
