@@ -81,10 +81,9 @@ public class QuestionService {
 
         question.setQuestionText(request.getQuestionText());
         question.setComment(request.getComment());
-
-        if (request.getWeight() != null) {
-            question.setWeight(request.getWeight());
-        }
+        question.setQuestionType(request.getQuestionType());
+        question.setWeight(request.getWeight() != null ? request.getWeight() : question.getWeight());
+        question.setQuestionText(request.getQuestionText());
         
         clearExistingAnswers(question);
         processQuestionAnswers(question, request);

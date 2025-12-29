@@ -2,26 +2,27 @@ import React from 'react';
 import './TestCard.css';
 import location_icon from '../../../img/test/location.png';
 import { Link, useNavigate } from 'react-router-dom';
+import { getAccessToken } from '../../../utils/auth';
 
 const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, onDeleteSuccess }) => {
   const navigate = useNavigate();
 
   const handleDelete = async (e) => {
     e.preventDefault(); // Зупиняємо перехід за посиланням <Link>
-    e.stopPropagation(); // Зупиняємо розповсюдження події до батьківських елементів
+    e.stopPropagation(); 
+    const token = getAccessToken();
 
     if (window.confirm('Ви впевнені, що хочете видалити цей тест?')) {
       try {
         const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`,
           }
         });
 
         if (!res.ok) throw new Error('Помилка при видаленні тесту');
         
-        // Викликаємо колбек, щоб оновити список тестів на сторінці
         if (onDeleteSuccess) onDeleteSuccess(id);
         alert('Тест успішно видалено');
       } catch (err) {
