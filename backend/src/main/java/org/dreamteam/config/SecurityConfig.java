@@ -1,5 +1,6 @@
 package org.dreamteam.config;
 
+import jakarta.annotation.PostConstruct; // 👈 Додали для логування
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.dreamteam.security.CustomUserDetailsService;
@@ -35,30 +36,35 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
+    // 👇 ЦЕЙ МЕТОД ПОКАЖЕ НАМ В ЛОГАХ, ЩО НОВИЙ КОД ЗАПУСТИВСЯ
+    @PostConstruct
+    public void init() {
+        System.out.println("🔥🔥🔥 SECURITY CONFIG UPDATED: DUAL PATHS ENABLED 🔥🔥🔥");
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(withDefaults()) 
+            .cors(withDefaults())
             .authorizeHttpRequests(auth -> auth
                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
-
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/error", "/api/error").permitAll()
 
                 .requestMatchers(
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/swagger-resources/**",
-                    "/webjars/**"
+                    "/v3/api-docs/**", "/api/v3/api-docs/**",
+                    "/swagger-ui/**", "/api/swagger-ui/**",
+                    "/swagger-ui.html", "/api/swagger-ui.html",
+                    "/swagger-resources/**", "/api/swagger-resources/**",
+                    "/webjars/**", "/api/webjars/**"
                 ).permitAll()
 
                 .requestMatchers(
                     "/auth/**",
                     "/api/auth/**",
-                    "/login/oauth2/**",
-                    "/oauth2/**",
-                    "/error" 
+                    "/login/oauth2/**", "/api/login/oauth2/**",
+                    "/oauth2/**", "/api/oauth2/**"
                 ).permitAll()
 
                 .anyRequest().authenticated()
@@ -74,11 +80,10 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*")); 
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true); 
-
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
