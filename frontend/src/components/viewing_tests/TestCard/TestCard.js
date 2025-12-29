@@ -6,71 +6,83 @@ import { getAccessToken } from '../../../utils/auth';
 import ConfirmDeleteTestModal from '../../modal_windows/ConfirmDeleteTestModal';
 import ErrorModal from '../../modal_windows/ErrorModal';
 
-
 const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, onDeleteSuccess }) => {
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [errorState, setErrorState] = useState({ isOpen: false, message: '' });
 
-  const openDeleteModal = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDeleteModalOpen(true);
-  };
-
-  const closeDeleteModal = (e) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setIsDeleteModalOpen(false);
-  };
-
-  const closeErrorModal = (e) => {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    setErrorState({ isOpen: false, message: '' });
-  };
+  const openDeleteModal = (e) => { e.preventDefault(); e.stopPropagation(); setIsDeleteModalOpen(true); };
+  const closeDeleteModal = (e) => { if (e) { e.preventDefault(); e.stopPropagation(); } setIsDeleteModalOpen(false); };
+  const closeErrorModal = (e) => { if (e) { e.preventDefault(); e.stopPropagation(); } setErrorState({ isOpen: false, message: '' }); };
 
   const handleDelete = async (e) => {
     e.preventDefault(); 
     e.stopPropagation(); 
-
     try {
       const token = getAccessToken();
       const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Не вдалося видалити тест. Можливо, у вас недостатньо прав.');
+        throw new Error(errorData.message || 'Не вдалося видалити тест.');
       }
-
       setIsDeleteModalOpen(false);
       if (onDeleteSuccess) onDeleteSuccess(id);
     } catch (err) {
       console.error(err);
       setIsDeleteModalOpen(false);
-      setErrorState({
-        isOpen: true,
-        message: err.message
-      });
+      setErrorState({ isOpen: true, message: err.message });
     }
   };
 
-  const handleEdit = (e) => {
+  // --- ОНОВЛЕНА ФУНКЦІЯ РЕДАГУВАННЯ ---
+  const handleEdit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // navigate(`/edit-test/${id}`); 
+
+    try {
+      const token = getAccessToken();
+      
+      // 1. Отримуємо мета-дані тесту
+      const testRes = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (!testRes.ok) throw new Error('Не вдалося завантажити дані тесту');
+      const testData = await testRes.json();
+
+      // 2. Отримуємо запитання до тесту (припускаємо такий ендпоінт, або вони приходять в testRes)
+      const questionsRes = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/questions`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      let questionsData = [];
+      if (questionsRes.ok) {
+        questionsData = await questionsRes.json();
+      }
+
+  
+      navigate('/testcreation/start', { 
+        state: { 
+          testData: testData, 
+          questions: questionsData,
+          isEditing: true,
+          testId: id
+        } 
+      });
+
+    } catch (err) {
+      console.error(err);
+      setErrorState({ isOpen: true, message: 'Помилка при завантаженні тесту для редагування' });
+    }
   };
 
   return (
     <>
       <Link to={link} className='testcard-link'>
-        <div className='testcard-container'>
+         <div className='testcard-container'>
           <div className='testcard-top_row'>
             <p className='testcard-type'>{type}</p>
               <p className='testcard-status-active'>Зареєстровано: {candidatesCount}</p>
@@ -84,7 +96,6 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
             >
               Редагувати
             </button>
-
             <button
               className="testcard-button testcard-button-submit testcard-button-submit-danger"
               onClick={openDeleteModal}
@@ -92,8 +103,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
               Видалити
             </button>
           </div>
-
-          <div className='testcard-bottom_row'>
+           <div className='testcard-bottom_row'>
             <div className='testcard-location'>
               <img alt='map' className='location_icon' src={location_icon} />
               <p>{location}</p>
@@ -105,18 +115,17 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
           </div>
         </div>
       </Link>
-
+      
       <ConfirmDeleteTestModal 
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleDelete}
         testTitle={title}
       />
-
       <ErrorModal
         isOpen={errorState.isOpen}
         onClose={closeErrorModal}
-        title="ПОМИЛКА ВИДАЛЕННЯ"
+        title="ПОМИЛКА"
         errorMessage={errorState.message}
       />
     </>

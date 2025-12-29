@@ -6,30 +6,26 @@ import { faImage } from '@fortawesome/free-solid-svg-icons';
 const TestCreationMainAnswers = ({
   selectedType,
   comment, setComment,
-  errors, // Отримуємо помилки
+  errors,
 
-  // options
   options,
   updateOption,
   addOption,
   removeOption,
   minBase,
 
-  // regular
+
   regularCorrect,
   pickRegularCorrect,
 
-  // multiple
   multipleCorrect,
   toggleMultipleCorrect,
 
-  // open
   openExpectedEnabled,
   setOpenExpectedEnabled,
   openExpectedText,
   setOpenExpectedText,
 
-  // practical (Code)
   codeLanguage, setCodeLanguage,
   codeMethodName, setCodeMethodName,
   codeTemplate, setCodeTemplate,
@@ -37,7 +33,6 @@ const TestCreationMainAnswers = ({
 }) => {
 
   const renderChoiceRow = (i, control) => {
-    // Перевірка чи саме цей варіант порожній при помилці
     const isOptionEmptyError = errors.emptyOptions && !options[i].trim();
 
     return (
@@ -46,7 +41,6 @@ const TestCreationMainAnswers = ({
           {control}
           <input
             type="text"
-            // Динамічний плейсхолдер та клас
             placeholder={isOptionEmptyError ? "Заповніть цей варіант!" : "Введіть варіант відповіді"}
             className={`testCreationMainCreatorAnswers__input ${isOptionEmptyError ? 'input-error-placeholder' : ''}`}
             value={options[i]}
@@ -164,7 +158,6 @@ const TestCreationMainAnswers = ({
           </label>
           <input
             type="text"
-            // Помилка для відкритої відповіді
             placeholder={errors.openExpectedText ? "Введіть очікувану відповідь!" : "Введіть відповідь"}
             className={`testCreationMainCreatorAnswers__input-open ${errors.openExpectedText ? 'input-error-placeholder' : ''}`}
             disabled={!openExpectedEnabled}
@@ -182,7 +175,7 @@ const TestCreationMainAnswers = ({
           <div style={{marginBottom: '15px'}}>
               <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Мова програмування:</label>
               <select 
-                className="testCreationMainCreatorAnswers__input-open" // Можна додати свій клас для select
+                className="testCreationMainCreatorAnswers__input-open"
                 style={{padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
                 value={codeLanguage}
                 onChange={(e) => setCodeLanguage(e.target.value)}

@@ -12,11 +12,10 @@ import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMain
 
 const MIN_BASE_OPTIONS = 2;
 
-const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
+const TestCreationMainCreator = forwardRef((props, ref) => {
   const [selectedType, setSelectedType] = useState("regular");
   const [questionText, setQuestionText] = useState("");
   const [comment, setComment] = useState("");
-  // Стан для балів (зберігаємо як рядок для зручності введення крапки)
   const [points, setPoints] = useState("1"); 
   const [errors, setErrors] = useState({});
 
@@ -32,7 +31,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   const [codeTemplate, setCodeTemplate] = useState("");
   const [codeTestCasesJSON, setCodeTestCasesJSON] = useState('[{"args": [1, 2], "expected": 3}]');
 
-  // Очищення помилок
   const clearError = (field) => {
     if (errors[field]) {
       setErrors(prev => {
@@ -43,10 +41,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
     }
   };
 
-  // --- Логіка для поля балів ---
   const handlePointsChange = (e) => {
     const val = e.target.value;
-    // Дозволяємо порожній рядок (для видалення), цифри та одну крапку
     if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
       setPoints(val);
       clearError('points');
@@ -54,12 +50,10 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   };
 
   const blockInvalidChar = (e) => {
-    // Блокуємо e, E (експонента), + та -
     if (['e', 'E', '+', '-'].includes(e.key)) {
       e.preventDefault();
     }
   };
-  // -----------------------------
 
   const addOption = () => {
     setOptions(prev => [...prev, ""]);
@@ -91,6 +85,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
     clearError('correctSelection');
   };
 
+
   useImperativeHandle(ref, () => ({
     getCurrentQuestionAndReset() {
       const newErrors = {};
@@ -99,7 +94,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         newErrors.questionText = true;
       }
 
-      // Валідація балів
       const floatPoints = parseFloat(points);
       if (!points || isNaN(floatPoints) || floatPoints < 0) {
         newErrors.points = true;
@@ -116,7 +110,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           questionText: questionText.trim(),
           comment: comment.trim(),
           questionType: backendType,
-          points: floatPoints // Відправляємо як число
+          points: floatPoints
       };
 
       if (selectedType === "regular" || selectedType === "multiple") {
@@ -179,7 +173,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         return null;
       }
 
-      // Скидання станів
       setQuestionText("");
       setComment("");
       setPoints("1"); 
@@ -194,7 +187,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
       setCodeTemplate("");
       setCodeTestCasesJSON('[{"args": [1, 2], "expected": 3}]');
 
-      onQuestionsChange?.(prev => (typeof prev === 'number' ? prev + 1 : prev));
       return payload;
     }
   }));
@@ -305,7 +297,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
 
         {(errors.optionsCount || errors.correctSelection || errors.codeTestCasesJSON || errors.points) && (
           <div className="test-creator__error-message">
-            {errors.optionsCount || errors.correctSelection || (errors.points && "Введіть коректну кількість балів (напр. 1 або 1.5)")}
+            {errors.optionsCount || errors.correctSelection || (errors.points && "Введіть коректну кількість балів") || errors.codeTestCasesJSON}
           </div>
         )}
       </div>

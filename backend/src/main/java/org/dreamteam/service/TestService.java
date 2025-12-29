@@ -26,6 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
+import java.util.function.Function;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.HashSet;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -267,24 +269,38 @@ public class TestService {
     }
 
     private void updateTestQuestions(Test test, List<UUID> questionIds) {
+        // 1. Очищаємо старі зв'язки
+        // Важливо: переконайтеся, що у сутності Test на полі testQuestions стоїть orphanRemoval = true
+        test.getTestQuestions().clear();
+        
         if (questionIds == null || questionIds.isEmpty()) return;
+
+        // 2. Оптимізація: Витягуємо ВСІ питання одним запитом
+        List<Question> questions = questionRepository.findAllById(questionIds);
+        
+        // Створюємо мапу для швидкого доступу та збереження порядку, який прийшов з фронтенду
+        Map<UUID, Question> questionMap = questions.stream()
+                .collect(Collectors.toMap(Question::getQuestionId, Function.identity()));
 
         List<TestQuestion> newLinks = new ArrayList<>();
 
         for (int i = 0; i < questionIds.size(); i++) {
             UUID qId = questionIds.get(i);
-            Question question = questionRepository.findById(qId)
-                    .orElseThrow(() -> new EntityNotFoundException("Question not found: " + qId));
+            Question question = questionMap.get(qId);
+            
+            if (question == null) {
+                throw new EntityNotFoundException("Question not found: " + qId);
+            }
 
+            // i + 1 для збереження порядку сортування
             newLinks.add(new TestQuestion(test, question, i + 1));
         }
 
+        // Зберігаємо нові зв'язки
         testQuestionRepository.saveAll(newLinks);
-        if (test.getTestQuestions() == null) {
-            test.setTestQuestions(new HashSet<>());
-        }
         test.getTestQuestions().addAll(newLinks);
     }
+
 
     private TestDetailResponse mapToDetailResponse(Test test) {
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());
