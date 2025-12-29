@@ -19,5 +19,6 @@ public class TestTakeResponse {
     private Boolean isFixedTime;
     private OffsetDateTime endTime; 
     private Boolean hasCompletedAttempt;
+    private UUID completedAttemptId;
     private List<QuestionTakeResponse> questions;
 }

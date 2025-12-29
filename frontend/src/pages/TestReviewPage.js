@@ -5,14 +5,12 @@ import { getAccessToken } from '../utils/auth';
 import GeneralTestInfoHeader from '../components/GeneralTestInfoHeader/GeneralTestInfoHeader';
 import TestReviewGrading from '../components/TestReviewGrading/TestReviewGrading';
 import TestReviewQuestions from '../components/TestReviewQuestions/TestReviewQuestions';
-import FinishTestInfoModal from '../components/modal_windows/FinishTestInfoModal';
 
 const TestReviewPage = () => {
   const navigate = useNavigate();
-  const { attemptId } = useParams(); 
+  const { attemptId } = useParams();
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -25,6 +23,7 @@ const TestReviewPage = () => {
         setResultData(response.data);
       } catch (error) {
         console.error("Помилка завантаження результатів:", error);
+        // Можна також перенаправляти тут, якщо помилка критична
       } finally {
         setLoading(false);
       }
@@ -35,9 +34,25 @@ const TestReviewPage = () => {
     }
   }, [attemptId]);
 
-  if (loading) return <div className="page"><div className="container">Завантаження...</div></div>;
-  if (!resultData) return <div className="page"><div className="container">Результати не знайдено</div></div>;
+  // ВИПРАВЛЕННЯ: Виносимо навігацію в окремий useEffect
+  useEffect(() => {
+    if (!loading && !resultData) {
+      navigate('/notfound');
+    }
+  }, [loading, resultData, navigate]);
 
+  if (loading) return <div className="page"><div className="container">Завантаження...</div></div>;
+  
+  // Якщо даних немає, але ми ще не встигли перенаправити (чекаємо useEffect),
+  // повертаємо null, щоб не рендерити решту коду з помилками.
+  if (!resultData) return null; 
+
+  // Безпечна перевірка дати
+  const isTimePassed = resultData.endTime 
+    ? new Date() > new Date(resultData.endTime) 
+    : false;
+
+  const shouldShowQuestions = resultData.isShown || isTimePassed;
 
   return (
     <div className='page'>
@@ -49,18 +64,18 @@ const TestReviewPage = () => {
 
         <TestReviewGrading score={resultData.score} totalMaxScore={resultData.totalMaxScore} />
 
-        {resultData.isShown ? 
+        {shouldShowQuestions ? (
           <TestReviewQuestions questionsLink={resultData.questions} />
-          :
-          <>
+        ) : (
+          <div className="container">
             <p className="modalmini-subtitle">
                 Ваш бал може бути змінений викладачем при потребі!
             </p>
             <p className="modalmini-subtitle">
-                Переглянути свої відопвіді зможете після завершення тестування.
+                Переглянути свої відповіді зможете після завершення тестування.
             </p>
-          </>
-        } 
+          </div>
+        )} 
     </div>
   );
 };

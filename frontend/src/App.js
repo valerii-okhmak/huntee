@@ -58,27 +58,12 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/reg" element={<RegPage />} />
-        <Route path="/testpage/:testId" element={<TestPage />} />
-        <Route path="/alltests" element={<AllTestsPage />} />
-        <Route path='/starttest' element={<StartTestPage />} />
-        <Route path="/testrules" element={<TestRulesPage />} />
-        <Route path="/test/:testId" element={<FullTest/>} />
-        <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/contacts" element={<Contacts/>} />
         <Route path="/startIT" element={<StartIT/>} />
         <Route path="/generalinfo" element={<GeneralInfoPage/>} />
-        <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="/pricingpage" element={<PricingPage />} />
-        <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
-        <Route path="/companymain" element={<CompanyMainPage />} />
-        <Route path="/testcreation" element={<TestCreationPage />} />
-        <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
-        <Route path="/testcreation/start" element={<TestCreationStartPage />} />
-        <Route path="/testcreation/main" element={<TestCreationMainPage />} />
-        <Route path="/viewingtests" element={<ViewingTestsPage />} />
-        <Route path="/testreview/:attemptId" element={<TestReviewPage />} />
         <Route path="/*" element={<NotFoundPage />} />
-        <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
+
         
           
 
@@ -87,6 +72,22 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/messages" element={<MessagePage />} />
           <Route path="/message/:id" element={<MessageTextPage />} />
+          <Route path="/testpage/:testId" element={<TestPage />} />
+          <Route path="/alltests" element={<AllTestsPage />} />
+          <Route path='/starttest' element={<StartTestPage />} />
+          <Route path="/testrules" element={<TestRulesPage />} />
+          <Route path="/test/:testId" element={<FullTest/>} />
+          <Route path="/mytests" element={<MyTestsPage/>} />
+          <Route path="/testcreation" element={<TestCreationPage />} />
+          <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
+          <Route path="/testcreation/start" element={<TestCreationStartPage />} />
+          <Route path="/testcreation/main" element={<TestCreationMainPage />} />
+          <Route path="/viewingtests" element={<ViewingTestsPage />} />
+          <Route path="/testreview/:attemptId" element={<TestReviewPage />} />
+          <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
+          <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
+          <Route path="/companymain" element={<CompanyMainPage />} />
+          <Route path="/profile/:user_id" element={<ProfilePage />} />
         </Route>
       </Routes>
       <Footer />

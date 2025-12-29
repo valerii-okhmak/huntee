@@ -48,23 +48,49 @@ const TestPage = ({ testType }) => {
         const attempt = response.data;
         setAttemptData(attempt);
 
-        if (attempt.hasCompletedAttempt) navigate(`/testreview/${attempt.attemptId}`)
+        // ... ваша логіка таймера та перевірки завершення (без змін) ...
+        if (attempt.hasCompletedAttempt) {
+             navigate(`/testreview/${attempt.completedAttemptId}`);
+             return; 
+        }
 
-        // Ініціалізуємо таймер тільки якщо час фіксований
         if (attempt.isFixedTime && attempt.endTime) {
           const endTime = new Date(attempt.endTime).getTime();
           const now = new Date().getTime();
-          setTimeLeft(Math.floor((endTime - now) / 1000));
+          const secondsRemaining = Math.floor((endTime - now) / 1000);
+          
+          setTimeLeft(secondsRemaining);
+
+          if (secondsRemaining <= 0) {
+             navigate(`/testreview/${attempt.id}`);
+             return;
+          }
         } else {
           setTimeLeft(null); 
         }
-        setLoading(false);
+
+        setLoading(false); // Все добре, прибираємо лоадер
+
       } catch (error) {
         console.error("Помилка старту тесту:", error);
-        const msg = error.response?.data?.message || "Не вдалося розпочати тест.";
-        setStartErrorMessage(msg);
-        setIsStartTestErrorModalOpen(true);
-        setLoading(false);
+        
+        // --- ДОДАНО ОБРОБКУ ПОМИЛОК ---
+        
+        let message = "Не вдалося розпочати тест.";
+
+        // Перевіряємо, чи прийшла відповідь від сервера
+        if (error.response) {
+            // Якщо сервер повернув повідомлення (наприклад, "Тест ще не розпочався")
+            if (error.response.data && error.response.data.message) {
+                message = error.response.data.message;
+            } else if (error.response.status === 403) {
+                message = "Доступ до тесту заборонено або він ще не почався.";
+            }
+        }
+
+        setStartErrorMessage(message);     // 1. Встановлюємо текст помилки
+        setIsStartTestErrorModalOpen(true); // 2. Відкриваємо модалку
+        setLoading(false);                 // 3. ОБОВ'ЯЗКОВО прибираємо лоадер, щоб React відрендерив модалку
       }
     };
 

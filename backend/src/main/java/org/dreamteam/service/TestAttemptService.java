@@ -48,7 +48,12 @@ public class TestAttemptService {
 
         checkTestAvailabilityDates(test, now);
 
-        boolean hasCompletedAttempt = attemptRepository.existsByUserAndTestAndCompletedAtIsNotNull(user, test);
+        UserTestAttempt completedAttempt = attemptRepository
+                .findFirstByUserAndTestAndCompletedAtIsNotNullOrderByCompletedAtDesc(user, test)
+                .orElse(null);
+
+        boolean hasCompletedAttempt = (completedAttempt != null);
+        UUID completedAttemptId = (completedAttempt != null) ? completedAttempt.getAttemptId() : null;
         
 
         UserTestAttempt attempt = attemptRepository
@@ -110,6 +115,7 @@ public class TestAttemptService {
                 .endTime(calculatedEndTime)
                 .questions(questionResponses)
                 .hasCompletedAttempt(hasCompletedAttempt)
+                .completedAttemptId(completedAttemptId)
                 .build();
     }
 
@@ -246,13 +252,15 @@ public class TestAttemptService {
         boolean isCandidate = attempt.getUser().getId().equals(requester.getId());
         boolean isOwner = attempt.getTest().getUser().getId().equals(requester.getId());
 
+        boolean showResult = attempt.getTest().getIsShowResult();
+
         if (!isCandidate && !isOwner) {
-            attempt.getTest().setIsShowResult(false);
+            showResult = false;
             
         }
 
         if (isCandidate && !isOwner && Boolean.FALSE.equals(attempt.getTest().getIsShowResult())) {
-            attempt.getTest().setIsShowResult(false);
+            showResult = false;
         }
 
         
@@ -308,8 +316,8 @@ public class TestAttemptService {
                 .totalMaxScore(totalMaxScore)
                 .totalQuestions(totalQuestions)               
                 .correctAnswersCount(correctCount)
-                .isShown(attempt.getTest().getIsShowResult())           
-                
+                .isShown(showResult)
+                .endTime(attempt.getTest().getEndTime())     
                 .questions(questions)
                 .build();
     }
@@ -572,14 +580,9 @@ public class TestAttemptService {
 
 
 private void checkTestAvailabilityDates(Test test, OffsetDateTime now) {
-        if (!Boolean.TRUE.equals(test.getIsFixedTime())) {
             if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
                 throw new AccessDeniedException("Тест ще не розпочався.");
             }
-            if (test.getEndTime() != null && now.isAfter(test.getEndTime())) {
-                throw new AccessDeniedException("Тест вже завершився.");
-            }
-        }
 }
 
 

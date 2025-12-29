@@ -25,6 +25,7 @@ public class TestAttemptReviewResponse {
     private Integer correctAnswersCount;
     private BigDecimal totalMaxScore;
     private Boolean isShown;
+    private OffsetDateTime endTime;
 
     private List<QuestionReviewDTO> questions;
 
@@ -36,7 +37,6 @@ public class TestAttemptReviewResponse {
         private QuestionType type;
         private String comment;
         private boolean isCorrect;
-
         private String userAnswer; 
         private String correctAnswer;
         

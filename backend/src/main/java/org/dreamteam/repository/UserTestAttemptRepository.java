@@ -16,4 +16,6 @@ public interface UserTestAttemptRepository extends JpaRepository<UserTestAttempt
     List<UserTestAttempt> findByCompletedAtIsNull();
     Optional<UserTestAttempt> findByUserAndTestAndCompletedAtIsNull(User user, Test test);
     boolean existsByUserAndTestAndCompletedAtIsNotNull(User user, Test test);
+    Optional<UserTestAttempt> findByUserAndTestAndCompletedAtIsNotNull(User user, Test test);
+    Optional<UserTestAttempt> findFirstByUserAndTestAndCompletedAtIsNotNullOrderByCompletedAtDesc(User user, Test test);
 }
