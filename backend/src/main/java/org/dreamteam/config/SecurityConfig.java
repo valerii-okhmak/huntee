@@ -35,17 +35,32 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(withDefaults())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/api/auth/**").permitAll() 
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll() 
-                        .anyRequest().authenticated()                  
-                )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .csrf(csrf -> csrf.disable()) 
+            .cors(withDefaults())        
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/swagger-resources/**",
+                    "/webjars/**"
+                ).permitAll()
+
+                .requestMatchers(
+                    "/auth/**",
+                    "/api/auth/**",
+                    "/login/oauth2/**",
+                    "/oauth2/**"
+                ).permitAll()
+
+                .requestMatchers("/error").permitAll()
+                
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
