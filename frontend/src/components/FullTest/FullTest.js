@@ -48,6 +48,8 @@ const TestPage = ({ testType }) => {
         const attempt = response.data;
         setAttemptData(attempt);
 
+        if (attempt.hasCompletedAttempt) navigate(`/testreview/${attempt.attemptId}`)
+
         // Ініціалізуємо таймер тільки якщо час фіксований
         if (attempt.isFixedTime && attempt.endTime) {
           const endTime = new Date(attempt.endTime).getTime();

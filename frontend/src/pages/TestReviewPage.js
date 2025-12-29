@@ -13,7 +13,6 @@ const TestReviewPage = () => {
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Видаляємо зайвий стейт isTestResultModalOpen, він тут не потрібен
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -39,43 +38,31 @@ const TestReviewPage = () => {
   if (loading) return <div className="page"><div className="container">Завантаження...</div></div>;
   if (!resultData) return <div className="page"><div className="container">Результати не знайдено</div></div>;
 
-  // --- ЛОГІКА ВІДОБРАЖЕННЯ ---
 
-  if (resultData.isShown) {
-    // Варіант 1: Результати доступні для перегляду
-    return (
-      <div className='page'>
-          <GeneralTestInfoHeader
-              field={resultData.sphere || "Сфера"}
-              title={resultData.testName || "Назва тесту"}
-              name={resultData.candidateName || "Кандидат"}
-          />
-  
-          <TestReviewGrading score={resultData.score} totalMaxScore={resultData.totalMaxScore} />
-  
-          <TestReviewQuestions questionsLink={resultData.questions} />
-      </div>
-    );
-  } else {
-    // Варіант 2: Результати приховані -> показуємо тільки модалку
-    // Ми просто рендеримо модалку з isOpen={true}.
-    
-    const handleClose = () => {
-        // Якщо користувач закриває модалку, куди йому йти? 
-        // Логічно перекинути його на список тестів, бо результати дивитись не можна.
-        navigate('/mytests');
-    };
-
-    return (
-      <FinishTestInfoModal
-          isOpen={true} // Завжди відкрито, якщо ми потрапили в цей блок else
-          onClose={handleClose} 
-          score={resultData.score} // Перевірте, чи тут finalScore чи score
-          totalMaxScore={resultData.totalMaxScore}
-          onSubmitting={() => navigate(`/mytests`)}
+  return (
+    <div className='page'>
+        <GeneralTestInfoHeader
+            field={resultData.sphere || "Сфера"}
+            title={resultData.testName || "Назва тесту"}
+            name={resultData.candidateName || "Кандидат"}
         />
-    );
-  }
+
+        <TestReviewGrading score={resultData.score} totalMaxScore={resultData.totalMaxScore} />
+
+        {resultData.isShown ? 
+          <TestReviewQuestions questionsLink={resultData.questions} />
+          :
+          <>
+            <p className="modalmini-subtitle">
+                Ваш бал може бути змінений викладачем при потребі!
+            </p>
+            <p className="modalmini-subtitle">
+                Переглянути свої відопвіді зможете після завершення тестування.
+            </p>
+          </>
+        } 
+    </div>
+  );
 };
 
 export default TestReviewPage;
