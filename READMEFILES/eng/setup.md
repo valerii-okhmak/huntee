@@ -1,84 +1,99 @@
-# Huntee Installation & Setup
+# Huntee — Deployment Guide
 
-This document provides a step-by-step guide for locally running the Huntee platform.
+This project is fully containerized and ready to run on any server or local machine using Docker.
 
+## Prerequisites
 
-## 1. Clone the Repository
+Ensure you have the following installed:
+- **Docker**
+- **Docker Compose**
 
-Clone the project from GitHub:
+---
 
-```bash
-git clone https://github.com/DONAT1N/huntee.git 
+## 🛠 Step 1: Create the Deployment File
+
+You do not need to clone the repository or install Java/Node.js manually.
+Simply create a folder (e.g., `huntee_deploy`) and create a file named **`docker-compose.yml`** inside it.
+
+Paste the following configuration into `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: huntee_db
+    environment:
+      MYSQL_DATABASE: huntee
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306" 
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    networks:
+      - huntee-network
+
+  backend:
+    image: ghcr.io/donat1n/huntee-backend:latest
+    container_name: huntee_backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/huntee?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_SERVLET_CONTEXT_PATH=/api
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - huntee-network
+
+  frontend:
+    image: ghcr.io/donat1n/huntee-frontend:latest
+    container_name: huntee_frontend
+    ports:
+      - "80:80" 
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - huntee-network
+
+volumes:
+  db_data:
+
+networks:
+  huntee-network:
+    driver: bridge
 ```
 
-## 2. Frontend Installation & Launch
 
-1. Navigate to the frontend directory:
-
+## Step 2: Run the Project
+Open your terminal in the folder containing docker-compose.yml and run:
 ```bash
-cd huntee/frontend
+docker-compose up -d
 ```
+*Note: Please wait 30-60 seconds after starting. The database needs time to initialize, and the backend needs time to create the necessary tables.*
 
-2. Install dependencies:
+## Step 3: Access Points
+Once running, the application is available at:
+Web Application http://localhostOr your server's public IP
+Database localhost:3306 User: root, Pass: root, DB: huntee
 
-```bash
-npm install
+## Management Commands
+Stop the application: 
+```bash 
+docker-compose down
 ```
-
-3. Run the frontend:
-
-```bash
-npm run dev
+Update to the latest version:
+```bash 
+docker-compose pull
+docker-compose up -d
 ```
-The interface will be available at: http://localhost:3000
-
-## 3. Backend Installation & Launch
-1. Make sure Java 17+ and Maven are installed on your system.
-2. Navigate to the backend directory:
-
-```bash
-cd ../backend
-```
-
-3. Build the project:
-
-```bash
-./mvnw clean install
-```
-
-4. Start the server:
-
-```bash
-./mvnw spring-boot:run
-```
-The API will be accessible at: http://localhost:8080
-
-## 4. Note
-
-> Make sure ports 3000 (frontend) and 8080 (backend) are not occupied by other processes.
-> To ensure proper communication between frontend and backend, check the proxy field in frontend/package.json.
-
-
-## Directory Structure
-
-```bash
-huntee/
-├── backend/         # Backend server
-├── frontend/        # Frontend application
-├── README.md        # Frontend application
-└── READMEFILES      # Documentation
-    ├── ua/
-        ├── companies.md
-        ├── setup.md
-        ├── students.md
-        ├── technologies.md
-        └── test-format.md
-
-    └── eng/
-        ├── companies.md
-        ├── setup.md
-        ├── students.md
-        ├── technologies.md
-        └── test-format.md
-
+Reset Database (Delete all data):
+```bash 
+docker-compose down -v
+docker-compose up -d
 ```
