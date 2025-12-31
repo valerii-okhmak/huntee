@@ -9,6 +9,7 @@ import org.dreamteam.Entity.TestRegistration;
 import org.dreamteam.Entity.User;
 import org.dreamteam.Entity.UserTestAttempt;
 import org.dreamteam.dto.CandidateDTO;
+import org.dreamteam.dto.ChoiceOptionDTO; // Переконайтеся, що цей імпорт є
 import org.dreamteam.dto.MyTestDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
@@ -25,15 +26,15 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.OffsetDateTime;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -124,9 +125,9 @@ public class TestService {
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
 
-        test.getTestQuestions().clear();
+        //test.getTestQuestions().clear();
         testRepository.flush();
-        updateTestQuestions(test, request.getQuestionIds());
+        //updateTestQuestions(test, request.getQuestionIds());
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
@@ -163,7 +164,6 @@ public class TestService {
     public List<MyTestDTO> getMyCandidateTests(String userEmail) {
         User user = findUserByEmail(userEmail);
         List<TestRegistration> registrations = registrationRepository.findByUser_Id(user.getId());
-        
 
         return registrations.stream().map(reg -> {
             Test test = reg.getTest();
@@ -176,8 +176,7 @@ public class TestService {
                     .city(test.getCity())
                     .startTime(test.getStartTime())
                     .status("Registered")
-                    .statusTest(timeStatus) 
-
+                    .statusTest(timeStatus)
                     .build();
         }).collect(Collectors.toList());
     }
@@ -214,7 +213,7 @@ public class TestService {
                 .collect(Collectors.toList());
     }
 
-@Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public TestAnalyticsDTO getTestAnalytics(UUID testId, String authorEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
@@ -234,7 +233,7 @@ public class TestService {
 
         for (UserTestAttempt attempt : completedAttempts) {
             totalScoreSum += attempt.getScore().doubleValue();
-            
+
             if (attempt.getScore().compareTo(passingGrade) >= 0) {
                 passed++;
             } else {
@@ -248,7 +247,7 @@ public class TestService {
                 .totalAttempts(total)
                 .passedCount(passed)
                 .failedCount(failed)
-                .averageScore(Math.round(avg * 100.0) / 100.0) 
+                .averageScore(Math.round(avg * 100.0) / 100.0)
                 .build();
     }
 
@@ -260,10 +259,10 @@ public class TestService {
         }
 
         if (test.getEndTime() != null && now.isAfter(test.getEndTime())) {
-            return "Closed"; 
+            return "Closed";
         }
 
-        return "Active"; 
+        return "Active";
     }
 
     private void updateTestQuestions(Test test, List<UUID> questionIds) {
@@ -286,21 +285,48 @@ public class TestService {
         test.getTestQuestions().addAll(newLinks);
     }
 
+    // === ОСНОВНИЙ МЕТОД ДЛЯ МАППІНГУ З ВАРІАНТАМИ ВІДПОВІДЕЙ ===
+    // === ОНОВЛЕНИЙ МЕТОД (optionId всюди) ===
     private TestDetailResponse mapToDetailResponse(Test test) {
+        // Отримуємо питання
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());
 
-        testQuestions.sort(Comparator.comparingInt(tq -> 
-            tq.getOrderIndex() != null ? tq.getOrderIndex() : Integer.MAX_VALUE));
+        // Сортуємо
+        testQuestions.sort(Comparator.comparingInt(tq ->
+                tq.getOrderIndex() != null ? tq.getOrderIndex() : Integer.MAX_VALUE));
 
+        // Мапимо
         List<TestDetailResponse.QuestionSummary> questionSummaries = testQuestions.stream()
                 .map(tq -> {
                     Question q = tq.getQuestion();
+                    
+                    // 1. Маппінг варіантів (ТУТ ЗМІНИ)
+                    List<ChoiceOptionDTO> options = new ArrayList<>();
+                    if (q.getChoiceOptions() != null) {
+                        options = q.getChoiceOptions().stream()
+                            .map(opt -> ChoiceOptionDTO.builder()
+                                .optionId(opt.getOptionId())  // <--- В DTO теж optionId
+                                .optionText(opt.getOptionText()) 
+                                .isCorrect(opt.isCorrect()) 
+                                .build())
+                            .collect(Collectors.toList());
+                    }
+
+                    // 2. Дані для коду
+                    String templateCode = (q.getCodeAnswer() != null) ? q.getCodeAnswer().getTemplateCode() : null;
+                    String language = (q.getCodeAnswer() != null) ? q.getCodeAnswer().getLanguage() : null;
+                    String testCases = (q.getCodeAnswer() != null) ? q.getCodeAnswer().getTestCases() : null;
+
                     return TestDetailResponse.QuestionSummary.builder()
                             .questionId(q.getQuestionId())
                             .questionText(q.getQuestionText())
-                            .questionType(q.getQuestionType())
+                            .type(q.getQuestionType()) // Поле в DTO називається type
                             .weight(q.getWeight() != null ? q.getWeight() : 1.0)
                             .orderIndex(tq.getOrderIndex())
+                            .options(options) 
+                            .templateCode(templateCode)
+                            .language(language)
+                            .testCases(testCases)
                             .build();
                 })
                 .collect(Collectors.toList());

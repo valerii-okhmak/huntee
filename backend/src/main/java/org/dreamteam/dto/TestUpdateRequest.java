@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,6 +26,7 @@ public class TestUpdateRequest {
     private OffsetDateTime endTime;
     private Integer durationMinutes;
     private Boolean isPrivate;
+    private Boolean isFixedQuestionOrder;
     private Boolean isFixedAnswerOrder;
     private Boolean isShowResult;
 }

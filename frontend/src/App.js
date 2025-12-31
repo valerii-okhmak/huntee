@@ -36,6 +36,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import TestDashboardPage from './pages/TestDashboardPage';
 import TestReviewPage from './pages/TestReviewPage';
 import Snowfall from 'react-snowfall';
+import TestEditingMainPage from './pages/TestEditingMainPage';
+import TestCreationEditPage from './pages/TestCreationEditPage';
 
 
 const App = () => {
@@ -88,6 +90,10 @@ const App = () => {
           <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
           <Route path="/companymain" element={<CompanyMainPage />} />
           <Route path="/profile/:user_id" element={<ProfilePage />} />
+          <Route path="/testcreation/start/:testId" element={<TestCreationEditPage  />} />
+          <Route path="/testcreation/main/:testId" element={<TestEditingMainPage />} />
+
+          
         </Route>
       </Routes>
       <Footer />

@@ -33,14 +33,31 @@ public class TestDetailResponse {
     private Boolean isFixedQuestionOrder;
     private Boolean isFixedAnswerOrder;
     private Boolean isShowResult;
+    
 
     @Data
     @Builder
     public static class QuestionSummary {
         private UUID questionId;
         private String questionText;
-        private QuestionType questionType;
+        private QuestionType type; // або questionType, як вам зручніше
         private Double weight;
         private Integer orderIndex;
+
+        // === ТЕ, ЩО МИ БЕРЕМО З ВАШОГО TestAttemptReviewResponse ===
+        
+        // Список варіантів (для SINGLE/MULTI CHOICE)
+        private List<ChoiceOptionDTO> options; 
+        
+        // Для редагування важливо знати, які варіанти правильні.
+        // Можна передавати це окремим списком ID, як у вас:
+        private List<Long> correctOptionIds; 
+        
+        // АБО краще додати поле isCorrect всередину ChoiceOptionDTO (див. нижче)
+
+        // Поля для коду (якщо є питання з кодом)
+        private String templateCode;
+        private String language;
+        private String testCases;
     }
 }

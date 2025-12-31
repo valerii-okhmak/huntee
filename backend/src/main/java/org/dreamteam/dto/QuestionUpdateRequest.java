@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+import org.dreamteam.Entity.QuestionType;
+
 @Data
 @NoArgsConstructor
 public class QuestionUpdateRequest {
@@ -14,4 +16,5 @@ public class QuestionUpdateRequest {
     private TextAnswerDTO textAnswer;
     private List<MatchingPairDTO> matchingPairs;
     private CodeAnswerDTO codeAnswer;
+    private QuestionType questionType;
 }
