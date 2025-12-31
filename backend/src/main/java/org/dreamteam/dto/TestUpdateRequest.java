@@ -29,4 +29,5 @@ public class TestUpdateRequest {
     private Boolean isFixedQuestionOrder;
     private Boolean isFixedAnswerOrder;
     private Boolean isShowResult;
+    private List<UUID> questionIds;
 }

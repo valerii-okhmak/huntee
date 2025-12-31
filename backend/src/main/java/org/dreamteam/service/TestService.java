@@ -9,7 +9,7 @@ import org.dreamteam.Entity.TestRegistration;
 import org.dreamteam.Entity.User;
 import org.dreamteam.Entity.UserTestAttempt;
 import org.dreamteam.dto.CandidateDTO;
-import org.dreamteam.dto.ChoiceOptionDTO; // Переконайтеся, що цей імпорт є
+import org.dreamteam.dto.ChoiceOptionDTO;
 import org.dreamteam.dto.MyTestDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
@@ -31,10 +31,12 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -84,9 +86,14 @@ public class TestService {
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
 
+        // Спочатку зберігаємо тест, щоб отримати ID
         Test savedTest = testRepository.save(test);
 
+        // Потім додаємо питання (оскільки TestQuestion потребує ID тесту)
         updateTestQuestions(savedTest, request.getQuestionIds());
+
+        // Зберігаємо ще раз, щоб оновити зв'язки (хоча каскад міг би спрацювати, але так надійніше)
+        savedTest = testRepository.save(savedTest);
 
         return mapToDetailResponse(savedTest);
     }
@@ -125,9 +132,9 @@ public class TestService {
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
 
-        //test.getTestQuestions().clear();
-        testRepository.flush();
-        //updateTestQuestions(test, request.getQuestionIds());
+        if (request.getQuestionIds() != null) {
+            updateTestQuestions(test, request.getQuestionIds());
+        }
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
@@ -265,54 +272,84 @@ public class TestService {
         return "Active";
     }
 
+    // === ВИПРАВЛЕНИЙ МЕТОД ОНОВЛЕННЯ ПИТАНЬ ===
     private void updateTestQuestions(Test test, List<UUID> questionIds) {
-        if (questionIds == null || questionIds.isEmpty()) return;
-
-        List<TestQuestion> newLinks = new ArrayList<>();
-
-        for (int i = 0; i < questionIds.size(); i++) {
-            UUID qId = questionIds.get(i);
-            Question question = questionRepository.findById(qId)
-                    .orElseThrow(() -> new EntityNotFoundException("Question not found: " + qId));
-
-            newLinks.add(new TestQuestion(test, question, i + 1));
+        if (questionIds == null || questionIds.isEmpty()) {
+            if (test.getTestQuestions() != null) {
+                test.getTestQuestions().clear();
+            }
+            return;
         }
 
-        testQuestionRepository.saveAll(newLinks);
+        // Видаляємо дублікати з вхідного списку
+        List<UUID> uniqueIds = questionIds.stream().distinct().toList();
+
         if (test.getTestQuestions() == null) {
             test.setTestQuestions(new HashSet<>());
         }
-        test.getTestQuestions().addAll(newLinks);
+
+        // 1. Крок: Видаляємо питання, яких більше немає у вхідному списку
+        // Це змусить Hibernate запланувати DELETE тільки для непотрібних записів
+        test.getTestQuestions().removeIf(tq -> !uniqueIds.contains(tq.getQuestion().getQuestionId()));
+
+        // 2. Крок: Отримуємо об'єкти питань з бази
+        Map<UUID, Question> questionMap = questionRepository.findAllById(uniqueIds).stream()
+                .collect(Collectors.toMap(Question::getQuestionId, Function.identity()));
+
+        // Допоміжна мапа для швидкого пошуку вже існуючих зв'язків у тесті
+        Map<UUID, TestQuestion> existingLinksMap = test.getTestQuestions().stream()
+                .collect(Collectors.toMap(tq -> tq.getQuestion().getQuestionId(), Function.identity()));
+
+        // 3. Крок: Оновлюємо існуючі або додаємо нові
+        int orderIndex = 1;
+        for (UUID qId : uniqueIds) {
+            Question q = questionMap.get(qId);
+            if (q == null) continue; // Якщо питання не знайдено в БД
+
+            if (existingLinksMap.containsKey(qId)) {
+                // Якщо зв'язок вже є -> просто оновлюємо порядковий номер
+                // Hibernate виконає UPDATE, конфлікту унікальності не буде
+                TestQuestion existingLink = existingLinksMap.get(qId);
+                existingLink.setOrderIndex(orderIndex++);
+            } else {
+                // Якщо зв'язку немає -> створюємо новий
+                // Hibernate виконає INSERT
+                TestQuestion newLink = new TestQuestion(test, q, orderIndex++);
+                test.getTestQuestions().add(newLink);
+            }
+        }
     }
 
-    // === ОСНОВНИЙ МЕТОД ДЛЯ МАППІНГУ З ВАРІАНТАМИ ВІДПОВІДЕЙ ===
-    // === ОНОВЛЕНИЙ МЕТОД (optionId всюди) ===
+    // === MAPPING METHODS ===
+
     private TestDetailResponse mapToDetailResponse(Test test) {
-        // Отримуємо питання
+        // Отримуємо питання через репозиторій або через test.getTestQuestions()
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());
+
+        // Якщо репозиторій нічого не повернув, спробуємо взяти з самого об'єкта (якщо щойно створили)
+        if (testQuestions.isEmpty() && test.getTestQuestions() != null) {
+            testQuestions = new ArrayList<>(test.getTestQuestions());
+        }
 
         // Сортуємо
         testQuestions.sort(Comparator.comparingInt(tq ->
                 tq.getOrderIndex() != null ? tq.getOrderIndex() : Integer.MAX_VALUE));
 
-        // Мапимо
         List<TestDetailResponse.QuestionSummary> questionSummaries = testQuestions.stream()
                 .map(tq -> {
                     Question q = tq.getQuestion();
-                    
-                    // 1. Маппінг варіантів (ТУТ ЗМІНИ)
+
                     List<ChoiceOptionDTO> options = new ArrayList<>();
                     if (q.getChoiceOptions() != null) {
                         options = q.getChoiceOptions().stream()
-                            .map(opt -> ChoiceOptionDTO.builder()
-                                .optionId(opt.getOptionId())  // <--- В DTO теж optionId
-                                .optionText(opt.getOptionText()) 
-                                .isCorrect(opt.isCorrect()) 
-                                .build())
-                            .collect(Collectors.toList());
+                                .map(opt -> ChoiceOptionDTO.builder()
+                                        .optionId(opt.getOptionId())
+                                        .optionText(opt.getOptionText())
+                                        .isCorrect(opt.isCorrect())
+                                        .build())
+                                .collect(Collectors.toList());
                     }
 
-                    // 2. Дані для коду
                     String templateCode = (q.getCodeAnswer() != null) ? q.getCodeAnswer().getTemplateCode() : null;
                     String language = (q.getCodeAnswer() != null) ? q.getCodeAnswer().getLanguage() : null;
                     String testCases = (q.getCodeAnswer() != null) ? q.getCodeAnswer().getTestCases() : null;
@@ -320,10 +357,10 @@ public class TestService {
                     return TestDetailResponse.QuestionSummary.builder()
                             .questionId(q.getQuestionId())
                             .questionText(q.getQuestionText())
-                            .type(q.getQuestionType()) // Поле в DTO називається type
+                            .type(q.getQuestionType())
                             .weight(q.getWeight() != null ? q.getWeight() : 1.0)
                             .orderIndex(tq.getOrderIndex())
-                            .options(options) 
+                            .options(options)
                             .templateCode(templateCode)
                             .language(language)
                             .testCases(testCases)

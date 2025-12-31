@@ -43,7 +43,7 @@ public class QuestionService {
 
     @Transactional
     public Question createQuestionAndLinkToTest(UUID testId, QuestionCreateRequest request, String authorEmail) {
-        
+        validateQuestionRequest(request);
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
 
