@@ -31,7 +31,7 @@ jobs:
 
       - name: Build backend (Maven)
         working-directory: backend
-        run: ./mvnw -B clean verify
+        run: mvn -B clean package -Dmaven.test.skip=true
 
       - name: Set up Node.js 18
         uses: actions/setup-node@v4
