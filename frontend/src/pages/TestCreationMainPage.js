@@ -12,15 +12,50 @@ const TestCreationMainPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const passed = location.state?.testMeta || null;
+  const isEditMode = Boolean(passed?.testId);
 
   const [mode, setMode] = useState('create');
   const [questionsCount, setQuestionsCount] = useState(0);
   const [questions, setQuestions] = useState([]);
+  const [originalQuestions, setOriginalQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showError, setShowError] = useState(false); // Стан для підсвітки помилки
+  const [showError, setShowError] = useState(false);
 
   const creatorRef = useRef(null);
+
+  useEffect(() => {
+    if (isEditMode) {
+      setMode('preview');
+    }
+  }, [isEditMode]);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      if (!isEditMode) return;
+  
+      try {
+        const token = getAccessToken();
+        const { data } = await axios.get(
+          `/api/tests/${passed.testId}/questions`,
+          {
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {})
+            }
+          }
+        );
+  
+        setQuestions(data);
+        setOriginalQuestions(data);
+        setQuestionsCount(data.length);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+  
+    fetchQuestions();
+  }, [isEditMode, passed?.testId]);  
+
 
   const [testMeta, setTestMeta] = useState(() => ({
     testName: passed?.testName || 'Новий тест',
@@ -102,45 +137,67 @@ const TestCreationMainPage = () => {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
-
-      // 1. Публікуємо мета-дані тесту
+  
       const testPayload = {
         ...testMeta,
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
       };
+  
+      let testId = passed?.testId;
+  
+      if (isEditMode) {
+        await axios.put(`/api/tests/${testId}`, testPayload, { headers });
 
-      const testResponse = await axios.post(
-        `/api/tests`,
-        testPayload,
-        { headers }
-      );
+        const originalIds = originalQuestions.map(q => q.id);
+        const currentIds = questions.filter(q => q.id).map(q => q.id);
+        const toDelete = originalIds.filter(id => !currentIds.includes(id));
 
-      const testId = testResponse.data?.testId;
+        for (let i = 0; i < questions.length; i++) {
+          const q = questions[i];
+        
+          if (q.id) {
+            await axios.put(`/api/questions/${q.id}`, {
+              ...q,
+              orderIndex: i
+            }, { headers });
+          } else {
+            await axios.post(`/api/tests/${testId}/questions`, {
+              ...q,
+              orderIndex: i
+            }, { headers });
+          }
+        }
 
-      // 2. Публікуємо питання з додаванням orderIndex
-      // Використовуємо звичайний цикл з індексом або entries()
-      for (let i = 0; i < questions.length; i++) {
-        const questionPayload = {
-          ...questions[i],
-          orderIndex: i, // Передаємо порядковий номер (0, 1, 2...)
-          weight: questions[i].points
-        };
+        for (const id of toDelete) {
+          await axios.delete(`/api/questions/${id}`, { headers });
+        }
+  
+      } else {
+        const res = await axios.post(`/api/tests`, testPayload, { headers });
+        testId = res.data?.testId;
 
-        await axios.post(
-          `/api/tests/${testId}/questions`,
-          questionPayload,
-          { headers }
-        );
-      }
-
+        for (let i = 0; i < questions.length; i++) {
+          await axios.post(
+            `/api/tests/${testId}/questions`,
+            {
+              ...questions[i],
+              orderIndex: i,
+              weight: questions[i].points
+            },
+            { headers }
+          );
+        }
+      }      
+  
       navigate('/viewingtests');
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className='page'>
