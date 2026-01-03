@@ -83,6 +83,16 @@ const TestCreationStartContainer = ({ mode, testId }) => {
         ? { value: 'yes', label: 'Так' }
         : { value: 'no', label: 'Ні' }
       );
+
+      setSelectedTestQuestionsSorting(t.isFixedQuestionOrder
+        ? { value: 'fixed', label: 'Фіксований порядок' }
+        : { value: 'random', label: 'Випадковий порядок' }
+      );
+
+      setSelectedTestAnswersSorting(t.isFixedAnswerOrder
+        ? { value: 'fixed', label: 'Фіксований порядок' }
+        : { value: 'random', label: 'Випадковий порядок' }
+      );
     });
   }, [mode, testId]);
 
@@ -149,11 +159,70 @@ const TestCreationStartContainer = ({ mode, testId }) => {
         <SelectField type="select" selectedOption={selectedCity} setSelectedOption={setSelectedCity} fieldName="Оберіть місто" fieldOptions={cityOptions} error={!!errors.city} />
       </div>
 
-      <SelectField type="textarea" selectedOption={description} setSelectedOption={setDescription} fieldName="Опис вакансії" />
-      <SelectField type="list" selectedOption={responsibilities} setSelectedOption={setResponsibilities} fieldName="Обовʼязки" />
-      <SelectField type="date" selectedOption={startingDate} setSelectedOption={setStartingDate} fieldName="Дата початку" />
-      <SelectField type="date" selectedOption={finishingDate} setSelectedOption={setFinishingDate} fieldName="Дата завершення" />
-      <SelectField type="time" selectedOption={selectedTime} setSelectedOption={setSelectedTime} fieldName="Тривалість (хв)" />
+      <SelectField
+          type="textarea"
+          selectedOption={description}
+          setSelectedOption={setDescription}
+          fieldName="Напишіть опис вакансії"
+          fieldOptions={{}}
+      />
+
+      <SelectField
+          type="list"
+          selectedOption={responsibilities}
+          setSelectedOption={setResponsibilities}
+          fieldName="Напишіть обов’язки"
+          fieldOptions={{}}
+      />
+      <SelectField
+          type="date"
+          selectedOption={startingDate}
+          setSelectedOption={setStartingDate}
+          fieldName="Дата початку тестування"
+          fieldOptions={{}}
+      />
+      <SelectField
+          type="date"
+          selectedOption={finishingDate}
+          setSelectedOption={setFinishingDate}
+          fieldName="Дата кінця тестування"
+          fieldOptions={{}}
+      />
+      <SelectField
+          type="time"
+          selectedOption={selectedTime}
+          setSelectedOption={setSelectedTime}
+          fieldName="Таймер"
+          fieldOptions={{}}
+      />
+      <SelectField
+          type="testtype"
+          selectedOption={selectedTestType}
+          setSelectedOption={setSelectedTestType}
+          fieldName="Тип тесту"
+          fieldOptions={{}}
+      />
+      <SelectField
+          type="testquestionssorting"
+          selectedOption={selectedTestQuestionsSorting}
+          setSelectedOption={setSelectedTestQuestionsSorting}
+          fieldName="Порядок запитань"
+          fieldOptions={{}}
+      />
+      <SelectField
+          type="testanswerssorting"
+          selectedOption={selectedTestAnswersSorting}
+          setSelectedOption={setSelectedTestAnswersSorting}
+          fieldName="Порядок відповідей"
+          fieldOptions={{}}
+      />
+      <SelectField
+          type="showresults"
+          selectedOption={selectedShowResults}
+          setSelectedOption={setSelectedShowResults}
+          fieldName="Показувати результати після завершення тесту"
+          fieldOptions={{}}
+      />
 
       <button className="testCreationStartContainer__next-button" onClick={handleNext}>
         {mode === 'edit' ? 'Редагувати тест' : 'Наступна сторінка'}
