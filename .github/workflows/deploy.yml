@@ -2,7 +2,7 @@ name: Build Production
 
 on:
   push:
-    branches: [ "test-ci" ]
+    branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io
