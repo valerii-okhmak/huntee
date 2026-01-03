@@ -17,7 +17,7 @@ const TestReviewPage = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptId}/review`,
+          `/api/attempts/${attemptId}/review`,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         setResultData(response.data);

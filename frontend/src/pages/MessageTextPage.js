@@ -21,7 +21,7 @@ const MessageTextPage = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND}/api/notifications`,
+          `/api/notifications`,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
@@ -31,7 +31,7 @@ const MessageTextPage = () => {
           setMessage(foundMessage);
           if (!foundMessage.isRead) {
              await axios.put(
-                `${process.env.REACT_APP_BACKEND}/api/notifications/${id}/read`,
+                `/api/notifications/${id}/read`,
                 {},
                 { headers: { 'Authorization': `Bearer ${token}` } }
              );
@@ -56,7 +56,7 @@ const MessageTextPage = () => {
 
 
   const logoSrc = message.sender?.avatarUrl 
-    ? `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${message.sender.avatarUrl}`
+    ? `/api/profile/avatar/${message.sender.avatarUrl}`
     : defaultLogo;
 
   const senderName = message.sender?.name || "Системне повідомлення";

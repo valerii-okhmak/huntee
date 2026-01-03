@@ -22,7 +22,7 @@ const TestDashboardPage = () => {
     const fetchTest = async () => {
       try {
         setTestLoading(true); 
-        const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}`, {
+        const res = await fetch(`/api/tests/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -52,19 +52,19 @@ const TestDashboardPage = () => {
         };
 
         if (activeTab === 'results') {
-          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/results`, { headers });
+          const res = await fetch(`/api/tests/${id}/results`, { headers });
           const data = await res.json();
           setResults(data);
         }
 
         if (activeTab === 'registered') {
-          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/candidates`, { headers });
+          const res = await fetch(`/api/tests/${id}/candidates`, { headers });
           const data = await res.json();
           setCandidates(data);
         }
 
         if (activeTab === 'analytics') {
-          const res = await fetch(`${process.env.REACT_APP_BACKEND}/api/tests/${id}/analytics`, { headers });
+          const res = await fetch(`/api/tests/${id}/analytics`, { headers });
           const data = await res.json();
           setAnalytics(data);
         }

@@ -40,7 +40,7 @@ const TestPage = ({ testType }) => {
       try {
         const token = getAccessToken();
         const response = await axios.post(
-          `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/start`,
+          `/api/tests/${testId}/start`,
           {}, 
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
@@ -151,7 +151,7 @@ const TestPage = ({ testType }) => {
       }
 
       await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/answer`,
+        `/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/answer`,
         body,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -168,7 +168,7 @@ const TestPage = ({ testType }) => {
         setOutputMap(prev => ({ ...prev, [question.questionId]: "Compiling..." }));
         const token = getAccessToken();
         const response = await axios.post(
-            `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/run`,
+            `/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/run`,
             code, 
             { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'text/plain' } }
         );
@@ -222,7 +222,7 @@ const TestPage = ({ testType }) => {
     try {
         const token = getAccessToken();
         const response = await axios.post(
-            `${process.env.REACT_APP_BACKEND}/api/attempts/${attemptData.attemptId}/finish`,
+            `/api/attempts/${attemptData.attemptId}/finish`,
             {},
             { headers: { 'Authorization': `Bearer ${token}` } }
         );

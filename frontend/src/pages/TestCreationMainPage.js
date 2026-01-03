@@ -111,7 +111,7 @@ const TestCreationMainPage = () => {
       };
 
       const testResponse = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/tests`,
+        `/api/tests`,
         testPayload,
         { headers }
       );
@@ -128,7 +128,7 @@ const TestCreationMainPage = () => {
         };
 
         await axios.post(
-          `${process.env.REACT_APP_BACKEND}/api/tests/${testId}/questions`,
+          `/api/tests/${testId}/questions`,
           questionPayload,
           { headers }
         );

@@ -20,7 +20,7 @@ const UserProfile = ({ user_id }) => {
     const fetchExperience = async () => {
         try {
         
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/experiences/user_id`, {
+        const response = await axios.get(`/api/profile/experiences/user_id`, {
             params: { userId: `${user_id}` },
         });
         setExperienceData(response.data);
@@ -33,13 +33,13 @@ const UserProfile = ({ user_id }) => {
     const fetchProfile = async () => {
         try {
 
-          const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/${user_id}`);
+          const response = await axios.get(`/api/profile/${user_id}`);
           const data = response.data;
 
           if (!data.profileImage) {
             data.profileImage = DEFAULT_AVATAR;
           } else  {
-            data.profileImage = `${process.env.REACT_APP_BACKEND}/api/profile/avatar/${data.profileImage}`;
+            data.profileImage = `/api/profile/avatar/${data.profileImage}`;
             console.log(data.profileImage);
           }
 
@@ -52,7 +52,7 @@ const UserProfile = ({ user_id }) => {
 
     const fetchEducation = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/education/user_id`, {
+            const response = await axios.get(`/api/profile/education/user_id`, {
             params: { userId: `${user_id}` },
             });
             setEducationData(response.data);
@@ -63,7 +63,7 @@ const UserProfile = ({ user_id }) => {
 
     const fetchSertificates = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/courses/user_id`, {
+            const response = await axios.get(`/api/profile/courses/user_id`, {
             params: { userId: `${user_id}` },
             });
             setSertificatesData(response.data);
@@ -74,7 +74,7 @@ const UserProfile = ({ user_id }) => {
 
     const fetchMediaLinks = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACKEND}/api/profile/links/user_id`, {
+            const response = await axios.get(`/api/profile/links/user_id`, {
             params: { userId: `${user_id}` },
             });
             setMediaLinksData(response.data);

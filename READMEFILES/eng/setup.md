@@ -1,84 +1,45 @@
-# Huntee Installation & Setup
+# Huntee — Deployment Guide
 
-This document provides a step-by-step guide for locally running the Huntee platform.
+This project is fully containerized and ready to run on any server or local machine using Docker.
+
+## Prerequisites
+
+Ensure you have the following installed:
+- **Docker**
+- **Docker Compose**
+
+---
+
+## 🛠 Step 1: Create the Deployment File
+
+You do not need to clone the repository or install Java/Node.js manually.
+Simply create a folder (e.g., `huntee_deploy`) and add a **`docker-compose.yml`** file inside it.
 
 
-## 1. Clone the Repository
-
-Clone the project from GitHub:
-
+## Step 2: Run the Project
+Open your terminal in the folder containing docker-compose.yml and run:
 ```bash
-git clone https://github.com/DONAT1N/huntee.git 
+docker-compose up -d
 ```
+*Note: Please wait 30-60 seconds after starting. The database needs time to initialize, and the backend needs time to create the necessary tables.*
 
-## 2. Frontend Installation & Launch
+## Step 3: Access Points
+Once running, the application is available at:
+Web Application http://localhostOr your server's public IP
+Database localhost:3306 User: root, Pass: root, DB: huntee
 
-1. Navigate to the frontend directory:
-
-```bash
-cd huntee/frontend
+## Management Commands
+Stop the application: 
+```bash 
+docker-compose down
 ```
-
-2. Install dependencies:
-
-```bash
-npm install
+Update to the latest version:
+```bash 
+docker-compose pull
+docker-compose up -d
 ```
-
-3. Run the frontend:
-
-```bash
-npm run dev
-```
-The interface will be available at: http://localhost:3000
-
-## 3. Backend Installation & Launch
-1. Make sure Java 17+ and Maven are installed on your system.
-2. Navigate to the backend directory:
-
-```bash
-cd ../backend
-```
-
-3. Build the project:
-
-```bash
-./mvnw clean install
-```
-
-4. Start the server:
-
-```bash
-./mvnw spring-boot:run
-```
-The API will be accessible at: http://localhost:8080
-
-## 4. Note
-
-> Make sure ports 3000 (frontend) and 8080 (backend) are not occupied by other processes.
-> To ensure proper communication between frontend and backend, check the proxy field in frontend/package.json.
-
-
-## Directory Structure
-
-```bash
-huntee/
-├── backend/         # Backend server
-├── frontend/        # Frontend application
-├── README.md        # Frontend application
-└── READMEFILES      # Documentation
-    ├── ua/
-        ├── companies.md
-        ├── setup.md
-        ├── students.md
-        ├── technologies.md
-        └── test-format.md
-
-    └── eng/
-        ├── companies.md
-        ├── setup.md
-        ├── students.md
-        ├── technologies.md
-        └── test-format.md
-
+Reset Database (Delete all data):
+```bash 
+docker-compose down -v
+docker-compose up -d
 ```

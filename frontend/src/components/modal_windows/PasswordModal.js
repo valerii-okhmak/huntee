@@ -37,7 +37,7 @@ const PasswordModal = ({ isOpen, onClose }) => {
     const { sub } = jwtDecode(getAccessToken());
 
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND}/api/auth/change-password`, {
+      await axios.post(`/api/auth/change-password`, {
         email: sub,
         oldPassword: currentPassword,
         newPassword: newPassword,

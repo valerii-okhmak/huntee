@@ -28,7 +28,7 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/courses`,
+        `/api/profile/courses`,
         body,
         {
           headers: {
