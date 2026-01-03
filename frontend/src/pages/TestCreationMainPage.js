@@ -145,10 +145,10 @@ const TestCreationMainPage = () => {
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
       };
   
-      let testId = testId;
+      let currentTestId = testId;
   
       if (isEditMode) {
-        await axios.put(`/api/tests/${testId}`, testPayload, { headers });
+        await axios.put(`/api/tests/${currentTestId}`, testPayload, { headers });
 
         const originalIds = originalQuestions.map(q => q.id);
         const currentIds = questions.filter(q => q.id).map(q => q.id);
@@ -163,15 +163,17 @@ const TestCreationMainPage = () => {
               orderIndex: i
             }, { headers });
           } else {
-            await axios.post(`/api/tests/${testId}/questions`, {
+            await axios.post(`/api/tests/${currentTestId}/questions`, {
               ...q,
               orderIndex: i
             }, { headers });
           }
         }
 
-        for (const id of toDelete) {
-          await axios.delete(`/api/questions/${id}`, { headers });
+        for ( const id of toDelete) {
+          if (id) {
+            await axios.delete(`/api/questions/${id}`, { headers });
+          }
         }
   
       } else {
