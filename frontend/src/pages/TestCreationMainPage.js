@@ -12,7 +12,8 @@ const TestCreationMainPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const passed = location.state?.testMeta || null;
-  const isEditMode = Boolean(passed?.testId);
+  const isEditMode = location.state?.mode === 'edit';
+  const testId = location.state?.testId;
 
   const [mode, setMode] = useState('create');
   const [questionsCount, setQuestionsCount] = useState(0);
@@ -37,7 +38,7 @@ const TestCreationMainPage = () => {
       try {
         const token = getAccessToken();
         const { data } = await axios.get(
-          `/api/tests/${passed.testId}/questions`,
+          `/api/tests/${testId}/questions`,
           {
             headers: {
               ...(token ? { Authorization: `Bearer ${token}` } : {})
@@ -54,7 +55,7 @@ const TestCreationMainPage = () => {
     };
   
     fetchQuestions();
-  }, [isEditMode, passed?.testId]);  
+  }, [isEditMode, testId]);  
 
 
   const [testMeta, setTestMeta] = useState(() => ({
@@ -144,7 +145,7 @@ const TestCreationMainPage = () => {
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
       };
   
-      let testId = passed?.testId;
+      let testId = testId;
   
       if (isEditMode) {
         await axios.put(`/api/tests/${testId}`, testPayload, { headers });
