@@ -8,6 +8,7 @@ import CustomTitle from '../components/custom_title/CustomTitle';
 import BrowserWindow from '../components/browser_window/BrowserWindow';
 import BrowserWinText from '../components/browser_win_text/BrowserWinText';
 import MessageSenderInfo from '../components/message_sender_info/MessageSenderInfo';
+import Loader from '../components/loader/Loader';
 
 
 const MessageTextPage = () => {
@@ -51,7 +52,7 @@ const MessageTextPage = () => {
     fetchMessage();
   }, [id]);
 
-  if (loading) return <div className="page"><div className='container'>Завантаження...</div></div>;
+  if (loading) return <div className="page"><Loader /></div>;
   if (error || !message) return <div className="page"><div className='container'>{error || "Помилка"}</div></div>;
 
 

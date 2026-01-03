@@ -5,6 +5,7 @@ import Filters from '../components/tests/Filters/Filters';
 import TestsBlock from '../components/tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';
 import { useLocation } from 'react-router-dom';
+import Loader from '../components/loader/Loader';
 
 const AllTestsPage = () => {
   const object = {
@@ -91,7 +92,7 @@ const AllTestsPage = () => {
         />
         
         {isLoading ? (
-          <div>Завантаження...</div>
+          <Loader />
         ) : error ? (
           <div>Помилка: {error}</div>
         ) : (

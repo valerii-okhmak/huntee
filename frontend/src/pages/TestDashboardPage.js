@@ -4,6 +4,7 @@ import GeneralTestInfoHeader from '../components/GeneralTestInfoHeader/GeneralTe
 import DashboardTabNavigation from '../components/test_dashboard/DashboardTabNavigation/DashboardTabNavigation';
 import TestDashboardList from '../components/test_dashboard/tabs/TestDashboardList/TestDashboardList';
 import TestDashboardAnalytics from '../components/test_dashboard/tabs/TestDashboardAnalytics/TestDashboardAnalytics';
+import Loader from '../components/loader/Loader';
 
 const TestDashboardPage = () => {
   const { id } = useParams(); 
@@ -80,7 +81,7 @@ const TestDashboardPage = () => {
   }, [activeTab, id]);
 
   const renderContent = () => {
-    if (loading) return <div>Завантаження даних вкладки...</div>;
+    if (loading) return <Loader />;
 
     switch (activeTab) {
       case 'analytics':
@@ -108,7 +109,7 @@ const TestDashboardPage = () => {
   };
 
   if (testLoading) {
-      return <div className='page'><div className='container'>Завантаження інформації про тест...</div></div>;
+      return <div className='page'><Loader /></div>;
   }
 
   if (!test) {

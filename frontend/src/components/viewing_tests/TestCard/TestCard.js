@@ -64,7 +64,13 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
   const handleEdit = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // navigate(`/edit-test/${id}`); 
+
+    navigate('/testcreation/start', {
+      state: {
+        mode: 'edit',
+        testId: id
+      }
+    });
   };
 
   return (

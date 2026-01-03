@@ -40,6 +40,27 @@ public class QuestionService {
     private final TextAnswerRepository textAnswerRepository;
     private final MatchingPairRepository matchingPairRepository;
     private final CodeAnswerRepository codeAnswerRepository;
+    
+    @Transactional(readOnly = true)
+    public List<QuestionResponse> getQuestionsByTestId(UUID testId, String userEmail) {
+        Test test = testRepository.findById(testId)
+                .orElseThrow(() -> new EntityNotFoundException("Test not found with id: " + testId));
+
+        checkTestOwnership(test, userEmail);
+
+        Set<TestQuestion> testQuestions = test.getTestQuestions();
+        
+        if (testQuestions == null || testQuestions.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return testQuestions.stream()
+                .sorted((tq1, tq2) -> Integer.compare(tq1.getOrderIndex(), tq2.getOrderIndex()))
+                .map(testQuestion -> mapToQuestionResponse(testQuestion.getQuestion()))
+                .collect(Collectors.toList());
+    }
+
+
 
     @Transactional
     public Question createQuestionAndLinkToTest(UUID testId, QuestionCreateRequest request, String authorEmail) {

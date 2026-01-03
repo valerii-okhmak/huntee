@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Diagram from '../../diagram/Diagram';
 import ProfileItem from '../item_profile/ProfileItem';
 import DEFAULT_AVATAR from '../../../img/avatar.png'; 
-
+import Loader from '../../loader/Loader';
 
 const UserProfile = ({ user_id }) => {
     const navigate = useNavigate();
@@ -133,7 +133,7 @@ const UserProfile = ({ user_id }) => {
                 />
               </div>
               <h2 className="profile-name">
-                {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+                {profileData ? `${profileData.firstName} ${profileData.lastName}` : <Loader />}
               </h2>
               <h2 className="profile-age">
                 {profileData && profileData.birthDate

@@ -22,7 +22,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
-
+import Loader from '../../loader/Loader';
 import DEFAULT_AVATAR from '../../../img/avatar.png'; 
 
 
@@ -327,7 +327,7 @@ return (
                     </div>
 
                     <h2 className="profile-name">
-                      {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+                      {profileData ? `${profileData.firstName} ${profileData.lastName}` : <Loader />}
                     </h2>
 
                     <h2 className="profile-age">
@@ -555,7 +555,7 @@ return (
                     </div>
 
                     <h2 className="profile-name">
-                      {profileData ? `${profileData.firstName} ${profileData.lastName}` : 'Завантаження...'}
+                      {profileData ? `${profileData.firstName} ${profileData.lastName}` : <Loader />}
                     </h2>
 
                     <h2 className="profile-age">

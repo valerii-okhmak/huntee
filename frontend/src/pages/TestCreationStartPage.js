@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import TestCreationStartContainer from '../components/testCreationStartContainer/TestCreationStartContainer';
 
 const TestCreationStartPage = () => {
+  const location = useLocation();
 
-    return (
-      <div className="page">
-        <TestCreationStartContainer />
-      </div>
-    );
-}
+  const mode = location.state?.mode ?? 'create';
+  const testId = location.state?.testId ?? null;
 
-export default TestCreationStartPage
+  return (
+    <div className="page">
+      <TestCreationStartContainer mode={mode} testId={testId} />
+    </div>
+  );
+};
+
+export default TestCreationStartPage;

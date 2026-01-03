@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleXmark, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { getAccessToken } from '../../../../utils/auth';
 import axios from 'axios';
+import Loader from '../../../loader/Loader';
 
 const TestDashboardAnalytics = ({ testId }) => {
   const [analytics, setAnalytics] = useState(null);
@@ -30,7 +31,7 @@ const TestDashboardAnalytics = ({ testId }) => {
     fetchAnalytics();
   }, [testId]);
 
-  if (loading) return <div className='container'>Завантаження аналітики...</div>;
+  if (loading) return <Loader />;
   if (error) return <div className='container'>{error}</div>;
 
   return (

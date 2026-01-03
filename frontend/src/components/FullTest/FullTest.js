@@ -5,6 +5,7 @@ import { getAccessToken } from "../../utils/auth";
 import "./FullTest.css";
 import ConfirmTestEndModal from '../modal_windows/ConfirmTestEndModal';
 import StartTestErrorModal from '../modal_windows/StartTestErrorModal';
+import Loader from "../loader/Loader";
 
 
 const TestPage = ({ testType }) => { 
@@ -336,7 +337,7 @@ const TestPage = ({ testType }) => {
     }
   };
 
-  if (loading) return <div className="page"><div className="container">Завантаження тесту...</div></div>;
+  if (loading) return <div className="page"><Loader /></div>;
   if (!attemptData) {
     return (
       <StartTestErrorModal

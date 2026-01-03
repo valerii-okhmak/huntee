@@ -4,6 +4,7 @@ import { getAccessToken } from '../utils/auth';
 import OurDataFilter from '../components/my_tests/OurDataFilter/OurDataFilter';
 import TestsBlock from '../components/my_tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';
+import Loader from '../components/loader/Loader';
 
 const MyTestsPage = () => {
   const object = { logo: null, line: true };
@@ -88,7 +89,7 @@ const MyTestsPage = () => {
         />
 
         {isLoading ? (
-          <div>Завантаження...</div>
+          <Loader />
         ) : error ? (
           <div>Помилка: {error}</div>
         ) : (

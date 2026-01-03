@@ -6,6 +6,7 @@ import { getAccessToken } from '../utils/auth';
 import AboutTest from '../components/test_info/about_test/AboutTest';
 import AboutWork from '../components/test_info/AboutWork';
 import WorkResponsibilities from '../components/test_info/WorkResponsibilities';
+import Loader from '../components/loader/Loader';
 
 const TestPage = () => {
     const { testId } = useParams();
@@ -44,7 +45,7 @@ const TestPage = () => {
     }, [testId]);
 
     if (isLoading) {
-        return <div className="page"><div>Завантаження...</div></div>;
+        return <Loader />;
     }
 
     if (error) {

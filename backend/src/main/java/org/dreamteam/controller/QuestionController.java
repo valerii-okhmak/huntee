@@ -3,7 +3,8 @@ package org.dreamteam.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.MediaType;
 
@@ -31,6 +32,21 @@ import org.springframework.security.access.method.P;
 public class QuestionController {
 
     private final QuestionService questionService;
+    
+    @Operation(summary = "Створити та додати нове питання до тесту")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/tests/{testId}/questions")
+    public ResponseEntity<List<QuestionResponse>> getTestQuestions(
+            @PathVariable UUID testId,
+            Principal principal) {
+            
+        List<QuestionResponse> questions = questionService.getQuestionsByTestId(testId, principal.getName());
+            
+        return ResponseEntity.ok(questions);
+    }
+
+
+
 
     @Operation(summary = "Створити та додати нове питання до тесту")
     @SecurityRequirement(name = "bearerAuth")
