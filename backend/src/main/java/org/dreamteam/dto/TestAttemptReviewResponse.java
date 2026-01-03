@@ -5,6 +5,7 @@ import lombok.Data;
 import org.dreamteam.Entity.QuestionType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class TestAttemptReviewResponse {
     private UUID attemptId;
     private String candidateName;
     private String candidateEmail;
-    private LocalDateTime completedAt;
+    private OffsetDateTime completedAt;
     
     private String testName;
     private String sphere;
@@ -22,6 +23,9 @@ public class TestAttemptReviewResponse {
     private BigDecimal score;
     private Integer totalQuestions;
     private Integer correctAnswersCount;
+    private BigDecimal totalMaxScore;
+    private Boolean isShown;
+    private OffsetDateTime endTime;
 
     private List<QuestionReviewDTO> questions;
 
@@ -33,7 +37,6 @@ public class TestAttemptReviewResponse {
         private QuestionType type;
         private String comment;
         private boolean isCorrect;
-
         private String userAnswer; 
         private String correctAnswer;
         

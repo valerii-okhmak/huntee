@@ -20,6 +20,24 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+
+.select-field-tc__custom-input.error {
+  border: 1px solid #e53935;
+  color: #000;
+}
+
+.select-field-tc__custom-input.error::placeholder {
+  color: #e53935;
+}
+
+.select-field-tc__custom-select-container.has-error .select-field-tc__custom-select__control {
+  box-shadow: 0 0 0 1px #e53935 !important;
+}
+
+.select-field-tc__custom-select-container.has-error .select-field-tc__custom-select__placeholder {
+  color: #e53935 !important;
+}
+
 .select-field-tc__label {
   font-family: 'Montserrat', sans-serif;
   flex: 0 0 40%;
@@ -178,6 +196,7 @@ td.rdtActive {
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
   resize: none;
+  color: #000;
 }
 .select-field-tc__custom-textarea::placeholder {
   color: #5C5959;
@@ -191,6 +210,7 @@ td.rdtActive {
   padding: 12px 22px;
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
+  color: #000;
 }
 .select-field-tc__custom-input::placeholder {
   color: #5C5959;
@@ -246,7 +266,9 @@ td.rdtActive {
   padding: 15px;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
+  color: #000;
 }
+
 .responsibilities-list__input::placeholder {
   color: #5C5959;
   opacity: 1; 

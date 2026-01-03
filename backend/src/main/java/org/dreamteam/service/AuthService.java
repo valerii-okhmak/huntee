@@ -42,7 +42,7 @@ public class AuthService {
     public ResponseEntity<?> register(RegisterRequest request) throws MessagingException {
         // Перевірка на корпоративну пошту політехніки
         String email = request.getEmail();
-        if (email == null || !email.endsWith("@lpnu.ua")) {
+        if (email == null ) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body("Дозволено лише реєстрація з корпоративною поштою @lpnu.ua");
@@ -122,7 +122,7 @@ public class AuthService {
     public ResponseEntity<?> login(AuthRequest request) {
         // Перевірка на корпоративну пошту політехніки
         String email = request.getEmail();
-        if (email == null || !email.endsWith("@lpnu.ua")) {
+        if (email == null) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body("Дозволено лише вхід з корпоративною поштою @lpnu.ua");
@@ -255,7 +255,7 @@ public class AuthService {
 
         // Перевірка на корпоративну пошту пошту політехніки для Google
         if("google".equalsIgnoreCase(providerName)){
-            if(email == null || !email.endsWith("@lpnu.ua")){
+            if(email == null){
                 return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("Дозволено лише вхід з корпоративною поштою @lpnu.ua");

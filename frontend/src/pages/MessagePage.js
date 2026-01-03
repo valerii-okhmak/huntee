@@ -16,7 +16,7 @@ const MessagesPage = () => {
     try {
       const token = getAccessToken();
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND}/api/notifications`,
+        `/api/notifications`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
@@ -57,7 +57,7 @@ const MessagesPage = () => {
     try {
       const token = getAccessToken();
       await axios.put(
-        `${process.env.REACT_APP_BACKEND}/api/notifications/${id}/read`,
+        `/api/notifications/${id}/read`,
         {},
         { headers: { 'Authorization': `Bearer ${token}` } }
       );

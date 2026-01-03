@@ -4,11 +4,13 @@ import './TestCreation_SelectField.css'
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 
-const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fieldName, fieldOptions }) => {
+const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fieldName, fieldOptions, error}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuDateOpen, setMenuDateOpen] = useState(true);
   const [bigMenuOpen, setBigMenuOpen] = useState(false);
   const [classification, setClassification] = useState('none');
+  const [timerType, setTimerType] = useState('none'); // none | fixed
+
 
   // Локальний стан для time (як раніше) — використовує переданий selectedOption
   const handleTimeChange = (typePart, value) => {
@@ -97,22 +99,24 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
             value={selectedOption}
             onChange={(e) => setSelectedOption(e.target.value)}
             placeholder={fieldName}
-            className="select-field-tc__custom-input"  
+            className={`select-field-tc__custom-input ${error ? 'error' : ''}`}   
           />
         }
 
-        {type === 'select' && 
+        {type === 'select' && (
           <Select
             options={fieldOptions}
             value={selectedOption}
             onChange={setSelectedOption}
             isSearchable
             placeholder="Пошук"
-            classNamePrefix="select-field-tc__custom-select"  
+            // Додаємо клас has-error безпосередньо селекту
+            className={`select-field-tc__custom-select-container ${error ? 'has-error' : ''}`}
+            classNamePrefix="select-field-tc__custom-select"
             onMenuOpen={() => setMenuOpen(true)}
             onMenuClose={() => setMenuOpen(false)}
           />
-        }
+        )}
 
         {type === 'textarea' && 
           <textarea
@@ -137,33 +141,71 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
           />
         }
 
-        {type === 'time' &&
-          <div className="select-field-tc__time-input">
-            <input
-              type="number"
-              min="0"
-              max="23"
-              value={String(Math.floor((Number(selectedOption) || 0) / 3600)).padStart(2, '0')}
-              onChange={(e) => handleTimeChange('hours', e.target.value)}
-            />
-            <span>:</span>
-            <input
-              type="number"
-              min="0"
-              max="59"
-              value={String(Math.floor(((Number(selectedOption) || 0) % 3600) / 60)).padStart(2, '0')}
-              onChange={(e) => handleTimeChange('minutes', e.target.value)}
-            />
-            <span>:</span>
-            <input
-              type="number"
-              min="0"
-              max="59"
-              value={String((Number(selectedOption) || 0) % 60).padStart(2, '0')}
-              onChange={(e) => handleTimeChange('seconds', e.target.value)}
-            />
+        {type === 'time' && (
+          <div className="question-classification">
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="timerType"
+                value="none"
+                checked={timerType === 'none'}
+                onChange={() => {
+                  setTimerType('none');
+                  setSelectedOption(null);
+                }}
+              />
+              <div className="question-classification__label">
+                Без обмеження часу
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="timerType"
+                value="fixed"
+                checked={timerType === 'fixed'}
+                onChange={() => {
+                  setTimerType('fixed');
+                  setSelectedOption(0);
+                }}
+              />
+              <div className="question-classification__label">
+                Фіксований час
+              </div>
+            </label>
+
+            {timerType === 'fixed' && (
+              <div className="select-field-tc__time-input">
+                <input
+                  type="number"
+                  min="0"
+                  max="23"
+                  value={String(Math.floor((Number(selectedOption) || 0) / 3600)).padStart(2, '0')}
+                  onChange={(e) => handleTimeChange('hours', e.target.value)}
+                />
+                <span>:</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={String(Math.floor(((Number(selectedOption) || 0) % 3600) / 60)).padStart(2, '0')}
+                  onChange={(e) => handleTimeChange('minutes', e.target.value)}
+                />
+                <span>:</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={String((Number(selectedOption) || 0) % 60).padStart(2, '0')}
+                  onChange={(e) => handleTimeChange('seconds', e.target.value)}
+                />
+              </div>
+            )}
+
           </div>
-        }
+        )}
 
         {type === 'class' && 
           <div className='question-classification'>
@@ -207,6 +249,43 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
           </div>
         }
 
+        {type === 'testtype' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testType"
+                value="public"
+                // Перевіряємо за значенням об'єкта або просто стейтом
+                checked={selectedOption?.value === 'public'}
+                onChange={() => setSelectedOption({ value: 'public', label: 'Публічний' })}
+              />
+              <div className="question-classification__label">
+                Публічний
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testType"
+                value="private"
+                checked={selectedOption?.value === 'private'}
+                onChange={() => setSelectedOption({ value: 'private', label: 'Приватний' })}
+              />
+              <div className="question-classification__label">
+                Приватний
+              </div>
+            </label>
+            
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'public' 
+                ? "Доступний усім користувачам платформи" 
+                : "Доступний лише за прямим посиланням або інвайтом"}
+            </p>
+          </div>
+        )}
+
         {type === 'list' && (
           <div className="responsibilities-list">
 
@@ -244,6 +323,115 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
           </div>
         )}
 
+        {type === 'testquestionssorting' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testQuestionsSorting"
+                value="fixed"
+                // Перевіряємо за значенням об'єкта або просто стейтом
+                checked={selectedOption?.value === 'fixed'}
+                onChange={() => setSelectedOption({ value: 'fixed', label: 'Фіксований порядок' })}
+              />
+              <div className="question-classification__label">
+                Фіксований порядок
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testQuestionsSorting"
+                value="random"
+                checked={selectedOption?.value === 'random'}
+                onChange={() => setSelectedOption({ value: 'random', label: 'Випадковий порядок' })}
+              />
+              <div className="question-classification__label">
+                Випадковий порядок
+              </div>
+            </label>
+            
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'fixed' 
+                ? "Порядок запитань не змінюється, збережено той, що створений" 
+                : "Порядок запитань змінюється випадковим чином при кожному проходженні тесту"}
+            </p>
+          </div>
+        )}
+
+        {type === 'testanswerssorting' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testAnswersSorting"
+                value="fixed"
+                // Перевіряємо за значенням об'єкта або просто стейтом
+                checked={selectedOption?.value === 'fixed'}
+                onChange={() => setSelectedOption({ value: 'fixed', label: 'Фіксований порядок' })}
+              />
+              <div className="question-classification__label">
+                Фіксований порядок
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="testAnswersSorting"
+                value="random"
+                checked={selectedOption?.value === 'random'}
+                onChange={() => setSelectedOption({ value: 'random', label: 'Випадковий порядок' })}
+              />
+              <div className="question-classification__label">
+                Випадковий порядок
+              </div>
+            </label>
+            
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'fixed' 
+                ? "Порядок відповідей не змінюється, збережено той, що створений" 
+                : "Порядок відповідей змінюється випадковим чином при кожному проходженні тесту"}
+            </p>
+          </div>
+        )}
+
+        {type === 'showresults' && (
+          <div className="question-classification">
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="showResults"
+                value="yes"
+                checked={selectedOption?.value === 'yes'}
+                onChange={() => setSelectedOption({ value: 'yes', label: 'Так' })}
+              />
+              <div className="question-classification__label">
+                Так, показувати результати
+              </div>
+            </label>
+
+            <label className="question-classification__option">
+              <input
+                type="radio"
+                name="showResults"
+                value="no"
+                checked={selectedOption?.value === 'no'}
+                onChange={() => setSelectedOption({ value: 'no', label: 'Ні' })}
+              />
+              <div className="question-classification__label">
+                Ні, не показувати результати
+              </div>
+            </label>
+
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {selectedOption?.value === 'yes'
+                ? "Результати тесту будуть показані після завершення"
+                : "Результати тесту не будуть показані після завершення"}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

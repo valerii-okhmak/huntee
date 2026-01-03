@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -26,13 +27,13 @@ public class ScheduledTaskService {
     @Transactional
     public void autoFinishExpiredTests() {
         List<UserTestAttempt> activeAttempts = attemptRepository.findByCompletedAtIsNull();
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now();
 
         for (UserTestAttempt attempt : activeAttempts) {
             Test test = attempt.getTest();
             if (test == null) continue;
 
-            LocalDateTime deadline = calculateDeadline(attempt, test);
+            OffsetDateTime deadline = calculateDeadline(attempt, test);
 
             if (deadline != null && now.isAfter(deadline.plusMinutes(2))) {
                 forceFinishAttempt(attempt);
@@ -40,11 +41,11 @@ public class ScheduledTaskService {
         }
     }
 
-    private LocalDateTime calculateDeadline(UserTestAttempt attempt, Test test) {
-        LocalDateTime deadline = null;
+    private OffsetDateTime calculateDeadline(UserTestAttempt attempt, Test test) {
+        OffsetDateTime deadline = null;
 
         if (test.getDurationMinutes() != null && test.getDurationMinutes() > 0) {
-            LocalDateTime personalDeadline = attempt.getStartedAt().plusMinutes(test.getDurationMinutes());
+            OffsetDateTime personalDeadline = attempt.getStartedAt().plusMinutes(test.getDurationMinutes());
             
             if (!Boolean.TRUE.equals(test.getIsFixedTime()) && test.getEndTime() != null) {
                 deadline = personalDeadline.isBefore(test.getEndTime()) ? personalDeadline : test.getEndTime();
@@ -58,7 +59,7 @@ public class ScheduledTaskService {
     }
 
     private void forceFinishAttempt(UserTestAttempt attempt) {
-        attempt.setCompletedAt(LocalDateTime.now());
+        attempt.setCompletedAt(OffsetDateTime.now());
 
         List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
         int totalQuestions = attempt.getTest().getTestQuestions().size();

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "test_registration", uniqueConstraints = {
@@ -28,11 +29,11 @@ public class TestRegistration {
     private Test test;
 
     @Column(name = "registered_at", nullable = false)
-    private LocalDateTime registeredAt;
+    private OffsetDateTime registeredAt;
 
     public TestRegistration(User user, Test test) {
         this.user = user;
         this.test = test;
-        this.registeredAt = LocalDateTime.now();
+        this.registeredAt = OffsetDateTime.now();
     }
 }

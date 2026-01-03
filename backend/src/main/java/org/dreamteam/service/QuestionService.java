@@ -55,12 +55,14 @@ public class QuestionService {
 
         Question question = new Question(request.getQuestionText(), request.getQuestionType(), author);
         question.setComment(request.getComment());
+        question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
         
         processQuestionAnswers(question, request);
 
         Question savedQuestion = questionRepository.save(question);
 
-        TestQuestion testQuestion = new TestQuestion(test, savedQuestion);
+        int orderIndex = (test.getTestQuestions() != null) ? test.getTestQuestions().size() + 1 : 1;
+        TestQuestion testQuestion = new TestQuestion(test, savedQuestion, orderIndex);
         testQuestionRepository.save(testQuestion);
 
         return savedQuestion;
@@ -79,6 +81,9 @@ public class QuestionService {
 
         question.setQuestionText(request.getQuestionText());
         question.setComment(request.getComment());
+        question.setQuestionType(request.getQuestionType());
+        question.setWeight(request.getWeight() != null ? request.getWeight() : question.getWeight());
+        question.setQuestionText(request.getQuestionText());
         
         clearExistingAnswers(question);
         processQuestionAnswers(question, request);
@@ -250,13 +255,14 @@ public class QuestionService {
             question.setQuestionType(request.getQuestionType());
             question.setComment(request.getComment());
             question.setAuthor(author);
+            question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
             processQuestionAnswers(question, request);
             questionsToSave.add(question);
         }
         List<Question> savedQuestions = questionRepository.saveAll(questionsToSave);
-
+        int currentOrderIndex = (test.getTestQuestions() != null) ? test.getTestQuestions().size() + 1 : 1;
         for(Question savedQuestion : savedQuestions){
-            TestQuestion testQuestion = new TestQuestion(test, savedQuestion);
+            TestQuestion testQuestion = new TestQuestion(test, savedQuestion, currentOrderIndex++);
             testQuestions.add(testQuestion);
         }
         testQuestionRepository.saveAll(testQuestions);
@@ -383,6 +389,7 @@ public class QuestionService {
                 .questionText(question.getQuestionText())
                 .comment(question.getComment())
                 .questionType(question.getQuestionType())
+                .weight(question.getWeight())
                 .authorEmail(question.getAuthor().getUsername());
 
         switch (question.getQuestionType()) {

@@ -24,7 +24,7 @@ const TestPage = () => {
                 if (!token) throw new Error("Користувач не авторизований");
 
                 const response = await axios.get(
-                    `${process.env.REACT_APP_BACKEND}/api/tests/${testId}`,
+                    `/api/tests/${testId}`,
                     {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }

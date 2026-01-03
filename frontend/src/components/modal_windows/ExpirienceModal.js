@@ -1,34 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import axios from 'axios';
-import { getAccessToken } from '../../../utils/auth';
+import { getAccessToken } from '../../utils/auth';
 
-const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) => {
-
+const ExperienceModal = ({ isOpen, onClose, fetchExperience, experienceData }) => {
+  const [projectName, setProjectName] = useState('');
+  const [projectUrl, setProjectUrl] = useState('');
   const [description, setDescription] = useState('');
-  const [course_name, setCourseName] = useState('');
-  const [certificateUrl, setCertificateUrl] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      setCourseName('');
-      setCertificateUrl('');
+      setProjectName('');
+      setProjectUrl('');
       setDescription('');
     }
-  }, [isOpen, sertificatesData]);
+  }, [isOpen, experienceData]);
 
   const handleSave = async () => {
     try {
       const token = getAccessToken();
 
-      const body = {
-        course_name,
-        certificateUrl,
-        description,
-      };
+      const body = { projectName, projectUrl, description };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/courses`,
+        `/api/profile/experiences`,
         body,
         {
           headers: {
@@ -38,21 +33,17 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
         }
       );
 
-      console.log('Сертифікат збережено:', response.data);
+      console.log('Проєкт збережено:', response.data);
 
-      if (fetchSertificates) {
-        fetchSertificates(); 
-      }
-
-      onClose(); 
+      if (fetchExperience) fetchExperience();
+      onClose();
     } catch (error) {
-      console.error('Помилка збереження сертифікату:', error.response?.data || error.message);
+      console.error('Помилка збереження проєкту:', error.response?.data || error.message);
     }
   };
 
   // Логіка активації кнопки
-  const isSaveDisabled =
-    !course_name.trim() || !certificateUrl.trim() || !description.trim();
+  const isSaveDisabled = !projectName.trim() || !projectUrl.trim() || !description.trim();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -63,27 +54,27 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
         </svg>
       </button>
 
-      <h3 className="modal-title">Додайте сертифікат</h3>
+      <h3 className="modal-title">Додайте проєкт</h3>
 
       <div className="modal-section">
         <label className="modal-label">Назва</label>
         <input
           type="text"
           className="modal-input"
-          placeholder="Наприклад: React Developer"
-          value={course_name}
-          onChange={(e) => setCourseName(e.target.value)}
+          placeholder="Наприклад: My Portfolio App"
+          value={projectName}
+          onChange={(e) => setProjectName(e.target.value)}
         />
       </div>
 
       <div className="modal-section">
-        <label className="modal-label">Посилання на сертифікат</label>
+        <label className="modal-label">Посилання на проєкт</label>
         <input
           type="text"
           className="modal-input"
           placeholder="https://..."
-          value={certificateUrl}
-          onChange={(e) => setCertificateUrl(e.target.value)}
+          value={projectUrl}
+          onChange={(e) => setProjectUrl(e.target.value)}
         />
       </div>
 
@@ -91,23 +82,23 @@ const CoursesModal = ({ isOpen, onClose, fetchSertificates, sertificatesData }) 
         <label className="modal-label">Опис</label>
         <textarea
           className="modal-textarea"
-          placeholder="Короткий опис сертифікату"
+          placeholder="Короткий опис проєкту"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
 
       <div className="modal-buttons">
-        <button
-          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
-          disabled={isSaveDisabled}
-          onClick={() => !isSaveDisabled && handleSave()}
-        >
-          Зберегти
-        </button>
+      <button
+        className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
+        disabled={isSaveDisabled}
+        onClick={() => !isSaveDisabled && handleSave()}
+      >
+        Зберегти
+      </button>
       </div>
     </Modal>
   );
 };
 
-export default CoursesModal;
+export default ExperienceModal;

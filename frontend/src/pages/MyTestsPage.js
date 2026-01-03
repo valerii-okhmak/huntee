@@ -12,7 +12,6 @@ const MyTestsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Для фільтра
   const [selectedFilter, setSelectedFilter] = useState('Всі тести');
 
   useEffect(() => {
@@ -20,7 +19,7 @@ const MyTestsPage = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND}/api/tests/my`, 
+          `/api/tests/my`, 
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
@@ -35,6 +34,7 @@ const MyTestsPage = () => {
             date: startDate ? startDate.toLocaleDateString("uk-UA") : "-",
             time: startDate ? startDate.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }) : "-",
             candidatesCount: t.candidatesCount ?? 0,
+            status: t.statusTest, // Використовуємо статус із бекенду (Active, Scheduled, Closed)
             link: `/testpage/${t.id}`
           };
         });
@@ -51,18 +51,26 @@ const MyTestsPage = () => {
     fetchMyTests();
   }, []);
 
-  // Підрахунок кількостей
-  const totalCount = tests.length;
-  const activeCount = tests.filter(t => t.type.toLowerCase() === 'active').length;
-  const completedCount = tests.filter(t => t.type.toLowerCase() === 'completed').length;
+  // ОНОВЛЕНО: Підрахунок статистики за статусами
+  const stats = useMemo(() => {
+    return {
+      total: tests.length,
+      active: tests.filter(t => t.status === 'Active').length,
+      scheduled: tests.filter(t => t.status === 'Scheduled').length,
+      closed: tests.filter(t => t.status === 'Closed').length
+    };
+  }, [tests]);
 
-  // Фільтрація за вибраним фільтром
+  // ОНОВЛЕНО: Фільтрація списку
   const filteredTests = useMemo(() => {
     if (selectedFilter === 'Активні тести') {
-      return tests.filter(t => t.type.toLowerCase() === 'active');
+      return tests.filter(t => t.status === 'Active');
+    }
+    if (selectedFilter === 'Заплановані тести') {
+      return tests.filter(t => t.status === 'Scheduled');
     }
     if (selectedFilter === 'Завершені тести') {
-      return tests.filter(t => t.type.toLowerCase() === 'completed');
+      return tests.filter(t => t.status === 'Closed');
     }
     return tests;
   }, [tests, selectedFilter]);
@@ -72,12 +80,11 @@ const MyTestsPage = () => {
       <CustomTitle title='Мої тести!' data={object} />
       <div className='testsMain container'>
 
+        {/* Передаємо об'єкт stats замість окремих count */}
         <OurDataFilter
           selected={selectedFilter}
           onSelect={setSelectedFilter}
-          totalCount={totalCount}
-          activeCount={activeCount}
-          completedCount={completedCount}
+          stats={stats}
         />
 
         {isLoading ? (

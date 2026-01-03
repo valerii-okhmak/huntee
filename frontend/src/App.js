@@ -35,6 +35,7 @@ import ViewingTestsPage from './pages/ViewingTestsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TestDashboardPage from './pages/TestDashboardPage';
 import TestReviewPage from './pages/TestReviewPage';
+import Snowfall from 'react-snowfall';
 
 
 const App = () => {
@@ -51,39 +52,42 @@ const App = () => {
     <ScrollToTop /> 
     <GoogleOAuthProvider clientId="1081513846462-lhcffrki4nfgq2imdr4qdkfg9dgrmhh1.apps.googleusercontent.com">
     <div className="App">
+      <Snowfall color="#82C3D9" />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/reg" element={<RegPage />} />
-        <Route path="/testpage/:testId" element={<TestPage />} />
-        <Route path="/alltests" element={<AllTestsPage />} />
-        <Route path='/starttest' element={<StartTestPage />} />
-        <Route path="/testrules" element={<TestRulesPage />} />
-        <Route path="/test/:testId" element={<FullTest/>} />
-        <Route path="/mytests" element={<MyTestsPage/>} />
         <Route path="/contacts" element={<Contacts/>} />
         <Route path="/startIT" element={<StartIT/>} />
         <Route path="/generalinfo" element={<GeneralInfoPage/>} />
-        <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="/pricingpage" element={<PricingPage />} />
-        <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
-        <Route path="/companymain" element={<CompanyMainPage />} />
-        <Route path="/testcreation" element={<TestCreationPage />} />
-        <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
-        <Route path="/testcreation/start" element={<TestCreationStartPage />} />
-        <Route path="/testcreation/main" element={<TestCreationMainPage />} />
-        <Route path="/viewingtests" element={<ViewingTestsPage />} />
-        <Route path="/testreview/:attemptId" element={<TestReviewPage />} />
         <Route path="/*" element={<NotFoundPage />} />
-        <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
-        <Route path="/messages" element={<MessagePage />} />
-        <Route path="/message/:id" element={<MessageTextPage />} />
+
+        
           
 
         {/* Protected routes*/}
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/messages" element={<MessagePage />} />
+          <Route path="/message/:id" element={<MessageTextPage />} />
+          <Route path="/testpage/:testId" element={<TestPage />} />
+          <Route path="/alltests" element={<AllTestsPage />} />
+          <Route path='/starttest' element={<StartTestPage />} />
+          <Route path="/testrules" element={<TestRulesPage />} />
+          <Route path="/test/:testId" element={<FullTest/>} />
+          <Route path="/mytests" element={<MyTestsPage/>} />
+          <Route path="/testcreation" element={<TestCreationPage />} />
+          <Route path="/templateshuntee" element={<TemplatesHunteePage />} />
+          <Route path="/testcreation/start" element={<TestCreationStartPage />} />
+          <Route path="/testcreation/main" element={<TestCreationMainPage />} />
+          <Route path="/viewingtests" element={<ViewingTestsPage />} />
+          <Route path="/testreview/:attemptId" element={<TestReviewPage />} />
+          <Route path="/test/:id/dashboard" element={<TestDashboardPage />} />
+          <Route path="/test/softskills" element={<FullTest testType="softskills" textData={null} time={0} questionsLink={tryTestQuestions} />} />
+          <Route path="/companymain" element={<CompanyMainPage />} />
+          <Route path="/profile/:user_id" element={<ProfilePage />} />
         </Route>
       </Routes>
       <Footer />

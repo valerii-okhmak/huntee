@@ -9,6 +9,7 @@ import org.dreamteam.dto.CodeRunResponse;
 import org.dreamteam.dto.TestAttemptReviewResponse;
 import org.dreamteam.dto.TestResultResponse;
 import org.dreamteam.dto.TestTakeResponse;
+import org.dreamteam.dto.InviteResponseDto;
 import org.dreamteam.service.TestAttemptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,10 +22,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.dreamteam.service.CodeExecutionService;
 import org.dreamteam.Entity.Question;
 import org.dreamteam.repository.QuestionRepository;
 import org.dreamteam.dto.CodeRunResponse;
+import org.dreamteam.dto.InviteRequestDto;
+import org.dreamteam.service.TestInvitationService;
 
 @RestController
 @RequestMapping("/api")
@@ -35,6 +39,7 @@ public class TestAttemptController {
     private final TestAttemptService testAttemptService;
     private final CodeExecutionService codeExecutionService;
     private final QuestionRepository questionRepository;
+    private final TestInvitationService invitationService;
 
     @Operation(summary = "Запустити код (перевірка)", description = "Компілює код користувача і повертає результат проходження тестів.")
     @SecurityRequirement(name = "bearerAuth")
@@ -62,16 +67,26 @@ public class TestAttemptController {
     @PostMapping("/tests/{testId}/start")
     public ResponseEntity<?> startTest(
             @PathVariable UUID testId,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(required = false) String invitationToken) {
         
         try {
-            TestTakeResponse response = testAttemptService.startTest(testId, userDetails.getUsername());
+            TestTakeResponse response = testAttemptService.startTest(testId, userDetails.getUsername(), invitationToken);
             return ResponseEntity.ok(response);
         } catch (AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("tests/{testId}/invite")
+    public ResponseEntity<InviteResponseDto> inviteCandidate(
+            @PathVariable UUID testId,
+            @RequestBody InviteRequestDto request) {
+        
+        invitationService.sendInvitation(testId, request.getEmail());
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Надіслати відповідь на питання",

@@ -12,6 +12,7 @@ public class QuestionCreateRequest {
     private String questionText;
     private String imageUrl;
     private String comment;
+    private Double weight;
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;
     private List<MatchingPairDTO> matchingPairs;

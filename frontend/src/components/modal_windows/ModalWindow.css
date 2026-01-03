@@ -25,6 +25,14 @@
     margin-top: 7%;
   }
   
+  .modalmini-content {
+    background: white;
+    border-radius: 34px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    margin-top: 7%;
+  }
+
   .modal-section {
     margin-bottom: 1.5rem;
   }
@@ -36,6 +44,29 @@
   margin-bottom: 1.5rem;
   text-align: center;
 }
+
+.modalmini-title {
+  font-size: clamp(18px, 4vw, 30px);
+  font-weight: bold;
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.modal-input.invite-link-display{
+  cursor: pointer;
+  color: #000000;
+}
+
+.invite-message.success{
+  font-family: 'Montserrat', sans-serif;
+  color: green;
+}
+
+.invite-message.error{
+  font-family: 'Montserrat', sans-serif;
+  color: red;
+}
+
 
 .modal-label {
   display: block;
@@ -116,6 +147,13 @@
     gap: 2rem;
     width: 100%;
   }
+
+    .modalmini-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: clamp(10px, 2vw, 20px);
+    width: 100%;
+  }
   
 .modal-button {
   padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 4vw, 2rem);
@@ -127,6 +165,41 @@
   overflow: hidden;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.modalmini-button{
+  font-size: clamp(14px, 2vw, 20px);
+  padding: clamp(10px, 2vw, 15px) clamp(15px, 2vw, 20px);
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+}
+
+.modalmini-button-submit{
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid rgb(0, 0, 0);
+  font-weight: 600;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.modalmini-button-submit:hover{
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+
+.modalmini-button-cancel{
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid rgb(0, 0, 0);
+  font-weight: 600;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.modalmini-button-cancel:hover{
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
 }
 
 .modal-button-submit {
@@ -141,7 +214,6 @@
   cursor: not-allowed;
   pointer-events: none;
 }
-
 
 /* Активна кнопка із ефектом Uiverse */
 .modal-button-submit.active {
@@ -178,6 +250,76 @@
   scale: 1;
 }
 
+/* Додаткові класи для модальних кнопок "Так" і "Ні" */
+.modal-button-submit.green-hover.active:hover::before {
+  background-color: #1DAD00; /* зелений */
+}
+
+.modal-button-submit.red-hover.active:hover::before {
+  background-color: #C32C2C; /* червоний */
+}
+
+.confirm-modal{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 65px 75px;
+  gap:clamp(15px, 3vw, 25px);
+}
+
+.invite-modal{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 65px 75px;
+  gap:clamp(15px, 3vw, 25px);
+}
+
+.invite-modal-list {
+    list-style-type: disc; /* Стандартна заповнена крапка */
+    list-style-position: inside; /* Крапка стає частиною текстового блоку, а не виноситься ліворуч */
+    padding: 0; 
+    text-align: left;
+}
+
+.invite-modal-list li {
+    text-indent: -1.2em; /* Вирівнює другий і наступні рядки під першим словом, а не під крапкою */
+    padding-left: 1.2em; /* Компенсує відступ для крапки */
+    display: list-item; /* Гарантує відображення маркера */
+}
+
+/* Якщо хочете, щоб крапка була кольоровою */
+.invite-modal-list li::marker {
+    color: #000000; /* Ваш колір */
+    font-size: 15px;
+}
+
+.invite-input-container {
+  width: 100%;
+}
+
+.modal-subtitle{
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  font-size: clamp(18px, 3vw, 24px);
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.modalmini-subtitle{
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(14px, 2vw, 20px);
+  color: #333;
+}
+
+.modalmini-minisubtitle{
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(12px, 2vw, 15px);
+  color: #333;
+}
 
   .linkes{
     display: flex;
@@ -368,11 +510,19 @@ transform: rotate(180deg);
 
 .modal-calendar{
     position: relative;
-  background: url('../../../img/calendar1.png') no-repeat calc(50% + 70px) center;
+  background: url('../../img/calendar1.png') no-repeat calc(50% + 70px) center;
   background-size: 20px 20px;
 }
 
+.modalmini-button-submit-danger{
+  background-color: #dc3545;
+  color: white;
+}
 
+.modalmini-button-submit-danger:hover {
+  background-color: #a71d2a;
+  color: white;
+}
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0; /* приховує стандартну іконку */

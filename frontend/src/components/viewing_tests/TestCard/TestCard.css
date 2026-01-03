@@ -99,6 +99,61 @@
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
 }
 
+
+.testcard-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: clamp(10px, 2vw, 20px);
+    width: 100%;
+}
+
+.testcard-button{
+    font-size: clamp(12px, 2vw, 16px);
+    padding: clamp(8px, 2vw, 12px) clamp(10px, 2vw, 15px);
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+}
+
+.testcard-button-submit{
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid rgb(0, 0, 0);
+    font-weight: 600;
+    transition: all 0.1s ease;
+    cursor: pointer;
+}
+  
+.testcard-button-submit:hover{
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+}
+  
+.testcard-button-cancel{
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid rgb(0, 0, 0);
+    font-weight: 600;
+    transition: all 0.1s ease;
+    cursor: pointer;
+}
+  
+.testcard-button-cancel:hover{
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+
+.testcard-button-submit-danger{
+    background-color: #dc3545;
+    color: white;
+}
+  
+.testcard-button-submit-danger:hover {
+    background-color: #a71d2a;
+    color: white;
+}
+
+
+
 @media screen and (max-width: 450px) {
     .testcard {
         padding: 20px;

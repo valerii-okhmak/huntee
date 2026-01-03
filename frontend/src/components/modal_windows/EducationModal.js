@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import axios from 'axios';
-import { getAccessToken } from '../../../utils/auth';
+import { getAccessToken } from '../../utils/auth';
 
 const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
   const [institution, setInstitution] = useState('');
@@ -29,7 +29,7 @@ const EducationModal = ({ isOpen, onClose, fetchEducation, educationData }) => {
       const body = { institution, specialities };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/api/profile/education`,
+        `/api/profile/education`,
         body,
         {
           headers: {

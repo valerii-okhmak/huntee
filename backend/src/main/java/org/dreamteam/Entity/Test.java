@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -50,14 +51,16 @@ public class Test {
     private Boolean isFixedTime; 
 
     @Column(name = "start_time")
-    private LocalDateTime startTime; 
+    private OffsetDateTime startTime; 
 
     @Column(name = "end_time")
-    private LocalDateTime endTime; 
+    private OffsetDateTime endTime; 
 
     @Column(name = "duration_minutes") 
-    private Integer durationMinutes; 
+    private Integer durationMinutes;
     
+    @Column(name = "is_private")
+    private Boolean isPrivate = false;
 
     @OneToMany(mappedBy= "test", cascade= CascadeType.ALL, orphanRemoval= true)
     private Set<TestQuestion> testQuestions = new HashSet<>();
@@ -65,6 +68,19 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserTestAttempt> userTestAttempts = new HashSet<>();
 
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TestRegistration> registrations = new HashSet<>();
+
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TestInvitation> testInvitations = new HashSet<>();
+
+    @Column(name = "is_fixed_question_order")
+    private Boolean isFixedQuestionOrder = true;
+
+    @Column(name = "is_fixed_answer_order")
+    private Boolean isFixedAnswerOrder = true;
+    @Column(name = "is_show_result")
+    private Boolean isShowResult = true;
 
     public Test(String testName, User user) {
         this.testName = testName;

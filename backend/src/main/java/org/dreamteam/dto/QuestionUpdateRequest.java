@@ -9,6 +9,7 @@ import java.util.List;
 public class QuestionUpdateRequest {
     private String questionText;
     private String comment;
+    private Double weight;
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;
     private List<MatchingPairDTO> matchingPairs;

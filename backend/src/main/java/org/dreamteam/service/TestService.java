@@ -17,6 +17,7 @@ import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
 import org.dreamteam.repository.TestQuestionRepository;
 import org.dreamteam.repository.TestRegistrationRepository;
+import org.dreamteam.repository.QuestionRepository;
 import org.dreamteam.repository.TestRepository;
 import org.dreamteam.repository.UserRepository;
 import org.dreamteam.repository.UserTestAttemptRepository;
@@ -24,11 +25,15 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.OffsetDateTime;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.HashSet;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +45,7 @@ public class TestService {
     private final TestRegistrationRepository registrationRepository;
     private final UserTestAttemptRepository attemptRepository;
     private final NotificationService notificationService;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
@@ -72,8 +78,15 @@ public class TestService {
         test.setStartTime(request.getStartTime());
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
+        test.setIsPrivate(request.getIsPrivate());
+        test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
+        test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
+        test.setIsShowResult(request.getIsShowResult());
 
         Test savedTest = testRepository.save(test);
+
+        updateTestQuestions(savedTest, request.getQuestionIds());
+
         return mapToDetailResponse(savedTest);
     }
 
@@ -106,6 +119,14 @@ public class TestService {
         test.setStartTime(request.getStartTime());
         test.setEndTime(request.getEndTime());
         test.setDurationMinutes(request.getDurationMinutes());
+        test.setIsPrivate(request.getIsPrivate());
+        test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
+        test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
+        test.setIsShowResult(request.getIsShowResult());
+
+        test.getTestQuestions().clear();
+        testRepository.flush();
+        updateTestQuestions(test, request.getQuestionIds());
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
@@ -124,6 +145,7 @@ public class TestService {
 
         return tests.stream().map(test -> {
             int candidates = registrationRepository.findByTest_TestId(test.getTestId()).size();
+            String dynamicStatus = calculateTestStatus(test);
 
             return MyTestDTO.builder()
                     .id(test.getTestId())
@@ -132,7 +154,7 @@ public class TestService {
                     .level(test.getLevel())
                     .city(test.getCity())
                     .startTime(test.getStartTime())
-                    .status("Active")
+                    .status(dynamicStatus)
                     .candidatesCount(candidates)
                     .build();
         }).collect(Collectors.toList());
@@ -141,9 +163,11 @@ public class TestService {
     public List<MyTestDTO> getMyCandidateTests(String userEmail) {
         User user = findUserByEmail(userEmail);
         List<TestRegistration> registrations = registrationRepository.findByUser_Id(user.getId());
+        
 
         return registrations.stream().map(reg -> {
             Test test = reg.getTest();
+            String timeStatus = calculateTestStatus(test);
             return MyTestDTO.builder()
                     .id(test.getTestId())
                     .title(test.getTestName())
@@ -152,6 +176,8 @@ public class TestService {
                     .city(test.getCity())
                     .startTime(test.getStartTime())
                     .status("Registered")
+                    .statusTest(timeStatus) 
+
                     .build();
         }).collect(Collectors.toList());
     }
@@ -173,11 +199,18 @@ public class TestService {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
 
+        BigDecimal totalMaxScore = test.getTestQuestions().stream()
+                .map(tq -> {
+                    Double weight = tq.getQuestion().getWeight();
+                    return BigDecimal.valueOf(weight != null ? weight : 1.0);
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
 
         return attempts.stream()
                 .filter(a -> a.getCompletedAt() != null)
-                .map(this::mapAttemptToCandidate)
+                .map(attempt -> mapAttemptToCandidate(attempt, totalMaxScore))
                 .collect(Collectors.toList());
     }
 
@@ -219,8 +252,46 @@ public class TestService {
                 .build();
     }
 
+    private String calculateTestStatus(Test test) {
+        OffsetDateTime now = OffsetDateTime.now();
+
+        if (test.getStartTime() != null && now.isBefore(test.getStartTime())) {
+            return "Scheduled";
+        }
+
+        if (test.getEndTime() != null && now.isAfter(test.getEndTime())) {
+            return "Closed"; 
+        }
+
+        return "Active"; 
+    }
+
+    private void updateTestQuestions(Test test, List<UUID> questionIds) {
+        if (questionIds == null || questionIds.isEmpty()) return;
+
+        List<TestQuestion> newLinks = new ArrayList<>();
+
+        for (int i = 0; i < questionIds.size(); i++) {
+            UUID qId = questionIds.get(i);
+            Question question = questionRepository.findById(qId)
+                    .orElseThrow(() -> new EntityNotFoundException("Question not found: " + qId));
+
+            newLinks.add(new TestQuestion(test, question, i + 1));
+        }
+
+        testQuestionRepository.saveAll(newLinks);
+        if (test.getTestQuestions() == null) {
+            test.setTestQuestions(new HashSet<>());
+        }
+        test.getTestQuestions().addAll(newLinks);
+    }
+
     private TestDetailResponse mapToDetailResponse(Test test) {
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());
+
+        testQuestions.sort(Comparator.comparingInt(tq -> 
+            tq.getOrderIndex() != null ? tq.getOrderIndex() : Integer.MAX_VALUE));
+
         List<TestDetailResponse.QuestionSummary> questionSummaries = testQuestions.stream()
                 .map(tq -> {
                     Question q = tq.getQuestion();
@@ -228,6 +299,8 @@ public class TestService {
                             .questionId(q.getQuestionId())
                             .questionText(q.getQuestionText())
                             .questionType(q.getQuestionType())
+                            .weight(q.getWeight() != null ? q.getWeight() : 1.0)
+                            .orderIndex(tq.getOrderIndex())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -245,7 +318,11 @@ public class TestService {
                 .endTime(test.getEndTime())
                 .durationMinutes(test.getDurationMinutes())
                 .authorUsername(test.getUser().getUsername())
+                .isPrivate(test.getIsPrivate())
                 .questions(questionSummaries)
+                .isFixedQuestionOrder(test.getIsFixedQuestionOrder())
+                .isFixedAnswerOrder(test.getIsFixedAnswerOrder())
+                .isShowResult(test.getIsShowResult())
                 .build();
     }
 
@@ -260,6 +337,8 @@ public class TestService {
                 .endTime(test.getEndTime())
                 .isFixedTime(test.getIsFixedTime())
                 .authorUsername(test.getUser().getUsername())
+                .isPrivate(test.getIsPrivate())
+                .isShowResult(test.getIsShowResult())
                 .build();
     }
 
@@ -276,7 +355,7 @@ public class TestService {
                 .build();
     }
 
-    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt) {
+    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt, BigDecimal totalMaxScore) {
         User u = attempt.getUser();
         return CandidateDTO.builder()
                 .userId(u.getId())
@@ -286,6 +365,7 @@ public class TestService {
                 .status("COMPLETED")
                 .date(attempt.getCompletedAt())
                 .score(attempt.getScore())
+                .totalMaxScore(totalMaxScore)
                 .attemptId(attempt.getAttemptId())
                 .build();
     }

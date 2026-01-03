@@ -4,7 +4,10 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @Builder
@@ -14,7 +17,9 @@ public class MyTestDTO {
     private String sphere;
     private String level;
     private String city;
-    private LocalDateTime startTime;
-    private String status; 
-    private int candidatesCount; 
+    private OffsetDateTime startTime;
+    private String status;
+    private String statusTest; 
+    private int candidatesCount;
+    private Boolean isPrivate;
 }

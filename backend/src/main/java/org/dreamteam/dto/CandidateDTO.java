@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
@@ -14,7 +15,8 @@ public class CandidateDTO {
     private String email;
     private String profileImageUrl;
     private String status; 
-    private BigDecimal score; 
-    private LocalDateTime date;
+    private BigDecimal score;
+    private BigDecimal totalMaxScore; 
+    private OffsetDateTime date;
     private UUID attemptId;
 }

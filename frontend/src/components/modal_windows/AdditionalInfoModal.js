@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 import Modal from './Modal';
 import axios from 'axios';
-import { getAccessToken } from '../../../utils/auth';
+import { getAccessToken } from '../../utils/auth';
 
 const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetchMediaLinks }) => {
   const [text, setText] = useState('');
@@ -26,7 +26,7 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
 
       if (newAboutText) {
         await axios.patch(
-          `${process.env.REACT_APP_BACKEND}/api/profile/about`,
+          `/api/profile/about`,
           { about: newAboutText },
           {
             headers: {
@@ -45,7 +45,7 @@ const AdditionalInfoModal = ({ isOpen, onClose, profileData, fetchProfile, fetch
         const linkPayload = { type: link, url };
 
         await axios.post(
-          `${process.env.REACT_APP_BACKEND}/api/profile/links`,
+          `/api/profile/links`,
           linkPayload, 
           {
             headers: {

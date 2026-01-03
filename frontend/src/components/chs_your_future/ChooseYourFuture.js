@@ -13,7 +13,7 @@ const ChooseYourFuture = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND}/api/tests`,
+          `/api/tests`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

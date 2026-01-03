@@ -8,7 +8,6 @@ import {
   faLaptopCode,
   faImage
 } from '@fortawesome/free-solid-svg-icons';
-import addImage_icon from '../../../img/testCreation/addImage.png'
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
 
 const MIN_BASE_OPTIONS = 2;
@@ -16,8 +15,10 @@ const MIN_BASE_OPTIONS = 2;
 const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   const [selectedType, setSelectedType] = useState("regular");
   const [questionText, setQuestionText] = useState("");
-  const [addToBank, setAddToBank] = useState(false);
   const [comment, setComment] = useState("");
+  // Стан для балів (зберігаємо як рядок для зручності введення крапки)
+  const [points, setPoints] = useState("1"); 
+  const [errors, setErrors] = useState({});
 
   const [options, setOptions] = useState(["", ""]);
   const [regularCorrect, setRegularCorrect] = useState(null);
@@ -31,9 +32,40 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   const [codeTemplate, setCodeTemplate] = useState("");
   const [codeTestCasesJSON, setCodeTestCasesJSON] = useState('[{"args": [1, 2], "expected": 3}]');
 
+  // Очищення помилок
+  const clearError = (field) => {
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  // --- Логіка для поля балів ---
+  const handlePointsChange = (e) => {
+    const val = e.target.value;
+    // Дозволяємо порожній рядок (для видалення), цифри та одну крапку
+    if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
+      setPoints(val);
+      clearError('points');
+    }
+  };
+
+  const blockInvalidChar = (e) => {
+    // Блокуємо e, E (експонента), + та -
+    if (['e', 'E', '+', '-'].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+  // -----------------------------
+
   const addOption = () => {
     setOptions(prev => [...prev, ""]);
     setMultipleCorrect(prev => [...prev, false]);
+    clearError('optionsCount');
+    clearError('emptyOptions');
   };
 
   const removeOption = (idx) => {
@@ -46,19 +78,31 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
 
   const updateOption = (idx, value) => {
     setOptions(prev => prev.map((opt, i) => (i === idx ? value : opt)));
+    clearError('emptyOptions');
   };
 
-  const pickRegularCorrect = (idx) => setRegularCorrect(idx);
+  const pickRegularCorrect = (idx) => {
+    setRegularCorrect(idx);
+    clearError('correctSelection');
+  };
 
   const toggleMultipleCorrect = (idx) => {
     setMultipleCorrect(prev => prev.map((val, i) => (i === idx ? !val : val)));
+    clearError('correctSelection');
   };
 
   useImperativeHandle(ref, () => ({
     getCurrentQuestionAndReset() {
+      const newErrors = {};
+
       if (!questionText.trim()) {
-        alert("Введіть текст запитання");
-        return null;
+        newErrors.questionText = true;
+      }
+
+      // Валідація балів
+      const floatPoints = parseFloat(points);
+      if (!points || isNaN(floatPoints) || floatPoints < 0) {
+        newErrors.points = true;
       }
 
       let backendType;
@@ -71,44 +115,42 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
       let payload = { 
           questionText: questionText.trim(),
           comment: comment.trim(),
-          questionType: backendType 
+          questionType: backendType,
+          points: floatPoints // Відправляємо як число
       };
 
       if (selectedType === "regular" || selectedType === "multiple") {
         if (options.length < MIN_BASE_OPTIONS) {
-          alert(`Має бути щонайменше ${MIN_BASE_OPTIONS} варіанти`);
-          return null;
+          newErrors.optionsCount = `Має бути щонайменше ${MIN_BASE_OPTIONS} варіанти`;
         }
         if (options.some(o => !o.trim())) {
-          alert("Усі варіанти відповіді мають бути заповнені");
-          return null;
+          newErrors.emptyOptions = true;
         }
 
         if (selectedType === "regular") {
           if (regularCorrect === null) {
-            alert("Позначте правильну відповідь");
-            return null;
+            newErrors.correctSelection = "Позначте правильну відповідь";
           }
           payload.choiceOptions = options.map((text, index) => ({
               optionText: text.trim(),
-              isCorrect: index === regularCorrect
+              isCorrect: index === regularCorrect,
+              orderIndex: index
           }));
         } else {
           if (!multipleCorrect.some(v => v)) {
-            alert("Позначте щонайменше одну правильну відповідь");
-            return null;
+            newErrors.correctSelection = "Позначте щонайменше одну правильну відповідь";
           }
           payload.choiceOptions = options.map((text, index) => ({
               optionText: text.trim(),
-              isCorrect: multipleCorrect[index]
+              isCorrect: multipleCorrect[index],
+              orderIndex: index
           }));
         }
       }
 
       if (selectedType === "open") {
         if (openExpectedEnabled && !openExpectedText.trim()) {
-          alert("Введіть очікувану відповідь");
-          return null;
+          newErrors.openExpectedText = true;
         }
         payload.textAnswer = {
             correctText: openExpectedText.trim(),
@@ -117,15 +159,12 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
       }
 
       if (selectedType === "practical") {
-         if (!codeMethodName.trim() || !codeTemplate.trim()) {
-             alert("Заповніть назву методу та шаблон коду");
-             return null;
-         }
+         if (!codeMethodName.trim()) newErrors.codeMethodName = true;
+         if (!codeTemplate.trim()) newErrors.codeTemplate = true;
          try {
              JSON.parse(codeTestCasesJSON);
          } catch (e) {
-             alert("Невірний формат JSON для тест-кейсів");
-             return null;
+             newErrors.codeTestCasesJSON = "Невірний формат JSON";
          }
          payload.codeAnswer = {
              language: codeLanguage,
@@ -135,12 +174,20 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
          };
       }
 
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return null;
+      }
+
+      // Скидання станів
       setQuestionText("");
       setComment("");
+      setPoints("1"); 
       setOptions(["", ""]);
       setRegularCorrect(null);
       setMultipleCorrect([false, false]);
       setOpenExpectedText("");
+      setErrors({});
       
       setCodeLanguage("java");
       setCodeMethodName("");
@@ -148,8 +195,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
       setCodeTestCasesJSON('[{"args": [1, 2], "expected": 3}]');
 
       onQuestionsChange?.(prev => (typeof prev === 'number' ? prev + 1 : prev));
-      
-      console.log("Generated Payload:", payload); 
       return payload;
     }
   }));
@@ -162,7 +207,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         <div className='testCreationMainCreator__typeSelector'>
           <button
             className={`testCreationMainCreator__selectedType ${selectedType === "regular" ? "active" : ""}`}
-            onClick={() => setSelectedType("regular")}
+            onClick={() => { setSelectedType("regular"); setErrors({}); }}
           >
             <FontAwesomeIcon icon={faCheckCircle} className="testCreationMainCreator_icon" />
             З однією відповіддю
@@ -170,7 +215,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
 
           <button
             className={`testCreationMainCreator__selectedType ${selectedType === "multiple" ? "active" : ""}`}
-            onClick={() => setSelectedType("multiple")}
+            onClick={() => { setSelectedType("multiple"); setErrors({}); }}
           >
             <FontAwesomeIcon icon={faListCheck} className="testCreationMainCreator_icon" />
             Множинний вибір
@@ -178,7 +223,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
 
           <button
             className={`testCreationMainCreator__selectedType ${selectedType === "open" ? "active" : ""}`}
-            onClick={() => setSelectedType("open")}
+            onClick={() => { setSelectedType("open"); setErrors({}); }}
           >
             <FontAwesomeIcon icon={faKeyboard} className="testCreationMainCreator_icon" />
             Відкрита відповідь
@@ -186,7 +231,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
 
           <button
             className={`testCreationMainCreator__selectedType ${selectedType === "practical" ? "active" : ""}`}
-            onClick={() => setSelectedType("practical")}
+            onClick={() => { setSelectedType("practical"); setErrors({}); }}
           >
             <FontAwesomeIcon icon={faLaptopCode} className="testCreationMainCreator_icon" />
             Практичний тест
@@ -196,23 +241,37 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         <div className="testCreationMainCreator__questionField">
           <div className="testCreationMainCreator__questionField-header">
             <h2 className="testCreationMainCreator__questionField-title">Запитання</h2>
-            <label className="testCreationMainCreator__addToJar">
-              <input type="checkbox" checked={addToBank} onChange={(e) => setAddToBank(e.target.checked)} />
-              <span className="testCreationMainCreator__addToJar_radio-circle"></span>
-              <span>Додати запитання до банки запитань</span>
-            </label>
           </div>
-          <div className="testCreationMainCreator__questionField-wrapper">
+          <div className={`testCreationMainCreator__questionField-wrapper`}>
             <input
               type="text"
-              placeholder="Введіть запитання"
+              placeholder={errors.questionText ? "Введіть текст запитання!" : "Введіть запитання"}
               value={questionText}
-              onChange={(e) => setQuestionText(e.target.value)}
-              className="testCreationMainCreator__questionField-input"
+              onChange={(e) => {
+                setQuestionText(e.target.value);
+                clearError('questionText');
+              }}
+              className={`testCreationMainCreator__questionField-input ${errors.questionText ? 'input-error-placeholder' : ''}`}
             />
             <button className="testCreationMainCreator__questionField-btn" title="Додати зображення">
               <FontAwesomeIcon icon={faImage} />
             </button>
+          </div>
+
+          <div className="testCreationMainCreator__questionField-header">
+            <h2 className="testCreationMainCreator__questionField-title">Кількість балів за правильну відповідь:</h2>
+          </div>
+          <div className={`testCreationMainCreator__questionField-wrapper`}>
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              placeholder={errors.points ? "Введіть вагу!" : "Введіть вагу запитання"}
+              value={points}
+              onKeyDown={blockInvalidChar}
+              onChange={handlePointsChange}
+              className={`testCreationMainCreator__questionField-input ${errors.points ? 'input-error-placeholder' : ''}`}
+            />
           </div>
         </div>
 
@@ -220,33 +279,35 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           selectedType={selectedType}
           comment={comment}
           setComment={setComment}
-
+          errors={errors}
           options={options}
           updateOption={updateOption}
           addOption={addOption}
           removeOption={removeOption}
           minBase={MIN_BASE_OPTIONS}
-
           regularCorrect={regularCorrect}
           pickRegularCorrect={pickRegularCorrect}
-
           multipleCorrect={multipleCorrect}
           toggleMultipleCorrect={toggleMultipleCorrect}
-
           openExpectedEnabled={openExpectedEnabled}
           setOpenExpectedEnabled={setOpenExpectedEnabled}
           openExpectedText={openExpectedText}
-          setOpenExpectedText={setOpenExpectedText}
-
+          setOpenExpectedText={(val) => { setOpenExpectedText(val); clearError('openExpectedText'); }}
           codeLanguage={codeLanguage}
           setCodeLanguage={setCodeLanguage}
           codeMethodName={codeMethodName}
-          setCodeMethodName={setCodeMethodName}
+          setCodeMethodName={(val) => { setCodeMethodName(val); clearError('codeMethodName'); }}
           codeTemplate={codeTemplate}
-          setCodeTemplate={setCodeTemplate}
+          setCodeTemplate={(val) => { setCodeTemplate(val); clearError('codeTemplate'); }}
           codeTestCasesJSON={codeTestCasesJSON}
-          setCodeTestCasesJSON={setCodeTestCasesJSON}
+          setCodeTestCasesJSON={(val) => { setCodeTestCasesJSON(val); clearError('codeTestCasesJSON'); }}
         />
+
+        {(errors.optionsCount || errors.correctSelection || errors.codeTestCasesJSON || errors.points) && (
+          <div className="test-creator__error-message">
+            {errors.optionsCount || errors.correctSelection || (errors.points && "Введіть коректну кількість балів (напр. 1 або 1.5)")}
+          </div>
+        )}
       </div>
     </div>
   )
