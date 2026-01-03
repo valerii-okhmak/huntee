@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom'; // Додан�
 import { getAccessToken, getRefreshToken, saveAccessToken } from '../utils/auth';
 import { jwtDecode } from 'jwt-decode'; 
 import { refreshToken as requestNewAccessToken } from '../services/authService';
+import Loader from './loader/Loader';
 
 const isTokenValid = (token) => {
   if (!token) return false;
@@ -18,7 +19,7 @@ const isTokenValid = (token) => {
 const ProtectedRoute = () => {
   const [authChecked, setAuthChecked] = useState(false);
   const [authorized, setAuthorized] = useState(false);
-  const location = useLocation(); // 1. Отримуємо поточну локацію (наприклад, /messages)
+  const location = useLocation(); 
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -55,11 +56,9 @@ const ProtectedRoute = () => {
   }, []);
 
   if (!authChecked) {
-    return <div>Завантаження...</div>; 
+    return <Loader />; 
   }
 
-  // 2. ДОДАНО state={{ from: location }}
-  // Це "записує" адресу /messages, щоб логін міг її прочитати
   return authorized ? <Outlet /> : <Navigate to="/login" state={{ from: location }} replace />;
 };
 

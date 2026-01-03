@@ -5,6 +5,7 @@ import { getAccessToken } from '../utils/auth';
 import GeneralTestInfoHeader from '../components/GeneralTestInfoHeader/GeneralTestInfoHeader';
 import TestReviewGrading from '../components/TestReviewGrading/TestReviewGrading';
 import TestReviewQuestions from '../components/TestReviewQuestions/TestReviewQuestions';
+import Loader from '../components/loader/Loader';
 
 const TestReviewPage = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const TestReviewPage = () => {
     }
   }, [loading, resultData, navigate]);
 
-  if (loading) return <div className="page"><div className="container">Завантаження...</div></div>;
+  if (loading) return <div className="page"><Loader /></div>;
   
   // Якщо даних немає, але ми ще не встигли перенаправити (чекаємо useEffect),
   // повертаємо null, щоб не рендерити решту коду з помилками.

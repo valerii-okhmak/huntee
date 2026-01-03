@@ -4,6 +4,7 @@ import { getAccessToken } from '../utils/auth';
 import MessageTitle from '../components/message/messageTitle/MessageTitle';
 import MessageType from '../components/message/messageType/MessageType';
 import MessageList from '../components/message/messageList/MessageList';
+import Loader from '../components/loader/Loader';
 
 const MessagesPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -83,7 +84,7 @@ const MessagesPage = () => {
           />
 
           {loading ? (
-            <div>Завантаження...</div>
+            <Loader />
           ) : (
             <MessageList 
               messages={filteredNotifications} 

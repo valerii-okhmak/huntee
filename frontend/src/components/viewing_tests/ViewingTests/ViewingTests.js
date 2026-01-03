@@ -7,6 +7,7 @@ import AddTestsButton from '../AddTestsButton/AddTestsButton';
 import TestsList from '../TestsList/TestsList';
 import FieldsFilter from '../Filters/FieldsFilter/FieldsFilter';
 import OurDataFilter from '../Filters/OurDataFilter/OurDataFilter';
+import Loader from '../../loader/Loader';
 
 const ViewingTests = () => {
   const [tests, setTests] = useState([]);
@@ -114,7 +115,7 @@ const ViewingTests = () => {
         </div>
         <div className="viewing-tests-tests-list-section">
           {isLoading ? (
-            <div>Завантаження...</div>
+            <Loader />
           ) : (
             <TestsList tests={filteredTests} onDeleteTest={handleDeleteTest}/>
           )}

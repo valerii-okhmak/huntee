@@ -7,6 +7,7 @@ import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import InviteParticipantsModal from '../../../modal_windows/InviteParticipantsModal';
 import axios from 'axios';
 import { getAccessToken } from '../../../../utils/auth';
+import Loader from '../../../loader/Loader';
 
 const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
   const [students, setStudents] = useState([]);
@@ -45,7 +46,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
     ? 'Тут ви можете переглянути зареєстрованих студентів. Ви можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо.'
     : 'Тут ви можете переглянути результати тестування студентів. Ви можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо, щоб повідомити про результат чи надати зворотний зв’язок.';
 
-  if (loading) return <div className='container'>Завантаження студентів...</div>;
+  if (loading) return <Loader />;
   if (error) return <div className='container'>{error}</div>;
 
   return (
