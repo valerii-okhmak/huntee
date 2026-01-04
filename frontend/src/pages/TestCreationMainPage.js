@@ -178,11 +178,11 @@ const TestCreationMainPage = () => {
   
       } else {
         const res = await axios.post(`/api/tests`, testPayload, { headers });
-        testId = res.data?.testId;
+        currentTestId = res.data?.testId;
 
         for (let i = 0; i < questions.length; i++) {
           await axios.post(
-            `/api/tests/${testId}/questions`,
+            `/api/tests/${currentTestId}/questions`,
             {
               ...questions[i],
               orderIndex: i,
