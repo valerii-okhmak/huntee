@@ -4,7 +4,6 @@ import { getAccessToken } from '../utils/auth';
 import OurDataFilter from '../components/my_tests/OurDataFilter/OurDataFilter';
 import TestsBlock from '../components/my_tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';
-import Loader from '../components/loader/Loader';
 
 const MyTestsPage = () => {
   const object = { logo: null, line: true };
@@ -20,11 +19,12 @@ const MyTestsPage = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `/api/tests/my`, 
+          `${process.env.REACT_APP_BACKEND}/api/tests/my`, 
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
         const mappedTests = response.data.map(t => {
+          // Створюємо об'єкт дати з рядка, який прийшов з бекенду
           const startDate = t.startTime ? new Date(t.startTime) : null;
 
           return {
@@ -34,8 +34,10 @@ const MyTestsPage = () => {
             location: t.city || "-",
             date: startDate ? startDate.toLocaleDateString("uk-UA") : "-",
             time: startDate ? startDate.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }) : "-",
+            // ПЕРЕДАЄМО ОБ'ЄКТ ДАТИ ДЛЯ ТАЙМЕРА
+            startDateObj: startDate, 
             candidatesCount: t.candidatesCount ?? 0,
-            status: t.statusTest, // Використовуємо статус із бекенду (Active, Scheduled, Closed)
+            status: t.statusTest, 
             link: `/testpage/${t.id}`
           };
         });
@@ -52,7 +54,6 @@ const MyTestsPage = () => {
     fetchMyTests();
   }, []);
 
-  // ОНОВЛЕНО: Підрахунок статистики за статусами
   const stats = useMemo(() => {
     return {
       total: tests.length,
@@ -62,17 +63,10 @@ const MyTestsPage = () => {
     };
   }, [tests]);
 
-  // ОНОВЛЕНО: Фільтрація списку
   const filteredTests = useMemo(() => {
-    if (selectedFilter === 'Активні тести') {
-      return tests.filter(t => t.status === 'Active');
-    }
-    if (selectedFilter === 'Заплановані тести') {
-      return tests.filter(t => t.status === 'Scheduled');
-    }
-    if (selectedFilter === 'Завершені тести') {
-      return tests.filter(t => t.status === 'Closed');
-    }
+    if (selectedFilter === 'Активні тести') return tests.filter(t => t.status === 'Active');
+    if (selectedFilter === 'Заплановані тести') return tests.filter(t => t.status === 'Scheduled');
+    if (selectedFilter === 'Завершені тести') return tests.filter(t => t.status === 'Closed');
     return tests;
   }, [tests, selectedFilter]);
 
@@ -80,16 +74,13 @@ const MyTestsPage = () => {
     <div className="page">
       <CustomTitle title='Мої тести!' data={object} />
       <div className='testsMain container'>
-
-        {/* Передаємо об'єкт stats замість окремих count */}
         <OurDataFilter
           selected={selectedFilter}
           onSelect={setSelectedFilter}
           stats={stats}
         />
-
         {isLoading ? (
-          <Loader />
+          <div>Завантаження...</div>
         ) : error ? (
           <div>Помилка: {error}</div>
         ) : (

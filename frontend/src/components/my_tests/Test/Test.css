@@ -69,8 +69,11 @@
     margin-left: 15px;
 }
 
-.testDashboard__analytics-btn-green{
-    
+.timer-time {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(16px, 2vw, 18px);
+    color: #ff0000;
 }
 
 @media screen and (max-width: 450px) {
