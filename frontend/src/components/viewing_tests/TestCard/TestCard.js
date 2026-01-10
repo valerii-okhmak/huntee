@@ -6,6 +6,9 @@ import { getAccessToken } from '../../../utils/auth';
 import ConfirmDeleteTestModal from '../../modal_windows/ConfirmDeleteTestModal';
 import ErrorModal from '../../modal_windows/ErrorModal';
 
+// 1. ІМПОРТУЄМО З "FREE-REGULAR" (Контурні іконки)
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, onDeleteSuccess }) => {
   const navigate = useNavigate();
@@ -83,19 +86,24 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
           </div>
 
           <div className='testcard-title'>{title}</div>
+          
           <div className="testcard-buttons">
             <button
-              className="testcard-button testcard-button-cancel"
+              className="testcard-action-btn btn-edit"
               onClick={handleEdit}
             >
-              Редагувати
+              {/* Використовуємо контурний олівець */}
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <span>Редагувати</span>
             </button>
 
             <button
-              className="testcard-button testcard-button-submit testcard-button-submit-danger"
+              className="testcard-action-btn btn-delete"
               onClick={openDeleteModal}
             >
-              Видалити
+              {/* Використовуємо контурний смітник */}
+              <FontAwesomeIcon icon={faTrashCan} />
+              <span>Видалити</span>
             </button>
           </div>
 

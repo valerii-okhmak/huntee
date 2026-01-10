@@ -3,6 +3,7 @@ import Select from 'react-select';
 import './TestCreation_SelectField.css'
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
+import 'moment/locale/uk';
 
 const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fieldName, fieldOptions, error}) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -134,9 +135,11 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
             inputProps={{
               placeholder: 'Оберіть дату та час',
               onFocus: () => setMenuDateOpen(true),
+              className: `select-field-tc__custom-input ${error ? 'error' : ''}` 
             }}
             dateFormat="DD.MM.YYYY"
             timeFormat="HH:mm"
+            locale="uk"
             open={true}
           />
         }

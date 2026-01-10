@@ -36,8 +36,8 @@ const TestCreationStartContainer = ({ mode, testId }) => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [description, setDescription] = useState('');
   const [responsibilities, setResponsibilities] = useState('');
-  const [startingDate, setStartingDate] = useState(null);
-  const [finishingDate, setFinishingDate] = useState(null);
+const [startingDate, setStartingDate] = useState(new Date());
+  const [finishingDate, setFinishingDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(0);
 
   const [selectedTestType, setSelectedTestType] = useState({ value: 'public', label: 'Публічний' });
@@ -52,6 +52,8 @@ const TestCreationStartContainer = ({ mode, testId }) => {
     field: useRef(null),
     level: useRef(null),
     city: useRef(null),
+    startingDate: useRef(null),
+    finishingDate: useRef(null),
   };
 
   useEffect(() => {
@@ -102,6 +104,25 @@ const TestCreationStartContainer = ({ mode, testId }) => {
     if (!selectedField) newErrors.field = 'Оберіть сферу';
     if (!selectedLevel) newErrors.level = 'Оберіть рівень';
     if (!selectedCity) newErrors.city = 'Оберіть місто';
+
+const isValidDate = (d) => {
+      if (!d) return false;
+
+      if (typeof d === 'string') return false; 
+
+      if (typeof d.isValid === 'function') return d.isValid();
+
+      return d instanceof Date && !isNaN(d.getTime());
+    };
+    if (!isValidDate(startingDate)) {
+        newErrors.startingDate = 'Введіть коректну дату (ДД.ММ.РРРР)';
+    }
+    if (!isValidDate(finishingDate)) {
+        newErrors.finishingDate = 'Введіть коректну дату (ДД.ММ.РРРР)';
+    } 
+    else if (isValidDate(startingDate) && new Date(finishingDate) <= new Date(startingDate)) {
+        newErrors.finishingDate = 'Дата завершення має бути пізніше початку';
+    }
 
     setErrors(newErrors);
 
@@ -174,20 +195,27 @@ const TestCreationStartContainer = ({ mode, testId }) => {
           fieldName="Напишіть обов’язки"
           fieldOptions={{}}
       />
-      <SelectField
-          type="date"
-          selectedOption={startingDate}
-          setSelectedOption={setStartingDate}
-          fieldName="Дата початку тестування"
-          fieldOptions={{}}
-      />
-      <SelectField
-          type="date"
-          selectedOption={finishingDate}
-          setSelectedOption={setFinishingDate}
-          fieldName="Дата кінця тестування"
-          fieldOptions={{}}
-      />
+      <div ref={refs.startingDate}>
+        <SelectField
+            type="date"
+            selectedOption={startingDate}
+            setSelectedOption={setStartingDate}
+            fieldName="Дата початку тестування"
+            error={!!errors.startingDate}
+        />
+        {errors.startingDate && <p style={{color: 'red', fontSize: '12px'}}>{errors.startingDate}</p>}
+      </div>
+
+      <div ref={refs.finishingDate}>
+        <SelectField
+            type="date"
+            selectedOption={finishingDate}
+            setSelectedOption={setFinishingDate}
+            fieldName="Дата кінця тестування"
+            error={!!errors.finishingDate} 
+        />
+        {errors.finishingDate && <p style={{color: 'red', fontSize: '12px'}}>{errors.finishingDate}</p>}
+      </div>
       <SelectField
           type="time"
           selectedOption={selectedTime}
