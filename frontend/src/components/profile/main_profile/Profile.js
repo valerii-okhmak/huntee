@@ -36,6 +36,8 @@ const Profile = () => {
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(null);
   const [mediaLinksData, setMediaLinksData] = useState(null);
   const [activeTab, setActiveTab] = useState("cabinet");
+  const [myTestsStats, setMyTestsStats] = useState({ total: 0, successful: 0 });
+  const [createdTestsStats, setCreatedTestsStats] = useState({ total: 0, active: 0 });
 
 
   const handleLogout = () => {
@@ -126,12 +128,52 @@ const Profile = () => {
       }
     };
 
+    // Отримання статистики для "Мій кабінет"
+const fetchMyTestsStats = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get(`/api/tests/my`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        const tests = response.data;
+        
+        const total = tests.length;
+
+        const successful = tests.filter(t => t.statusTest?.toLowerCase() === 'closed').length;
+
+        setMyTestsStats({ total, successful });
+      } catch (error) {
+        console.error('Помилка при завантаженні моїх тестів:', error);
+      }
+    };
+
+    // Отримання статистики для "Адміністративна панель"
+const fetchCreatedTestsStats = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.get(`/api/tests/created`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        const tests = response.data;
+
+        const total = tests.length;
+
+        const active = tests.filter(t => t.status?.toLowerCase() === 'active').length;
+
+        setCreatedTestsStats({ total, active });
+      } catch (error) {
+        console.error('Помилка при завантаженні створених тестів:', error);
+      }
+    };
+
   useEffect(() => {
     fetchProfile();
     fetchEducation();
     fetchSertificates();
     fetchExperience();
     fetchMediaLinks();
+    fetchMyTestsStats();
+    fetchCreatedTestsStats();
   }, []);
 
   const [isAdditionalInfoModalOpen, setIsAdditionalInfoModalOpen] = useState(false);
@@ -412,12 +454,12 @@ return (
                     <div className='achievements-block'>
                       <div className='achievement-info'>
                         <p className="achivement-label">Кількість пройдених тестів:</p>
-                        <span className="achivement-value">8</span>
+                        <span className="achivement-value">{myTestsStats.total}</span>
                       </div>
 
                       <div className='achievement-info'>
                         <p className="achivement-label">Успішні:</p>
-                        <span className="achivement-value">7</span>
+                        <span className="achivement-value">{myTestsStats.successful}</span>
                       </div>
                     </div>
                   </div>
@@ -644,11 +686,11 @@ return (
                 <div className="admin-panel-tests-info-container">
                   <div className='admin-panel-tests-info'>
                     <p className="admin-panel-tests-label">Кількість створених тестів:</p>
-                    <span className="admin-panel-tests-value">20</span>
+                    <span className="admin-panel-tests-value">{createdTestsStats.total}</span>
                   </div>
                   <div className='admin-panel-tests-info'>
                     <p className="admin-panel-tests-label">Активні тести:</p>
-                    <span className="admin-panel-tests-value">4</span>
+                    <span className="admin-panel-tests-value">{createdTestsStats.active}</span>
                   </div>
                 </div>
               </div>
