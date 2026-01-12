@@ -16,7 +16,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   const [selectedType, setSelectedType] = useState("regular");
   const [questionText, setQuestionText] = useState("");
   const [comment, setComment] = useState("");
-  // Стан для балів (зберігаємо як рядок для зручності введення крапки)
   const [points, setPoints] = useState("1"); 
   const [errors, setErrors] = useState({});
 
@@ -32,7 +31,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   const [codeTemplate, setCodeTemplate] = useState("");
   const [codeTestCasesJSON, setCodeTestCasesJSON] = useState('[{"args": [1, 2], "expected": 3}]');
 
-  // Очищення помилок
   const clearError = (field) => {
     if (errors[field]) {
       setErrors(prev => {
@@ -43,10 +41,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
     }
   };
 
-  // --- Логіка для поля балів ---
   const handlePointsChange = (e) => {
     const val = e.target.value;
-    // Дозволяємо порожній рядок (для видалення), цифри та одну крапку
     if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
       setPoints(val);
       clearError('points');
@@ -54,12 +50,10 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   };
 
   const blockInvalidChar = (e) => {
-    // Блокуємо e, E (експонента), + та -
     if (['e', 'E', '+', '-'].includes(e.key)) {
       e.preventDefault();
     }
   };
-  // -----------------------------
 
   const addOption = () => {
     setOptions(prev => [...prev, ""]);
@@ -99,7 +93,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         newErrors.questionText = true;
       }
 
-      // Валідація балів
       const floatPoints = parseFloat(points);
       if (!points || isNaN(floatPoints) || floatPoints < 0) {
         newErrors.points = true;
@@ -116,7 +109,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           questionText: questionText.trim(),
           comment: comment.trim(),
           questionType: backendType,
-          points: floatPoints // Відправляємо як число
+          points: floatPoints
       };
 
       if (selectedType === "regular" || selectedType === "multiple") {
@@ -179,7 +172,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         return null;
       }
 
-      // Скидання станів
       setQuestionText("");
       setComment("");
       setPoints("1"); 
@@ -242,7 +234,9 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           <div className="testCreationMainCreator__questionField-header">
             <h2 className="testCreationMainCreator__questionField-title">Запитання</h2>
           </div>
-          <div className={`testCreationMainCreator__questionField-wrapper`}>
+          
+          {/* ОБГОРТКА ДЛЯ ЗАПИТАННЯ: виглядає як інпут, містить інпут і кнопку */}
+          <div className={`testCreationMainCreator__questionField-wrapper ${errors.questionText ? 'input-error-placeholder' : ''}`}>
             <input
               type="text"
               placeholder={errors.questionText ? "Введіть текст запитання!" : "Введіть запитання"}
@@ -251,7 +245,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
                 setQuestionText(e.target.value);
                 clearError('questionText');
               }}
-              className={`testCreationMainCreator__questionField-input ${errors.questionText ? 'input-error-placeholder' : ''}`}
+              className="testCreationMainCreator__questionField-input"
             />
             <button className="testCreationMainCreator__questionField-btn" title="Додати зображення">
               <FontAwesomeIcon icon={faImage} />
@@ -261,7 +255,9 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           <div className="testCreationMainCreator__questionField-header">
             <h2 className="testCreationMainCreator__questionField-title">Кількість балів за правильну відповідь:</h2>
           </div>
-          <div className={`testCreationMainCreator__questionField-wrapper`}>
+          
+          {/* ОБГОРТКА ДЛЯ БАЛІВ: для однакового стилю */}
+          <div className={`testCreationMainCreator__questionField-wrapper ${errors.points ? 'input-error-placeholder' : ''}`}>
             <input
               type="number"
               step="0.1"
@@ -270,7 +266,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
               value={points}
               onKeyDown={blockInvalidChar}
               onChange={handlePointsChange}
-              className={`testCreationMainCreator__questionField-input ${errors.points ? 'input-error-placeholder' : ''}`}
+              className="testCreationMainCreator__questionField-input"
             />
           </div>
         </div>

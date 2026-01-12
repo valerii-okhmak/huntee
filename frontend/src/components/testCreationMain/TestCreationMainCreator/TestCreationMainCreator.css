@@ -38,8 +38,6 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
-
-
 .testCreationMainCreator__questionField {
     background-color: #ffffff;
     padding: 20px 30px 40px;
@@ -98,51 +96,67 @@
     background-color: #3599C3;
 }
 
+/* === ОНОВЛЕНІ СТИЛІ ДЛЯ ІНПУТА З КНОПКОЮ === */
 
+/* Обгортка, яка тепер виглядає як поле вводу */
 .testCreationMainCreator__questionField-wrapper {
+    width: 75%;
+    background-color: #F1F1F1;
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: space-between;
+    padding-right: 15px; /* Відступ для кнопки */
+    border: 1px solid transparent;
+    transition: 0.2s;
 }
 
+/* Сам інпут тепер прозорий і без рамок */
 .testCreationMainCreator__questionField-input {
-    flex: 0 1 75%;
+    flex: 1;
     padding: 15px;
     border: none;
-    background-color: #F1F1F1;
+    background-color: transparent;
     font-size: 18px;
     outline: none;
-    transition: 0.2s;
     color: #000000;
     font-weight: 700;
+    min-width: 0;
 }
+
 .testCreationMainCreator__questionField-input::placeholder {
     color: #737373;
 }
 
+/* Кнопка всередині */
 .testCreationMainCreator__questionField-btn {
     background: none;
     border: none;
     cursor: pointer;
     color: #ADADAD;
-    font-size: clamp(24px, 4vw, 35px);
+    font-size: 24px;
     transition: 0.2s;
+    display: flex;
+    align-items: center;
+    padding: 0;
 }
 
 .testCreationMainCreator__questionField-btn:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
     color: #000000;
 }
 
+/* === СТИЛІ ПОМИЛОК === */
+
 /* Червоний плейсхолдер */
-.input-error-placeholder::placeholder {
+.input-error-placeholder .testCreationMainCreator__questionField-input::placeholder {
     color: #e53935 !important;
     opacity: 1;
 }
 
-/* Червона рамка для контейнера інпуту, якщо потрібно */
+/* Червона рамка тепер на обгортці */
 .input-error-placeholder {
     border: 1px solid #e53935 !important;
+    background-color: #ffe6e6 !important;
 }
 
 /* Текстова помилка під полями */
@@ -154,3 +168,9 @@
     font-weight: 700;
 }
 
+/* Адаптивність */
+@media screen and (max-width: 768px) {
+    .testCreationMainCreator__questionField-wrapper {
+        width: 100%;
+    }
+}

@@ -36,38 +36,43 @@ const TestCreationMainAnswers = ({
   codeTestCasesJSON, setCodeTestCasesJSON,
 }) => {
 
-  const renderChoiceRow = (i, control) => {
+ const renderChoiceRow = (i, control) => {
     // Перевірка чи саме цей варіант порожній при помилці
     const isOptionEmptyError = errors.emptyOptions && !options[i].trim();
 
     return (
       <div key={i} className="testCreationMainCreatorAnswers__option">
-        <label className='testCreationMainCreatorAnswers__75p'>
-          {control}
+        
+        {/* ВИПРАВЛЕННЯ ТУТ: Змінив <div> на <label> */}
+        <label className="testCreationMainCreatorAnswers__control">
+           {control}
+        </label>
+
+        {/* Обгортка Інпуту */}
+        <div className={`testCreationMainCreatorAnswers__input-wrapper ${isOptionEmptyError ? 'input-error-placeholder' : ''}`}>
           <input
             type="text"
-            // Динамічний плейсхолдер та клас
             placeholder={isOptionEmptyError ? "Заповніть цей варіант!" : "Введіть варіант відповіді"}
-            className={`testCreationMainCreatorAnswers__input ${isOptionEmptyError ? 'input-error-placeholder' : ''}`}
+            className="testCreationMainCreatorAnswers__input"
             value={options[i]}
             onChange={e => updateOption(i, e.target.value)}
           />
-        </label>
 
-        <div className="testCreationMainCreatorAnswers__btns">
-          <button className="testCreationMainCreator__questionField-btn" title="Додати зображення">
-            <FontAwesomeIcon icon={faImage} />
-          </button>
-          {i >= minBase && (
-            <button
-              type="button"
-              className="testCreationMainCreatorAnswers__btn testCreationMainCreatorAnswers__btn--remove"
-              title="Видалити варіант"
-              onClick={() => removeOption(i)}
-            >
-              ✕
+          <div className="testCreationMainCreatorAnswers__btns">
+            <button className="testCreationMainCreator__icon-btn" title="Додати зображення">
+              <FontAwesomeIcon icon={faImage} />
             </button>
-          )}
+            {i >= minBase && (
+              <button
+                type="button"
+                className="testCreationMainCreatorAnswers__btn-remove"
+                title="Видалити варіант"
+                onClick={() => removeOption(i)}
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -183,7 +188,7 @@ const TestCreationMainAnswers = ({
               <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Мова програмування:</label>
               <select 
                 className="testCreationMainCreatorAnswers__input-open" // Можна додати свій клас для select
-                style={{padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
+                style={{padding: '10px', borderRadius: '8px', border: '1px solid #ccc'}}
                 value={codeLanguage}
                 onChange={(e) => setCodeLanguage(e.target.value)}
               >
