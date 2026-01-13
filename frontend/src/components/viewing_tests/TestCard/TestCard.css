@@ -99,19 +99,10 @@
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
 }
 
-
-.testcard-buttons {
-    display: flex;
-    justify-content: flex-start;
-    gap: clamp(10px, 2vw, 20px);
-    width: 100%;
-}
-
 .testcard-buttons {
     display: flex;
     justify-content: flex-start;
     gap: 12px;
-    width: 100%;
     margin-top: 10px;
 }
 
@@ -155,7 +146,26 @@
     background-color: #91200f;
 }
 
+@media screen and (max-width: 768px) {
+.testcard-top_row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    }  
+    .testcard-status-active, .testcard-status-unactive {
+        padding: 0px;
+        order : 1;
+    }
 
+    .testcard-buttons{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .testcard-type{
+        order: 2;
+    }
+}
 
 @media screen and (max-width: 450px) {
     .testcard {

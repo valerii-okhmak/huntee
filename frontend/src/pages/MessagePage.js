@@ -75,7 +75,7 @@ const MessagesPage = () => {
       <div className='container'>
         <MessageTitle />
         
-        <div style={{ display: 'flex', gap: '30px', marginTop: '30px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '30px', marginTop: '30px', marginBottom: '30px', flexWrap: 'wrap' }}>
           <MessageType 
             activeRead={filterReadStatus}
             setActiveRead={setFilterReadStatus}
