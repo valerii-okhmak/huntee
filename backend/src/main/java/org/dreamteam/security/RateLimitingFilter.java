@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RateLimitingFilter extends OncePerRequestFilter {
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+    @SuppressWarnings("deprecation")
     private final Bandwidth limit = Bandwidth.classic(100, Refill.greedy(60, Duration.ofMinutes(1)));
 
     private Bucket resolveBucket(String ip) {

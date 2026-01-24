@@ -22,11 +22,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.dreamteam.service.CodeExecutionService;
 import org.dreamteam.Entity.Question;
 import org.dreamteam.repository.QuestionRepository;
-import org.dreamteam.dto.CodeRunResponse;
 import org.dreamteam.dto.InviteRequestDto;
 import org.dreamteam.service.TestInvitationService;
 

@@ -1,7 +1,6 @@
 package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dreamteam.Entity.Notification;
 import org.dreamteam.dto.NotificationResponse;
 import org.dreamteam.service.NotificationService;
 import org.dreamteam.service.ProfileService;

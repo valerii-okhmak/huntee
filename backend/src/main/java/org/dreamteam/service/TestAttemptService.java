@@ -33,7 +33,6 @@ public class TestAttemptService {
     private final ChoiceOptionRepository choiceOptionRepository;
     private final TextAnswerRepository textAnswerRepository;
     private final MatchingPairRepository matchingPairRepository;
-    private final TestInvitationRepository invitationRepository;
     private final TestInvitationService invitationService;
     
     private static final long TIME_BUFFER_SECONDS = 30;
