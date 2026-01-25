@@ -6,6 +6,7 @@ import TestCreationMainCount from '../components/testCreationMain/TestCreationMa
 import TestCreationMainCreator from '../components/testCreationMain/TestCreationMainCreator/TestCreationMainCreator';
 import TestCreationMainPreview from '../components/testCreationMain/TestCreationMainPreview/TestCreationMainPreview';
 import ConfirmationTestCreateModal from '../components/modal_windows/ConfirmTestCreateModal';
+import AiGenerationModal from '../components/modal_windows/AiGenerationModal';
 import { getAccessToken } from '../utils/auth';
 
 const TestCreationMainPage = () => {
@@ -22,6 +23,9 @@ const TestCreationMainPage = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const creatorRef = useRef(null);
 
@@ -121,13 +125,96 @@ const TestCreationMainPage = () => {
     });
   };
 
-  // Перевірка перед відкриттям модалки публікації
   const handleTryPublish = () => {
     if (questions.length === 0) {
       setShowError(true);
       return;
     }
     setIsModalOpen(true);
+  };
+
+  const mapAiQuestionToFrontend = (aiQ) => {
+    const questionBase = {
+      id: `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, 
+      questionText: aiQ.questionText,
+      questionType: aiQ.questionType, 
+      comment: aiQ.comment || "",
+      points: aiQ.weight || 1
+    };
+
+    if (aiQ.questionType === 'SINGLE_CHOICE' || aiQ.questionType === 'MULTIPLE_CHOICE') {
+      questionBase.choiceOptions = aiQ.choiceOptions 
+        ? aiQ.choiceOptions.map((opt, idx) => ({
+            optionText: opt.optionText,
+            isCorrect: opt.correct, 
+            orderIndex: idx,
+            imageUrl: opt.imageUrl || null
+          }))
+        : [];
+    }
+
+    if (aiQ.questionType === 'TEXT') {
+      questionBase.textAnswer = {
+        correctText: aiQ.textAnswer?.correctText || "",
+        isCaseSensitive: aiQ.textAnswer?.caseSensitive || false
+      };
+    }
+
+    if (aiQ.questionType === 'CODE') {
+      const rawTestCases = aiQ.codeAnswer?.testCases || [];
+      const testCasesString = JSON.stringify(rawTestCases);
+
+      questionBase.codeAnswer = {
+        language: aiQ.codeAnswer?.language || "java",
+        methodName: aiQ.codeAnswer?.methodName || "solution",
+        templateCode: aiQ.codeAnswer?.templateCode || "",
+        testCases: testCasesString 
+      };
+    }
+
+    return questionBase;
+  };
+
+  const handleAiGenerate = async (params) => {
+    try {
+      setAiLoading(true);
+      const token = getAccessToken();
+      
+      const { data } = await axios.post(
+        '/api/ai/tests/generate',
+        {
+          topic: params.topic,
+          count: params.count,
+          difficulty: params.difficulty,
+          questionType: params.type,
+          language: params.language
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        }
+      );
+
+      if (data && data.length > 0) {
+        const newQuestions = data.map(mapAiQuestionToFrontend);
+
+        setQuestions(prev => {
+          const updated = [...prev, ...newQuestions];
+          setQuestionsCount(updated.length);
+          return updated;
+        });
+
+        setIsAiModalOpen(false);
+        setMode('preview'); 
+      }
+    } catch (e) {
+      console.error("AI Generation failed:", e);
+      alert("Помилка генерації питань. Спробуйте ще раз.");
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   const handlePublish = async () => {
@@ -156,15 +243,21 @@ const TestCreationMainPage = () => {
 
         for (let i = 0; i < questions.length; i++) {
           const q = questions[i];
-        
-          if (q.id) {
+          
+          const isTempId = q.id && String(q.id).startsWith('ai_');
+          const payload = { ...q };
+          if (isTempId) {
+             delete payload.id; 
+          }
+
+          if (q.id && !isTempId) {
             await axios.put(`/api/questions/${q.id}`, {
-              ...q,
+              ...payload,
               orderIndex: i
             }, { headers });
           } else {
             await axios.post(`/api/tests/${currentTestId}/questions`, {
-              ...q,
+              ...payload,
               orderIndex: i
             }, { headers });
           }
@@ -181,12 +274,17 @@ const TestCreationMainPage = () => {
         currentTestId = res.data?.testId;
 
         for (let i = 0; i < questions.length; i++) {
+          const q = questions[i];
+          const isTempId = q.id && String(q.id).startsWith('ai_');
+          const payload = { ...q };
+          if (isTempId) delete payload.id;
+
           await axios.post(
             `/api/tests/${currentTestId}/questions`,
             {
-              ...questions[i],
+              ...payload,
               orderIndex: i,
-              weight: questions[i].points
+              weight: payload.points 
             },
             { headers }
           );
@@ -228,6 +326,14 @@ const TestCreationMainPage = () => {
         <div className='container testCreationMainButtons__container'>
           {mode === 'create' ? (
             <>
+              <button 
+                className='testCreationMainButtons__ai black-btn' 
+                style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7', color: 'white', marginRight: '10px' }}
+                onClick={() => setIsAiModalOpen(true)}
+              >
+                ✨ AI Генерація
+              </button>
+
               <button className='testCreationMainButtons__next white-btn' onClick={handleNextQuestion}>
                 Додати запитання
               </button>
@@ -269,6 +375,15 @@ const TestCreationMainPage = () => {
         questionsCount={questions.length}
         startDate={testMeta.startTime ? testMeta.startTime.toLocaleDateString('uk-UA') : 'не вказано'}
         startTime={testMeta.startTime ? testMeta.startTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }) : 'не вказано'}
+      />
+
+      <AiGenerationModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+        onGenerate={handleAiGenerate}
+        loading={aiLoading}
+        defaultTopic={testMeta.testName}
+        defaultLevel={testMeta.level}
       />
     </div>
   );

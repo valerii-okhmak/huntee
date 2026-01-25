@@ -1,0 +1,53 @@
+
+.ai-modal-container {
+    width: 90%;
+    max-width: 500px; 
+    padding: 2.5rem !important; 
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.ai-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+}
+
+.ai-form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-left: 5px;
+}
+
+.ai-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .ai-modal-container {
+        width: 95%;
+        padding: 1.5rem !important;
+        margin-top: 15%;
+    }
+}
