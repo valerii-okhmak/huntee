@@ -23,7 +23,7 @@ public class LangChain4jConfig {
                 .apiKey(apiKey)
                 .modelName(modelName)
                 .temperature(0.7)
-                .timeout(Duration.ofSeconds(120)) 
+                .timeout(Duration.ofMinutes(5))
                 .maxRetries(1)
                 .build();
     }

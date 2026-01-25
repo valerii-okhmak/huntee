@@ -58,20 +58,7 @@ public interface AiTestGenerationService {
           "choiceOptions": null, "matchingPairs": null, "codeAnswer": null
         }
 
-        4. TYPE: MATCHING (Key-Value pairs)
-        {
-          "questionType": "MATCHING",
-          "questionText": "Match the collection interface to its implementation",
-          "weight": 2.5,
-          "matchingPairs": [
-            { "prompt": "List", "answer": "ArrayList" },
-            { "prompt": "Map", "answer": "HashMap" },
-            { "prompt": "Set", "answer": "HashSet" }
-          ],
-          "choiceOptions": null, "textAnswer": null, "codeAnswer": null
-        }
-
-        5. TYPE: CODE (Programming task with test cases)
+        4. TYPE: CODE (Programming task with test cases)
         {
           "questionType": "CODE",
           "questionText": "Write a method 'sum' that adds two integers.",
