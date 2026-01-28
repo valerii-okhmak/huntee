@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import './TestCreationMainPreview.css';
 import ConfirmDeleteQuestionModal from "../../modal_windows/ConfirmDeleteQuestionModal";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons'; 
 
-const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, showError }) => {
+const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuestion, showError }) => {
   const [current, setCurrent] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,27 +24,6 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, showError }
     }
     setIsModalOpen(false);
   };
-
-  // ЯКЩО ПИТАНЬ НЕМАЄ
-  if (!questions.length) {
-    return (
-      <div className="testCreationMainPreview">
-        <div className='container'>
-          <div className="test-container">
-            <h2 
-              className="question" 
-              style={{ 
-                color: showError ? '#dc3545' : 'inherit', 
-                transition: 'color 0.3s ease',
-              }}
-            >
-              Немає питань для перегляду
-            </h2>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const safeIndex = Math.min(Math.max(current, 0), questions.length - 1);
   const q = questions[safeIndex];
@@ -112,6 +93,20 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, showError }
     }
   };
 
+  if (!questions.length) {
+    return (
+      <div className="testCreationMainPreview">
+        <div className='container'>
+          <div className="test-container">
+            <h2 className="question" style={{ color: showError ? '#dc3545' : 'inherit', transition: 'color 0.3s ease' }}>
+              Немає питань для перегляду
+            </h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="testCreationMainPreview">
       <div className='container'>
@@ -123,7 +118,10 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, showError }
           
           <div className="answer">{renderQuestion(q)}</div>
 
-          <div className="test-buttons" style={{ display: "flex", gap: "10px", marginTop: '20px' }}>
+          {/* БЛОК КНОПОК */}
+          <div className="test-buttons" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: '25px', flexWrap: 'wrap', gap: '15px' }}>
+            
+            {/* Кнопка "Наступне питання" зліва */}
             <button
               className="next-button"
               disabled={safeIndex >= questions.length - 1}
@@ -132,12 +130,25 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, showError }
               Наступне питання
             </button>
 
-            <button
-              className="test-creation-main-preview__delete-button"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Видалити запитання
-            </button>
+            {/* Група кнопок Редагувати/Видалити справа */}
+            <div className="testcard-buttons" style={{ width: 'auto', margin: 0 }}>
+                <button
+                  className="testcard-action-btn btn-edit"
+                  onClick={() => onEditQuestion(safeIndex)}
+                >
+                  <FontAwesomeIcon icon={faPenToSquare} />
+                  <span>Редагувати</span>
+                </button>
+
+                <button
+                  className="testcard-action-btn btn-delete"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} />
+                  <span>Видалити</span>
+                </button>
+            </div>
+
           </div>
         </div>
 

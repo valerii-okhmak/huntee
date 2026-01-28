@@ -36,12 +36,12 @@ const AiGenerationModal = ({ isOpen, onClose, onGenerate, defaultTopic, defaultL
         </div>
 
         <div className="ai-form-group">
-          <label className="ai-form-label">Кількість (макс 5):</label>
+          <label className="ai-form-label">Кількість (макс 10):</label>
           <input 
             className="modal-input"
             type="number" 
             min="1" 
-            max="5" 
+            max="10" 
             value={count} 
             onChange={(e) => setCount(Number(e.target.value))} 
           />

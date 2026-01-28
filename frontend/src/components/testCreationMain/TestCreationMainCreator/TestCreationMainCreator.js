@@ -86,6 +86,68 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
+    loadQuestion(q) {
+      setQuestionText(q.questionText || "");
+      setComment(q.comment || "");
+      setPoints(String(q.points || 1));
+      setErrors({});
+
+      let type = "regular";
+      if (q.questionType === "SINGLE_CHOICE") type = "regular";
+      else if (q.questionType === "MULTIPLE_CHOICE") type = "multiple";
+      else if (q.questionType === "TEXT") type = "open";
+      else if (q.questionType === "CODE") type = "practical";
+      
+      setSelectedType(type);
+
+      // Логіка для варіантів відповідей
+      if (type === "regular" || type === "multiple") {
+        const newOptions = (q.choiceOptions || []).map(o => o.optionText || "");
+        setOptions(newOptions.length > 0 ? newOptions : ["", ""]);
+
+        if (type === "regular") {
+          const correctIdx = (q.choiceOptions || []).findIndex(o => o.isCorrect);
+          setRegularCorrect(correctIdx !== -1 ? correctIdx : null);
+          setMultipleCorrect(new Array(newOptions.length || 2).fill(false));
+        } else {
+          const multCorrect = (q.choiceOptions || []).map(o => !!o.isCorrect);
+          setMultipleCorrect(multCorrect.length > 0 ? multCorrect : [false, false]);
+          setRegularCorrect(null);
+        }
+      } else {
+        setOptions(["", ""]);
+        setRegularCorrect(null);
+        setMultipleCorrect([false, false]);
+      }
+
+      if (type === "open") {
+        setOpenExpectedText(q.textAnswer?.correctText || "");
+        setOpenExpectedEnabled(!!q.textAnswer?.correctText);
+      } else {
+        setOpenExpectedText("");
+      }
+
+      // Логіка для коду
+      if (type === "practical") {
+        setCodeLanguage(q.codeAnswer?.language || "java");
+        setCodeMethodName(q.codeAnswer?.methodName || "");
+        setCodeTemplate(q.codeAnswer?.templateCode || "");
+        
+        let tCases = '[{"args": [1, 2], "expected": 3}]';
+        if (q.codeAnswer?.testCases) {
+            tCases = typeof q.codeAnswer.testCases === 'string' 
+              ? q.codeAnswer.testCases 
+              : JSON.stringify(q.codeAnswer.testCases);
+        }
+        setCodeTestCasesJSON(tCases);
+      } else {
+        setCodeLanguage("java");
+        setCodeMethodName("");
+        setCodeTemplate("");
+        setCodeTestCasesJSON('[{"args": [1, 2], "expected": 3}]');
+      }
+    },
+
     getCurrentQuestionAndReset() {
       const newErrors = {};
 
@@ -106,6 +168,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
       else backendType = "TEXT"; 
 
       let payload = { 
+          // Якщо редагуємо, ID залишається (він передається ззовні, тут ми формуємо лише тіло)
           questionText: questionText.trim(),
           comment: comment.trim(),
           questionType: backendType,
@@ -172,6 +235,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         return null;
       }
 
+      // Скидання форми (reset)
       setQuestionText("");
       setComment("");
       setPoints("1"); 
@@ -235,7 +299,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
             <h2 className="testCreationMainCreator__questionField-title">Запитання</h2>
           </div>
           
-          {/* ОБГОРТКА ДЛЯ ЗАПИТАННЯ: виглядає як інпут, містить інпут і кнопку */}
           <div className={`testCreationMainCreator__questionField-wrapper ${errors.questionText ? 'input-error-placeholder' : ''}`}>
             <input
               type="text"
@@ -256,7 +319,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
             <h2 className="testCreationMainCreator__questionField-title">Кількість балів за правильну відповідь:</h2>
           </div>
           
-          {/* ОБГОРТКА ДЛЯ БАЛІВ: для однакового стилю */}
           <div className={`testCreationMainCreator__questionField-wrapper ${errors.points ? 'input-error-placeholder' : ''}`}>
             <input
               type="number"

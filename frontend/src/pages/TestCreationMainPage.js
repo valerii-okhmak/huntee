@@ -17,6 +17,7 @@ const TestCreationMainPage = () => {
   const testId = location.state?.testId;
 
   const [mode, setMode] = useState('create');
+  const [editingIndex, setEditingIndex] = useState(null);
   const [questionsCount, setQuestionsCount] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [originalQuestions, setOriginalQuestions] = useState([]);
@@ -116,6 +117,43 @@ const TestCreationMainPage = () => {
     addCurrentQuestionIfExists();
   };
 
+  const handleEditStart = (index) => {
+    setEditingIndex(index);
+    setMode('create'); 
+
+    setTimeout(() => {
+      if (creatorRef.current) {
+        creatorRef.current.loadQuestion(questions[index]);
+      }
+    }, 0);
+  };
+
+  const handleEditCancel = () => {
+    setEditingIndex(null);
+    setMode('preview');
+  };
+
+  const handleEditConfirm = () => {
+    const updatedQuestion = creatorRef.current?.getCurrentQuestionAndReset();
+    
+    if (!updatedQuestion) return;
+
+    setQuestions(prev => {
+      const newList = [...prev];
+      const originalId = newList[editingIndex].id;
+      if (originalId) {
+        updatedQuestion.id = originalId;
+      }
+      
+      newList[editingIndex] = updatedQuestion;
+      return newList;
+    });
+
+    setEditingIndex(null);
+    setMode('preview');
+  };
+
+
   const handleDeleteQuestion = (index) => {
     setQuestions(prev => {
       const updated = [...prev];
@@ -123,6 +161,10 @@ const TestCreationMainPage = () => {
       setQuestionsCount(updated.length);
       return updated;
     });
+    if (index === editingIndex) {
+        setEditingIndex(null);
+        setMode('preview');
+    }
   };
 
   const handleTryPublish = () => {
@@ -318,6 +360,7 @@ const TestCreationMainPage = () => {
         <TestCreationMainPreview
           questions={questions}
           onDeleteQuestion={handleDeleteQuestion}
+          onEditQuestion={handleEditStart} 
           showError={showError} 
         />
       )}
@@ -325,28 +368,45 @@ const TestCreationMainPage = () => {
       <div className='testCreationMainButtons'>
         <div className='container testCreationMainButtons__container'>
           {mode === 'create' ? (
-            <>
-              <button 
-                className='testCreationMainButtons__ai black-btn' 
-                style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7', color: 'white', marginRight: '10px' }}
-                onClick={() => setIsAiModalOpen(true)}
-              >
-                ✨ AI Генерація
-              </button>
+            editingIndex !== null ? (
+              <>
+                 <button 
+                   className='testCreationMainButtons__next white-btn' 
+                   onClick={handleEditCancel}
+                 >
+                   Відмінити
+                 </button>
+                 <button
+                   className='testCreationMainButtons__finish black-btn'
+                   onClick={handleEditConfirm}
+                 >
+                   Підтвердити зміни
+                 </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  className='testCreationMainButtons__ai black-btn' 
+                  style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7', color: 'white', marginRight: '10px' }}
+                  onClick={() => setIsAiModalOpen(true)}
+                >
+                  ✨ AI Генерація
+                </button>
 
-              <button className='testCreationMainButtons__next white-btn' onClick={handleNextQuestion}>
-                Додати запитання
-              </button>
-              <button
-                className='testCreationMainButtons__finish black-btn'
-                onClick={() => {
-                  addCurrentQuestionIfExists();
-                  setMode('preview');
-                }}
-              >
-                Переглянути результат
-              </button>
-            </>
+                <button className='testCreationMainButtons__next white-btn' onClick={handleNextQuestion}>
+                  Додати запитання
+                </button>
+                <button
+                  className='testCreationMainButtons__finish black-btn'
+                  onClick={() => {
+                    addCurrentQuestionIfExists();
+                    setMode('preview');
+                  }}
+                >
+                  Переглянути результат
+                </button>
+              </>
+            )
           ) : (
             <>
               <button className='testCreationMainButtons__back white-btn' onClick={() => setMode('create')} disabled={loading}>
