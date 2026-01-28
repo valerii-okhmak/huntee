@@ -214,41 +214,61 @@ public class TestService {
                 .collect(Collectors.toList());
     }
 
-@Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public TestAnalyticsDTO getTestAnalytics(UUID testId, String authorEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
+
+        double maxPossibleScore = test.getTestQuestions().stream()
+                .map(TestQuestion::getQuestion) 
+                .mapToDouble(Question::getWeight)
+                .sum();
+
+        if (maxPossibleScore == 0) {
+             return TestAnalyticsDTO.builder()
+                    .totalAttempts(0)
+                    .passedCount(0)
+                    .failedCount(0)
+                    .averageScore(0.0)
+                    .build();
+        }
 
         List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
 
         List<UserTestAttempt> completedAttempts = attempts.stream()
                 .filter(a -> a.getCompletedAt() != null && a.getScore() != null)
-                .collect(Collectors.toList());
+                .toList();
 
         int total = completedAttempts.size();
         int passed = 0;
         int failed = 0;
-        double totalScoreSum = 0;
+        double totalPercentSum = 0; 
 
-        BigDecimal passingGrade = BigDecimal.valueOf(60);
+        final double PASSING_PERCENT = 60.0;
 
         for (UserTestAttempt attempt : completedAttempts) {
-            totalScoreSum += attempt.getScore().doubleValue();
+            double score = attempt.getScore().doubleValue();
             
-            if (attempt.getScore().compareTo(passingGrade) >= 0) {
+            double percent = (score / maxPossibleScore) * 100.0;
+            
+            if (percent > 100.0) percent = 100.0;
+
+            totalPercentSum += percent;
+
+            if (percent >= PASSING_PERCENT) {
                 passed++;
             } else {
                 failed++;
             }
         }
 
-        double avg = total > 0 ? totalScoreSum / total : 0;
+        double avgPercent = total > 0 ? totalPercentSum / total : 0;
 
         return TestAnalyticsDTO.builder()
                 .totalAttempts(total)
                 .passedCount(passed)
                 .failedCount(failed)
-                .averageScore(Math.round(avg * 100.0) / 100.0) 
+                .averageScore(Math.round(avgPercent * 100.0) / 100.0) 
                 .build();
     }
 
