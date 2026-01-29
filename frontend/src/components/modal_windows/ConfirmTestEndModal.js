@@ -2,7 +2,9 @@ import React from "react";
 import ModalMini from "./ModalMini"; 
 import "./ModalWindow.css";
 
-const ConfirmTestEndModal = ({ isOpen, onClose, onViewResults, unansweredCount, unansweredLabels }) => {
+const ConfirmTestEndModal = ({ isOpen, onClose, onConfirm, unansweredCount, unansweredLabels }) => {
+  if (!isOpen) return null;
+
   return (
     <ModalMini isOpen={isOpen} onClose={onClose}>
       <button className="modal-close" onClick={onClose} aria-label="Закрити">
@@ -17,20 +19,27 @@ const ConfirmTestEndModal = ({ isOpen, onClose, onViewResults, unansweredCount, 
           <p className="modalmini-minisubtitle">Після підтвердження змінити відповіді буде неможливо.</p>
         </div>
         
-        <p className="modalmini-subtitle">
-          Запитань без відповіді: <strong>{unansweredCount}</strong>
-          {unansweredCount > 0 && (
-            <span style={{ color: "#ff4d4f", fontWeight: "bold" }}>
-              {unansweredLabels}
+        {unansweredCount > 0 && (
+            <p className="modalmini-subtitle" style={{marginTop: '10px'}}>
+            Запитань без відповіді: <strong>{unansweredCount}</strong>
+            <span style={{ color: "#ff4d4f", fontWeight: "bold", display: 'block', fontSize: '14px' }}>
+                {unansweredLabels}
             </span>
-          )}
+            </p>
+        )}
+        
+        <p className="modalmini-minisubtitle" style={{marginTop: '15px'}}>
+            Після завершення тест буде збережено в розділі «Мої тести».
         </p>
         
-        <p className="modalmini-minisubtitle">Після завершення тест буде збережено в розділі «Мої тести».</p>
         <div className="modalmini-buttons">
+          <button className="modalmini-button modalmini-button-cancel" onClick={onClose}>
+            Повернутись
+          </button>
+
           <button
             className="modalmini-button modalmini-button-submit"
-            onClick={onViewResults}
+            onClick={onConfirm}
           >
             Завершити тест
           </button>

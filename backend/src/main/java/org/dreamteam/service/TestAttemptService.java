@@ -114,13 +114,13 @@ public class TestAttemptService {
                 .build();
     }
 
-    @Transactional
+@Transactional
     public void submitAnswer(UUID attemptId, UUID questionId, AnswerSubmissionRequest request, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
         checkAttemptOwnership(attempt, userEmail);
 
         if (attempt.getCompletedAt() != null) {
-            throw new AccessDeniedException("This test attempt has already been completed.");
+             throw new AccessDeniedException("This test attempt has already been completed.");
         }
 
         validateTimeLimit(attempt);
@@ -136,38 +136,39 @@ public class TestAttemptService {
                 .findByAttempt_AttemptIdAndQuestion_QuestionId(attemptId, questionId)
                 .orElse(new UserAnswer(attempt, question));
 
-        userAnswer.getChoices().clear();
-        userAnswer.getMatchings().clear();
-        userAnswerChoiceRepository.deleteAll(userAnswer.getChoices());
-        userAnswerMatchingRepository.deleteAll(userAnswer.getMatchings());
+        if (userAnswer.getChoices() == null) userAnswer.setChoices(new HashSet<>());
+        else userAnswer.getChoices().clear();
+
+        if (userAnswer.getMatchings() == null) userAnswer.setMatchings(new HashSet<>());
+        else userAnswer.getMatchings().clear();
+        userAnswerRepository.saveAndFlush(userAnswer);
 
         switch (request.getQuestionType()) {
             case SINGLE_CHOICE:
             case MULTIPLE_CHOICE:
-                Set<UserAnswerChoice> choices = new HashSet<>();
                 if (request.getSelectedOptionIds() != null) {
                     for (Long optionId : request.getSelectedOptionIds()) {
                         ChoiceOption option = choiceOptionRepository.findById(optionId)
                                 .orElseThrow(() -> new EntityNotFoundException("Option not found: " + optionId));
-                        choices.add(new UserAnswerChoice(userAnswer, option));
+                        userAnswer.getChoices().add(new UserAnswerChoice(userAnswer, option));
                     }
                 }
-                userAnswer.setChoices(choices);
                 break;
+
             case TEXT:
                 userAnswer.setGivenText(request.getGivenText());
                 break;
+
             case MATCHING:
-                Set<UserAnswerMatching> matchings = new HashSet<>();
                 if (request.getMatchingAnswers() != null) {
                     for (AnswerSubmissionRequest.MatchingAnswerDTO match : request.getMatchingAnswers()) {
                         MatchingPair pair = matchingPairRepository.findById(match.getPromptPairId())
                                 .orElseThrow(() -> new EntityNotFoundException("Matching pair not found: " + match.getPromptPairId()));
-                        matchings.add(new UserAnswerMatching(userAnswer, pair, match.getSelectedAnswerText()));
+                        userAnswer.getMatchings().add(new UserAnswerMatching(userAnswer, pair, match.getSelectedAnswerText()));
                     }
                 }
-                userAnswer.setMatchings(matchings);
                 break;
+
             case CODE:
                 userAnswer.setGivenText(request.getGivenText());
                 break;
