@@ -2,6 +2,8 @@ package org.dreamteam.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.dreamteam.Entity.AttemptStatus;
 import org.dreamteam.Entity.Question;
 import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.TestQuestion;
@@ -220,57 +222,56 @@ public class TestService {
         checkTestOwnership(test, authorEmail);
 
         double maxPossibleScore = test.getTestQuestions().stream()
-                .map(TestQuestion::getQuestion) 
+                .map(TestQuestion::getQuestion)
                 .mapToDouble(Question::getWeight)
                 .sum();
 
-        if (maxPossibleScore == 0) {
-             return TestAnalyticsDTO.builder()
-                    .totalAttempts(0)
-                    .passedCount(0)
-                    .failedCount(0)
-                    .averageScore(0.0)
-                    .build();
-        }
+        List<UserTestAttempt> allAttempts = attemptRepository.findByTest_TestId(testId);
 
-        List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
+        long inReviewCount = allAttempts.stream()
+                .filter(a -> a.getStatus() == AttemptStatus.PENDING_REVIEW)
+                .count();
 
-        List<UserTestAttempt> completedAttempts = attempts.stream()
-                .filter(a -> a.getCompletedAt() != null && a.getScore() != null)
+        List<UserTestAttempt> gradedAttempts = allAttempts.stream()
+                .filter(a -> a.getStatus() == AttemptStatus.COMPLETED && a.getScore() != null)
                 .toList();
 
-        int total = completedAttempts.size();
         int passed = 0;
         int failed = 0;
-        double totalPercentSum = 0; 
-
+        double totalPercentSum = 0;
         final double PASSING_PERCENT = 60.0;
 
-        for (UserTestAttempt attempt : completedAttempts) {
-            double score = attempt.getScore().doubleValue();
-            
-            double percent = (score / maxPossibleScore) * 100.0;
-            
-            if (percent > 100.0) percent = 100.0;
+        if (maxPossibleScore > 0) {
+            for (UserTestAttempt attempt : gradedAttempts) {
+                double score = attempt.getScore().doubleValue();
+                
+                double percent = (score / maxPossibleScore) * 100.0;
+                if (percent > 100.0) percent = 100.0;
 
-            totalPercentSum += percent;
+                totalPercentSum += percent;
 
-            if (percent >= PASSING_PERCENT) {
-                passed++;
-            } else {
-                failed++;
+                if (percent >= PASSING_PERCENT) {
+                    passed++;
+                } else {
+                    failed++;
+                }
             }
         }
 
-        double avgPercent = total > 0 ? totalPercentSum / total : 0;
+        int gradedTotal = gradedAttempts.size();
+        double avgPercent = gradedTotal > 0 ? totalPercentSum / gradedTotal : 0;
+
+        int totalSubmitted = gradedTotal + (int) inReviewCount;
 
         return TestAnalyticsDTO.builder()
-                .totalAttempts(total)
+                .totalAttempts(totalSubmitted)
                 .passedCount(passed)
                 .failedCount(failed)
-                .averageScore(Math.round(avgPercent * 100.0) / 100.0) 
+                .inReviewCount((int) inReviewCount) 
+                .averageScore(Math.round(avgPercent * 100.0) / 100.0)
                 .build();
     }
+
 
     private String calculateTestStatus(Test test) {
         OffsetDateTime now = OffsetDateTime.now();

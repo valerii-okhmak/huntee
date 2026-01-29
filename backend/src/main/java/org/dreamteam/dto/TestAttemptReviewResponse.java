@@ -14,6 +14,7 @@ public class TestAttemptReviewResponse {
     private UUID attemptId;
     private String candidateName;
     private String candidateEmail;
+    private String authorEmail;
     private OffsetDateTime completedAt;
     
     private String testName;
@@ -35,6 +36,7 @@ public class TestAttemptReviewResponse {
         private String questionText;
         private QuestionType type;
         private String comment;
+        private Double weight;
         private boolean isCorrect;
         private String userAnswer; 
         private String correctAnswer;

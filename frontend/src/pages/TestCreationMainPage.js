@@ -7,6 +7,7 @@ import TestCreationMainCreator from '../components/testCreationMain/TestCreation
 import TestCreationMainPreview from '../components/testCreationMain/TestCreationMainPreview/TestCreationMainPreview';
 import ConfirmationTestCreateModal from '../components/modal_windows/ConfirmTestCreateModal';
 import AiGenerationModal from '../components/modal_windows/AiGenerationModal';
+import Loader from '../components/loader/Loader';
 import { getAccessToken } from '../utils/auth';
 
 const TestCreationMainPage = () => {
@@ -21,6 +22,7 @@ const TestCreationMainPage = () => {
   const [questionsCount, setQuestionsCount] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [originalQuestions, setOriginalQuestions] = useState([]);
+  
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -220,6 +222,7 @@ const TestCreationMainPage = () => {
   const handleAiGenerate = async (params) => {
     try {
       setAiLoading(true);
+      
       const token = getAccessToken();
       
       const { data } = await axios.post(
@@ -248,12 +251,10 @@ const TestCreationMainPage = () => {
           return updated;
         });
 
-        setIsAiModalOpen(false);
         setMode('preview'); 
       }
     } catch (e) {
       console.error("AI Generation failed:", e);
-      alert("Помилка генерації питань. Спробуйте ще раз.");
     } finally {
       setAiLoading(false);
     }
@@ -285,32 +286,21 @@ const TestCreationMainPage = () => {
 
         for (let i = 0; i < questions.length; i++) {
           const q = questions[i];
-          
           const isTempId = q.id && String(q.id).startsWith('ai_');
           const payload = { ...q };
-          if (isTempId) {
-             delete payload.id; 
-          }
+          if (isTempId) delete payload.id; 
 
           if (q.id && !isTempId) {
-            await axios.put(`/api/questions/${q.id}`, {
-              ...payload,
-              orderIndex: i
-            }, { headers });
+            await axios.put(`/api/questions/${q.id}`, { ...payload, orderIndex: i }, { headers });
           } else {
-            await axios.post(`/api/tests/${currentTestId}/questions`, {
-              ...payload,
-              orderIndex: i
-            }, { headers });
+            await axios.post(`/api/tests/${currentTestId}/questions`, { ...payload, orderIndex: i }, { headers });
           }
         }
 
         for ( const id of toDelete) {
-          if (id) {
-            await axios.delete(`/api/questions/${id}`, { headers });
-          }
+          if (id) await axios.delete(`/api/questions/${id}`, { headers });
         }
-  
+        
       } else {
         const res = await axios.post(`/api/tests`, testPayload, { headers });
         currentTestId = res.data?.testId;
@@ -323,24 +313,23 @@ const TestCreationMainPage = () => {
 
           await axios.post(
             `/api/tests/${currentTestId}/questions`,
-            {
-              ...payload,
-              orderIndex: i,
-              weight: payload.points 
-            },
+            { ...payload, orderIndex: i, weight: payload.points },
             { headers }
           );
         }
+        // Алерт прибрано. Одразу перехід.
       }      
   
       navigate('/viewingtests');
     } catch (e) {
       console.error(e);
+      // Алерт прибрано.
     } finally {
       setLoading(false);
     }
   };
   
+
 
   return (
     <div className='page'>
@@ -370,16 +359,10 @@ const TestCreationMainPage = () => {
           {mode === 'create' ? (
             editingIndex !== null ? (
               <>
-                 <button 
-                   className='testCreationMainButtons__next white-btn' 
-                   onClick={handleEditCancel}
-                 >
+                 <button className='testCreationMainButtons__next white-btn' onClick={handleEditCancel}>
                    Відмінити
                  </button>
-                 <button
-                   className='testCreationMainButtons__finish black-btn'
-                   onClick={handleEditConfirm}
-                 >
+                 <button className='testCreationMainButtons__finish black-btn' onClick={handleEditConfirm}>
                    Підтвердити зміни
                  </button>
               </>
@@ -412,11 +395,7 @@ const TestCreationMainPage = () => {
               <button className='testCreationMainButtons__back white-btn' onClick={() => setMode('create')} disabled={loading}>
                 Повернутися до створення
               </button>
-              <button
-                className='testCreationMainButtons__publish black-btn'
-                onClick={handleTryPublish} 
-                disabled={loading}
-              >
+              <button className='testCreationMainButtons__publish black-btn' onClick={handleTryPublish} disabled={loading}>
                 Завершити створення
               </button>
             </>

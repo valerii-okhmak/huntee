@@ -13,8 +13,6 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // 1. Стейт для керування модалкою
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   useEffect(() => {
@@ -33,7 +31,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         setStudents(response.data);
       } catch (err) {
         console.error(err);
-        setError("Не вдалося завантажити студентів");
+        setError("Не вдалося завантажити список");
       } finally {
         setLoading(false);
       }
@@ -43,8 +41,8 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
   }, [activeTab, testId]);
 
   const description = activeTab === 'registered'
-    ? 'Тут ви можете переглянути зареєстрованих студентів. Ви можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо.'
-    : 'Тут ви можете переглянути результати тестування студентів. Ви можете надіслати автоматичне повідомлення всім студентам або звернутися до кожного окремо, щоб повідомити про результат чи надати зворотний зв’язок.';
+    ? 'Тут ви можете переглянути зареєстрованих студентів...'
+    : 'Тут ви можете переглянути результати тестування...';
 
   if (loading) return <Loader />;
   if (error) return <div className='container'>{error}</div>;
@@ -73,7 +71,6 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
       </div>
 
       <div className="testDashboard__btn-invite-container">
-        {/* 2. Прив'язка функції відкриття до кнопки */}
         <button 
           className="testDashboard__btn-invite" 
           onClick={() => setIsInviteModalOpen(true)}
@@ -83,16 +80,19 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
       </div>
 
       <div className="testDashboard__cards-list">
-        {students.map(student => (
-          <DashboardStudentCard 
-            key={student.userId} 
-            student={student} 
-            type={activeTab}
-          />
-        ))}
+        {students.length > 0 ? (
+          students.map(student => (
+            <DashboardStudentCard 
+              key={student.userId} 
+              student={student} 
+              type={activeTab}
+            />
+          ))
+        ) : (
+          <div style={{textAlign: 'center', padding: '20px', color: '#777'}}>Список порожній</div>
+        )}
       </div>
 
-      {/* 3. Передача стейту та функції закриття в модалку */}
       <InviteParticipantsModal 
         isOpen={isInviteModalOpen} 
         onClose={() => setIsInviteModalOpen(false)} 

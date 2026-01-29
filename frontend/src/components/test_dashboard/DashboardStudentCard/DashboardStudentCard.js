@@ -22,9 +22,11 @@ const DashboardStudentCard = ({ student, type }) => {
   };
 
   const maxScore = student.totalMaxScore || 100;
-  const successPercentage = student.score ? (student.score / maxScore) * 100 : 0;
-  const isPassed = successPercentage >= 60;
+  const score = student.score;
+  const successPercentage = score ? (score / maxScore) * 100 : 0;
+  const isPassed = successPercentage >= 60; 
 
+  const isPendingReview = type === 'results' && score === null;
 
   return (
     <div className="testDashboard__student-card">
@@ -35,16 +37,16 @@ const DashboardStudentCard = ({ student, type }) => {
           <>
             <div 
               className={`testDashboard__card-score ${
-                student.score === null 
-                  ? 'testDashboard__card-score-null' 
+                isPendingReview
+                  ? 'testDashboard__card-score-pending' 
                   : isPassed
-                    ? 'testDashboard__card-score-good' 
-                    : 'testDashboard__card-score-bad' 
+                    ? 'testDashboard__card-score-good'  
+                    : 'testDashboard__card-score-bad'   
               }`}
             >
-              {student.score === null 
-                  ? 'Тест не пройдено' 
-                  : `${student.score}/${student.totalMaxScore || '?'}`
+              {isPendingReview 
+                  ? 'На перевірці' 
+                  : `${score}/${maxScore}`
               }
             </div>
             
@@ -53,7 +55,7 @@ const DashboardStudentCard = ({ student, type }) => {
                 className="testDashboard__card-info" 
                 style={{cursor: 'pointer', textDecoration: 'underline'}}
             >
-                Переглянути інформацію про студента
+                Переглянути деталі
             </span>
           </>
         )}
@@ -66,7 +68,7 @@ const DashboardStudentCard = ({ student, type }) => {
            </button>
         ) : (
            <button className="testDashboard__card-btn" onClick={handleViewResults}>
-               Переглянути результати
+               {isPendingReview ? 'Перевірити тест' : 'Переглянути результати'}
            </button>
         )}
         

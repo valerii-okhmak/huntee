@@ -31,6 +31,10 @@ public class UserTestAttempt {
     @JoinColumn(name = "test_id", nullable = false)
     private Test test;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private AttemptStatus status = AttemptStatus.IN_PROGRESS;
+
     @Column(name = "started_at", nullable = false)
     private OffsetDateTime startedAt;
 

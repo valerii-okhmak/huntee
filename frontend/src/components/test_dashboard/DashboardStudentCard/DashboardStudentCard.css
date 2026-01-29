@@ -98,3 +98,32 @@
 .testDashboard__card-btn-chat:hover {
     transform: scale(1.05);
 }
+
+.testDashboard__card-score {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 15px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.testDashboard__card-score-good {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.testDashboard__card-score-bad {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.testDashboard__card-score-pending {
+    color: #ffa502; 
+    background-color: rgba(255, 165, 2, 0.15);
+    border: 1px solid rgba(255, 165, 2, 0.3);
+}
+
+.testDashboard__card-score-null {
+    color: #6c757d;
+    background-color: #f8f9fa;
+}

@@ -67,11 +67,9 @@ public class TestAttemptService {
             attempt = attemptRepository.save(attempt);
         }
 
-        // Тепер обчислюємо calculatedEndTime
         OffsetDateTime calculatedEndTime;
 
         if (Boolean.TRUE.equals(test.getIsFixedTime())) {
-            // Фіксований час: беремо мінімум між startedAt + duration та endTime
             OffsetDateTime durationLimit = test.getDurationMinutes() != null 
                     ? attempt.getStartedAt().plusSeconds(test.getDurationMinutes()) 
                     : null;
@@ -84,14 +82,12 @@ public class TestAttemptService {
                 calculatedEndTime = test.getEndTime();
             }
         } else {
-            // Нефіксований час: просто повертаємо endTime
             calculatedEndTime = test.getEndTime();
         }
         List<TestQuestion> questionsList = new java.util.ArrayList<>(test.getTestQuestions());
         if (Boolean.FALSE.equals(test.getIsFixedQuestionOrder())) {
             java.util.Collections.shuffle(questionsList);
         } else {
-            // Якщо TRUE або NULL -> сортуємо за індексом (стандартна поведінка)
             questionsList.sort((q1, q2) -> {
                 int idx1 = q1.getOrderIndex() != null ? q1.getOrderIndex() : Integer.MAX_VALUE;
                 int idx2 = q2.getOrderIndex() != null ? q2.getOrderIndex() : Integer.MAX_VALUE;
@@ -185,64 +181,63 @@ public class TestAttemptService {
         UserTestAttempt attempt = findAttemptById(attemptId);
         checkAttemptOwnership(attempt, userEmail);
 
-        if (attempt.getCompletedAt() != null) {
-            return calculateResult(attempt);
+        if (attempt.getStatus() == AttemptStatus.COMPLETED || attempt.getStatus() == AttemptStatus.PENDING_REVIEW) {
+            return calculateResult(attempt); 
         }
 
         attempt.setCompletedAt(OffsetDateTime.now());
-
         List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attemptId);
-        BigDecimal totalMaxScore = BigDecimal.ZERO;
-        BigDecimal earnedScore = BigDecimal.ZERO;
-        int correctCount = 0;
 
-        List<Question> allQuestions = attempt.getTest().getTestQuestions().stream()
-                .map(TestQuestion::getQuestion)
-                .collect(Collectors.toList());
+        boolean hasManualQuestions = attempt.getTest().getTestQuestions().stream()
+                .anyMatch(tq -> tq.getQuestion().getQuestionType() == QuestionType.TEXT);
 
-        for (Question q : allQuestions) {
-        BigDecimal weight = (q.getWeight() != null) 
-                ? BigDecimal.valueOf(q.getWeight()) 
-                : BigDecimal.ONE;
+        BigDecimal currentAutoScore = BigDecimal.ZERO;
 
-        totalMaxScore = totalMaxScore.add(weight);
-        
-
-        UserAnswer answer = answers.stream()
+        for (TestQuestion tq : attempt.getTest().getTestQuestions()) {
+            Question q = tq.getQuestion();
+            UserAnswer answer = answers.stream()
                     .filter(a -> a.getQuestion().getQuestionId().equals(q.getQuestionId()))
                     .findFirst()
                     .orElse(null);
-  
 
             if (answer != null) {
-                boolean isCorrect = gradeAnswer(answer);
-                answer.setIsCorrect(isCorrect);
-                userAnswerRepository.save(answer);
-
-                if (isCorrect) {
-                    correctCount++;
-                    earnedScore = earnedScore.add(weight);
+                if (q.getQuestionType() == QuestionType.TEXT) {
+                    answer.setIsCorrect(null);
+                    answer.setAwardedScore(null);
+                } else {
+                    boolean isCorrect = gradeAnswer(answer);
+                    answer.setIsCorrect(isCorrect);
+                    
+                    if (isCorrect) {
+                        BigDecimal weight = BigDecimal.valueOf(q.getWeight() != null ? q.getWeight() : 1.0);
+                        answer.setAwardedScore(weight); 
+                        currentAutoScore = currentAutoScore.add(weight);
+                    } else {
+                        answer.setAwardedScore(BigDecimal.ZERO);
+                    }
                 }
+                userAnswerRepository.save(answer);
             }
         }
 
-        BigDecimal finalScore = earnedScore.setScale(2, RoundingMode.HALF_UP);
-        totalMaxScore = totalMaxScore.setScale(2, RoundingMode.HALF_UP);
+        if (hasManualQuestions) {
+            attempt.setStatus(AttemptStatus.PENDING_REVIEW);
+            attempt.setScore(null); 
+            attemptRepository.save(attempt);
 
-        attempt.setScore(finalScore);
-        attemptRepository.save(attempt);
-
-
-        return TestResultResponse.builder()
-                .attemptId(attemptId)
-                .score(finalScore)
-                .totalQuestions(allQuestions.size())
-                .correctAnswers(correctCount)
-                .totalMaxScore(totalMaxScore)
-                .isShown(attempt.getTest().getIsShowResult())
-                .build();
+            return TestResultResponse.builder()
+                    .attemptId(attemptId)
+                    .score(null) 
+                    .isShown(false) 
+                    .build(); 
+        } else {
+            attempt.setStatus(AttemptStatus.COMPLETED);
+            attempt.setScore(currentAutoScore.setScale(2, RoundingMode.HALF_UP));
+            attemptRepository.save(attempt);
+            return calculateResult(attempt);
+        }
     }
-
+    
     @Transactional(readOnly = true)
     public TestAttemptReviewResponse getAttemptReview(UUID attemptId, String userEmail) {
         UserTestAttempt attempt = findAttemptById(attemptId);
@@ -268,7 +263,7 @@ public class TestAttemptService {
             .collect(Collectors.toMap(
                 a -> a.getQuestion().getQuestionId(), 
                 a -> a,
-                (existing, replacement) -> existing // на випадок дублікатів
+                (existing, replacement) -> existing
             ));
         
         List<TestAttemptReviewResponse.QuestionReviewDTO> questions = attempt.getTest().getTestQuestions().stream()
@@ -280,9 +275,6 @@ public class TestAttemptService {
                 .map(tq -> {
                     Question q = tq.getQuestion();
                     UserAnswer answer = answerMap.get(q.getQuestionId());
-                    // Якщо відповіді немає, треба створити "порожнє" DTO або передати null в mapper
-                    // Тут припускаємо, що mapper впорається, якщо передати йому питання і null-відповідь
-                    // АБО краще адаптувати mapper:
                     return mapToQuestionReview(q, answer); 
                 })
                 .collect(Collectors.toList());
@@ -306,7 +298,7 @@ public class TestAttemptService {
                 .attemptId(attempt.getAttemptId())
                 .candidateName(getFullName(attempt.getUser()))
                 .candidateEmail(attempt.getUser().getEmail()) 
-                
+                .authorEmail(attempt.getTest().getUser().getEmail())
                 .testName(attempt.getTest().getTestName())    
                 .sphere(attempt.getTest().getSphere())       
                 
@@ -320,6 +312,64 @@ public class TestAttemptService {
                 .questions(questions)
                 .build();
     }
+
+
+    @Transactional 
+    public TestResultResponse finalizeAttemptGrading(UUID attemptId, String authorEmail) {
+        UserTestAttempt attempt = findAttemptById(attemptId);
+        
+        if (!attempt.getTest().getUser().getEmail().equals(authorEmail)) {
+            throw new AccessDeniedException("Only the test owner can finalize grading.");
+        }
+
+        BigDecimal totalScore = BigDecimal.ZERO;
+        List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attemptId);
+
+        for (UserAnswer ans : answers) {
+            if (ans.getAwardedScore() != null) {
+                totalScore = totalScore.add(ans.getAwardedScore());
+            }
+        }
+
+        attempt.setScore(totalScore.setScale(2, RoundingMode.HALF_UP));
+        attempt.setStatus(AttemptStatus.COMPLETED);
+        attemptRepository.save(attempt);
+        
+        return calculateResult(attempt);
+    }
+
+
+
+    @Transactional
+    public void gradeAnswerManually(UUID attemptId, UUID questionId, BigDecimal points, String comment, String authorEmail) {
+        UserTestAttempt attempt = findAttemptById(attemptId);
+        
+        if (!attempt.getTest().getUser().getEmail().equals(authorEmail)) {
+            throw new AccessDeniedException("Only the test owner can grade answers.");
+        }
+
+        UserAnswer answer = userAnswerRepository.findByAttempt_AttemptIdAndQuestion_QuestionId(attemptId, questionId)
+                .orElseThrow(() -> new EntityNotFoundException("Answer not found for question: " + questionId));
+
+        Question q = answer.getQuestion();
+        BigDecimal maxWeight = BigDecimal.valueOf(q.getWeight() != null ? q.getWeight() : 1.0);
+
+        if (points.compareTo(maxWeight) > 0) {
+            throw new IllegalArgumentException("Score cannot exceed the question weight (" + maxWeight + ")");
+        }
+
+        answer.setAwardedScore(points);
+        answer.setTeacherComment(comment);
+        
+        answer.setIsCorrect(points.compareTo(BigDecimal.ZERO) > 0);
+
+        userAnswerRepository.save(answer);
+    }
+
+
+
+
+
 
     private String getFullName(User user) {
         if (user.getProfile() != null) {
@@ -411,17 +461,14 @@ public class TestAttemptService {
             case MULTIPLE_CHOICE:
                 java.util.List<ChoiceOption> optionsList = new java.util.ArrayList<>(question.getChoiceOptions());
                 if (Boolean.FALSE.equals(isFixedAnswerOrder)) {
-                    // Якщо false -> Перемішуємо (Рандом)
                     java.util.Collections.shuffle(optionsList);
                 } else {
-                    // Якщо true -> Сортуємо стабільно за ID
                     optionsList.sort(java.util.Comparator.comparing(ChoiceOption::getOptionId));
                 }
                 builder.choiceOptions(optionsList.stream()
                         .map(o -> QuestionTakeResponse.ChoiceOptionTakeDTO.builder()
                                 .optionId(o.getOptionId())
                                 .optionText(o.getOptionText())
-                                // додайте imageUrl, якщо він є в DTO
                                 .build())
                         .collect(Collectors.toList()));
                 break;
@@ -455,35 +502,30 @@ public class TestAttemptService {
 
     
     private TestAttemptReviewResponse.QuestionReviewDTO mapToQuestionReview(Question q, UserAnswer answer) {
-    // 1. Визначаємо, чи правильна відповідь (якщо відповіді немає — то false)
     boolean isAnswerPresent = (answer != null);
     boolean isCorrect = isAnswerPresent && Boolean.TRUE.equals(answer.getIsCorrect());
 
-    // 2. Базове наповнення даними з питання
     TestAttemptReviewResponse.QuestionReviewDTO.QuestionReviewDTOBuilder builder = TestAttemptReviewResponse.QuestionReviewDTO.builder()
             .questionId(q.getQuestionId())
             .questionText(q.getQuestionText())
             .type(q.getQuestionType())
             .comment(q.getComment())
+            .weight(q.getWeight() != null ? q.getWeight() : 1.0)
             .isCorrect(isCorrect);
 
-    // 3. Заповнення специфічних полів залежно від типу
     switch (q.getQuestionType()) {
         case SINGLE_CHOICE:
         case MULTIPLE_CHOICE:
-            // Всі опції
             List<ChoiceOptionDTO> allOptions = q.getChoiceOptions().stream()
                     .map(o -> new ChoiceOptionDTO(o.getOptionId(), o.getOptionText(), o.getImageUrl(), o.isCorrect()))
                     .collect(Collectors.toList());
 
-            // Опції, які вибрав юзер (безпечна перевірка на null)
             List<Long> userSelectedIds = isAnswerPresent 
                     ? answer.getChoices().stream()
                         .map(c -> c.getSelectedOption().getOptionId())
                         .collect(Collectors.toList())
                     : java.util.Collections.emptyList();
 
-            // Правильні опції (фільтруємо з існуючого списку, не чіпаємо БД зайвий раз)
             List<Long> correctIds = q.getChoiceOptions().stream()
                     .filter(ChoiceOption::isCorrect)
                     .map(ChoiceOption::getOptionId)
@@ -492,28 +534,24 @@ public class TestAttemptService {
             builder.options(allOptions)
                     .selectedOptionIds(userSelectedIds)
                     .correctOptionIds(correctIds)
-                    .userAnswer(isAnswerPresent ? "" : "(Немає відповіді)") // Текстовий маркер для зручності
+                    .userAnswer(isAnswerPresent ? "" : "(Немає відповіді)") 
                     .correctAnswer("");
             break;
 
         case TEXT:
-            // Відповідь юзера
             builder.userAnswer(isAnswerPresent ? answer.getGivenText() : "(Немає відповіді)");
             
-            // Правильна відповідь з БД
             textAnswerRepository.findByQuestion_QuestionId(q.getQuestionId())
                     .ifPresent(ta -> builder.correctAnswer(ta.getCorrectText()));
             break;
 
         case MATCHING:
-            // Пари юзера
             String userMatches = isAnswerPresent 
                     ? answer.getMatchings().stream()
                         .map(m -> m.getMatchingPair().getPrompt() + " — " + m.getSelectedAnswerText())
                         .collect(Collectors.joining("\n"))
                     : "(Немає відповіді)";
             
-            // Правильні пари (з питання)
             String correctMatches = q.getMatchingPairs().stream()
                     .map(p -> p.getPrompt() + " — " + p.getAnswer())
                     .collect(Collectors.joining("\n"));

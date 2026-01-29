@@ -8,6 +8,7 @@ import lombok.Data;
 public class TestAnalyticsDTO {
     private int totalAttempts;  
     private int passedCount;    
-    private int failedCount;    
+    private int failedCount;   
+    private int inReviewCount; 
     private double averageScore; 
 }
