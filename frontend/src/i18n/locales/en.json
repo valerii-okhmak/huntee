@@ -723,7 +723,7 @@
     }
   },
   "testReviewGrading": {
-    "score": "Your Score",
+    "score": "Score",
     "passCondition": "You need at least 60% to pass",
     "myTests": "To My Tests"
   },
@@ -891,5 +891,154 @@
       "serverError": "Server error.",
       "unknown": "Unknown error."
     }
+  },"confirmDeleteTestModal": {
+    "title": "DELETE TEST?",
+    "close": "Close",
+    "confirmText": "Are you sure you want to delete",
+    "warning": "This action cannot be undone.",
+    "cancel": "No, keep",
+    "delete": "Yes, delete"
+  },
+  "confirmFinalizeModal": {
+    "title": "FINISH REVIEW?",
+    "close": "Close",
+    "confirmText": "Are you sure you want to finish grading?",
+    "warning": "The student will immediately see their final score. This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Yes, finish"
+  },
+  "confirmTestCreateModal": {
+    "title": "FINISH TEST CREATION?",
+    "close": "Close",
+    "questionCount": "Your test contains this many questions:",
+    "scheduledFor": "Test scheduled for",
+    "at": "at",
+    "noDate": "Start date and time not specified.",
+    "editable": "You can edit the test later.",
+    "cancel": "No, return to editing",
+    "confirm": "Yes, finish",
+    "saving": "Saving..."
+  },
+  "confirmTestEndModal": {
+    "title": "ATTENTION!",
+    "close": "Close",
+    "confirmText": "Are you sure you want to finish the test?",
+    "warning": "After confirmation, it will be impossible to change answers.",
+    "unansweredCount": "Unanswered questions",
+    "savedInfo": "After completion, the test will be saved in \"My Tests\".",
+    "cancel": "Go back",
+    "finish": "Finish Test"
+  },
+  "coursesModal": {
+    "title": "Add Certificate",
+    "close": "Close",
+    "labels": {
+      "name": "Name",
+      "link": "Certificate Link",
+      "desc": "Description"
+    },
+    "placeholders": {
+      "name": "E.g.: React Developer",
+      "desc": "Short description of the certificate"
+    },
+    "save": "Save"
+  },
+  "editProfileModal": {
+    "title": "Edit Profile",
+    "close": "Close",
+    "changePhoto": "Change Photo",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "birthDate": "Date of Birth",
+    "placeholders": {
+      "firstName": "First Name",
+      "lastName": "Last Name"
+    },
+    "save": "Save"
+  },
+  "educationModal": {
+    "title": "Education",
+    "close": "Close",
+    "labels": {
+      "institution": "Institution",
+      "speciality": "Speciality"
+    },
+    "placeholders": {
+      "institution": "Add your university",
+      "speciality": "Add your speciality"
+    },
+    "save": "Save"
+  },
+  "errorModal": {
+    "defaultTitle": "ERROR",
+    "defaultMessage": "An unexpected error occurred. Please try again later.",
+    "close": "Close",
+    "closeBtn": "Understood"
+  },
+  "experienceModal": {
+    "title": "Add Project",
+    "close": "Close",
+    "labels": {
+      "name": "Name",
+      "link": "Project Link",
+      "desc": "Description"
+    },
+    "placeholders": {
+      "name": "E.g.: My Portfolio App",
+      "desc": "Short project description"
+    },
+    "save": "Save"
+  },
+  "finishTestInfoModal": {
+    "title": "TEST COMPLETED!",
+    "close": "Close",
+    "scoreText": "You scored {{score}} / {{total}} points.",
+    "teacherNote": "Your score may be changed by the teacher if necessary!",
+    "reviewNote": "You can review your answers after the testing is completed.",
+    "understood": "Understood"
+  },
+  "inviteModal": {
+    "title": "INVITE PARTICIPANTS",
+    "close": "Close",
+    "subtitle": "You can invite participants to take the test in a way convenient for you:",
+    "options": {
+      "email": "Send invitation by email.",
+      "link": "Join via link."
+    },
+    "methods": {
+      "email": "Send via email",
+      "link": "Join via link"
+    },
+    "copied": "Link copied!",
+    "success": "Invitation sent successfully!",
+    "errors": {
+      "emptyEmail": "Please enter an email",
+      "generic": "Error sending invitation"
+    },
+    "cancel": "Cancel",
+    "sendBtn": "Send Invite",
+    "copyBtn": "Copy",
+    "sending": "Sending..."
+  },
+  "passwordModal": {
+    "title": "Change Password",
+    "close": "Close",
+    "desc": "We recommend changing your password periodically to prevent unauthorized access to your account.",
+    "placeholders": {
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm New Password"
+    },
+    "errors": {
+      "mismatch": "Your new passwords do not match",
+      "failed": "Failed to change password. Check your input."
+    },
+    "save": "Save"
+  },
+  "startTestErrorModal": {
+    "title": "ACCESS ERROR",
+    "close": "Close",
+    "defaultMessage": "Failed to start the test. Time may have expired or you are not registered.",
+    "understood": "Understood"
   }
 }

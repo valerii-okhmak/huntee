@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import ModalMini from "./ModalMini";
 import "./ModalWindow.css";
 
@@ -6,11 +7,13 @@ const ConfirmTestCreateModal = ({
   isOpen, 
   onClose, 
   onConfirm, 
-  questionsCount, // отримуємо кількість
-  startDate,      // отримуємо дату
-  startTime,      // отримуємо час
+  questionsCount, 
+  startDate,      
+  startTime,      
   loading = false,
 }) => {
+  const { t } = useTranslation();
+
   if (!isOpen) return null;
 
   return (
@@ -18,7 +21,7 @@ const ConfirmTestCreateModal = ({
       <button
         className="modal-close"
         onClick={onClose}
-        aria-label="Закрити"
+        aria-label={t('confirmTestCreateModal.close')}
         disabled={loading}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
@@ -27,23 +30,22 @@ const ConfirmTestCreateModal = ({
       </button>
 
       <div className="confirm-modal">
-        <h3 className="modalmini-title">ЗАВЕРШИТИ СТВОРЕННЯ ТЕСТУ?</h3>
+        <h3 className="modalmini-title">{t('confirmTestCreateModal.title')}</h3>
 
         <p className="modalmini-subtitle">
-          Ваш тест містить таку кількість запитань: <strong>{questionsCount}</strong>
+          {t('confirmTestCreateModal.questionCount')} <strong>{questionsCount}</strong>
         </p>
 
-        {/* Відображаємо дату, тільки якщо вона є */}
         {startDate !== 'не вказано' ? (
           <p className="modalmini-subtitle">
-            Тест заплановано на <strong>{startDate}</strong> о <strong>{startTime}</strong>.
+            {t('confirmTestCreateModal.scheduledFor')} <strong>{startDate}</strong> {t('confirmTestCreateModal.at')} <strong>{startTime}</strong>.
           </p>
         ) : (
-          <p className="modalmini-subtitle">Дата та час початку не вказані.</p>
+          <p className="modalmini-subtitle">{t('confirmTestCreateModal.noDate')}</p>
         )}
 
         <p className="modalmini-subtitle">
-          Ви зможете відредагувати тест пізніше.
+          {t('confirmTestCreateModal.editable')}
         </p>
 
         <div className="modalmini-buttons">
@@ -52,7 +54,7 @@ const ConfirmTestCreateModal = ({
             onClick={onClose}
             disabled={loading}
           >
-            Ні, повернутися до редагування
+            {t('confirmTestCreateModal.cancel')}
           </button>
 
           <button
@@ -60,7 +62,7 @@ const ConfirmTestCreateModal = ({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? "Збереження..." : "Так, завершити"}
+            {loading ? t('confirmTestCreateModal.saving') : t('confirmTestCreateModal.confirm')}
           </button>
         </div>
       </div>
