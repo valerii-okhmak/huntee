@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import translationEN from './locales/en.json';
 import translationUK from './locales/uk.json';
+import translationDE from './locales/de.json';
 
 const resources = {
   en: {
@@ -12,6 +13,9 @@ const resources = {
   uk: {
     translation: translationUK,
   },
+  de: {
+    translation: translationDE,
+  },
 };
 
 i18n
@@ -19,8 +23,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'uk', 
-    supportedLngs: ['uk', 'en'], 
+    fallbackLng: 'en', 
+    supportedLngs: ['en', 'uk', 'de'], 
     
     interpolation: {
       escapeValue: false, 
