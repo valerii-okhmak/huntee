@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import './TestReviewQuestions.css';
 import { useNavigate } from "react-router-dom";
 
 const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
+    const { t } = useTranslation();
     const [points, setPoints] = useState("");
     const [comment, setComment] = useState("");
 
@@ -14,7 +16,7 @@ const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
     const renderQuestionContent = () => {
         const commentBlock = q.comment ? (
             <div className="preview-comment" style={{ marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff' }}>
-                <small style={{ fontWeight: 'bold', color: '#555' }}>Підказка:</small>
+                <small style={{ fontWeight: 'bold', color: '#555' }}>{t('testReviewQuestions.hint')}:</small>
                 <p style={{ margin: 0, fontSize: '14px' }}>{q.comment}</p>
             </div>
         ) : null;
@@ -61,11 +63,11 @@ const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
                             style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', backgroundColor: '#f9f9f9' }}
                         />
                         <div style={{ marginTop: '10px' }}>
-                            <p><strong>Правильна відповідь:</strong> {q.correctAnswer}</p>
+                            <p><strong>{t('testReviewQuestions.correctAnswer')}:</strong> {q.correctAnswer}</p>
                             
                             {isRated && (
                                 <small style={{ color: q.isCorrect ? '#28a745' : '#C32C2C', fontWeight: 'bold' }}>
-                                    {q.isCorrect ? "Зараховано" : "Не зараховано"}
+                                    {q.isCorrect ? t('testReviewQuestions.graded') : t('testReviewQuestions.notGraded')}
                                 </small>
                             )}
                         </div>
@@ -76,10 +78,10 @@ const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
                 return (
                     <>
                          <div className="code-preview" style={{ background: '#ffffff', border: '1px solid #ccc', padding: '15px', borderRadius: '5px', fontFamily: 'monospace' }}>
-                            <div style={{ marginBottom: '10px', color: '#007bff', fontWeight: 'bold' }}>Мова: {q.language}</div>
-                            <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontSize: '14px' }}>{q.userCode || "// Код відсутній"}</pre>
+                            <div style={{ marginBottom: '10px', color: '#007bff', fontWeight: 'bold' }}>{t('testReviewQuestions.language')}: {q.language}</div>
+                            <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontSize: '14px' }}>{q.userCode || "// " + t('testReviewQuestions.codeMissing')}</pre>
                             <div style={{ marginTop: '15px', borderTop: '1px solid #eee', paddingTop: '10px', fontSize: '12px', color: '#666' }}>
-                                <strong>Тест-кейси:</strong> {q.testCases}
+                                <strong>{t('testReviewQuestions.testCases')}:</strong> {q.testCases}
                             </div>
                         </div>
                         {commentBlock}
@@ -99,11 +101,11 @@ const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
 
             {isGradingMode && q.type === 'TEXT' && (
                 <div className="manual-grading-panel" style={{ marginTop: '20px', padding: '15px', background: '#eef2f3', borderRadius: '8px', border: '1px solid #d1d1d1' }}>
-                    <h4 style={{ margin: '0 0 10px 0', fontSize: '16px' }}>Перевірка</h4>
+                    <h4 style={{ margin: '0 0 10px 0', fontSize: '16px' }}>{t('testReviewQuestions.manualGrading')}</h4>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                         <input 
                             type="number" 
-                            placeholder="Бали" 
+                            placeholder={t('testReviewQuestions.points')} 
                             value={points}
                             max={q.weight || 1.0} 
                             onChange={e => setPoints(e.target.value)}
@@ -111,7 +113,7 @@ const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
                         />
                         <input 
                             type="text" 
-                            placeholder="Коментар студенту" 
+                            placeholder={t('testReviewQuestions.commentStudent')} 
                             value={comment}
                             onChange={e => setComment(e.target.value)}
                             style={{ flex: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -120,12 +122,12 @@ const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
                             onClick={handleSave}
                             style={{ background: '#28a745', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer' }}
                         >
-                            Зберегти
+                            {t('testReviewQuestions.save')}
                         </button>
                     </div>
                     {q.isCorrect !== null && (
                          <div style={{ marginTop: '10px', fontSize: '14px', color: '#555' }}>
-                            <em>Поточний статус: {q.isCorrect ? "Зараховано" : "0 балів"}</em>
+                            <em>{t('testReviewQuestions.currentStatus')}: {q.isCorrect ? t('testReviewQuestions.graded') : "0 " + t('testReviewQuestions.pointsLabel')}</em>
                          </div>
                     )}
                 </div>
@@ -135,6 +137,7 @@ const QuestionItem = ({ q, index, isGradingMode, onGrade }) => {
 };
 
 const TestReviewQuestions = ({ questionsLink = [], isGradingMode, onGrade }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -152,14 +155,14 @@ const TestReviewQuestions = ({ questionsLink = [], isGradingMode, onGrade }) => 
                     ))
                 ) : (
                     <div style={{ textAlign: 'center', color: '#777', padding: '20px' }}>
-                        Завантаження питань або список порожній...
+                        {t('testReviewQuestions.loading')}
                     </div>
                 )}
 
                 {!isGradingMode && (
                     <div className="testDashboard__analytics-actions">
                         <button className="testDashboard__analytics-btn-dark" onClick={() => navigate('/')}>
-                            Завершити перегляд
+                            {t('testReviewQuestions.finishReview')}
                         </button>
                     </div>
                 )}

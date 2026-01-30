@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './SocialLogin.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
@@ -7,11 +8,10 @@ import { saveTokens } from '../../utils/auth';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const SocialLogin = ({ setError }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 1. Кожного разу, коли компонент маунтиться, перевіряємо чи є шлях "from"
-  // Якщо є, зберігаємо його в sessionStorage, щоб він не зник після взаємодії з Google
   useEffect(() => {
     if (location.state?.from?.pathname) {
       sessionStorage.setItem('redirectAfterLogin', location.state.from.pathname);
@@ -36,21 +36,17 @@ const SocialLogin = ({ setError }) => {
 
       saveTokens(response.data);
 
-      // 2. Пріоритет вибору шляху:
-      // Спочатку пробуємо state, потім sessionStorage, якщо все порожньо - /profile
       const redirectPath = location.state?.from?.pathname 
                            || sessionStorage.getItem('redirectAfterLogin') 
                            || '/profile';
 
-      // Очищуємо тимчасове сховище
       sessionStorage.removeItem('redirectAfterLogin');
 
-      // Переходимо
       navigate(redirectPath, { replace: true });
       
     } catch (err) {
-      console.error('Google авторизація не вдалася:', err);
-      const errorMsg = err.response?.data?.message || 'Не вдалося увійти через Google.';
+      console.error('Google authorization failed:', err);
+      const errorMsg = err.response?.data?.message || t('socialLogin.googleError');
       setError(errorMsg);
     }
   };
@@ -59,7 +55,7 @@ const SocialLogin = ({ setError }) => {
     <div className="social-login">
       <GoogleLogin 
         onSuccess={handleGoogleLogin}
-        onError={() => setError('Помилка при логіні з Google')}
+        onError={() => setError(t('socialLogin.googleLoginFailed'))}
       />
     </div>
   );

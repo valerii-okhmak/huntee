@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import ModalMini from './ModalMini';
 import Loader from '../loader/Loader';
 import './AiGenerationModal.css'; 
 
 const AiGenerationModal = ({ isOpen, onClose, onGenerate, loading, defaultTopic, defaultLevel }) => {
+    const { t } = useTranslation();
     const [topic, setTopic] = useState(defaultTopic || '');
     const [count, setCount] = useState(5);
     const [difficulty, setDifficulty] = useState(defaultLevel || 'JUNIOR');
@@ -19,7 +21,7 @@ const AiGenerationModal = ({ isOpen, onClose, onGenerate, loading, defaultTopic,
 
     const handleGenerateClick = () => {
         if (!topic.trim()) {
-            alert("Будь ласка, вкажіть тему."); 
+            alert(t('aiGenerationModal.alertTopic')); 
             return;
         }
         onGenerate({ topic, count, difficulty, type, language });
@@ -36,24 +38,24 @@ const AiGenerationModal = ({ isOpen, onClose, onGenerate, loading, defaultTopic,
             </button>
             
             <div className="invite-modal">
-                <h3 className="modalmini-title">✨ AI Генерація Питань</h3>
-                <p className="modalmini-subtitle">Налаштуйте параметри для автоматичної генерації.</p>
+                <h3 className="modalmini-title">{t('aiGenerationModal.title')}</h3>
+                <p className="modalmini-subtitle">{t('aiGenerationModal.subtitle')}</p>
 
                 <div className="ai-modal-content-wrapper">
                     
                     <div className="modal-form" style={{opacity: loading ? 0.5 : 1, transition: 'opacity 0.3s'}}>
                         <div>
-                            <label className="modal-label" style={{fontSize: '16px'}}>Тема:</label>
-                            <input type="text" className="modal-input" value={topic} onChange={e => setTopic(e.target.value)} placeholder="Напр. Java Collections" disabled={loading}/>
+                            <label className="modal-label" style={{fontSize: '16px'}}>{t('aiGenerationModal.labels.topic')}:</label>
+                            <input type="text" className="modal-input" value={topic} onChange={e => setTopic(e.target.value)} placeholder={t('aiGenerationModal.placeholders.topic')} disabled={loading}/>
                         </div>
 
                         <div style={{display: 'flex', gap: '20px'}}>
                              <div style={{flex: 1}}>
-                                <label className="modal-label" style={{fontSize: '16px'}}>Кількість:</label>
+                                <label className="modal-label" style={{fontSize: '16px'}}>{t('aiGenerationModal.labels.count')}:</label>
                                 <input type="number" className="modal-input" value={count} onChange={e => setCount(e.target.value)} min="1" max="20" disabled={loading}/>
                             </div>
                             <div style={{flex: 1}}>
-                                <label className="modal-label" style={{fontSize: '16px'}}>Рівень:</label>
+                                <label className="modal-label" style={{fontSize: '16px'}}>{t('aiGenerationModal.labels.level')}:</label>
                                 <select className="modal-select" value={difficulty} onChange={e => setDifficulty(e.target.value)} disabled={loading}>
                                     <option value="TRAINEE">Trainee</option>
                                     <option value="JUNIOR">Junior</option>
@@ -64,7 +66,7 @@ const AiGenerationModal = ({ isOpen, onClose, onGenerate, loading, defaultTopic,
                         </div>
                          <div style={{display: 'flex', gap: '20px'}}>
                             <div style={{flex: 1}}>
-                                <label className="modal-label" style={{fontSize: '16px'}}>Тип питань:</label>
+                                <label className="modal-label" style={{fontSize: '16px'}}>{t('aiGenerationModal.labels.type')}:</label>
                                 <select className="modal-select" value={type} onChange={e => setType(e.target.value)} disabled={loading}>
                                     <option value="SINGLE_CHOICE">Single Choice</option>
                                     <option value="MULTIPLE_CHOICE">Multiple Choice</option>
@@ -74,7 +76,7 @@ const AiGenerationModal = ({ isOpen, onClose, onGenerate, loading, defaultTopic,
                             </div>
                             {type === 'CODE' && (
                                 <div style={{flex: 1}}>
-                                    <label className="modal-label" style={{fontSize: '16px'}}>Мова:</label>
+                                    <label className="modal-label" style={{fontSize: '16px'}}>{t('aiGenerationModal.labels.language')}:</label>
                                     <select className="modal-select" value={language} onChange={e => setLanguage(e.target.value)} disabled={loading}>
                                         <option value="java">Java</option>
                                         <option value="python">Python</option>
@@ -89,15 +91,15 @@ const AiGenerationModal = ({ isOpen, onClose, onGenerate, loading, defaultTopic,
                     {loading && (
                         <div className="ai-loading-overlay">
                             <Loader />
-                            <p style={{marginTop: '15px', fontWeight: 'bold', color: '#555'}}>Генеруємо питання...</p>
-                            <small style={{color: '#777'}}>Це може зайняти до 30 секунд</small>
+                            <p style={{marginTop: '15px', fontWeight: 'bold', color: '#555'}}>{t('aiGenerationModal.loading.generating')}</p>
+                            <small style={{color: '#777'}}>{t('aiGenerationModal.loading.wait')}</small>
                         </div>
                     )}
                 </div>
 
                 <div className="modalmini-buttons" style={{marginTop: '20px'}}>
                     <button className="modalmini-button modalmini-button-cancel" onClick={onClose} disabled={loading}>
-                        Скасувати
+                        {t('aiGenerationModal.buttons.cancel')}
                     </button>
                     <button 
                         className="modalmini-button modalmini-button-submit" 
@@ -105,7 +107,7 @@ const AiGenerationModal = ({ isOpen, onClose, onGenerate, loading, defaultTopic,
                         disabled={loading}
                         style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7', color: 'white', opacity: loading ? 0.7 : 1 }}
                     >
-                        {loading ? 'Генерація...' : '✨ Згенерувати'}
+                        {loading ? t('aiGenerationModal.buttons.generating') : t('aiGenerationModal.buttons.generate')}
                     </button>
                 </div>
             </div>

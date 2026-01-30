@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './RegForm.css';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,11 +7,10 @@ import { register, verifyEmail } from '../../services/authService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-
 const RegForm = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Поля реєстрації
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [age, setAge] = useState('');
@@ -20,13 +20,10 @@ const RegForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
-  // Підтвердження пошти
   const [confirmationStep, setConfirmationStep] = useState(false);
   const [codeDigits, setCodeDigits] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
 
-  // Помилки та стани
   const [errors, setErrors] = useState({
     firstName: '',
     lastName: '',
@@ -46,11 +43,11 @@ const RegForm = () => {
       return;
     }
     if (password !== confirmpassword) {
-      setErrors((prev) => ({ ...prev, confirmpassword: 'Паролі не співпадають.' }));
+      setErrors((prev) => ({ ...prev, confirmpassword: t('regForm.errors.passwordMismatch') }));
     } else {
       setErrors((prev) => ({ ...prev, confirmpassword: '' }));
     }
-  }, [password, confirmpassword]);
+  }, [password, confirmpassword, t]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -60,27 +57,27 @@ const RegForm = () => {
     let hasError = false;
 
     if (!firstName.trim()) {
-      tempErrors.firstName = "Імʼя обовʼязкове.";
+      tempErrors.firstName = t('regForm.errors.firstNameRequired');
       hasError = true;
     }
     if (!lastName.trim()) {
-      tempErrors.lastName = "Прізвище обовʼязкове.";
+      tempErrors.lastName = t('regForm.errors.lastNameRequired');
       hasError = true;
     }
     if (!age || isNaN(age) || age <= 0) {
-      tempErrors.age = 'Введіть коректний вік.';
+      tempErrors.age = t('regForm.errors.invalidAge');
       hasError = true;
     }
     if (!validateEmail(email)) {
-      tempErrors.email = 'Введіть коректну пошту.';
+      tempErrors.email = t('regForm.errors.invalidEmail');
       hasError = true;
     }
     if (!password || password.length < 6) {
-      tempErrors.password = 'Пароль повинен містити щонайменше 6 символів.';
+      tempErrors.password = t('regForm.errors.passwordLength');
       hasError = true;
     }
     if (password !== confirmpassword) {
-      tempErrors.confirmpassword = 'Паролі не співпадають.';
+      tempErrors.confirmpassword = t('regForm.errors.passwordMismatch');
       hasError = true;
     }
 
@@ -98,19 +95,19 @@ const RegForm = () => {
 
       switch (status) {
         case 400:
-          generalMsg = message || 'Некоректні дані. Перевірте всі поля.';
+          generalMsg = message || t('regForm.errors.invalidData');
           break;
         case 403:
-          generalMsg = message || 'Доступ заборонено. Дозволено лише пошти @lpnu.ua.';
+          generalMsg = message || t('regForm.errors.accessDenied');
           break;
         case 409:
-          generalMsg = message || 'Користувач з такою поштою вже зареєстрований.';
+          generalMsg = message || t('regForm.errors.userExists');
           break;
         case 500:
-          generalMsg = 'Помилка сервера. Спробуйте пізніше.';
+          generalMsg = t('regForm.errors.serverError');
           break;
         default:
-          generalMsg = 'Невідома помилка. Спробуйте ще раз.';
+          generalMsg = t('regForm.errors.unknownError');
       }
 
       setErrors((prev) => ({ ...prev, general: generalMsg }));
@@ -125,7 +122,7 @@ const RegForm = () => {
 
     const code = codeDigits.join('');
     if (code.length !== 6) {
-      setErrors((prev) => ({ ...prev, general: 'Введіть 6-значний код підтвердження.' }));
+      setErrors((prev) => ({ ...prev, general: t('regForm.errors.invalidCodeLength') }));
       return;
     }
 
@@ -140,13 +137,13 @@ const RegForm = () => {
 
       switch (status) {
         case 400:
-          generalMsg = message || 'Невірний код підтвердження або електронна пошта.';
+          generalMsg = message || t('regForm.errors.invalidCode');
           break;
         case 500:
-          generalMsg = 'Помилка сервера. Спробуйте ще раз пізніше.';
+          generalMsg = t('regForm.errors.serverErrorRetry');
           break;
         default:
-          generalMsg = 'Помилка підтвердження. Спробуйте знову.';
+          generalMsg = t('regForm.errors.confirmationError');
       }
 
       setErrors((prev) => ({ ...prev, general: generalMsg }));
@@ -192,7 +189,7 @@ const RegForm = () => {
         <div className="top-part-reg">
           <div className="left-side-reg">
             <h1>
-              Реєстрація на
+              {t('regForm.title')}
               <br />
               Hun<span className="special-t">t</span>ee
             </h1>
@@ -201,7 +198,6 @@ const RegForm = () => {
           <div className="right-side-reg">
             {!confirmationStep ? (
               <>
-                {/* Ім'я */}
                 <div className="reg-input-box">
                   <input
                     name="firstName"
@@ -212,11 +208,10 @@ const RegForm = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                   />
-                  <label htmlFor="firstName" className="reg-input-label">Ім’я</label>
+                  <label htmlFor="firstName" className="reg-input-label">{t('regForm.labels.firstName')}</label>
                   {errors.firstName && <span className="input-error-message">{errors.firstName}</span>}
                 </div>
 
-                {/* Прізвище */}
                 <div className="reg-input-box">
                   <input
                     name="lastName"
@@ -227,11 +222,10 @@ const RegForm = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
-                  <label htmlFor="lastName" className="reg-input-label">Прізвище</label>
+                  <label htmlFor="lastName" className="reg-input-label">{t('regForm.labels.lastName')}</label>
                   {errors.lastName && <span className="input-error-message">{errors.lastName}</span>}
                 </div>
 
-                {/* Вік */}
                 <div className="reg-input-box">
                   <input
                     name="age"
@@ -243,11 +237,10 @@ const RegForm = () => {
                     onChange={(e) => setAge(e.target.value)}
                     min="0"
                   />
-                  <label htmlFor="age" className="reg-input-label">Вік</label>
+                  <label htmlFor="age" className="reg-input-label">{t('regForm.labels.age')}</label>
                   {errors.age && <span className="input-error-message">{errors.age}</span>}
                 </div>
 
-                {/* Пошта */}
                 <div className="reg-input-box">
                   <input
                     name="email"
@@ -258,11 +251,10 @@ const RegForm = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <label htmlFor="email" className="reg-input-label">Пошта</label>
+                  <label htmlFor="email" className="reg-input-label">{t('regForm.labels.email')}</label>
                   {errors.email && <span className="input-error-message">{errors.email}</span>}
                 </div>
 
-                {/* Пароль */}
                 <div className="reg-input-box password-box">
                   <input
                     name="password"
@@ -273,7 +265,7 @@ const RegForm = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  <label htmlFor="password" className="reg-input-label">Пароль</label>
+                  <label htmlFor="password" className="reg-input-label">{t('regForm.labels.password')}</label>
 
                   <span
                     className="toggle-password"
@@ -285,7 +277,6 @@ const RegForm = () => {
                   {errors.password && <span className="input-error-message">{errors.password}</span>}
                 </div>
 
-                {/* Підтвердження пароля */}
                 <div className="reg-input-box password-box">
                   <input
                     name="confirmpassword"
@@ -296,7 +287,7 @@ const RegForm = () => {
                     value={confirmpassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
-                  <label htmlFor="confirmpassword" className="reg-input-label">Підтвердіть пароль</label>
+                  <label htmlFor="confirmpassword" className="reg-input-label">{t('regForm.labels.confirmPassword')}</label>
 
                   <span
                     className="toggle-password"
@@ -308,7 +299,6 @@ const RegForm = () => {
                   {errors.confirmpassword && <span className="input-error-message">{errors.confirmpassword}</span>}
                 </div>
 
-                {/* Загальна помилка */}
                 {errors.general && <span className="input-error-message">{errors.general}</span>}
 
                 <button
@@ -316,13 +306,13 @@ const RegForm = () => {
                   className="reg-submit-button"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Відправка...' : 'Зареєструватися'}
+                  {isSubmitting ? t('regForm.buttons.sending') : t('regForm.buttons.register')}
                 </button>
               </>
             ) : (
               <>
                 <p className="confirm-text">
-                  Ми надіслали код підтвердження на <b>{email}</b>
+                  {t('regForm.confirmText')} <b>{email}</b>
                 </p>
 
                 <div className="code-inputs" style={{ display: 'flex', gap: '10px' }}>
@@ -351,7 +341,6 @@ const RegForm = () => {
                   ))}
                 </div>
 
-                {/* Помилка підтвердження */}
                 {errors.general && <span className="input-error-message">{errors.general}</span>}
 
                 <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
@@ -360,7 +349,7 @@ const RegForm = () => {
                     className="reg-submit-button"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Перевірка...' : 'Підтвердити'}
+                    {isSubmitting ? t('regForm.buttons.verifying') : t('regForm.buttons.confirm')}
                   </button>
                   <button
                     type="button"
@@ -368,7 +357,7 @@ const RegForm = () => {
                     onClick={handleGoBack}
                     disabled={isSubmitting}
                   >
-                    Назад
+                    {t('regForm.buttons.back')}
                   </button>
                 </div>
               </>
@@ -381,7 +370,7 @@ const RegForm = () => {
         <div className="bottom-part-reg">
           <SocialLogin setError={(msg) => setErrors((prev) => ({ ...prev, general: msg }))} />
           <p className="reg-footer">
-            Уже є акаунт? <Link to="/login">Авторизуватися</Link>
+            {t('regForm.haveAccount')} <Link to="/login">{t('regForm.login')}</Link>
           </p>
         </div>
       </form>

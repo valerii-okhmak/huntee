@@ -1,11 +1,13 @@
-import React, { useState } from 'react'; // 1. Імпортуємо useState
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Test from '../Test/Test';
 import './TestsBlock.css';
 import lupa from '../../../img/search-icon.png';
 
 const TestsBlock = ({selectedLocations, allTests}) => {
-
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
+  
   const filteredTests = allTests
     .filter(test => 
       selectedLocations.length === 0 || selectedLocations.includes(test.location)
@@ -28,7 +30,7 @@ const TestsBlock = ({selectedLocations, allTests}) => {
 
           <input 
             type="text" 
-            placeholder="Пошук за назвою, сферою, локацією..."
+            placeholder={t('testsBlock.placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)} 
           />

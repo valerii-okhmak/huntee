@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import { useTranslation } from 'react-i18next';
 import './TestCreation_SelectField.css'
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 import 'moment/locale/uk';
+import moment from 'moment';
 
 const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fieldName, fieldOptions, error}) => {
+  const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuDateOpen, setMenuDateOpen] = useState(true);
   const [bigMenuOpen, setBigMenuOpen] = useState(false);
   const [classification, setClassification] = useState('none');
-  const [timerType, setTimerType] = useState('none'); // none | fixed
+  const [timerType, setTimerType] = useState('none');
 
+  useEffect(() => {
+    moment.locale(i18n.language === 'uk' ? 'uk' : 'en');
+  }, [i18n.language]);
 
-  // Локальний стан для time (як раніше) — використовує переданий selectedOption
   const handleTimeChange = (typePart, value) => {
     const num = Math.max(0, parseInt(value) || 0);
     let total = 0;
@@ -25,11 +30,9 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
 
     setSelectedOption(total);
   };
-
   
   const [items, setItems] = useState([]);
 
-  // Ініціалізація items з selectedOption (string JSON або масив)
   useEffect(() => {
     if (type !== 'list') return;
     if (!selectedOption) {
@@ -41,7 +44,6 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
         const parsed = JSON.parse(selectedOption);
         setItems(Array.isArray(parsed) ? parsed : []);
       } catch (err) {
-        // якщо не валідний JSON — можна спробувати розділити по новому рядку як fallback
         if (typeof selectedOption === 'string' && selectedOption.trim()) {
           setItems([selectedOption]);
         } else {
@@ -55,12 +57,10 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
     }
   }, [selectedOption, type]);
 
-  // Оновлення зовнішнього selectedOption у вигляді JSON-рядка
   const pushItemsToParent = (newItems) => {
     try {
       setSelectedOption(JSON.stringify(newItems));
     } catch (err) {
-      // fallback: передаємо масив напряму
       setSelectedOption(newItems);
     }
   }
@@ -110,8 +110,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
             value={selectedOption}
             onChange={setSelectedOption}
             isSearchable
-            placeholder="Пошук"
-            // Додаємо клас has-error безпосередньо селекту
+            placeholder={t('testCreationSelectField.search')}
             className={`select-field-tc__custom-select-container ${error ? 'has-error' : ''}`}
             classNamePrefix="select-field-tc__custom-select"
             onMenuOpen={() => setMenuOpen(true)}
@@ -133,13 +132,13 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
             value={selectedOption}
             onChange={setSelectedOption}
             inputProps={{
-              placeholder: 'Оберіть дату та час',
+              placeholder: t('testCreationSelectField.datePlaceholder'),
               onFocus: () => setMenuDateOpen(true),
               className: `select-field-tc__custom-input ${error ? 'error' : ''}` 
             }}
             dateFormat="DD.MM.YYYY"
             timeFormat="HH:mm"
-            locale="uk"
+            locale={i18n.language === 'uk' ? 'uk' : 'en'}
             open={true}
           />
         }
@@ -159,7 +158,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 }}
               />
               <div className="question-classification__label">
-                Без обмеження часу
+                {t('testCreationSelectField.time.none')}
               </div>
             </label>
 
@@ -175,7 +174,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 }}
               />
               <div className="question-classification__label">
-                Фіксований час
+                {t('testCreationSelectField.time.fixed')}
               </div>
             </label>
 
@@ -220,7 +219,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 checked={classification === 'none'}
                 onChange={() => setClassification('none')}
               />
-              <div className="question-classification__label">Не класифікувати питання</div>
+              <div className="question-classification__label">{t('testCreationSelectField.class.none')}</div>
             </label>
 
             <label className="question-classification__option">
@@ -231,7 +230,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 checked={classification === 'custom'}
                 onChange={() => setClassification('custom')}
               />
-              <div className="question-classification__label">Додати класи для тесту</div>
+              <div className="question-classification__label">{t('testCreationSelectField.class.custom')}</div>
             </label>
 
             {classification === 'custom' && (
@@ -241,7 +240,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                   options={fieldOptions}
                   value={selectedOption}
                   onChange={setSelectedOption}
-                  placeholder="Пошук"
+                  placeholder={t('testCreationSelectField.search')}
                   className='question-classification__select'
                   classNamePrefix="select-field-tc__custom-select"
                   onMenuOpen={() => setBigMenuOpen(true)}
@@ -259,12 +258,11 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 type="radio"
                 name="testType"
                 value="public"
-                // Перевіряємо за значенням об'єкта або просто стейтом
                 checked={selectedOption?.value === 'public'}
-                onChange={() => setSelectedOption({ value: 'public', label: 'Публічний' })}
+                onChange={() => setSelectedOption({ value: 'public', label: t('testCreationSelectField.testType.public') })}
               />
               <div className="question-classification__label">
-                Публічний
+                {t('testCreationSelectField.testType.public')}
               </div>
             </label>
 
@@ -274,17 +272,17 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 name="testType"
                 value="private"
                 checked={selectedOption?.value === 'private'}
-                onChange={() => setSelectedOption({ value: 'private', label: 'Приватний' })}
+                onChange={() => setSelectedOption({ value: 'private', label: t('testCreationSelectField.testType.private') })}
               />
               <div className="question-classification__label">
-                Приватний
+                 {t('testCreationSelectField.testType.private')}
               </div>
             </label>
             
             <p style={{ fontSize: '12px', color: '#666' }}>
               {selectedOption?.value === 'public' 
-                ? "Доступний усім користувачам платформи" 
-                : "Доступний лише за прямим посиланням або інвайтом"}
+                ? t('testCreationSelectField.testType.publicDesc') 
+                : t('testCreationSelectField.testType.privateDesc')}
             </p>
           </div>
         )}
@@ -297,7 +295,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 <input
                   type="text"
                   className="responsibilities-list__input"
-                  placeholder={`Обов'язок #${idx + 1}`}
+                  placeholder={t('testCreationSelectField.list.placeholder', { number: idx + 1 })}
                   value={it}
                   onChange={(e) => updateItem(idx, e.target.value)}
                 />
@@ -306,7 +304,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                     <button
                       type="button"
                       className="responsibilities-list__remove"
-                      title="Видалити"
+                      title={t('testCreationSelectField.list.remove')}
                       onClick={() => removeItem(idx)}
                     >
                       ✕
@@ -321,7 +319,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
               className="responsibilities-list__add"
               onClick={addItem}
             >
-              Додати обов'язок <span>+</span>
+              {t('testCreationSelectField.list.add')} <span>+</span>
             </button>
           </div>
         )}
@@ -333,12 +331,11 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 type="radio"
                 name="testQuestionsSorting"
                 value="fixed"
-                // Перевіряємо за значенням об'єкта або просто стейтом
                 checked={selectedOption?.value === 'fixed'}
-                onChange={() => setSelectedOption({ value: 'fixed', label: 'Фіксований порядок' })}
+                onChange={() => setSelectedOption({ value: 'fixed', label: t('testCreationSelectField.sorting.fixed') })}
               />
               <div className="question-classification__label">
-                Фіксований порядок
+                 {t('testCreationSelectField.sorting.fixed')}
               </div>
             </label>
 
@@ -348,17 +345,17 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 name="testQuestionsSorting"
                 value="random"
                 checked={selectedOption?.value === 'random'}
-                onChange={() => setSelectedOption({ value: 'random', label: 'Випадковий порядок' })}
+                onChange={() => setSelectedOption({ value: 'random', label: t('testCreationSelectField.sorting.random') })}
               />
               <div className="question-classification__label">
-                Випадковий порядок
+                 {t('testCreationSelectField.sorting.random')}
               </div>
             </label>
             
             <p style={{ fontSize: '12px', color: '#666' }}>
               {selectedOption?.value === 'fixed' 
-                ? "Порядок запитань не змінюється, збережено той, що створений" 
-                : "Порядок запитань змінюється випадковим чином при кожному проходженні тесту"}
+                ? t('testCreationSelectField.sorting.questionsFixedDesc')
+                : t('testCreationSelectField.sorting.questionsRandomDesc')}
             </p>
           </div>
         )}
@@ -370,12 +367,11 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 type="radio"
                 name="testAnswersSorting"
                 value="fixed"
-                // Перевіряємо за значенням об'єкта або просто стейтом
                 checked={selectedOption?.value === 'fixed'}
-                onChange={() => setSelectedOption({ value: 'fixed', label: 'Фіксований порядок' })}
+                onChange={() => setSelectedOption({ value: 'fixed', label: t('testCreationSelectField.sorting.fixed') })}
               />
               <div className="question-classification__label">
-                Фіксований порядок
+                 {t('testCreationSelectField.sorting.fixed')}
               </div>
             </label>
 
@@ -385,17 +381,17 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 name="testAnswersSorting"
                 value="random"
                 checked={selectedOption?.value === 'random'}
-                onChange={() => setSelectedOption({ value: 'random', label: 'Випадковий порядок' })}
+                onChange={() => setSelectedOption({ value: 'random', label: t('testCreationSelectField.sorting.random') })}
               />
               <div className="question-classification__label">
-                Випадковий порядок
+                {t('testCreationSelectField.sorting.random')}
               </div>
             </label>
             
             <p style={{ fontSize: '12px', color: '#666' }}>
               {selectedOption?.value === 'fixed' 
-                ? "Порядок відповідей не змінюється, збережено той, що створений" 
-                : "Порядок відповідей змінюється випадковим чином при кожному проходженні тесту"}
+                ? t('testCreationSelectField.sorting.answersFixedDesc')
+                : t('testCreationSelectField.sorting.answersRandomDesc')}
             </p>
           </div>
         )}
@@ -408,10 +404,10 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 name="showResults"
                 value="yes"
                 checked={selectedOption?.value === 'yes'}
-                onChange={() => setSelectedOption({ value: 'yes', label: 'Так' })}
+                onChange={() => setSelectedOption({ value: 'yes', label: t('testCreationSelectField.showResults.yes') })}
               />
               <div className="question-classification__label">
-                Так, показувати результати
+                 {t('testCreationSelectField.showResults.yes')}
               </div>
             </label>
 
@@ -421,17 +417,17 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 name="showResults"
                 value="no"
                 checked={selectedOption?.value === 'no'}
-                onChange={() => setSelectedOption({ value: 'no', label: 'Ні' })}
+                onChange={() => setSelectedOption({ value: 'no', label: t('testCreationSelectField.showResults.no') })}
               />
               <div className="question-classification__label">
-                Ні, не показувати результати
+                {t('testCreationSelectField.showResults.no')}
               </div>
             </label>
 
             <p style={{ fontSize: '12px', color: '#666' }}>
               {selectedOption?.value === 'yes'
-                ? "Результати тесту будуть показані після завершення"
-                : "Результати тесту не будуть показані після завершення"}
+                ? t('testCreationSelectField.showResults.yesDesc')
+                : t('testCreationSelectField.showResults.noDesc')}
             </p>
           </div>
         )}

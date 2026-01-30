@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './FieldsFilter.css';
 
 const FieldsFilter = ({ selected, onSelect, spheres }) => {
+  const { t } = useTranslation();
   const [hidden, setHidden] = useState(false);
 
   const toggleFilter = () => {
@@ -20,7 +22,7 @@ const FieldsFilter = ({ selected, onSelect, spheres }) => {
   return (
     <div className='fields_filter'>
       <div className='fields_filter_name'>
-        <h2 className='fields_filter_title'>СФЕРИ</h2>
+        <h2 className='fields_filter_title'>{t('fieldsFilter.title')}</h2>
         <div className='fields_filter_action' onClick={toggleFilter}>
           <div className={`fields_filter_button ${hidden ? 'plus' : ''}`}></div>
         </div>
@@ -47,7 +49,7 @@ const FieldsFilter = ({ selected, onSelect, spheres }) => {
           ))}
           {spheres.length === 0 && (
             <div style={{ fontSize: '12px', opacity: 0.5, padding: '5px 0' }}>
-              Немає доступних сфер
+              {t('fieldsFilter.noSpheres')}
             </div>
           )}
         </div>

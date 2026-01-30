@@ -1,33 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './TestCreationStartContainer.css';
 import SelectField from '../testCreation_SelectField/TestCreation_SelectField';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getAccessToken } from '../../utils/auth';
 
-const fieldOptions = [
-  { value: 'frontend', label: 'FRONTEND' },
-  { value: 'backend', label: 'BACKEND' },
-  { value: 'devops', label: 'DEVOPS' },
-  { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
-  { value: 'dataanalyst', label: 'DATA ANALYST' }
-];
-
-const levelOptions = [
-  { value: 'junior', label: 'JUNIOR' },
-  { value: 'middle', label: 'MIDDLE' },
-  { value: 'senior', label: 'SENIOR' },
-  { value: 'trainee', label: 'TRAINEE' },
-];
-
-const cityOptions = [
-  { value: 'ternopil', label: 'Тернопіль' },
-  { value: 'ivano-frankivsk', label: 'Івано-Франківськ' },
-  { value: 'lviv', label: 'Львів' },
-  { value: 'online', label: 'Онлайн' },
-];
-
 const TestCreationStartContainer = ({ mode, testId }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [testName, setTestName] = useState('');
@@ -36,16 +16,38 @@ const TestCreationStartContainer = ({ mode, testId }) => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [description, setDescription] = useState('');
   const [responsibilities, setResponsibilities] = useState('');
-const [startingDate, setStartingDate] = useState(new Date());
+  const [startingDate, setStartingDate] = useState(new Date());
   const [finishingDate, setFinishingDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(0);
 
-  const [selectedTestType, setSelectedTestType] = useState({ value: 'public', label: 'Публічний' });
-  const [selectedTestQuestionsSorting, setSelectedTestQuestionsSorting] = useState({ value: 'fixed', label: 'Фіксований порядок' });
-  const [selectedTestAnswersSorting, setSelectedTestAnswersSorting] = useState({ value: 'fixed', label: 'Фіксований порядок' });
-  const [selectedShowResults, setSelectedShowResults] = useState({ value: 'yes', label: 'Так' });
+  const [selectedTestType, setSelectedTestType] = useState({ value: 'public', label: t('testCreationStart.options.public') });
+  const [selectedTestQuestionsSorting, setSelectedTestQuestionsSorting] = useState({ value: 'fixed', label: t('testCreationStart.options.fixed') });
+  const [selectedTestAnswersSorting, setSelectedTestAnswersSorting] = useState({ value: 'fixed', label: t('testCreationStart.options.fixed') });
+  const [selectedShowResults, setSelectedShowResults] = useState({ value: 'yes', label: t('testCreationStart.options.yes') });
 
   const [errors, setErrors] = useState({});
+
+  const fieldOptions = [
+    { value: 'frontend', label: 'FRONTEND' },
+    { value: 'backend', label: 'BACKEND' },
+    { value: 'devops', label: 'DEVOPS' },
+    { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
+    { value: 'dataanalyst', label: 'DATA ANALYST' }
+  ];
+
+  const levelOptions = [
+    { value: 'junior', label: 'JUNIOR' },
+    { value: 'middle', label: 'MIDDLE' },
+    { value: 'senior', label: 'SENIOR' },
+    { value: 'trainee', label: 'TRAINEE' },
+  ];
+
+  const cityOptions = [
+    { value: 'ternopil', label: t('testCreationStart.cities.ternopil') },
+    { value: 'ivano-frankivsk', label: t('testCreationStart.cities.frankivsk') },
+    { value: 'lviv', label: t('testCreationStart.cities.lviv') },
+    { value: 'online', label: t('testCreationStart.cities.online') },
+  ];
 
   const refs = {
     testName: useRef(null),
@@ -64,64 +66,62 @@ const [startingDate, setStartingDate] = useState(new Date());
     axios.get(`/api/tests/${testId}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     }).then(res => {
-      const t = res.data;
+      const tData = res.data;
 
-      setTestName(t.testName);
-      setSelectedField(fieldOptions.find(o => o.value === t.sphere));
-      setSelectedLevel(levelOptions.find(o => o.value === t.level));
-      setSelectedCity(cityOptions.find(o => o.value === t.city));
-      setDescription(t.vacancyDescription || '');
-      setResponsibilities(t.responsibilities || '');
-      setStartingDate(t.startTime ? new Date(t.startTime) : null);
-      setFinishingDate(t.endTime ? new Date(t.endTime) : null);
-      setSelectedTime(t.durationMinutes || 0);
+      setTestName(tData.testName);
+      setSelectedField(fieldOptions.find(o => o.value === tData.sphere));
+      setSelectedLevel(levelOptions.find(o => o.value === tData.level));
+      setSelectedCity(cityOptions.find(o => o.value === tData.city));
+      setDescription(tData.vacancyDescription || '');
+      setResponsibilities(tData.responsibilities || '');
+      setStartingDate(tData.startTime ? new Date(tData.startTime) : null);
+      setFinishingDate(tData.endTime ? new Date(tData.endTime) : null);
+      setSelectedTime(tData.durationMinutes || 0);
 
-      setSelectedTestType(t.isPrivate
-        ? { value: 'private', label: 'Приватний' }
-        : { value: 'public', label: 'Публічний' }
+      setSelectedTestType(tData.isPrivate
+        ? { value: 'private', label: t('testCreationStart.options.private') }
+        : { value: 'public', label: t('testCreationStart.options.public') }
       );
 
-      setSelectedShowResults(t.isShowResult
-        ? { value: 'yes', label: 'Так' }
-        : { value: 'no', label: 'Ні' }
+      setSelectedShowResults(tData.isShowResult
+        ? { value: 'yes', label: t('testCreationStart.options.yes') }
+        : { value: 'no', label: t('testCreationStart.options.no') }
       );
 
-      setSelectedTestQuestionsSorting(t.isFixedQuestionOrder
-        ? { value: 'fixed', label: 'Фіксований порядок' }
-        : { value: 'random', label: 'Випадковий порядок' }
+      setSelectedTestQuestionsSorting(tData.isFixedQuestionOrder
+        ? { value: 'fixed', label: t('testCreationStart.options.fixed') }
+        : { value: 'random', label: t('testCreationStart.options.random') }
       );
 
-      setSelectedTestAnswersSorting(t.isFixedAnswerOrder
-        ? { value: 'fixed', label: 'Фіксований порядок' }
-        : { value: 'random', label: 'Випадковий порядок' }
+      setSelectedTestAnswersSorting(tData.isFixedAnswerOrder
+        ? { value: 'fixed', label: t('testCreationStart.options.fixed') }
+        : { value: 'random', label: t('testCreationStart.options.random') }
       );
     });
-  }, [mode, testId]);
+  }, [mode, testId, t]);
 
   const validate = () => {
     const newErrors = {};
-    if (!testName.trim()) newErrors.testName = 'Введіть назву тесту';
-    if (!selectedField) newErrors.field = 'Оберіть сферу';
-    if (!selectedLevel) newErrors.level = 'Оберіть рівень';
-    if (!selectedCity) newErrors.city = 'Оберіть місто';
+    if (!testName.trim()) newErrors.testName = t('testCreationStart.errors.testName');
+    if (!selectedField) newErrors.field = t('testCreationStart.errors.field');
+    if (!selectedLevel) newErrors.level = t('testCreationStart.errors.level');
+    if (!selectedCity) newErrors.city = t('testCreationStart.errors.city');
 
-const isValidDate = (d) => {
+    const isValidDate = (d) => {
       if (!d) return false;
-
       if (typeof d === 'string') return false; 
-
       if (typeof d.isValid === 'function') return d.isValid();
-
       return d instanceof Date && !isNaN(d.getTime());
     };
+
     if (!isValidDate(startingDate)) {
-        newErrors.startingDate = 'Введіть коректну дату (ДД.ММ.РРРР)';
+        newErrors.startingDate = t('testCreationStart.errors.date');
     }
     if (!isValidDate(finishingDate)) {
-        newErrors.finishingDate = 'Введіть коректну дату (ДД.ММ.РРРР)';
+        newErrors.finishingDate = t('testCreationStart.errors.date');
     } 
     else if (isValidDate(startingDate) && new Date(finishingDate) <= new Date(startingDate)) {
-        newErrors.finishingDate = 'Дата завершення має бути пізніше початку';
+        newErrors.finishingDate = t('testCreationStart.errors.endDate');
     }
 
     setErrors(newErrors);
@@ -165,26 +165,26 @@ const isValidDate = (d) => {
   return (
     <div className="testCreationStartContainer">
       <div ref={refs.testName}>
-        <SelectField type="input" selectedOption={testName} setSelectedOption={setTestName} fieldName="Введіть назву тесту" error={!!errors.testName} />
+        <SelectField type="input" selectedOption={testName} setSelectedOption={setTestName} fieldName={t('testCreationStart.labels.testName')} error={!!errors.testName} />
       </div>
 
       <div ref={refs.field}>
-        <SelectField type="select" selectedOption={selectedField} setSelectedOption={setSelectedField} fieldName="Оберіть сферу" fieldOptions={fieldOptions} error={!!errors.field} />
+        <SelectField type="select" selectedOption={selectedField} setSelectedOption={setSelectedField} fieldName={t('testCreationStart.labels.field')} fieldOptions={fieldOptions} error={!!errors.field} />
       </div>
 
       <div ref={refs.level}>
-        <SelectField type="select" selectedOption={selectedLevel} setSelectedOption={setSelectedLevel} fieldName="Оберіть рівень" fieldOptions={levelOptions} error={!!errors.level} />
+        <SelectField type="select" selectedOption={selectedLevel} setSelectedOption={setSelectedLevel} fieldName={t('testCreationStart.labels.level')} fieldOptions={levelOptions} error={!!errors.level} />
       </div>
 
       <div ref={refs.city}>
-        <SelectField type="select" selectedOption={selectedCity} setSelectedOption={setSelectedCity} fieldName="Оберіть місто" fieldOptions={cityOptions} error={!!errors.city} />
+        <SelectField type="select" selectedOption={selectedCity} setSelectedOption={setSelectedCity} fieldName={t('testCreationStart.labels.city')} fieldOptions={cityOptions} error={!!errors.city} />
       </div>
 
       <SelectField
           type="textarea"
           selectedOption={description}
           setSelectedOption={setDescription}
-          fieldName="Напишіть опис вакансії"
+          fieldName={t('testCreationStart.labels.description')}
           fieldOptions={{}}
       />
 
@@ -192,7 +192,7 @@ const isValidDate = (d) => {
           type="list"
           selectedOption={responsibilities}
           setSelectedOption={setResponsibilities}
-          fieldName="Напишіть обов’язки"
+          fieldName={t('testCreationStart.labels.responsibilities')}
           fieldOptions={{}}
       />
       <div ref={refs.startingDate}>
@@ -200,7 +200,7 @@ const isValidDate = (d) => {
             type="date"
             selectedOption={startingDate}
             setSelectedOption={setStartingDate}
-            fieldName="Дата початку тестування"
+            fieldName={t('testCreationStart.labels.startDate')}
             error={!!errors.startingDate}
         />
         {errors.startingDate && <p style={{color: 'red', fontSize: '12px'}}>{errors.startingDate}</p>}
@@ -211,7 +211,7 @@ const isValidDate = (d) => {
             type="date"
             selectedOption={finishingDate}
             setSelectedOption={setFinishingDate}
-            fieldName="Дата кінця тестування"
+            fieldName={t('testCreationStart.labels.endDate')}
             error={!!errors.finishingDate} 
         />
         {errors.finishingDate && <p style={{color: 'red', fontSize: '12px'}}>{errors.finishingDate}</p>}
@@ -220,40 +220,40 @@ const isValidDate = (d) => {
           type="time"
           selectedOption={selectedTime}
           setSelectedOption={setSelectedTime}
-          fieldName="Таймер"
+          fieldName={t('testCreationStart.labels.timer')}
           fieldOptions={{}}
       />
       <SelectField
           type="testtype"
           selectedOption={selectedTestType}
           setSelectedOption={setSelectedTestType}
-          fieldName="Тип тесту"
+          fieldName={t('testCreationStart.labels.testType')}
           fieldOptions={{}}
       />
       <SelectField
           type="testquestionssorting"
           selectedOption={selectedTestQuestionsSorting}
           setSelectedOption={setSelectedTestQuestionsSorting}
-          fieldName="Порядок запитань"
+          fieldName={t('testCreationStart.labels.questionOrder')}
           fieldOptions={{}}
       />
       <SelectField
           type="testanswerssorting"
           selectedOption={selectedTestAnswersSorting}
           setSelectedOption={setSelectedTestAnswersSorting}
-          fieldName="Порядок відповідей"
+          fieldName={t('testCreationStart.labels.answerOrder')}
           fieldOptions={{}}
       />
       <SelectField
           type="showresults"
           selectedOption={selectedShowResults}
           setSelectedOption={setSelectedShowResults}
-          fieldName="Показувати результати після завершення тесту"
+          fieldName={t('testCreationStart.labels.showResults')}
           fieldOptions={{}}
       />
 
       <button className="testCreationStartContainer__next-button" onClick={handleNext}>
-        {mode === 'edit' ? 'Редагувати тест' : 'Наступна сторінка'}
+        {mode === 'edit' ? t('testCreationStart.buttons.save') : t('testCreationStart.buttons.next')}
       </button>
     </div>
   );

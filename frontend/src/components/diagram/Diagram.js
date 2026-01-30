@@ -1,25 +1,25 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Chart from 'chart.js/auto';
 
 const Diagram = () => {
+  const { t } = useTranslation();
   const chartRef = useRef(null);
-  const chartInstance = useRef(null); // 🔹 зберігаємо інстанс графіка
+  const chartInstance = useRef(null); 
 
   useEffect(() => {
     const ctx = chartRef.current.getContext('2d');
 
-    // 🔥 Знищуємо попередню діаграму, якщо вона вже існує
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
 
-    // 🎯 Створюємо нову діаграму
     chartInstance.current = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: ['Backend', 'Frontend', 'QA', 'DevOps', 'Data Science', 'UI/UX'],
         datasets: [{
-          label: 'Середня оцінка',
+          label: t('diagram.averageScore'),
           data: [89, 75, 92, 68, 80, 85],
           backgroundColor: [
             '#001F66',
@@ -45,13 +45,13 @@ const Diagram = () => {
             },
             title: {
               display: true,
-              text: 'Середня оцінка'
+              text: t('diagram.averageScore')
             }
           },
           x: {
             title: {
               display: true,
-              text: 'Напрям'
+              text: t('diagram.direction')
             }
           }
         },
@@ -66,13 +66,12 @@ const Diagram = () => {
       }
     });
 
-    // 🧹 Повертаємо функцію очищення при демонтажі компонента
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
     };
-  }, []);
+  }, [t]); 
 
   return (
     <canvas ref={chartRef}></canvas>

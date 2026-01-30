@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { getAccessToken } from '../utils/auth'; 
 import OurDataFilter from '../components/my_tests/OurDataFilter/OurDataFilter';
 import TestsBlock from '../components/my_tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';
 
 const MyTestsPage = () => {
+  const { t } = useTranslation();
   const object = { logo: null, line: true };
 
   const [tests, setTests] = useState([]);
@@ -24,7 +26,6 @@ const MyTestsPage = () => {
         );
 
         const mappedTests = response.data.map(t => {
-          // Створюємо об'єкт дати з рядка, який прийшов з бекенду
           const startDate = t.startTime ? new Date(t.startTime) : null;
 
           return {
@@ -34,7 +35,6 @@ const MyTestsPage = () => {
             location: t.city || "-",
             date: startDate ? startDate.toLocaleDateString("uk-UA") : "-",
             time: startDate ? startDate.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }) : "-",
-            // ПЕРЕДАЄМО ОБ'ЄКТ ДАТИ ДЛЯ ТАЙМЕРА
             startDateObj: startDate, 
             candidatesCount: t.candidatesCount ?? 0,
             status: t.statusTest, 
@@ -64,6 +64,7 @@ const MyTestsPage = () => {
   }, [tests]);
 
   const filteredTests = useMemo(() => {
+    // Note: Filter values should match those in OurDataFilter (which translates labels but keeps values)
     if (selectedFilter === 'Активні тести') return tests.filter(t => t.status === 'Active');
     if (selectedFilter === 'Заплановані тести') return tests.filter(t => t.status === 'Scheduled');
     if (selectedFilter === 'Завершені тести') return tests.filter(t => t.status === 'Closed');
@@ -72,7 +73,7 @@ const MyTestsPage = () => {
 
   return (
     <div className="page">
-      <CustomTitle title='Мої тести!' data={object} />
+      <CustomTitle title={t('myTestsPage.title')} data={object} />
       <div className='testsMain container'>
         <OurDataFilter
           selected={selectedFilter}
@@ -80,9 +81,9 @@ const MyTestsPage = () => {
           stats={stats}
         />
         {isLoading ? (
-          <div>Завантаження...</div>
+          <div>{t('myTestsPage.loading')}</div>
         ) : error ? (
-          <div>Помилка: {error}</div>
+          <div>{t('myTestsPage.error')}: {error}</div>
         ) : (
           <TestsBlock allTests={filteredTests} />
         )}

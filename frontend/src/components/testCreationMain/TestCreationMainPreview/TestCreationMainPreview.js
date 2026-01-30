@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import './TestCreationMainPreview.css';
 import ConfirmDeleteQuestionModal from "../../modal_windows/ConfirmDeleteQuestionModal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons'; 
 
 const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuestion, showError }) => {
+  const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -32,7 +34,7 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
     if (!q) return null;
     const commentBlock = q.comment ? (
       <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
-        <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
+        <small style={{fontWeight: 'bold', color: '#555'}}>{t('testCreationPreview.hint')}:</small>
         <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
       </div>
     ) : null;
@@ -71,9 +73,9 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
       case "TEXT":
         return (
           <>
-            <textarea rows="4" placeholder="Ваша відповідь..." disabled className="preview-textarea" />
+            <textarea rows="4" placeholder={t('testCreationPreview.yourAnswerPlaceholder')} disabled className="preview-textarea" />
             <div style={{marginTop: '10px', color: '#28a745'}}>
-              <small>Правильна відповідь: <strong>{q.textAnswer?.correctText}</strong></small>
+              <small>{t('testCreationPreview.correctAnswer')}: <strong>{q.textAnswer?.correctText}</strong></small>
             </div>
             {commentBlock}
           </>
@@ -82,14 +84,14 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
         return (
           <div className="code-block">
             <div className="code-preview" style={{background: '#ffffff', border: '1px solid #ccc', padding: '15px', borderRadius: '5px', fontFamily: 'monospace'}}>
-              <div style={{marginBottom: '10px', color: '#007bff', fontWeight: 'bold'}}>Мова: {q.codeAnswer?.language}</div>
+              <div style={{marginBottom: '10px', color: '#007bff', fontWeight: 'bold'}}>{t('testCreationPreview.language')}: {q.codeAnswer?.language}</div>
               <pre style={{whiteSpace: 'pre-wrap', margin: 0}}>{q.codeAnswer?.templateCode || "// Код"}</pre>
             </div>
             {commentBlock}
           </div>
         );
       default:
-        return <div style={{color: 'red'}}>Невідомий тип питання</div>;
+        return <div style={{color: 'red'}}>{t('testCreationPreview.unknownType')}</div>;
     }
   };
 
@@ -99,7 +101,7 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
         <div className='container'>
           <div className="test-container">
             <h2 className="question" style={{ color: showError ? '#dc3545' : 'inherit', transition: 'color 0.3s ease' }}>
-              Немає питань для перегляду
+              {t('testCreationPreview.noQuestions')}
             </h2>
           </div>
         </div>
@@ -127,7 +129,7 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
               disabled={safeIndex >= questions.length - 1}
               onClick={() => setCurrent(prev => prev + 1)}
             >
-              Наступне питання
+              {t('testCreationPreview.nextQuestion')}
             </button>
 
             {/* Група кнопок Редагувати/Видалити справа */}
@@ -137,7 +139,7 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
                   onClick={() => onEditQuestion(safeIndex)}
                 >
                   <FontAwesomeIcon icon={faPenToSquare} />
-                  <span>Редагувати</span>
+                  <span>{t('testCreationPreview.edit')}</span>
                 </button>
 
                 <button
@@ -145,7 +147,7 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
                   onClick={() => setIsModalOpen(true)}
                 >
                   <FontAwesomeIcon icon={faTrashCan} />
-                  <span>Видалити</span>
+                  <span>{t('testCreationPreview.delete')}</span>
                 </button>
             </div>
 

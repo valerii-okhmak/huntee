@@ -1,18 +1,20 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './MessageType.css';
 
 const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType }) => {
+  const { t } = useTranslation();
   
   const readFilters = [
-    { id: 'all', label: 'Всі' },
-    { id: 'unread', label: 'Непрочитані' },
-    { id: 'read', label: 'Прочитані' }
+    { id: 'all', label: t('messageType.readFilters.all') },
+    { id: 'unread', label: t('messageType.readFilters.unread') },
+    { id: 'read', label: t('messageType.readFilters.read') }
   ];
 
   const typeFilters = [
-    { id: 'all', label: 'Всі' },
-    { id: 'user', label: 'Користувач' }, 
-    { id: 'system', label: 'Системні' }
+    { id: 'all', label: t('messageType.typeFilters.all') },
+    { id: 'user', label: t('messageType.typeFilters.user') }, 
+    { id: 'system', label: t('messageType.typeFilters.system') }
   ];
 
   return (

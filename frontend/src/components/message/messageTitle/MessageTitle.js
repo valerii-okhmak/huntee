@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './MessageTitle.css';
 
 const MessageTitle = () => {
+  const { t } = useTranslation();
   return (
     <h1 className="message-title">
-      Повідомлення
+      {t('messageTitle.text')}
     </h1>
   );
 };

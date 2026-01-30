@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './AuthForm.css';
 import SocialLogin from '../SocialLogin/SocialLogin';
-import { Link, useNavigate, useLocation } from 'react-router-dom'; // Додано useLocation
+import { Link, useNavigate, useLocation } from 'react-router-dom'; 
 import { login } from '../../services/authService';
 import { saveTokens } from '../../utils/auth';
 
@@ -9,10 +10,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const AuthForm = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation(); // Отримуємо об'єкт локації для відстеження шляху "звідки прийшли"
+  const location = useLocation(); 
 
-  // Визначаємо цільовий шлях: або той, що зберіг ProtectedRoute, або головна сторінка
   const from = location.state?.from?.pathname || "/";
 
   const [email, setEmail] = useState('');
@@ -31,11 +32,11 @@ const AuthForm = () => {
     const newErrors = { email: '', password: '', general: '' };
 
     if (!isEmailValid(email)) {
-      newErrors.email = 'Введіть коректну пошту.';
+      newErrors.email = t('authForm.errors.invalidEmail');
       hasError = true;
     }
     if (!password) {
-      newErrors.password = 'Введіть пароль.';
+      newErrors.password = t('authForm.errors.passwordRequired');
       hasError = true;
     }
     if (hasError) {
@@ -48,8 +49,6 @@ const AuthForm = () => {
       const response = await login({ email, password });
       saveTokens(response.data);
       
-      // Навігація на попередню сторінку (наприклад, /messages), 
-      // replace: true потрібен, щоб видалити сторінку логіну з історії переходів
       navigate(from, { replace: true });
       
     } catch (err) {
@@ -58,19 +57,19 @@ const AuthForm = () => {
 
       switch (status) {
         case 400:
-          newErrors.general = message || 'Некоректні дані.';
+          newErrors.general = message || t('authForm.errors.badRequest');
           break;
         case 401:
-          newErrors.general = message || 'Невірна пошта або пароль.';
+          newErrors.general = message || t('authForm.errors.unauthorized');
           break;
         case 403:
-          newErrors.general = message || 'Доступ заборонено.';
+          newErrors.general = message || t('authForm.errors.forbidden');
           break;
         case 500:
-          newErrors.general = 'Помилка сервера.';
+          newErrors.general = t('authForm.errors.serverError');
           break;
         default:
-          newErrors.general = 'Невідома помилка.';
+          newErrors.general = t('authForm.errors.unknown');
       }
       setErrors(newErrors);
     } finally {
@@ -84,7 +83,7 @@ const AuthForm = () => {
         <div className="top-part-auth">
           <div className="left-side-auth">
             <h1>
-              Авторизація на<br />
+              {t('authForm.title')}<br />
               Hun<span className="special-t">t</span>ee
             </h1>
           </div>
@@ -101,7 +100,7 @@ const AuthForm = () => {
                 placeholder=" "
               />
               <label htmlFor="email" className={`auth-input-label ${email ? 'filled' : ''}`}>
-                Пошта
+                {t('authForm.email')}
               </label>
               {errors.email && <span className="input-error-message">{errors.email}</span>}
             </div>
@@ -117,7 +116,7 @@ const AuthForm = () => {
                 placeholder=" "
               />
               <label htmlFor="password" className="auth-input-label">
-                Пароль
+                {t('authForm.password')}
               </label>
 
               <span
@@ -139,7 +138,7 @@ const AuthForm = () => {
               className="auth-submit-button"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Вхід...' : 'Увійти'}
+              {isSubmitting ? t('authForm.buttons.loggingIn') : t('authForm.buttons.login')}
             </button>
           </div>
         </div>
@@ -149,7 +148,7 @@ const AuthForm = () => {
         <div className="bottom-part-auth">
           <SocialLogin setError={(msg) => setErrors({ ...errors, general: msg })} />
           <p className="auth-footer">
-            Ще немає акаунту? <Link to="/reg" state={{ from: location.state?.from }}>Зареєструватися</Link>
+            {t('authForm.noAccount')} <Link to="/reg" state={{ from: location.state?.from }}>{t('authForm.register')}</Link>
           </p>
         </div>
       </form>

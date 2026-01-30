@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Test from '../Test/Test';
 import './TestsBlock.css';
 import lupa from '../../../img/search-icon.png';
 
 const TestsBlock = ({ selectedLocations = [], allTests = [] }) => {
-
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredTests = allTests
@@ -30,7 +31,7 @@ const TestsBlock = ({ selectedLocations = [], allTests = [] }) => {
 
         <input
           type="text"
-          placeholder="Пошук за назвою, сферою, локацією..."
+          placeholder={t('testsBlock.placeholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

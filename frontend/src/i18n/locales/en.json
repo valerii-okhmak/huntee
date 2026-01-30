@@ -1,0 +1,895 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "language": "Language"
+  },
+  "modal": {
+    "confirmTitle": "Are you sure?",
+    "confirmText": "Progress cannot be changed after completion.",
+    "yes": "Yes, finish",
+    "no": "No, go back"
+  },
+  "burger": {
+    "whatIsPlatform": "What is this platform?",
+    "forStudents": "for students",
+    "myAccount": "My Account",
+    "activeTests": "Active Tests",
+    "practiceTests": "Practice Test",
+    "howToChoose": "How to choose IT path?",
+    "forCompanies": "for companies",
+    "companyMain": "Companies Main Page",
+    "howToCreate": "How to create a test?",
+    "processAndResults": "Grading process & Results",
+    "tempUnavailable": "(Temporarily unavailable)"
+  },
+  "companyBanner": {
+    "titleLine1": "ARE YOU A COMPANY",
+    "titleLine2": "REPRESENTATIVE?",
+    "description": "Go to the companies page!"
+  },
+  "companyAboutUs": {
+    "title": "ABOUT US",
+    "hello": "Hello!",
+    "description": "Huntee is a modern platform for automated and rapid candidate selection, created with the needs of IT companies and recruiters in mind who value time, efficiency, and quality. We combine skill testing, analytics, and automated compliance checking so companies get only relevant candidates — quickly, objectively, and without unnecessary costs.",
+    "whyChoose": "Why choose Huntee?",
+    "benefits": {
+      "precise": "🔍 Precise selection",
+      "time": "⏱ Time saving",
+      "objective": "📊 Objective assessment",
+      "flexible": "🛠 Flexible customization for your vacancy",
+      "experience": "🤝 Better experience for candidates"
+    }
+  },
+  "companyFromIdea": {
+    "title": "from idea to assessment",
+    "subtitle": "We offer two convenient options for creating a test — depending on your needs, budget, and technical skills:",
+    "option1": {
+      "title": "Create a test yourself",
+      "subtitle": "If you want full control over the look and structure of the test — this option is for you. It's simple:",
+      "step1": "Choose a template or create a layout from scratch.",
+      "step2": "Edit content and create questions.",
+      "step3": "Publish the test in one click."
+    },
+    "option2": {
+      "title": "Choose a ready-made test",
+      "subtitle": "No time or desire to develop? We have already prepared professional test templates for various fields!",
+      "step1": "Choose a ready-made test from the catalog.",
+      "step2": "Select the date and time.",
+      "step3": "Publish the test in one click."
+    }
+  },
+  "companyOptions": {
+    "title": "find your best talent",
+    "createTest": "CREATE YOUR OWN TEST",
+    "viewTemplates": "VIEW TEMPLATES"
+  },
+  "companyWelcome": {
+    "title": "HERE’RE YOUR FUTURE EMPLOYEES",
+    "subtitle": "Tests designed to help students find their career in IT",
+    "buttons": {
+      "details": "More about us",
+      "howTo": "How test creation works?"
+    },
+    "steps": {
+      "account": "Create an account",
+      "create": "Create tests",
+      "results": "Get test results",
+      "candidates": "Get a list of top candidates for a specific vacancy"
+    }
+  },
+  "contacts": {
+    "intro": "Have questions or need additional information? We are always happy to help! Feel free to contact us with comments or questions.",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "scheduleLabel": "Work Schedule",
+    "scheduleValue": "Mon–Fri, from 18:00 to 18:01",
+    "outro": "You can also use the contact form below – we will reply as soon as possible.",
+    "formTitle": "Send us a message",
+    "labels": {
+      "name": "Your Name",
+      "email": "Your Email",
+      "message": "Your Message"
+    },
+    "placeholders": {
+      "name": "Enter your name",
+      "email": "example@email.com",
+      "message": "Your message"
+    },
+    "submit": "Send",
+    "socialsTitle": "Social Networks",
+    "socialsText": "Stay in touch with us on social media to be the first to know about news and updates:",
+    "mailtoSubject": "Message from {{name}}"
+  },
+  "createTestInfo": {
+    "howItHappens": "how it happens?"
+  },
+  "diagram": {
+    "averageScore": "Average Score",
+    "direction": "Direction"
+  },
+  "findYourself": {
+    "title": "Find Yourself",
+    "subtitle": "Don't know where to start your IT journey?",
+    "description": "This is a short but thoughtful survey that will determine whether analytics, development, design, cybersecurity, testing, DevOps, or perhaps something completely unexpected suits you best!",
+    "button": "Take the test"
+  },
+  "footer": {
+    "contactsTitle": "CONTACTS",
+    "menu": {
+      "about": "About Us",
+      "questions": "Questions & Suggestions",
+      "forCompanies": "For Companies",
+      "pricing": "Pricing",
+      "cooperation": "Cooperation",
+      "investments": "Investments",
+      "privacy": "Privacy & Security"
+    },
+    "labels": {
+      "address": "Address",
+      "phone": "Phone",
+      "email": "E-mail",
+      "worktime": "Working Hours"
+    },
+    "addressValue": "15 Kvitnya Street, 1, Ternopil, Ternopil region, 46023, Ukraine",
+    "worktimeValue": "Mon–Fri, 9:00–18:00",
+    "copied": "Copied!",
+    "viewMap": "View on map",
+    "joinUs": "Join us:"
+  },
+  "forCompany": {
+    "title": "Is your company looking for employees?",
+    "subtitle": "We have prepared a separate page for you with all the necessary information: how the platform works, what benefits you will get, how to find candidates, how tests are created, their format, and how to start cooperation with Huntee.",
+    "descriptionLine1": "Find out how to effectively",
+    "descriptionLine2": "attract talent today!",
+    "button": "Page for companies"
+  },
+  "testPage": {
+    "start": "Start Test",
+    "finish": "Finish Test",
+    "next": "Next Question",
+    "prev": "Previous Question",
+    "questionNum": "Question #{{number}}",
+    "saving": "Saving...",
+    "saved": "Changes saved",
+    "promptMessage": "Are you sure? Progress may be lost.",
+    "status": {
+      "saving": "Saving...",
+      "saved": "Changes saved",
+      "error": "Save error",
+      "processing": "Processing..."
+    },
+    "buttons": {
+      "next": "Next question",
+      "finish": "Finish test"
+    },
+    "timer": {
+      "hours": "hours",
+      "minutes": "minutes",
+      "seconds": "seconds"
+    },
+    "codeResult": {
+      "pass": "✅ All tests passed!\n",
+      "fail": "❌ Some tests failed.\n"
+    },
+    "errors": {
+      "startFailed": "Failed to start the test.",
+      "loadData": "Error loading data",
+      "runCode": "Error running code.",
+      "noId": "Test finished, but ID not received.",
+      "finishFailed": "Failed to finish the test on the server."
+    },
+    "language": "Language",
+    "runCode": "Run Code",
+    "compiling": "Compiling...",
+    "unknownType": "Unknown question type",
+    "placeholder": "Enter your answer..."
+  },
+  "generalInfo": {
+    "benefits": {
+      "title": "Key Benefits",
+      "automation": "Automation",
+      "automationDesc": "The system takes over routine tasks: resume checking, integrity control, and initial screening.",
+      "analytics": "Analytics",
+      "analyticsDesc": "Detailed reports help HR make decisions faster and better.",
+      "massSelection": "Mass Selection",
+      "massSelectionDesc": "Work with hundreds of candidates simultaneously without overload.",
+      "timeSaving": "Time Saving",
+      "timeSavingDesc": "Fast search and selection — from application to hiring in a few clicks."
+    },
+    "audience": {
+      "title": "Who is this platform for?",
+      "students": "Students",
+      "studentsDesc": "Quick career start and fair selection. Help in job search.",
+      "companies": "Companies",
+      "companiesDesc": "Effective mass recruiting and transparent results.",
+      "hr": "HR and Recruiters",
+      "hrDesc": "Convenient tools for finding the best talents."
+    },
+    "howItWorks": "How does it work?",
+    "forStudents": "FOR STUDENTS",
+    "forCompanies": "FOR COMPANIES",
+    "buttons": {
+      "closestSets": "Upcoming Openings",
+      "createTest": "Create Test"
+    }
+  },
+  "header": {
+    "closestSets": "Upcoming Openings",
+    "messages": "Messages",
+    "profile": "Profile",
+    "menu": "Burger Menu"
+  },
+  "joinToUs": {
+    "titleLine1": "Join",
+    "titleLine2": "us!",
+    "button": "Log in",
+    "sloganLine1": "Let's start",
+    "sloganLine2": "together now"
+  },
+  "mainStart": {
+    "titleLine1": "LET'S START",
+    "titleLine2": "TOGETHER NOW!",
+    "subtitle": "Tests designed to help students find their career in IT",
+    "activeTests": "Active Tests",
+    "practiceTest": "Practice Test",
+    "itNavigator": "IT Navigator"
+  },
+  "messageList": {
+    "empty": "No messages"
+  },
+  "messageTitle": {
+    "text": "Messages"
+  },
+  "messageType": {
+    "readFilters": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read"
+    },
+    "typeFilters": {
+      "all": "All",
+      "user": "User",
+      "system": "System"
+    }
+  },
+  "additionalInfoModal": {
+    "title": "Additional Information",
+    "close": "Close",
+    "aboutYou": "About You",
+    "placeholderAbout": "Add a few short details about yourself...",
+    "additionalLinks": "Additional Links",
+    "selectPlatform": "Select Platform",
+    "link": "Link",
+    "placeholderLink": "Enter link for {{link}}, e.g. https://...",
+    "save": "Save"
+  },
+  "aiGenerationModal": {
+    "title": "✨ AI Question Generation",
+    "subtitle": "Configure parameters for automatic generation.",
+    "labels": {
+      "topic": "Topic",
+      "count": "Count",
+      "level": "Level",
+      "type": "Question Type",
+      "language": "Language"
+    },
+    "placeholders": {
+      "topic": "E.g. Java Collections"
+    },
+    "loading": {
+      "generating": "Generating questions...",
+      "wait": "This may take up to 30 seconds"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "generating": "Generating...",
+      "generate": "✨ Generate"
+    },
+    "alertTopic": "Please specify a topic."
+  },
+  "confirmDeleteQuestionModal": {
+    "title": "DELETE QUESTION?",
+    "close": "Close",
+    "confirmText": "Are you sure you want to delete question #{{number}}?",
+    "warning": "This action cannot be undone.",
+    "cancel": "No, keep",
+    "delete": "Yes, delete"
+  },
+  "ourDataFilter": {
+    "title": "OUR DATA",
+    "all": "All Tests",
+    "active": "Active Tests",
+    "scheduled": "Scheduled Tests",
+    "closed": "Completed Tests"
+  },
+  "testCard": {
+    "movedToActive": "Test moved to \"Active Tests\"!",
+    "time": {
+      "days": "d",
+      "hours": "h",
+      "minutes": "m",
+      "seconds": "s"
+    },
+    "buttons": {
+      "takeTest": "Take Test",
+      "results": "Results"
+    },    "registered": "Registered",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteError": "Failed to delete test. You may not have enough permissions.",
+    "errorTitle": "DELETE ERROR"
+  },
+  "testsBlock": {
+    "placeholder": "Search by title, sphere, location..."
+  },
+  "notFound": {
+    "title": "Page Not Found :(",
+    "message": "Sorry, the page you are looking for does not exist."
+  },
+  "profileItem": {
+    "view": "View"
+  },
+  "profile": {
+    "tabs": {
+      "cabinet": "My Cabinet",
+      "admin": "Admin Panel"
+    },
+    "personalInfo": "Personal Information",
+    "additionalInfo": "Additional Information",
+    "achievements": {
+      "title": "Achievements",
+      "passedTests": "Tests Passed",
+      "successful": "Successful"
+    },
+    "education": {
+      "title": "Education",
+      "empty": "Add university information."
+    },
+    "certificates": {
+      "title": "Certificates",
+      "empty": "Add certificate information."
+    },
+    "projects": {
+      "title": "Projects",
+      "empty": "Add project information."
+    },
+    "analytics": {
+      "title": "Analytics",
+      "viewDetailed": "View detailed analytics"
+    },
+    "adminStats": {
+      "createdTests": "Tests Created",
+      "activeTests": "Active Tests"
+    },
+    "password": {
+      "title": "Password",
+      "desc": "We recommend changing your password periodically.",
+      "changeBtn": "Change Password"
+    },
+    "placeholders": {
+      "about": "Help recruiters get to know you better..."
+    },
+    "buttons": {
+      "shareLink": "Share Link",
+      "myTests": "My Tests",
+      "logout": "Log Out",
+      "testConstructor": "Test Constructor"
+    },
+    "copied": "Copied!",
+    "age": {
+      "year": "years",
+      "years_2_4": "years",
+      "years": "years"
+    }
+  },
+  "userProfile": {
+    "contact": "Contact",
+    "placeholders": {
+      "about": "Help recruiters get to know you better: describe what makes you a great candidate and share other links."
+    }
+  },
+  "regForm": {
+    "title": "Register on",
+    "labels": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "age": "Age",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "buttons": {
+      "register": "Register",
+      "sending": "Sending...",
+      "confirm": "Confirm",
+      "verifying": "Verifying...",
+      "back": "Back"
+    },
+    "confirmText": "We sent a confirmation code to",
+    "haveAccount": "Already have an account?",
+    "login": "Log in",
+    "errors": {
+      "passwordMismatch": "Passwords do not match.",
+      "firstNameRequired": "First name is required.",
+      "lastNameRequired": "Last name is required.",
+      "invalidAge": "Enter a valid age.",
+      "invalidEmail": "Enter a valid email.",
+      "passwordLength": "Password must be at least 6 characters.",
+      "invalidData": "Invalid data. Check all fields.",
+      "accessDenied": "Access denied. Only @lpnu.ua emails are allowed.",
+      "userExists": "User with this email already exists.",
+      "serverError": "Server error. Try again later.",
+      "unknownError": "Unknown error. Try again.",
+      "invalidCodeLength": "Enter a 6-digit confirmation code.",
+      "invalidCode": "Invalid confirmation code or email.",
+      "serverErrorRetry": "Server error. Try again later.",
+      "confirmationError": "Confirmation failed. Try again."
+    }
+  },
+  "slider": {
+    "slide1": "IS YOUR COMPANY LOOKING FOR EMPLOYEES?",
+    "slide2": "WHAT IS THIS PLATFORM?",
+    "slide3": "LOOKING FOR A START IN IT?",
+    "slide4": "HAVE QUESTIONS OR SUGGESTIONS?",
+    "learnMore": "Learn more"
+  },
+  "socialLogin": {
+    "googleError": "Failed to log in with Google.",
+    "googleLoginFailed": "Google login failed"
+  },
+  "softSkillsTrial": {
+    "title": "SOFT SKILLS TEST",
+    "subtitle": "This is a short but informative assessment of your \"soft skills\", which are crucial when hiring today.",
+    "step1": "Take the test",
+    "step2": "Discover your strengths",
+    "step3": "Understand how it helps in work",
+    "step4": "Prepare better for interviews",
+    "button": "Take the test",
+    "info": "TEST RESULTS WILL BE DISPLAYED IN YOUR PROFILE"
+  },
+  "startTest": {
+    "button": "Take the test"
+  },
+  "subscriptions": {
+    "title": "subscriptions",
+    "subtitle": "Find out what our plans offer!",
+    "plan1": { "desc": "Ideal for introduction." },
+    "plan2": { "desc": "For those who want more." },
+    "plan3": { "desc": "For those who are serious." },
+    "footer": "-20% ON ANNUAL SUBSCRIPTION PURCHASE"
+  },
+  "templatesHuntee": {
+    "intro": "To make test creation fast and convenient, we have prepared <strong>4 unique templates</strong> that will help adapt knowledge testing to any needs. Each template has its own concept and style, so you can choose the one that best suits your goals.",
+    "baseTest": {
+      "desc": "Simple and clear format: questions with one or multiple correct answers, as well as yes/no questions. Suitable for quick testing of theoretical knowledge and general level of preparation.",
+      "examples": "Usage examples: basic technical check, knowledge of tools, understanding of terms."
+    },
+    "mixedMode": {
+      "desc": "A combination of different types of tasks: tests, open questions, short logic or data analysis tasks. Allows comprehensive assessment of the candidate by several criteria.",
+      "examples": "Usage examples: universal selection for any technical or creative position."
+    },
+    "practicalTask": {
+      "desc": "Test with examples of real work tasks: small cases, code snippets, design layouts, or data for analysis. The format is as close as possible to real work.",
+      "examples": "Usage examples: simulation of work situations for developers, designers, testers, analysts."
+    },
+    "scenarioTest": {
+      "desc": "Test in the format of real work situations: the candidate receives a case description and must choose the best solution or propose their own. The format helps to check not only knowledge but also the ability to apply it in context, find optimal approaches, and think critically.",
+      "examples": "Usage examples: selection of developers, designers, testers, analysts, and managers when it is important to assess practical thinking and decision-making."
+    },
+    "useTemplate": "USE TEMPLATE",
+    "viewTemplates": "VIEW TEMPLATES"
+  },
+  "testCreation": {
+    "intro": "The platform provides two approaches to creating tests depending on your goals and needs. <strong>The first is individual creation</strong>, which allows you to independently choose questions from the database or add your own, configure the test structure, difficulty level, and presentation format. <strong>The second is using ready-made tests</strong>, developed by specialists taking into account current requirements for various directions and competencies. Both options ensure flexibility and accuracy in the assessment process.",
+    "step1": {
+      "title": "Create a test yourself",
+      "desc": "This option is suitable for companies that want to adapt the testing content to their own requirements as much as possible. You independently form the test by choosing questions from the available database or creating your own. It is possible to configure the test structure, distribution by topics, answer format (open, closed, situational), difficulty level, time limit, number of attempts, etc. This approach allows taking into account the specifics of a particular position, corporate values, or the specifics of the professional direction.",
+      "button": "CREATE YOUR OWN TEST"
+    },
+    "step2": {
+      "title": "Choose a ready-made test",
+      "desc": "This is the optimal option for a quick start of testing without the need for independent filling. The platform offers a collection of professionally prepared tests covering various IT areas: Front-End, Back-End, UI/UX Design, Data Science, QA, Game Development, Project Management, DevOps, and others. Each test is structured according to modern approaches in HR, psychology, and education, taking into account the analytics of results. You simply choose the necessary test and then send it to candidates or students.",
+      "button": "VIEW TEMPLATES"
+    },
+    "gradient": {
+      "title": "HAVE<br/>QUESTIONS?",
+      "button": "CONTACT US"
+    }
+  },
+  "dashboardStudentCard": {
+    "pending": "Pending Review",
+    "viewDetails": "View details",
+    "viewProfile": "View profile",
+    "checkTest": "Review test",
+    "viewResults": "View results",
+    "sendMessage": "Send message"
+  },
+  "dashboardTabNavigation": {
+    "registered": "Registered",
+    "results": "Results",
+    "analytics": "Analytics"
+  },
+  "testDashboardAnalytics": {
+    "error": "Failed to load analytics",
+    "description": "Here you can view detailed analytics of student test results.",
+    "avgScore": "Average score for graded tests",
+    "downloadResults": "Download results",
+    "stats": {
+      "passed": "Students passed",
+      "failed": "Students failed",
+      "review": "Pending review",
+      "total": "Total attempts"
+    }
+  },
+  "testDashboardList": {
+    "error": "Failed to load list",
+    "desc": {
+      "registered": "Here you can view registered students...",
+      "results": "Here you can view test results..."
+    },
+    "quote": {
+      "line1": "To send a message to all students, click the message button next to the search.",
+      "line2": "To contact an individual student, use the \"Message\" button next to their result."
+    },
+    "search": "Search",
+    "messageAll": "Message all",
+    "viewAnalytics": "View analytics",
+    "invite": "Invite participants",
+    "empty": "List is empty"
+  },
+  "workResponsibilities": {
+    "title": "Responsibilities",
+    "register": "Register"
+  },
+  "testRules": {
+    "title": "Online Test Rules",
+    "rule1": { "bold": "1. Testing is taken only once.", "text": "Retaking or restarting the test is not allowed." },
+    "rule2": { "bold": "2. Time for the test is limited.", "text": "After the time expires, the test will be automatically submitted." },
+    "rule3": { "bold": "3. Refreshing the page during the test is prohibited.", "text": "Refreshing or closing the browser may result in loss of results." },
+    "rule4": { "bold": "4. Using third-party help sources is prohibited.", "text": "Using hints, other people, or software is considered a violation of the rules." },
+    "rule5": { "bold": "5. All answers are saved automatically.", "text": "Make sure you have answered all questions before finishing the test." },
+    "rule6": { "bold": "6. After finishing the test, results can be viewed.", "text": "The format and details of result display depend on the test settings." },
+    "rule7": { "bold": "7. In case of technical problems, notify the administrator immediately.", "text": "Problems arising after the test completion may not be considered." },
+    "rule8": { "bold": "8. In case of technical problems", "text": "(loss of internet connection, browser errors), the user is responsible for completing the test." },
+    "rule9": { "bold": "9. By taking the test, you confirm", "text": "that you have read the rules and agree to them." },
+    "rule10": { "bold": "10. The platform administration reserves the right to annul results", "text": "in case of violation of the test rules." },
+    "buttons": {
+      "processing": "Processing...",
+      "confirm": "Confirm registration"
+    },
+    "errors": {
+      "failed": "Failed to register. Try again later."
+    },
+    "modal": {
+      "close": "Close",
+      "title": "<strong>Congratulations on successful<br/>registration!</strong>",
+      "subtitle": "This is your first step towards a successful IT career!",
+      "toMain": "Go to Main",
+      "toMyTests": "Go to My Tests"
+    }
+  },
+  "testCreationSelectField": {
+    "search": "Search",
+    "datePlaceholder": "Select date and time",
+    "time": {
+      "none": "No time limit",
+      "fixed": "Fixed time"
+    },
+    "class": {
+      "none": "Do not classify question",
+      "custom": "Add classes for test"
+    },
+    "testType": {
+      "public": "Public",
+      "private": "Private",
+      "publicDesc": "Available to all platform users",
+      "privateDesc": "Available only via direct link or invite"
+    },
+    "list": {
+      "placeholder": "Responsibility #{{number}}",
+      "add": "Add responsibility",
+      "remove": "Remove"
+    },
+    "sorting": {
+      "fixed": "Fixed order",
+      "random": "Random order",
+      "questionsFixedDesc": "Question order does not change, saved as created",
+      "questionsRandomDesc": "Question order changes randomly each time the test is taken",
+      "answersFixedDesc": "Answer order does not change, saved as created",
+      "answersRandomDesc": "Answer order changes randomly each time the test is taken"
+    },
+    "showResults": {
+      "yes": "Yes, show results",
+      "no": "No, do not show results",
+      "yesDesc": "Test results will be shown after completion",
+      "noDesc": "Test results will not be shown after completion"
+    }
+  },
+  "testCreationAnswers": {
+    "addOption": "Add Option",
+    "addImage": "Add Image",
+    "removeOption": "Remove Option",
+    "commentLabel": "Comment (hint for student):",
+    "expectedAnswerLabel": "Expected Answer",
+    "placeholders": {
+      "option": "Enter an answer option",
+      "comment": "Enter a comment",
+      "answer": "Enter an answer",
+      "method": "E.g.: sum"
+    },
+    "titles": {
+      "singleChoice": "Answer (select one correct)",
+      "multipleChoice": "Answer (select at least one correct)",
+      "answer": "Answer",
+      "codeSettings": "Code Settings"
+    },
+    "code": {
+      "language": "Programming Language",
+      "methodName": "Method Name",
+      "template": "Code Template",
+      "testCases": "Test Cases (JSON)"
+    },
+    "errors": {
+      "fillOption": "Fill this option!",
+      "fillExpected": "Enter expected answer!",
+      "methodRequired": "Method name is required!",
+      "templateRequired": "Enter code template for student!",
+      "jsonError": "JSON format error!"
+    }
+  },
+  "testCreationMainCount": {
+    "text": "This test contains: {{count}} questions"
+  },
+  "testCreationCreator": {
+    "chooseType": "Choose question type:",
+    "questionLabel": "Question",
+    "pointsLabel": "Points for correct answer:",
+    "addImage": "Add Image",
+    "placeholders": {
+      "question": "Enter question",
+      "points": "Enter question weight"
+    },
+    "types": {
+      "single": "Single Choice",
+      "multiple": "Multiple Choice",
+      "open": "Open Answer",
+      "practical": "Practical Test"
+    },
+    "errors": {
+      "questionRequired": "Enter question text!",
+      "pointsRequired": "Enter weight!",
+      "minOptions": "Must have at least {{count}} options",
+      "selectCorrect": "Select correct answer",
+      "selectOneCorrect": "Select at least one correct answer",
+      "invalidJson": "Invalid JSON format",
+      "invalidPoints": "Enter valid points (e.g. 1 or 1.5)"
+    }
+  },
+  "testCreationPreview": {
+    "noQuestions": "No questions to preview",
+    "hint": "Hint",
+    "correctAnswer": "Correct Answer",
+    "yourAnswerPlaceholder": "Your answer...",
+    "language": "Language",
+    "unknownType": "Unknown question type",
+    "nextQuestion": "Next Question",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "testCreationStart": {
+    "labels": {
+      "testName": "Enter test name",
+      "field": "Select field",
+      "level": "Select level",
+      "city": "Select city",
+      "description": "Write vacancy description",
+      "responsibilities": "Write responsibilities",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "timer": "Timer",
+      "testType": "Test Type",
+      "questionOrder": "Question Order",
+      "answerOrder": "Answer Order",
+      "showResults": "Show results after completion"
+    },
+    "options": {
+      "public": "Public",
+      "private": "Private",
+      "fixed": "Fixed Order",
+      "random": "Random Order",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "cities": {
+      "ternopil": "Ternopil",
+      "frankivsk": "Ivano-Frankivsk",
+      "lviv": "Lviv",
+      "online": "Online"
+    },
+    "buttons": {
+      "next": "Next Page",
+      "save": "Edit Test"
+    },
+    "errors": {
+      "testName": "Enter test name",
+      "field": "Select field",
+      "level": "Select level",
+      "city": "Select city",
+      "date": "Enter valid date (DD.MM.YYYY)",
+      "endDate": "End date must be after start date"
+    }
+  },
+  "testReviewGrading": {
+    "score": "Your Score",
+    "passCondition": "You need at least 60% to pass",
+    "myTests": "To My Tests"
+  },
+  "testReviewQuestions": {
+    "hint": "Hint",
+    "correctAnswer": "Correct Answer",
+    "graded": "Graded",
+    "notGraded": "Not Graded",
+    "language": "Language",
+    "codeMissing": "Code missing",
+    "testCases": "Test Cases",
+    "manualGrading": "Grading",
+    "points": "Points",
+    "commentStudent": "Comment to student",
+    "save": "Save",
+    "currentStatus": "Current Status",
+    "pointsLabel": "points",
+    "loading": "Loading questions or list is empty...",
+    "finishReview": "Finish Review"
+  },
+  "filters": {
+    "location": "LOCATION",
+    "sphere": "SPHERE"
+  },
+  "testsTop": {
+    "join": "Join Us!",
+    "vacancies": "Vacancies for beginners in IT",
+    "choose": "Choose the best sphere for yourself and make the first step!"
+  },
+  "trialTesting": {
+    "title": "Trial<br/>Testing",
+    "subtitle": "Find out how testing works!",
+    "link": "Try it"
+  },
+  "addTestsButton": {
+    "text": "Add Test"
+  },
+  "fieldsFilter": {
+    "title": "SPHERES",
+    "noSpheres": "No available spheres"
+  },
+  "searchBar": {
+    "placeholder": "Search"
+  },
+  "allTestsPage": {
+    "mainTitle": "Join Us!",
+    "title": {
+      "strong": "Vacancies for beginners in IT",
+      "p": "Choose the best sphere for yourself and make the first step!"
+    },
+    "error": "Failed to load tests",
+    "errorPrefix": "Error"
+  },
+  "contactsPage": {
+    "title": "HAVE QUESTIONS?",
+    "subtitle": "Contact us!"
+  },
+  "generalInfoPage": {
+    "title": "WELCOME TO HUNTEE!",
+    "subtitle": "Why do we exist?",
+    "browserText": "Huntee is a modern web platform for online candidate testing with built-in integrity control tools. \nWe created it to combine the needs of IT companies for fast and high-quality initial selection of specialists with the opportunity for students and young professionals to show their skills in practice. \nHuntee allows companies to automate the selection process, and candidates - a real chance to get an invitation to an interview and a job. \nTransparent. Objective. No extra steps.",
+    "steps": {
+      "first": "Company creates tests and invites candidates.",
+      "second": "Candidate takes the test online with integrity control.",
+      "third": "Company receives results and selects those who will receive an invitation to the next stage — interview or job offer."
+    },
+    "buttons": {
+      "batches": "UPCOMING OPENINGS",
+      "create": "CREATE TEST"
+    }
+  },
+  "messageTextPage": {
+    "notFound": "Message not found",
+    "loadError": "Failed to load message",
+    "errorGeneric": "Error",
+    "systemMessage": "System message"
+  },
+  "myTestsPage": {
+    "title": "My Tests!",
+    "loading": "Loading...",
+    "error": "Error"
+  },
+  "pricingPage": {
+    "plans": {
+      "starter": {
+        "description": "Ideal for introduction.",
+        "features": ["Access to test analytics.", "Access to trial test.", "Access to your result report.", "Soft & Hard IT Test.", "High recommendations.", "Ability to retake within 30 days."]
+      },
+      "pro": {
+        "description": "Optimal choice for those who want more.",
+        "features": ["Extended tests.", "Detailed result analysis.", "PDF printout of your result.", "Access to mobile copies.", "Flexible passing of any test at a convenient time."]
+      },
+      "ultimate": {
+        "description": "For those who are serious.",
+        "features": ["Individual approach.", "Access to special report comparing your results with the group.", "Insights from real cases.", "Support from Soft Skills Simulation – interview and decision-making simulators."]
+      }
+    },
+    "yearly": "Yearly Subscription",
+    "monthly": "Monthly Subscription",
+    "discount": "up to -20%🔥",
+    "bestOffer": "Best Offer",
+    "perYear": "year",
+    "perMonth": "month",
+    "subscribeBtn": "SUBSCRIBE NOW",
+    "processing": "Processing...",
+    "errorPrefix": "Error: ",
+    "unknownError": "Unknown error",
+    "sessionError": "Failed to create payment session"
+  },
+  "startITPage": {
+    "title": "WELCOME TO HUNTEE!",
+    "subtitle": "We will help you with a job!",
+    "who": "dear student",
+    "browserText": "Your career start begins here!\n We created this platform to help you — a student looking for the first step into professional life.\nHere you will find opportunities for your first job and development of practical skills. We are not just a platform — we are your reliable partner on the way to a successful career. With us, your potential will find its way. \nAct now — the future begins today.",
+    "button": "UPCOMING OPENINGS",
+    "steps": {
+      "first": "Create an account",
+      "second": "Choose direction and city",
+      "third": "Take the test at the scheduled time",
+      "fourth": "Get a job invitation!"
+    }
+  },
+  "testPageTrial": {
+    "title": "Take a trial test",
+    "gradientText": "The trial test consists of 10 questions with different answer formats so that the student can see how everything looks in practice, get used to the interface, and reduce stress before the main test.",
+    "text": "The trial test is created for a preliminary understanding of the exam format. It does not affect your progress and does not contain questions from real tests."
+  },
+  "templatesHunteePage": {
+    "title": "Huntee Templates",
+    "subtitle": "Use templates for quick test creation!"
+  },
+  "testCreationMain": {
+    "defaultTestName": "New Test",
+    "buttons": {
+      "cancelEdit": "Cancel",
+      "confirmEdit": "Confirm Changes",
+      "aiGenerate": "✨ AI Generation",
+      "addQuestion": "Add Question",
+      "viewResult": "View Result",
+      "backToCreate": "Back to Creation",
+      "finishCreation": "Finish Creation"
+    },
+    "notSpecified": "not specified"
+  },
+  "testCreationPage": {
+    "title": "Test Creation",
+    "subtitle": "We help find quality employees!"
+  },
+  "authForm": {
+    "title": "Authorization on",
+    "email": "Email",
+    "password": "Password",
+    "buttons": {
+      "loggingIn": "Logging in...",
+      "login": "Log in"
+    },
+    "noAccount": "Don't have an account?",
+    "register": "Register",
+    "errors": {
+      "invalidEmail": "Enter a valid email.",
+      "passwordRequired": "Enter password.",
+      "badRequest": "Invalid data.",
+      "unauthorized": "Invalid email or password.",
+      "forbidden": "Access denied.",
+      "serverError": "Server error.",
+      "unknown": "Unknown error."
+    }
+  }
+}

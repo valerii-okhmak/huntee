@@ -1,4 +1,5 @@
-import React, { useState , useEffect, useParams} from 'react';
+import React, { useState , useEffect} from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import '../main_profile/Profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +9,7 @@ import DEFAULT_AVATAR from '../../../img/avatar.png';
 import Loader from '../../loader/Loader';
 
 const UserProfile = ({ user_id }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [profileData, setProfileData] = useState(null);
     const [educationData, setEducationData] = useState(null);
@@ -15,11 +17,9 @@ const UserProfile = ({ user_id }) => {
     const [experienceData, setExperienceData] = useState(null);
     const [mediaLinksData, setMediaLinksData] = useState(null);
 
-
-
+    // ... (fetch функції залишаються без змін) ...
     const fetchExperience = async () => {
         try {
-        
         const response = await axios.get(`/api/profile/experiences/user_id`, {
             params: { userId: `${user_id}` },
         });
@@ -29,26 +29,20 @@ const UserProfile = ({ user_id }) => {
         }
     };
   
-
     const fetchProfile = async () => {
         try {
-
           const response = await axios.get(`/api/profile/${user_id}`);
           const data = response.data;
-
           if (!data.profileImage) {
             data.profileImage = DEFAULT_AVATAR;
           } else  {
             data.profileImage = `/api/profile/avatar/${data.profileImage}`;
-            console.log(data.profileImage);
           }
-
           setProfileData(data);
         } catch (error) {
           console.error('Помилка завантаження профілю:', error.response?.data || error.message);
         }
     };
-
 
     const fetchEducation = async () => {
         try {
@@ -91,26 +85,16 @@ const UserProfile = ({ user_id }) => {
         fetchMediaLinks();
     }, []);
 
-
-
     const getAgeFromBirthDate = (birthDateStr) => {
         const birthDate = new Date(birthDateStr);
         const today = new Date();
-
-        if (isNaN(birthDate.getTime())) {
-        return 0; 
-        }
+        if (isNaN(birthDate.getTime())) return 0;
 
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
-
-        if (
-        monthDiff < 0 ||
-        (monthDiff === 0 && today.getDate() < birthDate.getDate())
-        ) {
-        age--;
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+           age--;
         }
-
         return age >= 0 ? age : 0;
     };
 
@@ -123,7 +107,7 @@ const UserProfile = ({ user_id }) => {
           <div id='personal-information' className="profile-container personal-profile-container">
             <div className="profile-header-section">
               <h3 className="section-title section-title-nowrap">
-                Особиста інформація
+                 {t('profile.personalInfo')}
               </h3>
               <div className="profile-avatar">
                 <img
@@ -137,40 +121,38 @@ const UserProfile = ({ user_id }) => {
               </h2>
               <h2 className="profile-age">
                 {profileData && profileData.birthDate
-                  ? `${getAgeFromBirthDate(profileData.birthDate)} років`
+                  ? `${getAgeFromBirthDate(profileData.birthDate)} ${t('profile.age.years')}`
                   : ''}
               </h2>
               <div className='buttons-profile'>
               <button
                   id="exit" 
-                  className="profile-edit-btn">Зв'язатися
+                  className="profile-edit-btn">
+                  {t('userProfile.contact')}
               </button>
               </div> 
-
             </div>
           </div>
         </div>
 
         
         <div className="profile-column-right">
-
           <div id='aditional-information' className="profile-container">
             <div className="profile-info-section aditional-profile-info-section">
-              <h3 className="subsection-title">Додаткова інформація</h3>
+              <h3 className="subsection-title">{t('profile.additionalInfo')}</h3>
               <div className="profile-info-block">
                 <p className='aditional-text'>
                   {profileData?.about
                     ? profileData.about
-                    : 'Допоможіть рекрутерам краще пізнати вас: опишіть, що робить саме вас чудовим кандидатом на посаду й поділіться іншими посиланнями.'}
+                    : t('userProfile.placeholders.about')}
                 </p>
               </div>
             </div>
             <div className='media-links'>
                 {mediaLinksData && mediaLinksData.length > 0 && (
                 mediaLinksData.map((item, index) => (
-                console.log(item),
                 <a key={index} className='media-link-item' href={item.url} target="_blank" rel="noopener noreferrer">
-                  <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt="LinkedIn" className="media-link-icon" />
+                  <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
                   {item.type}
                 </a>
                 ))
@@ -180,15 +162,15 @@ const UserProfile = ({ user_id }) => {
           
           <div id='achievements' className="profile-container">
             <div className="profile-info-section">
-              <h4 className="subsection-title">Досягнення</h4>
+              <h4 className="subsection-title">{t('profile.achievements.title')}</h4>
                 <div className='achievements-block'>
                   <div className='achievement-info'>
-                    <p className="achivement-label">Кількість пройдених тестів:</p>
+                    <p className="achivement-label">{t('profile.achievements.passedTests')}:</p>
                     <span className="achivement-value">8</span>
                   </div>  
                 
                   <div className='achievement-info'>
-                    <p className="achivement-label">Успішні:</p>
+                    <p className="achivement-label">{t('profile.achievements.successful')}:</p>
                     <span className="achivement-value">7</span>
                   </div>  
                 </div>
@@ -204,7 +186,7 @@ const UserProfile = ({ user_id }) => {
         <div className="profile-column-bottom">
         <div id='education' className="profile-container">
             <div className="profile-info-bottom-section">
-              <h3 className="subsection-title">Освіта</h3>
+              <h3 className="subsection-title">{t('profile.education.title')}</h3>
               {educationData && educationData.length > 0 ? (
                 educationData.map((item, index) => (
                   <ProfileItem 
@@ -218,13 +200,13 @@ const UserProfile = ({ user_id }) => {
                   />
                 ))
               ) : (
-                <p className='empty-placeholder'>Немає інформації про освіту.</p>
+                <p className='empty-placeholder'>{t('profile.education.empty')}</p>
               )}
             </div>
           </div>
           <div id='sertificates' className="profile-container">
             <div className="profile-info-bottom-section">
-              <h3 className="subsection-title">Сертифікати</h3>
+              <h3 className="subsection-title">{t('profile.certificates.title')}</h3>
               {sertificatesData && sertificatesData.length > 0 ? (
                 sertificatesData.map((item, index) => (
                   <ProfileItem 
@@ -239,13 +221,13 @@ const UserProfile = ({ user_id }) => {
                   />
                 ))
               ) : (
-                <p className='empty-placeholder'>Немає інформації про сертифікати.</p>
+                <p className='empty-placeholder'>{t('profile.certificates.empty')}</p>
               )}
             </div>
           </div>
           <div id='experience' className="profile-container">
             <div className="profile-info-bottom-section">
-              <h3 className="subsection-title">Проєкти</h3>
+              <h3 className="subsection-title">{t('profile.projects.title')}</h3>
              {experienceData && experienceData.length > 0 ? (
                 experienceData.map((item, index) => (
                   <ProfileItem 
@@ -260,7 +242,7 @@ const UserProfile = ({ user_id }) => {
                   />
                 ))
               ) : (
-                <p className='empty-placeholder'>Немає інформації про проєкти.</p>
+                <p className='empty-placeholder'>{t('profile.projects.empty')}</p>
               )}
             </div>
           </div>

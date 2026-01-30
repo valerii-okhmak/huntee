@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './TestDashboardList.css';
 import DashboardStudentCard from '../../DashboardStudentCard/DashboardStudentCard';
 import lupa from '../../../../img/search-icon.png';
@@ -10,6 +11,7 @@ import { getAccessToken } from '../../../../utils/auth';
 import Loader from '../../../loader/Loader';
 
 const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
+  const { t } = useTranslation();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,18 +33,18 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         setStudents(response.data);
       } catch (err) {
         console.error(err);
-        setError("Не вдалося завантажити список");
+        setError(t('testDashboardList.error'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchStudents();
-  }, [activeTab, testId]);
+  }, [activeTab, testId, t]);
 
   const description = activeTab === 'registered'
-    ? 'Тут ви можете переглянути зареєстрованих студентів...'
-    : 'Тут ви можете переглянути результати тестування...';
+    ? t('testDashboardList.desc.registered')
+    : t('testDashboardList.desc.results');
 
   if (loading) return <Loader />;
   if (error) return <div className='container'>{error}</div>;
@@ -52,21 +54,21 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
       <div className="testDashboard__description">
         <p>{description}</p>
         <div className="testDashboard__quote">
-          <p>Щоб надіслати повідомлення всім студентам, натисніть кнопку повідомлення поруч з пошуком.</p>
-          <p>Щоб зв’язатися з окремим студентом, використовуйте кнопку «Повідомлення» поруч із його результатом.</p>
+          <p>{t('testDashboardList.quote.line1')}</p>
+          <p>{t('testDashboardList.quote.line2')}</p>
         </div>
       </div>
 
       <div className="testDashboard__toolbar">
         <div className="search-container">
           <img src={lupa} alt='search' className='search_icon' />
-          <input type="text" placeholder="Пошук"/>
+          <input type="text" placeholder={t('testDashboardList.search')}/>
         </div>
-        <button className="testDashboard__message">
+        <button className="testDashboard__message" title={t('testDashboardList.messageAll')}>
           <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
         </button>
         <button className="testDashboard__btn-analytics" onClick={() => setActiveTab('analytics')}>
-          Переглянути аналітику
+          {t('testDashboardList.viewAnalytics')}
         </button>
       </div>
 
@@ -75,7 +77,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
           className="testDashboard__btn-invite" 
           onClick={() => setIsInviteModalOpen(true)}
         >
-            Запросити учасників
+            {t('testDashboardList.invite')}
         </button>
       </div>
 
@@ -89,7 +91,9 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
             />
           ))
         ) : (
-          <div style={{textAlign: 'center', padding: '20px', color: '#777'}}>Список порожній</div>
+          <div style={{textAlign: 'center', padding: '20px', color: '#777'}}>
+              {t('testDashboardList.empty')}
+          </div>
         )}
       </div>
 

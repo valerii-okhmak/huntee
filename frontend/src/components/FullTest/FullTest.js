@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import axios from "axios";
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs/components/prism-core";
@@ -31,6 +32,7 @@ const usePrompt = (message, when = true) => {
 };
 
 const TestPage = ({ testType }) => { 
+  const { t } = useTranslation();
   const { testId } = useParams(); 
   const navigate = useNavigate();
 
@@ -56,7 +58,7 @@ const TestPage = ({ testType }) => {
   const answersRef = useRef({});
   const attemptDataRef = useRef(null);
 
-  usePrompt("Ви впевнені? Прогрес може бути втрачено.", !!attemptData);
+  usePrompt(t('testPage.promptMessage'), !!attemptData);
 
   const handleCloseErrorModal = () => {
     setIsStartTestErrorModalOpen(false);
@@ -96,7 +98,7 @@ const TestPage = ({ testType }) => {
 
       } catch (error) {
         console.error("🔍 Start Error:", error);
-        let message = "Не вдалося розпочати тест.";
+        let message = t('testPage.errors.startFailed');
         if (error.response?.data?.message) {
             message = error.response.data.message;
         }
@@ -107,7 +109,7 @@ const TestPage = ({ testType }) => {
     };
 
     if (testId) startTest();
-  }, [testId, navigate]);
+  }, [testId, navigate, t]);
 
   // --- ТАЙМЕР ---
   useEffect(() => {
@@ -165,7 +167,12 @@ const TestPage = ({ testType }) => {
       setSaveStatus('saved');
 
     } catch (error) {
-
+      // Ігнорування 400 (duplicate)
+      if (error.response && error.response.status === 400) {
+          console.warn("Backend error 400 (Duplicate). Treating as SUCCESS.");
+          setSaveStatus('saved');
+          return; 
+      }
       
       console.error("Save FAILED:", error);
       setSaveStatus('error');
@@ -215,7 +222,7 @@ const TestPage = ({ testType }) => {
     if (!code) return;
 
     try {
-        setOutputMap(prev => ({ ...prev, [question.questionId]: "Compiling..." }));
+        setOutputMap(prev => ({ ...prev, [question.questionId]: t('testPage.compiling') }));
         const token = getAccessToken();
         const response = await axios.post(
             `/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/run`,
@@ -224,13 +231,13 @@ const TestPage = ({ testType }) => {
         );
 
         const result = response.data; 
-        let outputText = result.allPassed ? "✅ All tests passed!\n" : "❌ Some tests failed.\n";
+        let outputText = result.allPassed ? t('testPage.codeResult.pass') : t('testPage.codeResult.fail');
         result.results.forEach((res, idx) => {
             outputText += `\nTest Case #${idx + 1}:\nInput: ${res.input}\nExpected: ${res.expectedOutput}\nActual: ${res.actualOutput}\n${res.passed ? "Result: PASS" : "Result: FAIL"}\n`;
         });
         setOutputMap(prev => ({ ...prev, [question.questionId]: outputText }));
     } catch (error) {
-        setOutputMap(prev => ({ ...prev, [question.questionId]: "Error running code." }));
+        setOutputMap(prev => ({ ...prev, [question.questionId]: t('testPage.errors.runCode') }));
     }
   };
 
@@ -268,15 +275,15 @@ const TestPage = ({ testType }) => {
         const redirectId = response.data?.attemptId || currentAttemptId;
 
         if (redirectId) {
-             navigate(`/testreview/${redirectId}`);
+             navigate(`/testreview/${redirectId}`, { state: { fromFinish: true } });
         } else {
-             alert("Тест завершено, але ID не отримано.");
+             alert(t('testPage.errors.noId'));
              navigate('/test-dashboard');
         }
 
       } catch (error) {
         console.error("Finish FAILED:", error);
-        alert("Не вдалося завершити тест на сервері.");
+        alert(t('testPage.errors.finishFailed'));
       }
   };
 
@@ -364,7 +371,7 @@ const TestPage = ({ testType }) => {
             rows="6"
             value={answer || ""}
             onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
-            placeholder="Введіть вашу відповідь..."
+            placeholder={t('testPage.placeholder')}
             style={{width: '100%', padding: '10px', marginTop: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
           />
         );
@@ -373,8 +380,8 @@ const TestPage = ({ testType }) => {
         return (
           <div style={{ marginTop: '10px' }}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px'}}>
-              <span style={{fontWeight: 'bold', color: '#555'}}>Мова: {q.codeLanguage || "text"}</span>
-              <button className="run-button" onClick={() => handleRunCode(q)} disabled={!answer}>Run Code</button>
+              <span style={{fontWeight: 'bold', color: '#555'}}>{t('testPage.language')}: {q.codeLanguage || "text"}</span>
+              <button className="run-button" onClick={() => handleRunCode(q)} disabled={!answer}>{t('testPage.runCode')}</button>
             </div>
             
             <div className="code-editor-wrapper" style={{ border: '1px solid #ccc', borderRadius: '5px', overflow: 'hidden' }}>
@@ -400,12 +407,12 @@ const TestPage = ({ testType }) => {
         );
 
       default:
-        return <p>Невідомий тип питання</p>;
+        return <p>{t('testPage.unknownType')}</p>;
     }
   };
 
   if (loading) return <div className="page"><Loader /></div>;
-  if (!attemptData) return <div className="page">Помилка завантаження даних</div>;
+  if (!attemptData) return <div className="page">{t('testPage.errors.loadData')}</div>;
 
   const currentQuestion = attemptData.questions[current];
   const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
@@ -420,16 +427,16 @@ const TestPage = ({ testType }) => {
               <h1 className="fulltest-title">{attemptData.testName}</h1>
               <div className="top-line">
                   <span style={{fontSize: '12px', fontWeight:'bold', color: saveStatus === 'error' ? 'red' : saveStatus === 'saving' ? 'orange' : 'green'}}>
-                      {saveStatus === 'saving' ? 'Збереження...' : saveStatus === 'error' ? 'Помилка збереження' : 'Зміни збережено'}
+                      {saveStatus === 'saving' ? t('testPage.status.saving') : saveStatus === 'error' ? t('testPage.status.error') : t('testPage.status.saved')}
                   </span>
               </div>
             </div>
           
           {attemptData.isFixedTime && timeLeft !== null && (
             <div className="timer-box">
-              <div className="time"><span className="time-val">{h}</span><span className="time-label">годин</span></div>
-              <div className="time"><span className="time-val">{m}</span><span className="time-label">хвилин</span></div>
-              <div className="time"><span className="time-val">{s}</span><span className="time-label">секунд</span></div>
+              <div className="time"><span className="time-val">{h}</span><span className="time-label">{t('testPage.timer.hours')}</span></div>
+              <div className="time"><span className="time-val">{m}</span><span className="time-label">{t('testPage.timer.minutes')}</span></div>
+              <div className="time"><span className="time-val">{s}</span><span className="time-label">{t('testPage.timer.seconds')}</span></div>
             </div>
           )}
         </div>
@@ -465,7 +472,7 @@ const TestPage = ({ testType }) => {
                 onClick={handleNext} 
                 disabled={isSubmitting}
             >
-              {isSubmitting ? 'Збереження...' : 'Наступне питання'}
+              {isSubmitting ? t('testPage.status.saving') : t('testPage.buttons.next')}
             </button>
           ) : (
             <button 
@@ -473,7 +480,7 @@ const TestPage = ({ testType }) => {
                 onClick={handleFinishButton} 
                 disabled={isSubmitting}
             >
-              {isSubmitting ? 'Обробка...' : 'Завершити тест'}
+              {isSubmitting ? t('testPage.status.processing') : t('testPage.buttons.finish')}
             </button>
           )}
         </div>

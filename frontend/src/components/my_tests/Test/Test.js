@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './Test.css';
 import location_icon from '../../../img/test/location.png';
 import { Link } from 'react-router-dom';
 
 const Test = ({ id, title, type, location, date, time, status, startDateObj }) => {
+  const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
-    // Якщо статус не "Scheduled" або немає дати, таймер не потрібен
     if (status !== 'Scheduled' || !startDateObj) return;
 
     const calculateTime = () => {
@@ -15,7 +16,7 @@ const Test = ({ id, title, type, location, date, time, status, startDateObj }) =
       const difference = startDateObj.getTime() - now.getTime();
 
       if (difference <= 0) {
-        setTimeLeft("Тест перенесено в \"Активні тести\"!");
+        setTimeLeft(t('testCard.movedToActive'));
         return;
       }
 
@@ -25,10 +26,10 @@ const Test = ({ id, title, type, location, date, time, status, startDateObj }) =
       const seconds = Math.floor((difference / 1000) % 60);
 
       let parts = [];
-      if (days > 0) parts.push(`${days}д`);
-      if (hours > 0) parts.push(`${hours}г`);
-      if (minutes > 0) parts.push(`${minutes}хв`);
-      parts.push(`${seconds}с`); // Секунди залишаємо завжди
+      if (days > 0) parts.push(`${days}${t('testCard.time.days')}`);
+      if (hours > 0) parts.push(`${hours}${t('testCard.time.hours')}`);
+      if (minutes > 0) parts.push(`${minutes}${t('testCard.time.minutes')}`);
+      parts.push(`${seconds}${t('testCard.time.seconds')}`); 
 
       setTimeLeft(parts.join(" "));
     };
@@ -36,15 +37,14 @@ const Test = ({ id, title, type, location, date, time, status, startDateObj }) =
     calculateTime();
     const timerId = setInterval(calculateTime, 1000);
     
-    return () => clearInterval(timerId); // Обов'язкове очищення
-  }, [status, startDateObj]);
+    return () => clearInterval(timerId); 
+  }, [status, startDateObj, t]);
 
   const renderButton = () => {
-    // Використовуємо сувору перевірку статусів
     if (status === 'Active') {
       return (
         <Link to={`/test/${id}`}>
-          <button className="testDashboard__analytics-btn-dark">Пройти тест</button>
+          <button className="testDashboard__analytics-btn-dark">{t('testCard.buttons.takeTest')}</button>
         </Link>
       );
     }
@@ -52,7 +52,7 @@ const Test = ({ id, title, type, location, date, time, status, startDateObj }) =
     if (status === 'Closed') {
       return (
         <Link to={`/testreview/${id}`}>
-          <button className="testDashboard__analytics-btn-dark">Результати</button>
+          <button className="testDashboard__analytics-btn-dark">{t('testCard.buttons.results')}</button>
         </Link>
       );
     }

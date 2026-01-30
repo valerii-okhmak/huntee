@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import './TestCreationMainAnswers.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
@@ -6,67 +7,60 @@ import { faImage } from '@fortawesome/free-solid-svg-icons';
 const TestCreationMainAnswers = ({
   selectedType,
   comment, setComment,
-  errors, // Отримуємо помилки
+  errors, 
 
-  // options
   options,
   updateOption,
   addOption,
   removeOption,
   minBase,
 
-  // regular
   regularCorrect,
   pickRegularCorrect,
 
-  // multiple
   multipleCorrect,
   toggleMultipleCorrect,
 
-  // open
   openExpectedEnabled,
   setOpenExpectedEnabled,
   openExpectedText,
   setOpenExpectedText,
 
-  // practical (Code)
   codeLanguage, setCodeLanguage,
   codeMethodName, setCodeMethodName,
   codeTemplate, setCodeTemplate,
   codeTestCasesJSON, setCodeTestCasesJSON,
 }) => {
+  const { t } = useTranslation();
 
  const renderChoiceRow = (i, control) => {
-    // Перевірка чи саме цей варіант порожній при помилці
     const isOptionEmptyError = errors.emptyOptions && !options[i].trim();
 
     return (
       <div key={i} className="testCreationMainCreatorAnswers__option">
         
-        {/* ВИПРАВЛЕННЯ ТУТ: Змінив <div> на <label> */}
         <label className="testCreationMainCreatorAnswers__control">
            {control}
         </label>
 
-        {/* Обгортка Інпуту */}
         <div className={`testCreationMainCreatorAnswers__input-wrapper ${isOptionEmptyError ? 'input-error-placeholder' : ''}`}>
           <input
             type="text"
-            placeholder={isOptionEmptyError ? "Заповніть цей варіант!" : "Введіть варіант відповіді"}
+            placeholder={isOptionEmptyError ? t('testCreationAnswers.errors.fillOption') : t('testCreationAnswers.placeholders.option')}
             className="testCreationMainCreatorAnswers__input"
             value={options[i]}
             onChange={e => updateOption(i, e.target.value)}
           />
 
           <div className="testCreationMainCreatorAnswers__btns">
-            <button className="testCreationMainCreator__icon-btn" title="Додати зображення">
+            <button className="testCreationMainCreator__icon-btn" title={t('testCreationAnswers.addImage')}>
               <FontAwesomeIcon icon={faImage} />
             </button>
             {i >= minBase && (
               <button
                 type="button"
                 className="testCreationMainCreatorAnswers__btn-remove"
-                title="Видалити варіант"
+                title={t('testCreationAnswers.removeOption')}
                 onClick={() => removeOption(i)}
               >
                 ✕
@@ -81,12 +75,12 @@ const TestCreationMainAnswers = ({
   const renderCommonComment = () => (
     <div style={{ marginTop: '20px' }}>
       <label className="testCreationMainCreatorAnswers__text" style={{ fontWeight: 'bold', marginBottom: '5px', display: 'block' }}>
-        Коментар (підказка для студента):
+        {t('testCreationAnswers.commentLabel')}
       </label>
       <input
         type="text"
         className="testCreationMainCreatorAnswers__input-open"
-        placeholder="Введіть коментар"
+        placeholder={t('testCreationAnswers.placeholders.comment')}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
@@ -98,7 +92,7 @@ const TestCreationMainAnswers = ({
       return (
         <div className="testCreationMainCreatorAnswers">
           <h3 className={`testCreationMainCreatorAnswers__title ${errors.correctSelection ? 'error-text-blink' : ''}`}>
-            Відповідь (позначте одну правильну)
+            {t('testCreationAnswers.titles.singleChoice')}
           </h3>
 
           {options.map((_, i) =>
@@ -117,7 +111,7 @@ const TestCreationMainAnswers = ({
           )}
 
           <button className="testCreationMainCreatorAnswers__add" onClick={addOption}>
-            Додати варіант відповіді <span>+</span>
+            {t('testCreationAnswers.addOption')} <span>+</span>
           </button>
           {renderCommonComment()}
         </div>
@@ -127,7 +121,7 @@ const TestCreationMainAnswers = ({
       return (
         <div className="testCreationMainCreatorAnswers">
           <h3 className={`testCreationMainCreatorAnswers__title ${errors.correctSelection ? 'error-text-blink' : ''}`}>
-            Відповідь (позначте мінімум одну правильну)
+            {t('testCreationAnswers.titles.multipleChoice')}
           </h3>
 
           {options.map((_, i) =>
@@ -146,7 +140,7 @@ const TestCreationMainAnswers = ({
           )}
 
           <button className="testCreationMainCreatorAnswers__add" onClick={addOption}>
-            Додати варіант відповіді <span>+</span>
+            {t('testCreationAnswers.addOption')} <span>+</span>
           </button>
           {renderCommonComment()}
         </div>
@@ -155,7 +149,7 @@ const TestCreationMainAnswers = ({
     case "open":
       return (
         <div className="testCreationMainCreatorAnswers testCreationMainCreatorAnswers-open">
-          <h3 className='testCreationMainCreatorAnswers__title'>Відповідь</h3>
+          <h3 className='testCreationMainCreatorAnswers__title'>{t('testCreationAnswers.titles.answer')}</h3>
 
           <label className='testCreationMainCreatorAnswers__text'>
             <input
@@ -165,12 +159,11 @@ const TestCreationMainAnswers = ({
               onChange={(e) => setOpenExpectedEnabled(e.target.checked)}
             />
             <span className='testCreationMainCreatorAnswers__radio-circle'></span>
-            Очікувана відповідь
+            {t('testCreationAnswers.expectedAnswerLabel')}
           </label>
           <input
             type="text"
-            // Помилка для відкритої відповіді
-            placeholder={errors.openExpectedText ? "Введіть очікувану відповідь!" : "Введіть відповідь"}
+            placeholder={errors.openExpectedText ? t('testCreationAnswers.errors.fillExpected') : t('testCreationAnswers.placeholders.answer')}
             className={`testCreationMainCreatorAnswers__input-open ${errors.openExpectedText ? 'input-error-placeholder' : ''}`}
             disabled={!openExpectedEnabled}
             value={openExpectedText}
@@ -183,11 +176,11 @@ const TestCreationMainAnswers = ({
     case "practical":
       return (
         <div className="testCreationMainCreatorAnswers testCreationMainCreatorAnswers-open">
-          <h3 className='testCreationMainCreatorAnswers__title'>Налаштування коду</h3>
+          <h3 className='testCreationMainCreatorAnswers__title'>{t('testCreationAnswers.titles.codeSettings')}</h3>
           <div style={{marginBottom: '15px'}}>
-              <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>Мова програмування:</label>
+              <label className="testCreationMainCreatorAnswers__text" style={{display: 'block', marginBottom: '5px'}}>{t('testCreationAnswers.code.language')}:</label>
               <select 
-                className="testCreationMainCreatorAnswers__input-open" // Можна додати свій клас для select
+                className="testCreationMainCreatorAnswers__input-open" 
                 style={{padding: '10px', borderRadius: '8px', border: '1px solid #ccc'}}
                 value={codeLanguage}
                 onChange={(e) => setCodeLanguage(e.target.value)}
@@ -199,35 +192,35 @@ const TestCreationMainAnswers = ({
           </div>
 
           <div style={{marginBottom: '15px'}}>
-            <label className="testCreationMainCreatorAnswers__text" style={{ display: 'block', marginBottom: '5px' }}>Назва методу:</label>
+            <label className="testCreationMainCreatorAnswers__text" style={{ display: 'block', marginBottom: '5px' }}>{t('testCreationAnswers.code.methodName')}:</label>
             <input
               type="text"
               className={`testCreationMainCreatorAnswers__input-open ${errors.codeMethodName ? 'input-error-placeholder' : ''}`}
-              placeholder={errors.codeMethodName ? "Обов'язково вкажіть назву методу!" : "Наприклад: sum"}
+              placeholder={errors.codeMethodName ? t('testCreationAnswers.errors.methodRequired') : t('testCreationAnswers.placeholders.method')}
               value={codeMethodName}
               onChange={(e) => setCodeMethodName(e.target.value)}
             />
           </div>
 
           <div style={{ marginBottom: '15px' }}>
-            <label className="testCreationMainCreatorAnswers__text" style={{ display: 'block', marginBottom: '5px' }}>Шаблон коду:</label>
+            <label className="testCreationMainCreatorAnswers__text" style={{ display: 'block', marginBottom: '5px' }}>{t('testCreationAnswers.code.template')}:</label>
             <textarea
               rows="5"
               className={`testCreationMainCreatorAnswers__input-open ${errors.codeTemplate ? 'input-error-placeholder' : ''}`}
               style={{ resize: 'vertical', fontFamily: 'monospace' }}
-              placeholder={errors.codeTemplate ? "Введіть шаблон коду для студента!" : "public int sum()..."}
+              placeholder={errors.codeTemplate ? t('testCreationAnswers.errors.templateRequired') : "public int sum()..."}
               value={codeTemplate}
               onChange={(e) => setCodeTemplate(e.target.value)}
             />
           </div>
 
           <div style={{ marginBottom: '15px' }}>
-            <label className="testCreationMainCreatorAnswers__text" style={{ display: 'block', marginBottom: '5px' }}>Тест-кейси (JSON):</label>
+            <label className="testCreationMainCreatorAnswers__text" style={{ display: 'block', marginBottom: '5px' }}>{t('testCreationAnswers.code.testCases')}:</label>
             <textarea
               rows="3"
               className={`testCreationMainCreatorAnswers__input-open ${errors.codeTestCasesJSON ? 'input-error-placeholder' : ''}`}
               style={{ resize: 'vertical', fontFamily: 'monospace' }}
-              placeholder={errors.codeTestCasesJSON ? "Помилка в JSON форматі!" : '[{"args": [1, 2], "expected": 3}]'}
+              placeholder={errors.codeTestCasesJSON ? t('testCreationAnswers.errors.jsonError') : '[{"args": [1, 2], "expected": 3}]'}
               value={codeTestCasesJSON}
               onChange={(e) => setCodeTestCasesJSON(e.target.value)}
             />

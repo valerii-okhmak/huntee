@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './CreateTestInfo.css';
 import backgroundVideo from '../../video/welcomevideo.mp4';
 import { Link } from 'react-router-dom';
@@ -21,8 +22,15 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const CreateTestInfo = ({main_title,title_button,first_step, second_step,third_step,four_step}) => {
-
+const CreateTestInfo = ({
+    main_title,
+    title_button,
+    first_step, 
+    second_step,
+    third_step,
+    four_step
+}) => {
+  const { t } = useTranslation();
   const overlayRef = useRef(null);
   const [animate, setAnimate] = useState(false);
 
@@ -56,7 +64,7 @@ const CreateTestInfo = ({main_title,title_button,first_step, second_step,third_s
       </video>
 
       <div className="overlay" ref={overlayRef}>
-        <div className="happens">how it happens?</div>
+        <div className="happens">{t('createTestInfo.howItHappens')}</div>
         <div className={`steps ${animate ? 'pan-animation' : ''}`}>
           <div className="step">{first_step}</div>
           <ArrowIcon />

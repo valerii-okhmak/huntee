@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './DashboardStudentCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 const DashboardStudentCard = ({ student, type }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleViewProfile = () => {
@@ -17,7 +19,7 @@ const DashboardStudentCard = ({ student, type }) => {
     if (student.attemptId) {
       navigate(`/testreview/${student.attemptId}`);
     } else {
-      console.error("Не знайдено ID спроби (attemptId) для цього студента:", student);
+      console.error("Attempt ID not found for student:", student);
     }
   };
 
@@ -45,7 +47,7 @@ const DashboardStudentCard = ({ student, type }) => {
               }`}
             >
               {isPendingReview 
-                  ? 'На перевірці' 
+                  ? t('dashboardStudentCard.pending') 
                   : `${score}/${maxScore}`
               }
             </div>
@@ -55,7 +57,7 @@ const DashboardStudentCard = ({ student, type }) => {
                 className="testDashboard__card-info" 
                 style={{cursor: 'pointer', textDecoration: 'underline'}}
             >
-                Переглянути деталі
+                {t('dashboardStudentCard.viewDetails')}
             </span>
           </>
         )}
@@ -64,15 +66,15 @@ const DashboardStudentCard = ({ student, type }) => {
       <div className="testDashboard__card-actions">
         {type === 'registered' ? (
            <button className="testDashboard__card-btn" onClick={handleViewProfile}>
-               Переглянути профіль
+               {t('dashboardStudentCard.viewProfile')}
            </button>
         ) : (
            <button className="testDashboard__card-btn" onClick={handleViewResults}>
-               {isPendingReview ? 'Перевірити тест' : 'Переглянути результати'}
+               {isPendingReview ? t('dashboardStudentCard.checkTest') : t('dashboardStudentCard.viewResults')}
            </button>
         )}
         
-        <button className="testDashboard__card-btn-chat" title="Написати повідомлення">
+        <button className="testDashboard__card-btn-chat" title={t('dashboardStudentCard.sendMessage')}>
           <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
         </button>
       </div>

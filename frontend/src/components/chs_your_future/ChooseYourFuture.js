@@ -17,7 +17,6 @@ const ChooseYourFuture = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // отримуємо унікальні сфери
         const uniqueSpheres = [...new Set(response.data.map(test => test.sphere))];
         setSpheres(uniqueSpheres);
       } catch (err) {

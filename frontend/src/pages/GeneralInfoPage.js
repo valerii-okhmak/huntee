@@ -1,32 +1,34 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import CustomTitle from '../components/custom_title/CustomTitle';
 import BrowserWindow from '../components/browser_window/BrowserWindow';
 import BrowserWinText from '../components/browser_win_text/BrowserWinText';
 import GeneralInfo from '../components/general_info/GeneralInfo';
 
 const GeneralInfoPage = () => {
+    const { t } = useTranslation();
 
     const object = {
       logo: null,
       line: true,
-      strong: 'Для чого ми працюємо?',
+      strong: t('generalInfoPage.subtitle'),
       p: null
     }
   
     return (
       <div className="page">
           <div className='custom_title_and_browser_window_space'>
-         <CustomTitle title='ВІТАЄМО НА HUNTEE!' data={object} /> 
+         <CustomTitle title={t('generalInfoPage.title')} data={object} /> 
           <BrowserWindow>
-            <BrowserWinText company={'Huntee'} text = {"Huntee — це сучасна веб-платформа для онлайн тестування кандидатів із вбудованими інструментами контролю доброчесності. \nМи створили її, щоб об'єднати потреби IT-компаній у швидкому та якісному первинному відборі фахівців із можливістю студентів та молодих спеціалістів показати свої навички на практиці. \nHuntee дає компаніям змогу автоматизувати процес відбору, а кандидатам — реальний шанс отримати запрошення на співбесіду та роботу. \nПрозоро. Об'єктивно. Без зайвих етапів."} />
+            <BrowserWinText company={'Huntee'} text={t('generalInfoPage.browserText')} />
           </BrowserWindow>
           </div>
           <GeneralInfo
-          first_step={"Компанія створює тести та запрошує кандидатів."}
-          second_step={"Кандидат проходить тестування онлайн з контролем доброчесності."}
-          third_step={"Компанія отримує результати та обирає тих, хто отримає запрошення на наступний етап — співбесіду або відразу на роботу."}
-          title_button1={"НАЙБЛИЖЧІ НАБОРИ"}
-          title_button2={"СТВОРИТИ ТЕСТ"}
+          first_step={t('generalInfoPage.steps.first')}
+          second_step={t('generalInfoPage.steps.second')}
+          third_step={t('generalInfoPage.steps.third')}
+          title_button1={t('generalInfoPage.buttons.batches')}
+          title_button2={t('generalInfoPage.buttons.create')}
           />
       </div>
     )

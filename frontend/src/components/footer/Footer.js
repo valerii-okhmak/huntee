@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './Footer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faInstagram, faLinkedinIn, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = () => {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [copied, setCopied] = useState(null);
 
-useEffect(() => {
-  if (!copied) return;
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(null), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
 
-  const timer = setTimeout(() => setCopied(null), 2000);
-  return () => clearTimeout(timer);
-  
-}, [copied]);
-
-const handleCopy = (text, type) => {
-  navigator.clipboard.writeText(text).then(() => {
-    setCopied(type);
-  });
-};
-
+  const handleCopy = (text, type) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(type);
+    });
+  };
 
   return (
     <footer className="footer" id="footer">
@@ -31,77 +30,74 @@ const handleCopy = (text, type) => {
         <h2 className="footer-title">HUNTEE</h2>
         <div className="footer-line"></div>
         <ul className="footer-menu">
-          <li><Link to="/generalinfo" className="footermenu">Про нас</Link></li>
-          <li><Link to="/contacts" className="footermenu">Запитання та пропозиції</Link></li>
-          <li><Link to="/companymain" className="footermenu">Для компаній</Link></li>
-          <li><Link to="/pricingpage" className="footermenu">Підписки</Link></li>
-          <li><Link to="/" className="footermenu">Співпраця</Link></li>
-          <li><Link to="/" className="footermenu">Інвестиції</Link></li>
-          <li><Link to="/" className="footermenu">Приватність та безпека</Link></li>
+          <li><Link to="/generalinfo" className="footermenu">{t('footer.menu.about')}</Link></li>
+          <li><Link to="/contacts" className="footermenu">{t('footer.menu.questions')}</Link></li>
+          <li><Link to="/companymain" className="footermenu">{t('footer.menu.forCompanies')}</Link></li>
+          <li><Link to="/pricingpage" className="footermenu">{t('footer.menu.pricing')}</Link></li>
+          <li><Link to="/" className="footermenu">{t('footer.menu.cooperation')}</Link></li>
+          <li><Link to="/" className="footermenu">{t('footer.menu.investments')}</Link></li>
+          <li><Link to="/" className="footermenu">{t('footer.menu.privacy')}</Link></li>
         </ul>
       </div>
 
       <div className="footer-right">
-        <h2 className="footer-title">КОНТАКТИ</h2>
+        <h2 className="footer-title">{t('footer.contactsTitle')}</h2>
         <div className="footer-line"></div>
 
         <div className="footer-box">
           <div className="footer-block">
-            <p className="footer-label">Адреса</p>
+            <p className="footer-label">{t('footer.labels.address')}</p>
             <p className="copy-line">
               <span className="adress-label">
-                Вулиця 15 квітня, 1, Тернопіль, Тернопільська область, 46023, Україна
+                {t('footer.addressValue')}
               </span>
-              {copied != 'address' &&
+              {copied !== 'address' &&
               <FontAwesomeIcon
                 icon={faCopy}
                 className="copy-icon"
                 onClick={() =>
-                  handleCopy(
-                    "Вулиця 15 квітня, 1, Тернопіль, Тернопільська область, 46023, Україна",
-                    "address"
-                  )
+                  handleCopy(t('footer.addressValue'), "address")
                 }
               />
               }
-              {copied === 'address' && <span className="copied-text">Скопійовано!</span>}
+              {copied === 'address' && <span className="copied-text">{t('footer.copied')}</span>}
             </p>
           </div>
 
           <div className="footer-block">
-            <p className="footer-label">Телефон</p>
+            <p className="footer-label">{t('footer.labels.phone')}</p>
             <p className="copy-line">
               <a href="tel:+380960000000" className="phone-link">+380-960-000-000</a>
-              {copied != 'phone' &&
+              {copied !== 'phone' &&
               <FontAwesomeIcon
                 icon={faCopy}
                 className="copy-icon"
                 onClick={() => handleCopy("+380960000000", "phone")}
               />
               }
-              {copied === 'phone' && <span className="copied-text">Скопійовано!</span>}
+              {copied === 'phone' && <span className="copied-text">{t('footer.copied')}</span>}
             </p>
           </div>
 
           <div className="footer-block">
-            <p className="footer-label">E-mail</p>
+            <p className="footer-label">{t('footer.labels.email')}</p>
             <p className="copy-line">
               <a href="mailto:huntee@gmail.com" className="email-link">huntee@gmail.com</a>
-              {copied != 'email' &&
+              {copied !== 'email' &&
               <FontAwesomeIcon
                 icon={faCopy}
                 className="copy-icon"
                 onClick={() => handleCopy("huntee@gmail.com", "email")}
               />
               }
-              {copied === 'email' && <span className="copied-text">Скопійовано!</span>}
+              {copied === 'email' && <span className="copied-text">{t('footer.copied')}</span>}
             </p>
           </div>
 
           <div className="footer-block">
-            <p className="footer-label">Час роботи</p>
+            <p className="footer-label">{t('footer.labels.worktime')}</p>
             <p className="copy-line">
-              <span className="worktime-label">Пн–Пт, 9:00–18:00</span>
+              <span className="worktime-label">{t('footer.worktimeValue')}</span>
             </p>
           </div>
         </div>
@@ -112,12 +108,12 @@ const handleCopy = (text, type) => {
           rel="noopener noreferrer"
           className="view-map-link"
         >
-          Переглянути на карті →
+          {t('footer.viewMap')} →
         </a>
       </div>
 
       <div className="footer-social">
-        <p className="social-text">Приєднуйтеся до нас:</p>
+        <p className="social-text">{t('footer.joinUs')}</p>
         <div className="social-icons">
           <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faFacebookF} className="social-icon facebook" />

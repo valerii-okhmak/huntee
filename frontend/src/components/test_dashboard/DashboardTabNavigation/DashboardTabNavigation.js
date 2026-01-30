@@ -1,14 +1,16 @@
-import React from 'react'
-import './DashboardTabNavigation.css'
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import './DashboardTabNavigation.css';
 
 const DashboardTabNavigation = ({ activeTab, setActiveTab }) => {
+    const { t } = useTranslation();
     const tabNames = ['registered', 'results', 'analytics'];
 
     const getTabLabel = (name) => {
         switch (name) {
-          case 'registered': return 'Зареєстровані';
-          case 'results': return 'Результати';
-          case 'analytics': return 'Аналітика';
+          case 'registered': return t('dashboardTabNavigation.registered');
+          case 'results': return t('dashboardTabNavigation.results');
+          case 'analytics': return t('dashboardTabNavigation.analytics');
           default: return '';
         }
     };
@@ -28,4 +30,4 @@ const DashboardTabNavigation = ({ activeTab, setActiveTab }) => {
   )
 }
 
-export default DashboardTabNavigation
+export default DashboardTabNavigation;

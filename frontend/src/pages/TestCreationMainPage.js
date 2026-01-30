@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import GeneralTestInfoHeader from '../components/GeneralTestInfoHeader/GeneralTestInfoHeader';
 import TestCreationMainCount from '../components/testCreationMain/TestCreationMainCount/TestCreationMainCount';
@@ -11,6 +12,7 @@ import Loader from '../components/loader/Loader';
 import { getAccessToken } from '../utils/auth';
 
 const TestCreationMainPage = () => {
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const passed = location.state?.testMeta || null;
@@ -66,7 +68,7 @@ const TestCreationMainPage = () => {
 
 
   const [testMeta, setTestMeta] = useState(() => ({
-    testName: passed?.testName || 'Новий тест',
+    testName: passed?.testName || t('testCreationMain.defaultTestName'),
     sphere: passed?.field || 'unknown',
     level: (passed?.level || 'JUNIOR')?.toUpperCase(),
     city: passed?.city || 'online',
@@ -317,19 +319,17 @@ const TestCreationMainPage = () => {
             { headers }
           );
         }
-        // Алерт прибрано. Одразу перехід.
       }      
   
       navigate('/viewingtests');
     } catch (e) {
       console.error(e);
-      // Алерт прибрано.
     } finally {
       setLoading(false);
     }
   };
   
-
+  const localeDate = i18n.language === 'uk' ? 'uk-UA' : 'en-US';
 
   return (
     <div className='page'>
@@ -337,8 +337,8 @@ const TestCreationMainPage = () => {
         field={testMeta.sphere}
         title={testMeta.testName}
         location={testMeta.city}
-        date={testMeta.startTime ? testMeta.startTime.toLocaleDateString() : ''}
-        time={testMeta.startTime ? testMeta.startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+        date={testMeta.startTime ? testMeta.startTime.toLocaleDateString(localeDate) : ''}
+        time={testMeta.startTime ? testMeta.startTime.toLocaleTimeString(localeDate, { hour: '2-digit', minute: '2-digit' }) : ''}
       />
 
       <TestCreationMainCount questionsCount={questionsCount} />
@@ -360,10 +360,10 @@ const TestCreationMainPage = () => {
             editingIndex !== null ? (
               <>
                  <button className='testCreationMainButtons__next white-btn' onClick={handleEditCancel}>
-                   Відмінити
+                   {t('testCreationMain.buttons.cancelEdit')}
                  </button>
                  <button className='testCreationMainButtons__finish black-btn' onClick={handleEditConfirm}>
-                   Підтвердити зміни
+                   {t('testCreationMain.buttons.confirmEdit')}
                  </button>
               </>
             ) : (
@@ -373,11 +373,11 @@ const TestCreationMainPage = () => {
                   style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7', color: 'white', marginRight: '10px' }}
                   onClick={() => setIsAiModalOpen(true)}
                 >
-                  ✨ AI Генерація
+                  {t('testCreationMain.buttons.aiGenerate')}
                 </button>
 
                 <button className='testCreationMainButtons__next white-btn' onClick={handleNextQuestion}>
-                  Додати запитання
+                  {t('testCreationMain.buttons.addQuestion')}
                 </button>
                 <button
                   className='testCreationMainButtons__finish black-btn'
@@ -386,17 +386,17 @@ const TestCreationMainPage = () => {
                     setMode('preview');
                   }}
                 >
-                  Переглянути результат
+                  {t('testCreationMain.buttons.viewResult')}
                 </button>
               </>
             )
           ) : (
             <>
               <button className='testCreationMainButtons__back white-btn' onClick={() => setMode('create')} disabled={loading}>
-                Повернутися до створення
+                {t('testCreationMain.buttons.backToCreate')}
               </button>
               <button className='testCreationMainButtons__publish black-btn' onClick={handleTryPublish} disabled={loading}>
-                Завершити створення
+                {t('testCreationMain.buttons.finishCreation')}
               </button>
             </>
           )}
@@ -412,8 +412,8 @@ const TestCreationMainPage = () => {
         }}
         loading={loading}
         questionsCount={questions.length}
-        startDate={testMeta.startTime ? testMeta.startTime.toLocaleDateString('uk-UA') : 'не вказано'}
-        startTime={testMeta.startTime ? testMeta.startTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }) : 'не вказано'}
+        startDate={testMeta.startTime ? testMeta.startTime.toLocaleDateString(localeDate) : t('testCreationMain.notSpecified')}
+        startTime={testMeta.startTime ? testMeta.startTime.toLocaleTimeString(localeDate, { hour: '2-digit', minute: '2-digit' }) : t('testCreationMain.notSpecified')}
       />
 
       <AiGenerationModal

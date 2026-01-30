@@ -1,4 +1,5 @@
 import React, { useState , useEffect} from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import './Profile.css';
 import AdditionalInfoModal from '../../modal_windows/AdditionalInfoModal';
@@ -27,7 +28,7 @@ import DEFAULT_AVATAR from '../../../img/avatar.png';
 
 
 const Profile = () => {
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
   const [educationData, setEducationData] = useState(null);
@@ -45,6 +46,7 @@ const Profile = () => {
     navigate('/login');
   };
 
+  // ... (Всі функції fetch залишаються без змін) ...
   const fetchExperience = async () => {
     try {
       const token = getAccessToken();
@@ -75,8 +77,6 @@ const Profile = () => {
             data.profileImage = DEFAULT_AVATAR;
           } else  {
             data.profileImage = `/api/profile/avatar/${data.profileImage}`;
-
-            console.log(data.profileImage);
           }
 
           setProfileData(data);
@@ -128,7 +128,6 @@ const Profile = () => {
       }
     };
 
-    // Отримання статистики для "Мій кабінет"
 const fetchMyTestsStats = async () => {
       try {
         const token = getAccessToken();
@@ -136,18 +135,14 @@ const fetchMyTestsStats = async () => {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         const tests = response.data;
-        
         const total = tests.length;
-
         const successful = tests.filter(t => t.statusTest?.toLowerCase() === 'closed').length;
-
         setMyTestsStats({ total, successful });
       } catch (error) {
         console.error('Помилка при завантаженні моїх тестів:', error);
       }
     };
 
-    // Отримання статистики для "Адміністративна панель"
 const fetchCreatedTestsStats = async () => {
       try {
         const token = getAccessToken();
@@ -155,11 +150,8 @@ const fetchCreatedTestsStats = async () => {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         const tests = response.data;
-
         const total = tests.length;
-
         const active = tests.filter(t => t.status?.toLowerCase() === 'active').length;
-
         setCreatedTestsStats({ total, active });
       } catch (error) {
         console.error('Помилка при завантаженні створених тестів:', error);
@@ -185,51 +177,25 @@ const fetchCreatedTestsStats = async () => {
 
   const handleOpenModal = (modalType) => {
     switch (modalType) {
-      case 'editProfile':
-        setIsEditProfileModalOpen(true);
-        break;
-      case 'additionalInfo':
-        setIsAdditionalInfoModalOpen(true);
-        break;
-      case 'courses':
-        setIsCoursesModalOpen(true);
-        break;
-      case 'experience':
-        setIsExperienceModalOpen(true);
-        break;
-      case 'education':
-        setIsEducationModalOpen(true);
-        break;
-      case 'password':
-        setIsPasswordModalOpen(true);
-        break;
-      default:
-        break;
+      case 'editProfile': setIsEditProfileModalOpen(true); break;
+      case 'additionalInfo': setIsAdditionalInfoModalOpen(true); break;
+      case 'courses': setIsCoursesModalOpen(true); break;
+      case 'experience': setIsExperienceModalOpen(true); break;
+      case 'education': setIsEducationModalOpen(true); break;
+      case 'password': setIsPasswordModalOpen(true); break;
+      default: break;
     }
   };
 
   const handleCloseModal = (modalType) => {
     switch (modalType) {
-      case 'editProfile':
-        setIsEditProfileModalOpen(false);
-        break;
-      case 'additionalInfo':
-        setIsAdditionalInfoModalOpen(false);
-        break;
-      case 'courses':
-        setIsCoursesModalOpen(false);
-        break;
-      case 'experience':
-        setIsExperienceModalOpen(false);
-        break;
-      case 'education':
-        setIsEducationModalOpen(false);
-        break;
-      case 'password':
-        setIsPasswordModalOpen(false);
-        break;
-      default:
-        break;
+      case 'editProfile': setIsEditProfileModalOpen(false); break;
+      case 'additionalInfo': setIsAdditionalInfoModalOpen(false); break;
+      case 'courses': setIsCoursesModalOpen(false); break;
+      case 'experience': setIsExperienceModalOpen(false); break;
+      case 'education': setIsEducationModalOpen(false); break;
+      case 'password': setIsPasswordModalOpen(false); break;
+      default: break;
     }
   };
 
@@ -245,56 +211,43 @@ const fetchCreatedTestsStats = async () => {
         console.error('Помилка при перевірці провайдера:', error);
       }
     };
-
     checkLocalProvider();
   }, []);
 
 function getYearWord(n) {
   n = Math.abs(n) % 100; 
   const n1 = n % 10;
-
-  if (n > 10 && n < 20) return "років";
-  if (n1 > 1 && n1 < 5) return "роки";
-  if (n1 === 1) return "рік";
-  return "років";
+  if (n > 10 && n < 20) return t('profile.age.years'); // років
+  if (n1 > 1 && n1 < 5) return t('profile.age.years_2_4'); // роки
+  if (n1 === 1) return t('profile.age.year'); // рік
+  return t('profile.age.years');
 }
-
 
   const getAgeFromBirthDate = (birthDateStr) => {
     const birthDate = new Date(birthDateStr);
     const today = new Date();
-
-    if (isNaN(birthDate.getTime())) {
-      return 0; // якщо дата некоректна
-    }
+    if (isNaN(birthDate.getTime())) return 0;
 
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-
     return age >= 0 ? age : 0;
   };
 
   const handleLinkDelete= async (idToDelete) => {
     const token = getAccessToken();
-    if (!token) {
-      return;
-    }
+    if (!token) return;
 
     try {
-      const response = await axios.delete(`/api/profile/links/${idToDelete}`, {
+      await axios.delete(`/api/profile/links/${idToDelete}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
       });
-
       setMediaLinksData(currentLinks => currentLinks.filter(link => link.id !== idToDelete));
       fetchMediaLinks();
     } catch (err) {
@@ -302,7 +255,7 @@ function getYearWord(n) {
     }
   };
 
-    const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
     const profileId = profileData?.user_id || ''; 
@@ -329,14 +282,14 @@ return (
               className={activeTab === "cabinet" ? "active-profile-tab" : ""}
               onClick={() => setActiveTab("cabinet")}
             >
-              Мій кабінет
+              {t('profile.tabs.cabinet')}
             </span>
 
             <span
               className={activeTab === "admin" ? "active-profile-tab" : ""}
               onClick={() => setActiveTab("admin")}
             >
-              Адміністративна панель
+               {t('profile.tabs.admin')}
             </span>
           </div>
 
@@ -351,7 +304,7 @@ return (
                 <div id='personal-information' className="profile-container personal-profile-container">
                   <div className="profile-header-section">
                     <h3 className="section-title">
-                      Особиста інформація
+                       {t('profile.personalInfo')}
                     <FontAwesomeIcon
                       icon={faPenToSquare}
                       className="edit-icon"
@@ -385,10 +338,10 @@ return (
                           className="profile-edit-btn"
                           onClick={handleCopy}
                         >
-                          Поділитись посиланням <FontAwesomeIcon icon={faLink} className="link-icon" />
+                          {t('profile.buttons.shareLink')} <FontAwesomeIcon icon={faLink} className="link-icon" />
                         </button>
 
-                        {copied && <div className="copy-popup">Скопійовано!</div>}
+                        {copied && <div className="copy-popup">{t('profile.copied')}</div>}
                       </div>
 
                       <button 
@@ -396,7 +349,7 @@ return (
                         id="my-tests" 
                         className="profile-edit-btn"
                       >
-                        Мої тести
+                         {t('profile.buttons.myTests')}
                       </button>
 
                       <button
@@ -404,7 +357,7 @@ return (
                         id="exit"
                         className="profile-edit-btn"
                       >
-                        Вийти
+                         {t('profile.buttons.logout')}
                       </button>
                     </div>
                   </div>
@@ -414,7 +367,7 @@ return (
                 <div id='aditional-information' className="profile-container">
                   <div className="profile-info-section aditional-profile-info-section">
                     <div className='icon_and_title_container'>
-                    <h3 className="subsection-title">Додаткова інформація</h3>
+                    <h3 className="subsection-title">{t('profile.additionalInfo')}</h3>
                     <FontAwesomeIcon
                       icon={faPenToSquare}
                       className="edit-icon"
@@ -426,7 +379,7 @@ return (
                       <p className='aditional-text'>
                         {profileData?.about
                           ? profileData.about
-                          : 'Допоможіть рекрутерам краще пізнати вас...'}
+                          : t('profile.placeholders.about')}
                       </p>
                     </div>
                   </div>
@@ -435,7 +388,7 @@ return (
                     {mediaLinksData?.length > 0 &&
                       mediaLinksData.map((item) => (
                         <div key={item.id} className='media-link-wrapper'>
-                          <a className='media-link-item' href={item.url} target="_blank">
+                          <a className='media-link-item' href={item.url} target="_blank" rel="noreferrer">
                             <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
                             {item.type}
                           </a>
@@ -449,16 +402,16 @@ return (
 
                 <div id='achievements' className="profile-container">
                   <div className="profile-info-section achievement-profile-info-section">
-                    <h4 className="subsection-title">Досягнення</h4>
+                    <h4 className="subsection-title">{t('profile.achievements.title')}</h4>
 
                     <div className='achievements-block'>
                       <div className='achievement-info'>
-                        <p className="achivement-label">Кількість пройдених тестів:</p>
+                        <p className="achivement-label">{t('profile.achievements.passedTests')}:</p>
                         <span className="achivement-value">{myTestsStats.total}</span>
                       </div>
 
                       <div className='achievement-info'>
-                        <p className="achivement-label">Успішні:</p>
+                        <p className="achivement-label">{t('profile.achievements.successful')}:</p>
                         <span className="achivement-value">{myTestsStats.successful}</span>
                       </div>
                     </div>
@@ -479,7 +432,7 @@ return (
                   style={{ cursor: 'pointer' }}
                 />
                 <div className="profile-info-bottom-section">
-                  <h3 className="subsection-title">Освіта</h3>
+                  <h3 className="subsection-title">{t('profile.education.title')}</h3>
 
                   {educationData?.length > 0 ? (
                     educationData.map((item, index) => (
@@ -494,7 +447,7 @@ return (
                       />
                     ))
                   ) : (
-                    <p className='empty-placeholder'>Додайте інформацію про університет.</p>
+                    <p className='empty-placeholder'>{t('profile.education.empty')}</p>
                   )}
                 </div>
               </div>
@@ -506,7 +459,7 @@ return (
                   style={{ cursor: 'pointer' }}
                 />
                 <div className="profile-info-bottom-section">
-                  <h3 className="subsection-title">Сертифікати</h3>
+                  <h3 className="subsection-title">{t('profile.certificates.title')}</h3>
 
                   {sertificatesData?.length > 0 ? (
                     sertificatesData.map((item, index) => (
@@ -522,7 +475,7 @@ return (
                       />
                     ))
                   ) : (
-                    <p className='empty-placeholder'>Додайте інформацію про сертифікати.</p>
+                    <p className='empty-placeholder'>{t('profile.certificates.empty')}</p>
                   )}
                 </div>
               </div>
@@ -534,7 +487,7 @@ return (
                   style={{ cursor: 'pointer' }}
                 />
                 <div className="profile-info-bottom-section">
-                  <h3 className="subsection-title">Проєкти</h3>
+                  <h3 className="subsection-title">{t('profile.projects.title')}</h3>
 
                   {experienceData?.length > 0 ? (
                     experienceData.map((item, index) => (
@@ -550,18 +503,18 @@ return (
                       />
                     ))
                   ) : (
-                    <p className='empty-placeholder'>Додайте інформацію про проєкти.</p>
+                    <p className='empty-placeholder'>{t('profile.projects.empty')}</p>
                   )}
                 </div>
               </div>
               {isLocalProvider && (
                 <div id='password' className="profile-container">
                   <div className="profile-info-section">
-                    <h4 className="subsection-title">Пароль</h4>
+                    <h4 className="subsection-title">{t('profile.password.title')}</h4>
                     <div className="profile-info-block">
-                      <p>Ми рекомендуємо вам періодично оновлювати пароль.</p>
+                      <p>{t('profile.password.desc')}</p>
                       <button className="profile-edit-btn right-btn" onClick={()=>handleOpenModal("password")}>
-                        Змінити пароль
+                        {t('profile.password.changeBtn')}
                       </button>
                     </div>
                   </div>
@@ -579,7 +532,7 @@ return (
                 <div id='personal-information' className="profile-container personal-profile-container">
                   <div className="profile-header-section">
                     <h3 className="section-title">
-                      Особиста інформація
+                       {t('profile.personalInfo')}
                      <FontAwesomeIcon
                       icon={faPenToSquare}
                       className="edit-icon"
@@ -613,10 +566,10 @@ return (
                           className="profile-edit-btn"
                           onClick={handleCopy}
                         >
-                          Поділитись посиланням <FontAwesomeIcon icon={faLink} className="link-icon" />
+                          {t('profile.buttons.shareLink')} <FontAwesomeIcon icon={faLink} className="link-icon" />
                         </button>
 
-                        {copied && <div className="copy-popup">Скопійовано!</div>}
+                        {copied && <div className="copy-popup">{t('profile.copied')}</div>}
                       </div>
 
                       <button 
@@ -624,7 +577,7 @@ return (
                         id="my-tests" 
                         className="profile-edit-btn"
                       >
-                        Конструктор тестів
+                         {t('profile.buttons.testConstructor')}
                       </button>
 
                       <button
@@ -632,7 +585,7 @@ return (
                       id="exit"
                       className="profile-edit-btn"
                     >
-                      Вийти
+                       {t('profile.buttons.logout')}
                     </button>
                     </div>
                   </div>
@@ -642,7 +595,7 @@ return (
                 <div id='aditional-information' className="profile-container">
                   <div className="profile-info-section aditional-profile-info-section">
                     <div className='icon_and_title_container'>
-                    <h3 className="subsection-title">Додаткова інформація</h3>
+                    <h3 className="subsection-title">{t('profile.additionalInfo')}</h3>
                     <FontAwesomeIcon
                       icon={faPenToSquare}
                       className="edit-icon"
@@ -654,7 +607,7 @@ return (
                       <p className='aditional-text'>
                         {profileData?.about
                           ? profileData.about
-                          : 'Допоможіть рекрутерам краще пізнати вас...'}
+                          : t('profile.placeholders.about')}
                       </p>
                     </div>
                   </div>
@@ -663,7 +616,7 @@ return (
                     {mediaLinksData?.length > 0 &&
                       mediaLinksData.map((item) => (
                         <div key={item.id} className='media-link-wrapper'>
-                          <a className='media-link-item' href={item.url} target="_blank">
+                          <a className='media-link-item' href={item.url} target="_blank" rel="noreferrer">
                             <img src={`/social-icons/${item.type.toLowerCase()}.png`} alt={item.type} className="media-link-icon" />
                             {item.type}
                           </a>
@@ -676,8 +629,8 @@ return (
                 </div>
                 <div id='analytics' className="profile-container">
                 <div className="profile-info-section analytics-profile-info-section">
-                  <h4 className="subsection-title">Аналітика</h4>
-                  <button className="analytics-btn">Переглянути детальну аналітику</button>
+                  <h4 className="subsection-title">{t('profile.analytics.title')}</h4>
+                  <button className="analytics-btn">{t('profile.analytics.viewDetailed')}</button>
                 </div>
                 <div className='diagram-container'>
                     <Diagram />
@@ -685,11 +638,11 @@ return (
                 </div>
                 <div className="admin-panel-tests-info-container">
                   <div className='admin-panel-tests-info'>
-                    <p className="admin-panel-tests-label">Кількість створених тестів:</p>
+                    <p className="admin-panel-tests-label">{t('profile.adminStats.createdTests')}:</p>
                     <span className="admin-panel-tests-value">{createdTestsStats.total}</span>
                   </div>
                   <div className='admin-panel-tests-info'>
-                    <p className="admin-panel-tests-label">Активні тести:</p>
+                    <p className="admin-panel-tests-label">{t('profile.adminStats.activeTests')}:</p>
                     <span className="admin-panel-tests-value">{createdTestsStats.active}</span>
                   </div>
                 </div>

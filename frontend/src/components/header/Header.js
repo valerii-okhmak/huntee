@@ -1,14 +1,16 @@
 import React, { useRef, useEffect } from "react";
-import "./Header.css";
-import logo from "../../img/logo.png"; 
-import BurgerMenu from "../burgerMenu/burgerMenu"; 
 import { useLocation, Link } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faBars } from '@fortawesome/free-solid-svg-icons'; 
 
+import "./Header.css";
+import logo from "../../img/logo.png"; 
+import BurgerMenu from "../burgerMenu/burgerMenu"; 
+
 const Header = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const isAllTestsPage = location.pathname === "/alltests";
 
@@ -21,7 +23,6 @@ const Header = () => {
     }
   };
 
-  // Закриття меню при кліку поза ним
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -38,7 +39,6 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Зміна стилю хедера при скролі
   useEffect(() => {
     const onScroll = () => {
       const header = document.querySelector('header');
@@ -67,23 +67,23 @@ const Header = () => {
           {!isAllTestsPage && (
             <li>
               <Link to="/alltests" className="headermenu">
-                <div className="set">Найближчі набори</div>
+                <div className="set">{t('header.closestSets')}</div>
               </Link>
             </li>
           )}
           <div className="header-icons">
             <li>
-              <Link to="/messages" className="headermenu" aria-label="Повідомлення">
+              <Link to="/messages" className="headermenu" aria-label={t('header.messages')}>
                 <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="headermenu" aria-label="Профіль">
+              <Link to="/profile" className="headermenu" aria-label={t('header.profile')}>
                 <FontAwesomeIcon icon={faUser} className="header-icon" />
               </Link>
             </li>
             <li>
-              <button ref={btnRef} onClick={toggleMenu} className="headermenu burger" aria-label="Бургер меню">
+              <button ref={btnRef} onClick={toggleMenu} className="headermenu burger" aria-label={t('header.menu')}>
                 <FontAwesomeIcon icon={faBars} className="header-icon"/>
               </button>
             </li>

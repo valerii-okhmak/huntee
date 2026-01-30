@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './TestCard.css';
 import location_icon from '../../../img/test/location.png';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,11 +7,11 @@ import { getAccessToken } from '../../../utils/auth';
 import ConfirmDeleteTestModal from '../../modal_windows/ConfirmDeleteTestModal';
 import ErrorModal from '../../modal_windows/ErrorModal';
 
-// 1. ІМПОРТУЄМО З "FREE-REGULAR" (Контурні іконки)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, onDeleteSuccess }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [errorState, setErrorState] = useState({ isOpen: false, message: '' });
@@ -49,7 +50,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Не вдалося видалити тест. Можливо, у вас недостатньо прав.');
+        throw new Error(errorData.message || t('testCard.deleteError'));
       }
 
       setIsDeleteModalOpen(false);
@@ -82,7 +83,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
         <div className='testcard-container'>
           <div className='testcard-top_row'>
             <p className='testcard-type'>{type}</p>
-              <p className='testcard-status-active'>Зареєстровано: {candidatesCount}</p>
+              <p className='testcard-status-active'>{t('testCard.registered')}: {candidatesCount}</p>
           </div>
 
           <div className='testcard-title'>{title}</div>
@@ -92,18 +93,16 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
               className="testcard-action-btn btn-edit"
               onClick={handleEdit}
             >
-              {/* Використовуємо контурний олівець */}
               <FontAwesomeIcon icon={faPenToSquare} />
-              <span>Редагувати</span>
+              <span>{t('testCard.edit')}</span>
             </button>
 
             <button
               className="testcard-action-btn btn-delete"
               onClick={openDeleteModal}
             >
-              {/* Використовуємо контурний смітник */}
               <FontAwesomeIcon icon={faTrashCan} />
-              <span>Видалити</span>
+              <span>{t('testCard.delete')}</span>
             </button>
           </div>
 
@@ -130,7 +129,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
       <ErrorModal
         isOpen={errorState.isOpen}
         onClose={closeErrorModal}
-        title="ПОМИЛКА ВИДАЛЕННЯ"
+        title={t('testCard.errorTitle')}
         errorMessage={errorState.message}
       />
     </>

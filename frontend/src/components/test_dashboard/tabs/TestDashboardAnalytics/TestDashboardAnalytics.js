@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './TestDashboardAnalytics.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCircleXmark, faUsers, faHourglassHalf } from "@fortawesome/free-solid-svg-icons"; // Додав faHourglassHalf
+import { faCircleCheck, faCircleXmark, faUsers, faHourglassHalf } from "@fortawesome/free-solid-svg-icons";
 import { getAccessToken } from '../../../../utils/auth';
 import axios from 'axios';
 import Loader from '../../../loader/Loader';
 
 const TestDashboardAnalytics = ({ testId }) => {
+  const { t } = useTranslation();
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,14 +24,14 @@ const TestDashboardAnalytics = ({ testId }) => {
         setAnalytics(response.data);
       } catch (err) {
         console.error(err);
-        setError("Не вдалося завантажити аналітику");
+        setError(t('testDashboardAnalytics.error'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchAnalytics();
-  }, [testId]);
+  }, [testId, t]);
 
   if (loading) return <Loader />;
   if (error) return <div className='container'>{error}</div>;
@@ -37,14 +39,14 @@ const TestDashboardAnalytics = ({ testId }) => {
   return (
     <div className='container'>
       <div className="testDashboard__description">
-        <p>Тут ви можете переглянути детальну аналітику результатів тестування студентів.</p>
+        <p>{t('testDashboardAnalytics.description')}</p>
         <div className="testDashboard__quote">
-           <p>Середній бал по оціненим тестам: <strong>{analytics.averageScore}%</strong></p>
+           <p>{t('testDashboardAnalytics.avgScore')}: <strong>{analytics.averageScore}%</strong></p>
         </div>
       </div>
 
       <div className="testDashboard__analytics-actions">
-        <button className="testDashboard__analytics-btn-dark">Завантажити результати</button>
+        <button className="testDashboard__analytics-btn-dark">{t('testDashboardAnalytics.downloadResults')}</button>
       </div>
 
       <div className="testDashboard__analytics-stats-row">
@@ -53,7 +55,7 @@ const TestDashboardAnalytics = ({ testId }) => {
             <FontAwesomeIcon icon={faCircleCheck}/>
           </div>
           <strong>{analytics.passedCount}</strong>
-          <p>Студентів пройшло</p>
+          <p>{t('testDashboardAnalytics.stats.passed')}</p>
         </div>
 
         <div className="testDashboard__analytics-stat-card danger">
@@ -61,7 +63,7 @@ const TestDashboardAnalytics = ({ testId }) => {
             <FontAwesomeIcon icon={faCircleXmark}/>
           </div>
           <strong>{analytics.failedCount}</strong>
-          <p>Студентів не пройшло</p>
+          <p>{t('testDashboardAnalytics.stats.failed')}</p>
         </div>
 
         <div className="testDashboard__analytics-stat-card warning" style={{ borderColor: '#ffa502' }}>
@@ -69,7 +71,7 @@ const TestDashboardAnalytics = ({ testId }) => {
             <FontAwesomeIcon icon={faHourglassHalf}/>
           </div>
           <strong style={{ color: '#ffa502' }}>{analytics.inReviewCount}</strong>
-          <p>Очікують перевірки</p>
+          <p>{t('testDashboardAnalytics.stats.review')}</p>
         </div>
 
         <div className="testDashboard__analytics-stat-card total">
@@ -77,7 +79,7 @@ const TestDashboardAnalytics = ({ testId }) => {
             <FontAwesomeIcon icon={faUsers}/>
           </div>
           <strong>{analytics.totalAttempts}</strong>
-          <p>Всього спроб</p>
+          <p>{t('testDashboardAnalytics.stats.total')}</p>
         </div>
       </div>
     </div>
