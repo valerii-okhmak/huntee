@@ -11,6 +11,7 @@ import org.dreamteam.Entity.TestRegistration;
 import org.dreamteam.Entity.User;
 import org.dreamteam.Entity.UserTestAttempt;
 import org.dreamteam.dto.CandidateDTO;
+import org.dreamteam.dto.ExportRequestDTO;
 import org.dreamteam.dto.MyTestDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
@@ -28,7 +29,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
-
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class TestService {
     private final UserTestAttemptRepository attemptRepository;
     private final NotificationService notificationService;
     private final QuestionRepository questionRepository;
+    private final ExportService exportService;
+
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
@@ -305,6 +308,17 @@ public class TestService {
             test.setTestQuestions(new HashSet<>());
         }
         test.getTestQuestions().addAll(newLinks);
+    }
+
+    public byte[] exportTestResults(UUID testId, ExportRequestDTO request, String email) throws IOException {
+        List<CandidateDTO> results = getTestResults(testId, email);
+        Test test = findTestById(testId);
+
+        if ("PDF".equalsIgnoreCase(request.getFormat())) {
+            return exportService.exportToPdf(test.getTestName(), request.getColumns(), results);
+        } else {
+            return exportService.exportToExcel(test.getTestName(), request.getColumns(), results);
+        }
     }
 
     private TestDetailResponse mapToDetailResponse(Test test) {

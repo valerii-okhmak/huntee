@@ -1039,6 +1039,20 @@
     "title": "ACCESS ERROR",
     "close": "Close",
     "defaultMessage": "Failed to start the test. Time may have expired or you are not registered.",
-    "understood": "Understood"
+    "understood": "OK"
+  },
+  "exportModal": {
+  "title": "Export Results",
+  "subtitle": "Configure file parameters for download",
+  "formatLabel": "File Format",
+  "columnsLabel": "Report Columns",
+  "button": "Download File",
+  "columns": {
+    "fullName": "Student Name",
+    "email": "Email",
+    "score": "Score",
+    "status": "Status",
+    "date": "Date"
   }
+}
 }
