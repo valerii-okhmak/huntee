@@ -49,10 +49,12 @@
     display: flex;
     gap: 24px;
     margin-bottom: 50px;
+    flex-wrap: wrap; 
 }
 
 .testDashboard__analytics-stat-card {
     flex: 1;
+    min-width: 250px; 
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -78,4 +80,89 @@
 }
 .testDashboard__analytics-stat-card.danger .testDashboard__analytics-icon {
     color: #F44336;
+}
+
+
+.testDashboard__advanced-section {
+    margin-top: 60px;
+    border-top: 1px solid #ccc;
+    padding-top: 40px;
+}
+
+.testDashboard__section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: black;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.analytics-card {
+    background: white;
+    padding: 20px;
+    border: 1px solid black; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Montserrat', sans-serif;
+    min-width: 0; 
+}
+
+.analytics-card h3 {
+    margin-bottom: 20px;
+    color: black;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.chart-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.chart-container-wide {
+    width: 100%;
+    height: 350px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.chart-hint {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+    font-style: italic;
+    text-align: center;
+}
+
+
+@media (max-width: 768px) {
+    .analytics-grid {
+        grid-template-columns: 1fr; 
+    }
+    
+    .chart-container, .chart-container-wide {
+        height: 250px; 
+    }
+
+    .testDashboard__analytics-stats-row {
+        gap: 15px;
+    }
 }

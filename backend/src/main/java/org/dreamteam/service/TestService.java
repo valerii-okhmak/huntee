@@ -5,14 +5,17 @@ import lombok.RequiredArgsConstructor;
 
 import org.dreamteam.Entity.AttemptStatus;
 import org.dreamteam.Entity.Question;
+import org.dreamteam.Entity.QuestionType;
 import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.TestQuestion;
 import org.dreamteam.Entity.TestRegistration;
 import org.dreamteam.Entity.User;
+import org.dreamteam.Entity.UserAnswer;
 import org.dreamteam.Entity.UserTestAttempt;
 import org.dreamteam.dto.CandidateDTO;
 import org.dreamteam.dto.ExportRequestDTO;
 import org.dreamteam.dto.MyTestDTO;
+import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
@@ -32,11 +35,17 @@ import java.time.OffsetDateTime;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import org.dreamteam.Entity.UserAnswer;
+import java.time.Duration;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -275,6 +284,114 @@ public class TestService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public TestAdvancedAnalyticsDTO getAdvancedAnalytics(UUID testId, String authorEmail) {
+        Test test = findTestById(testId);
+        checkTestOwnership(test, authorEmail);
+
+        List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
+        
+        List<UserTestAttempt> completedAttempts = attempts.stream()
+                .filter(a -> a.getCompletedAt() != null && a.getScore() != null)
+                .collect(Collectors.toList());
+
+        Map<QuestionType, List<Double>> typeScores = new HashMap<>();
+        
+        for (UserTestAttempt attempt : completedAttempts) {
+            for (UserAnswer answer : attempt.getUserAnswers()) {
+                QuestionType type = answer.getQuestion().getQuestionType();
+                double maxPoints = answer.getQuestion().getWeight() != null ? answer.getQuestion().getWeight() : 1.0;
+                double earned = answer.getAwardedScore() != null ? answer.getAwardedScore().doubleValue() : 0.0;
+                
+                double percent = (earned / maxPoints) * 100.0;
+                
+                typeScores.computeIfAbsent(type, k -> new ArrayList<>()).add(percent);
+            }
+        }
+
+        Map<String, Double> skillsProfile = new HashMap<>();
+        for (Map.Entry<QuestionType, List<Double>> entry : typeScores.entrySet()) {
+            double avg = entry.getValue().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+            skillsProfile.put(entry.getKey().name(), Math.round(avg * 100.0) / 100.0);
+        }
+
+        Map<String, Integer> distribution = new LinkedHashMap<>(); 
+        distribution.put("0-20%", 0);
+        distribution.put("21-40%", 0);
+        distribution.put("41-60%", 0);
+        distribution.put("61-80%", 0);
+        distribution.put("81-100%", 0);
+
+        double totalMaxScore = test.getTestQuestions().stream()
+                .mapToDouble(tq -> tq.getQuestion().getWeight() != null ? tq.getQuestion().getWeight() : 1.0)
+                .sum();
+
+        for (UserTestAttempt attempt : completedAttempts) {
+            double score = attempt.getScore().doubleValue();
+            double percent = (totalMaxScore > 0) ? (score / totalMaxScore) * 100.0 : 0;
+
+            if (percent <= 20) distribution.merge("0-20%", 1, Integer::sum);
+            else if (percent <= 40) distribution.merge("21-40%", 1, Integer::sum);
+            else if (percent <= 60) distribution.merge("41-60%", 1, Integer::sum);
+            else if (percent <= 80) distribution.merge("61-80%", 1, Integer::sum);
+            else distribution.merge("81-100%", 1, Integer::sum);
+        }
+
+        Map<UUID, List<Boolean>> questionCorrectness = new HashMap<>();
+        
+        for (UserTestAttempt attempt : completedAttempts) {
+            for (UserAnswer ans : attempt.getUserAnswers()) {
+                questionCorrectness.computeIfAbsent(ans.getQuestion().getQuestionId(), k -> new ArrayList<>())
+                        .add(Boolean.TRUE.equals(ans.getIsCorrect()));
+            }
+        }
+
+        List<TestAdvancedAnalyticsDTO.QuestionPerformanceDTO> hardestQuestions = new ArrayList<>();
+        
+        Map<UUID, Question> questionMap = test.getTestQuestions().stream()
+                .map(TestQuestion::getQuestion)
+                .collect(Collectors.toMap(Question::getQuestionId, q -> q));
+
+        for (Map.Entry<UUID, List<Boolean>> entry : questionCorrectness.entrySet()) {
+            long total = entry.getValue().size();
+            long correct = entry.getValue().stream().filter(b -> b).count();
+            double percent = (double) correct / total * 100.0;
+
+            Question q = questionMap.get(entry.getKey());
+            if (q != null) {
+                hardestQuestions.add(TestAdvancedAnalyticsDTO.QuestionPerformanceDTO.builder()
+                        .questionText(q.getQuestionText())
+                        .type(q.getQuestionType())
+                        .correctPercentage(Math.round(percent * 100.0) / 100.0)
+                        .build());
+            }
+        }
+        
+        hardestQuestions.sort(Comparator.comparingDouble(TestAdvancedAnalyticsDTO.QuestionPerformanceDTO::getCorrectPercentage));
+        if (hardestQuestions.size() > 5) {
+            hardestQuestions = hardestQuestions.subList(0, 5);
+        }
+
+        List<TestAdvancedAnalyticsDTO.TimeScorePoint> scatterData = completedAttempts.stream()
+                .map(a -> {
+                    long seconds = Duration.between(a.getStartedAt(), a.getCompletedAt()).getSeconds();
+
+                    return TestAdvancedAnalyticsDTO.TimeScorePoint.builder()
+                            .durationSeconds(seconds)
+                            .score(a.getScore().doubleValue())
+                            .candidateName(getFullName(a.getUser()))
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return TestAdvancedAnalyticsDTO.builder()
+                .skillsProfile(skillsProfile)
+                .scoreDistribution(distribution)
+                .hardestQuestions(hardestQuestions)
+                .timeVsScore(scatterData)
+                .build();
+    }
+
 
     private String calculateTestStatus(Test test) {
         OffsetDateTime now = OffsetDateTime.now();
@@ -320,6 +437,7 @@ public class TestService {
             return exportService.exportToExcel(test.getTestName(), request.getColumns(), results);
         }
     }
+    
 
     private TestDetailResponse mapToDetailResponse(Test test) {
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());

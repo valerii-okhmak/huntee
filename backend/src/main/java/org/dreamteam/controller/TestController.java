@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.dreamteam.dto.CandidateDTO;
 import org.dreamteam.dto.ExportRequestDTO;
 import org.dreamteam.dto.MyTestDTO;
+import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
@@ -198,6 +199,13 @@ public class TestController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .contentType(mediaType)
                 .body(fileContent);
+    }
+
+    @GetMapping("/{testId}/analytics/advanced")
+    public ResponseEntity<TestAdvancedAnalyticsDTO> getAdvancedAnalytics(
+            @PathVariable UUID testId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(testService.getAdvancedAnalytics(testId, userDetails.getUsername()));
     }
 }
 

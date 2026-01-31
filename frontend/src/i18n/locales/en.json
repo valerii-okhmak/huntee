@@ -1054,5 +1054,32 @@
     "status": "Status",
     "date": "Date"
   }
-}
+ },
+ "testDashboardAnalytics": {
+    "error": "Failed to load analytics",
+    "description": "Here you can view detailed analytics of student test results.",
+    "avgScore": "Average score for graded tests",
+    "downloadResults": "Download results",
+    "stats": {
+      "passed": "Students passed",
+      "failed": "Students failed",
+      "review": "Pending review",
+      "total": "Total attempts"
+    },
+    "advancedTitle": "Detailed Analytics",
+    "charts": {
+      "radarTitle": "Skills Profile (by Type)",
+      "radarLabel": "Average Success %",
+      "radarHint": "Shows which question types students are strongest in.",
+      "histTitle": "Score Distribution",
+      "histLabel": "Number of Students",
+      "histHint": "Helps understand if the test is too difficult.",
+      "hardestTitle": "Hardest Questions",
+      "hardestLabel": "% Correct Answers",
+      "scatterTitle": "Time vs Score",
+      "scatterLabel": "Students",
+      "axisMinutes": "Minutes",
+      "axisScore": "Points"
+    }
+  }
 }
