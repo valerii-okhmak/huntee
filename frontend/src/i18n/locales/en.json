@@ -1081,5 +1081,32 @@
       "axisMinutes": "Minutes",
       "axisScore": "Points"
     }
+  },
+  "sendMessageModal": {
+    "titleSingle": "Send message to student {{name}}",
+    "titleBulk": "Send message to students",
+    "close": "Close",
+    "success": "Message sent successfully!",
+    "labels": {
+      "subject": "Subject",
+      "recipient": "Select recipients",
+      "message": "Message"
+    },
+    "placeholders": {
+      "subject": "Enter message subject",
+      "select": "Select from list",
+      "message": "Enter message text"
+    },
+    "options": {
+      "all": "All students"
+    },
+    "buttons": {
+      "send": "Send"
+    },
+    "errors": {
+      "emptyFields": "Please fill in the subject and message.",
+      "noRecipient": "Please select a recipient.",
+      "generic": "Error sending message. Please try again later."
+    }
   }
 }

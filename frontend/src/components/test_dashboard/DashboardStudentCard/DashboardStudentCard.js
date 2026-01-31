@@ -5,7 +5,7 @@ import './DashboardStudentCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 
-const DashboardStudentCard = ({ student, type }) => {
+const DashboardStudentCard = ({ student, type, onMessageClick }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -74,7 +74,11 @@ const DashboardStudentCard = ({ student, type }) => {
            </button>
         )}
         
-        <button className="testDashboard__card-btn-chat" title={t('dashboardStudentCard.sendMessage')}>
+        <button 
+            className="testDashboard__card-btn-chat" 
+            title={t('dashboardStudentCard.sendMessage')}
+            onClick={() => onMessageClick(student)}
+        >
           <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
         </button>
       </div>

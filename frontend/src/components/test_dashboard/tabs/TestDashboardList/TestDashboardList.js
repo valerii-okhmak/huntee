@@ -6,6 +6,7 @@ import lupa from '../../../../img/search-icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import InviteParticipantsModal from '../../../modal_windows/InviteParticipantsModal';
+import SendMessageModal from '../../../modal_windows/SendMessageModal';
 import axios from 'axios';
 import { getAccessToken } from '../../../../utils/auth';
 import Loader from '../../../loader/Loader';
@@ -16,6 +17,9 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -42,6 +46,16 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
     fetchStudents();
   }, [activeTab, testId, t]);
 
+  const handleOpenGeneralMessage = () => {
+    setSelectedStudent(null);
+    setIsMessageModalOpen(true);
+  };
+
+  const handleOpenStudentMessage = (student) => {
+    setSelectedStudent(student);
+    setIsMessageModalOpen(true);
+  };
+
   const description = activeTab === 'registered'
     ? t('testDashboardList.desc.registered')
     : t('testDashboardList.desc.results');
@@ -64,9 +78,15 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
           <img src={lupa} alt='search' className='search_icon' />
           <input type="text" placeholder={t('testDashboardList.search')}/>
         </div>
-        <button className="testDashboard__message" title={t('testDashboardList.messageAll')}>
+        
+        <button 
+            className="testDashboard__message" 
+            title={t('testDashboardList.messageAll')}
+            onClick={handleOpenGeneralMessage}
+        >
           <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
         </button>
+
         <button className="testDashboard__btn-analytics" onClick={() => setActiveTab('analytics')}>
           {t('testDashboardList.viewAnalytics')}
         </button>
@@ -88,6 +108,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
               key={student.userId} 
               student={student} 
               type={activeTab}
+              onMessageClick={handleOpenStudentMessage}
             />
           ))
         ) : (
@@ -101,6 +122,13 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         isOpen={isInviteModalOpen} 
         onClose={() => setIsInviteModalOpen(false)} 
         testId={testId} 
+      />
+
+      <SendMessageModal
+        isOpen={isMessageModalOpen}
+        onClose={() => setIsMessageModalOpen(false)}
+        student={selectedStudent}
+        allStudents={students}
       />
     </div>
   )
