@@ -20,7 +20,7 @@ const ChooseYourFuture = () => {
         const uniqueSpheres = [...new Set(response.data.map(test => test.sphere))];
         setSpheres(uniqueSpheres);
       } catch (err) {
-        console.error('Помилка завантаження сфер:', err);
+        console.error(err);
       }
     };
 
@@ -29,18 +29,29 @@ const ChooseYourFuture = () => {
 
   return (
     <div className="choose-your-future">
-      <div className='choose-your-future-title'>
-        <h2>CHOOSE YOUR<br />FUTURE</h2>
-      </div>
+      
+      <img 
+        src="/mainPagePhoto/snake1.png" 
+        alt="background" 
+        className="snake-background" 
+      />
 
-      <BrowserWindow>
-        {spheres.map((sphere) => (
-          <ChooseYourFutureItem 
-            key={sphere} 
-            testname={sphere} 
-          />
-        ))}
-      </BrowserWindow>
+      <div className="content-wrapper">
+        <div className='choose-your-future-title'>
+          <h2>CHOOSE YOUR<br />FUTURE</h2>
+        </div>
+
+        <BrowserWindow>
+          <div className="browser-bottom-block">
+            {spheres.map((sphere) => (
+              <ChooseYourFutureItem 
+                key={sphere} 
+                testname={sphere} 
+              />
+            ))}
+          </div>
+        </BrowserWindow>
+      </div>
     </div>
   );
 };
