@@ -1,12 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .message-title {
     margin-top: 100px;
     color: black;
-    font-family: 'MyFont', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight: bold;
-    font-size: clamp(24px, 2vw, 32px);
+    font-size: clamp(24px, 3vw, 48px);
     text-align: left;
     background-color: #ffffff;
-    padding: 15px 20px;
+    padding: 20px 30px;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     text-transform: uppercase;

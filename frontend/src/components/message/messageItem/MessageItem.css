@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .message-item-link {
     text-decoration: none;
     color: inherit;
@@ -5,15 +7,15 @@
 }
 
 .message-item {
-    background-color: #F1F1F1;
+    background-color: rgb(241,245,249);
     padding: 20px 15px 40px 15px;
-    border-radius: 8px;
+    border-radius: 12px;
     position: relative;
     transition: 0.25s ease;
 }
 
 .message-item:hover {
-    background-color: #E0E0E0;
+    background-color: rgb(228, 236, 243);
     transform: scale(1.01);
     box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
 }
@@ -26,18 +28,35 @@
 
 .message-testname {
     color: black;
-    font-family: 'MyFont', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
     font-size: clamp(24px, 2vw, 30px);
 }
 
 .unread-message {
-    border-radius: 50%;
-    background-color: #0096F3;
-    width: 30px;
-    height: 30px;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 10px;      /* Відрегулюйте позицію за потреби */
+    right: 10px;    /* Відрегулюйте позицію за потреби */
+    
+    /* Це зовнішнє напівпрозоре коло */
+    width: 30px;   
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(0, 150, 243, 0.15); 
+    
+    /* Центруємо внутрішнє коло */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.unread-message::after {
+    content: '';
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #0096F3; 
+    display: block;
 }
 
 @media screen and (max-width: 660px) {

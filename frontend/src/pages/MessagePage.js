@@ -34,6 +34,18 @@ const MessagesPage = () => {
     }
   };
 
+const counts = useMemo(() => {
+    if (!Array.isArray(notifications)) return { all: 0, unread: 0, read: 0, user: 0, system: 0 };
+
+    return {
+      all: notifications.length,
+      unread: notifications.filter(n => !n.read).length,
+      read: notifications.filter(n => n.read).length,
+      user: notifications.filter(n => !!n.sender).length, // Якщо є sender - це User
+      system: notifications.filter(n => !n.sender).length // Якщо немає sender - це System
+    };
+  }, [notifications]);
+
   useEffect(() => {
     fetchNotifications();
   }, []);
@@ -71,7 +83,7 @@ const MessagesPage = () => {
   };
 
   return (
-    <div className="page">
+    <div className="page messages-page">
       <div className='container'>
         <MessageTitle />
         
@@ -81,6 +93,7 @@ const MessagesPage = () => {
             setActiveRead={setFilterReadStatus}
             activeType={filterSenderType}
             setActiveType={setFilterSenderType}
+            counts={counts}
           />
 
           {loading ? (
