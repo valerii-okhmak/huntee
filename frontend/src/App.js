@@ -35,7 +35,6 @@ import ViewingTestsPage from './pages/ViewingTestsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import TestDashboardPage from './pages/TestDashboardPage';
 import TestReviewPage from './pages/TestReviewPage';
-import Snowfall from 'react-snowfall';
 
 
 const App = () => {
@@ -52,7 +51,6 @@ const App = () => {
     <ScrollToTop /> 
     <GoogleOAuthProvider clientId="1081513846462-lhcffrki4nfgq2imdr4qdkfg9dgrmhh1.apps.googleusercontent.com">
     <div className="App">
-      <Snowfall color="#82C3D9" />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />

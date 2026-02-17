@@ -1,4 +1,6 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, useMemo} from "react";
+import axios from 'axios';
+import { getAccessToken } from '../../utils/auth';
 import { useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +12,10 @@ import logo from "../../img/logo.png";
 import BurgerMenu from "../burgerMenu/burgerMenu"; 
 
 const Header = () => {
+
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const { t } = useTranslation();
   const location = useLocation();
   const isAllTestsPage = location.pathname === "/alltests";
@@ -55,6 +61,58 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+    const fetchNotifications = async () => {
+    try {
+      const token = getAccessToken();
+      const response = await axios.get(
+        `/api/notifications`,
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+      
+      if (Array.isArray(response.data)) {
+        setNotifications(response.data);
+      } else {
+        setNotifications([]);
+      }
+    } catch (error) {
+      console.error("Помилка:", error);
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+const counts = useMemo(() => {
+    if (!Array.isArray(notifications)) return { all: 0, unread: 0, read: 0, user: 0, system: 0 };
+
+    return {
+      all: notifications.length,
+      unread: notifications.filter(n => !n.read).length,
+      read: notifications.filter(n => n.read).length,
+      user: notifications.filter(n => !!n.sender).length, // Якщо є sender - це User
+      system: notifications.filter(n => !n.sender).length // Якщо немає sender - це System
+    };
+  }, [notifications]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    // Ця функція запуститься, коли MessagesPage скаже, що все оновилось
+    const handleNotificationUpdate = () => {
+      fetchNotifications(); // Просто перезавантажуємо дані в хедері
+    };
+
+    // Підписуємось на подію
+    window.addEventListener('notificationsUpdated', handleNotificationUpdate);
+
+    // Прибираємо підписку, коли компонент зникає (щоб не було глюків)
+    return () => {
+      window.removeEventListener('notificationsUpdated', handleNotificationUpdate);
+    };
+  }, []);
+
   return (
     <header className="header">
       <div className="logo">
@@ -75,6 +133,7 @@ const Header = () => {
             <li>
               <Link to="/messages" className="headermenu" aria-label={t('header.messages')}>
                 <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
+                {counts.unread > 0 && <span className="notification-count">{counts.unread > 99 ? "99+" : counts.unread}</span>}
               </Link>
             </li>
             <li>

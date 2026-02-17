@@ -10,25 +10,25 @@
 }
 
 /* 👇👇👇 СТИЛІ ЗМІЙКИ 👇👇👇 */
-.snake-background {
-    position: absolute !important; /* !important гарантує застосування */
+.snake2 {
+    position: absolute; /* гарантує застосування */
     
-    bottom: 0 !important;      /* Притискаємо до самого низу */
-    left: 0 !important;        /* Притискаємо вліво */
-    top: auto !important;      /* Скасовуємо верхнє притискання */
-    right: auto !important;    /* Скасовуємо праве притискання */
+    bottom: 0;      /* Притискаємо до самого низу */
+    left: 0;        /* Притискаємо вліво */
+    top: auto;      /* Скасовуємо верхнє притискання */
+    right: auto;    /* Скасовуємо праве притискання */
     
     /* Розмір */
-    height: 70vh !important;   /* 👈 ГРАЙСЯ З ЦИМ ЧИСЛОМ (50vh, 70vh) */
-    width: auto !important;    /* Автоширина збереже пропорції */
-    max-width: 80vw !important; /* Обмеження ширини, щоб не була на весь екран */
+    height: 70vh;   /* 👈 ГРАЙСЯ З ЦИМ ЧИСЛОМ (50vh, 70vh) */
+    width: auto;    /* Автоширина збереже пропорції */
+    max-width: 80vw; /* Обмеження ширини, щоб не була на весь екран */
     
-    object-fit: contain !important; 
-    object-position: bottom left !important; 
+    object-fit: contain; 
+    object-position: bottom left; 
     
-    z-index: 0 !important; 
-    pointer-events: none !important; 
-    display: block !important;
+    z-index: 0; 
+    pointer-events: none; 
+    display: block;
 }
 
 @keyframes gradientAnimation {
@@ -106,8 +106,8 @@
     }
     
     /* Адаптив змійки для мобільних */
-    .snake-background {
-        height: 40vh !important; /* Менша на телефоні */
+    .snake2 {
+        height: 40vh; /* Менша на телефоні */
         opacity: 0.8;
     }
 }

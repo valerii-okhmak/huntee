@@ -68,6 +68,7 @@ const MessageTextPage = () => {
 
   return (
     <div className="page">
+      
         <MessageSenderInfo 
           logoSrc={logoSrc} 
           senderName={senderName} 
