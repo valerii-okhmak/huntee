@@ -31,7 +31,6 @@ const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType, cou
           >
             <span>{type.label}</span>
             <span className="message-type__count">
-                {/* Без змін, просто переконайтесь що counts існує */}
                 {counts ? counts[type.countKey] : 0}
             </span>
           </div>

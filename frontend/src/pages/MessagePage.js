@@ -10,9 +10,14 @@ const MessagesPage = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Стан фільтрів
   const [filterReadStatus, setFilterReadStatus] = useState('all');
   const [filterSenderType, setFilterSenderType] = useState('all');
+  
+  // Стан пошуку
+  const [searchQuery, setSearchQuery] = useState('');
 
+  // Завантаження повідомлень
   const fetchNotifications = async () => {
     try {
       const token = getAccessToken();
@@ -27,47 +32,58 @@ const MessagesPage = () => {
         setNotifications([]);
       }
     } catch (error) {
-      console.error("Помилка:", error);
+      console.error("Помилка завантаження повідомлень:", error);
       setNotifications([]);
     } finally {
       setLoading(false);
     }
   };
 
-// MessagesPage.js
-
-const counts = useMemo(() => {
-    if (!Array.isArray(notifications)) return {};
-
-    const filteredByType = notifications.filter(n => {
-      if (filterSenderType === 'user') return !!n.sender;
-      if (filterSenderType === 'system') return !n.sender;
-      return true; // 'all'
-    });
-
-    const filteredByRead = notifications.filter(n => {
-      if (filterReadStatus === 'unread') return !n.read;
-      if (filterReadStatus === 'read') return n.read;
-      return true; // 'all'
-    });
-
-    return {
-      // Ключі для першої групи (Read Filters)
-      read_all: filteredByType.length,
-      read_unread: filteredByType.filter(n => !n.read).length,
-      read_read: filteredByType.filter(n => n.read).length,
-
-      // Ключі для другої групи (Type Filters)
-      type_all: filteredByRead.length,
-      type_user: filteredByRead.filter(n => !!n.sender).length,
-      type_system: filteredByRead.filter(n => !n.sender).length
-    };
-  }, [notifications, filterReadStatus, filterSenderType]); // 👈 Додали залежності
-
   useEffect(() => {
     fetchNotifications();
   }, []);
 
+  // Логіка підрахунку цифр для фільтрів
+  const counts = useMemo(() => {
+    if (!Array.isArray(notifications)) return {};
+
+    const filteredByType = notifications.filter(n => {
+      const matchesSearch = searchQuery === '' || 
+        (n.title && n.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (n.message && n.message.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (n.sender?.name && n.sender.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      if (!matchesSearch) return false;
+
+      if (filterSenderType === 'user') return !!n.sender;
+      if (filterSenderType === 'system') return !n.sender;
+      return true; 
+    });
+
+    const filteredByRead = notifications.filter(n => {
+      const matchesSearch = searchQuery === '' || 
+        (n.title && n.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (n.message && n.message.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (n.sender?.name && n.sender.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      if (!matchesSearch) return false;
+
+      if (filterReadStatus === 'unread') return !n.read;
+      if (filterReadStatus === 'read') return n.read;
+      return true; 
+    });
+
+    return {
+      read_all: filteredByType.length,
+      read_unread: filteredByType.filter(n => !n.read).length,
+      read_read: filteredByType.filter(n => n.read).length,
+      type_all: filteredByRead.length,
+      type_user: filteredByRead.filter(n => !!n.sender).length,
+      type_system: filteredByRead.filter(n => !n.sender).length
+    };
+  }, [notifications, filterReadStatus, filterSenderType, searchQuery]);
+
+  // Головна фільтрація списку
   const filteredNotifications = useMemo(() => {
     if (!Array.isArray(notifications)) return [];
 
@@ -80,10 +96,49 @@ const counts = useMemo(() => {
       if (filterSenderType === 'system') matchesSenderType = (!notif.sender);
       if (filterSenderType === 'user') matchesSenderType = (!!notif.sender);
 
-      return matchesReadStatus && matchesSenderType;
-    });
-  }, [notifications, filterReadStatus, filterSenderType]);
+      let matchesSearch = true;
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        matchesSearch = 
+          (notif.title && notif.title.toLowerCase().includes(query)) ||
+          (notif.message && notif.message.toLowerCase().includes(query)) ||
+          (notif.sender?.name && notif.sender.name.toLowerCase().includes(query));
+      }
 
+      return matchesReadStatus && matchesSenderType && matchesSearch;
+    });
+  }, [notifications, filterReadStatus, filterSenderType, searchQuery]);
+
+  // Функція: Прочитати ВСІ
+  const markAllAsRead = async () => {
+    const unreadMessages = notifications.filter(n => !n.read);
+    if (unreadMessages.length === 0) return;
+
+    // 1. Оптимістичне оновлення UI сторінки
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    
+    // 2. Оптимістичне оновлення Хедера (відправляємо спец. сигнал)
+    window.dispatchEvent(new CustomEvent('notificationsUpdated', { 
+        detail: { type: 'readAll' } 
+    }));
+
+    try {
+      const token = getAccessToken();
+      // 3. Паралельні запити на сервер
+      await Promise.all(unreadMessages.map(msg => 
+        axios.put(
+          `/api/notifications/${msg.id}/read`,
+          {},
+          { headers: { 'Authorization': `Bearer ${token}` } }
+        )
+      ));
+    } catch (error) {
+      console.error("Помилка при масовому оновленні:", error);
+      fetchNotifications(); // Відкат при помилці
+    }
+  };
+
+  // Функція: Прочитати ОДНЕ
   const markAsRead = async (id) => {
     try {
       const token = getAccessToken();
@@ -92,19 +147,27 @@ const counts = useMemo(() => {
         {},
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
+      
       setNotifications(prev => prev.map(n => 
         n.id === id ? { ...n, read: true } : n
       ));
+
+      // Звичайне оновлення хедера
       window.dispatchEvent(new Event('notificationsUpdated'));
+      
     } catch (error) {
-      console.error("Помилка:", error);
+      console.error("Помилка при позначенні прочитаним:", error);
     }
   };
 
   return (
     <div className="page messages-page">
       <div className='container'>
-        <MessageTitle />
+        <MessageTitle 
+           searchQuery={searchQuery}
+           setSearchQuery={setSearchQuery}
+           onMarkAllRead={markAllAsRead}
+        />
         
         <div style={{ display: 'flex', gap: '30px', marginTop: '30px', flexWrap: 'wrap' }}>
           <MessageType 

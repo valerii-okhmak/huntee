@@ -27,8 +27,6 @@
     color: #000000;
     padding: 15px 20px;
     border-radius: 12px;
-    
-    /* 👇 Щоб рознести текст і цифру */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,6 +34,9 @@
 }
 
 .message-type__count {
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 5px 15px;
     color: #191919; 
     font-weight: 500;
     font-size: clamp(8px, 2vw, 12px);

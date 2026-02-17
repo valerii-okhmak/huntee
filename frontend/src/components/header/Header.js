@@ -14,6 +14,7 @@ import BurgerMenu from "../burgerMenu/burgerMenu";
 const Header = () => {
 
   const [notifications, setNotifications] = useState([]);
+  // loading тут не обов'язковий для відображення, але хай буде для логіки
   const [loading, setLoading] = useState(true);
 
   const { t } = useTranslation();
@@ -40,7 +41,6 @@ const Header = () => {
         menuRef.current.classList.remove("active");
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -61,7 +61,7 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-    const fetchNotifications = async () => {
+  const fetchNotifications = async () => {
     try {
       const token = getAccessToken();
       const response = await axios.get(
@@ -82,32 +82,44 @@ const Header = () => {
     }
   };
 
-const counts = useMemo(() => {
-    if (!Array.isArray(notifications)) return { all: 0, unread: 0, read: 0, user: 0, system: 0 };
-
+  const counts = useMemo(() => {
+    if (!Array.isArray(notifications)) return { all: 0, unread: 0 };
     return {
       all: notifications.length,
-      unread: notifications.filter(n => !n.read).length,
-      read: notifications.filter(n => n.read).length,
-      user: notifications.filter(n => !!n.sender).length, // Якщо є sender - це User
-      system: notifications.filter(n => !n.sender).length // Якщо немає sender - це System
+      unread: notifications.filter(n => !n.read).length
     };
   }, [notifications]);
 
+  // Початкове завантаження
   useEffect(() => {
     fetchNotifications();
+    
+    // Опціонально: інтервал для перевірки нових повідомлень (наприклад, кожні 60 сек)
+    const interval = setInterval(fetchNotifications, 60000);
+    return () => clearInterval(interval);
   }, []);
 
+  // Слухач подій від MessagesPage
   useEffect(() => {
-    // Ця функція запуститься, коли MessagesPage скаже, що все оновилось
-    const handleNotificationUpdate = () => {
-      fetchNotifications(); // Просто перезавантажуємо дані в хедері
+    const handleNotificationUpdate = (event) => {
+      
+      // 1. Оптимістичне оновлення для "Прочитати все"
+      if (event.detail && event.detail.type === 'readAll') {
+         // Миттєво ставимо все прочитаним локально
+         setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+         
+         // Даємо серверу час (1с) обробити запити, потім звіряємось
+         setTimeout(() => {
+            fetchNotifications(); 
+         }, 1000);
+      } else {
+         // Для звичайного одиночного прочитання оновлюємо одразу
+         fetchNotifications();
+      }
     };
 
-    // Підписуємось на подію
     window.addEventListener('notificationsUpdated', handleNotificationUpdate);
 
-    // Прибираємо підписку, коли компонент зникає (щоб не було глюків)
     return () => {
       window.removeEventListener('notificationsUpdated', handleNotificationUpdate);
     };
@@ -133,7 +145,11 @@ const counts = useMemo(() => {
             <li>
               <Link to="/messages" className="headermenu" aria-label={t('header.messages')}>
                 <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
-                {counts.unread > 0 && <span className="notification-count">{counts.unread > 99 ? "99+" : counts.unread}</span>}
+                {counts.unread > 0 && (
+                  <span className="notification-count">
+                    {counts.unread > 99 ? "99+" : counts.unread}
+                  </span>
+                )}
               </Link>
             </li>
             <li>

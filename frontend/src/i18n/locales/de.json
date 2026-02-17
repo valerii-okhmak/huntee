@@ -241,7 +241,9 @@
     "empty": "Keine Nachrichten"
   },
   "messageTitle": {
-    "text": "Nachrichten"
+    "text": "Nachrichten",
+    "placeholder": "Suche nach Titel, Absender oder Text...",
+    "MarkAllAsRead": "Alle als gelesen markieren"
   },
   "messageType": {
     "readFilters": {
