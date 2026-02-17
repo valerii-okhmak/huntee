@@ -1,27 +1,27 @@
+// MessageType.js
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import './MessageType.css';
 
-// 👇 Додали counts у пропси
 const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType, counts }) => {
   const { t } = useTranslation();
   
-  // Додали поле key, яке відповідає ключам в об'єкті counts
+  // 👇 Оновлені ключі (countKey)
   const readFilters = [
-    { id: 'all', label: t('messageType.readFilters.all'), countKey: 'all' },
-    { id: 'unread', label: t('messageType.readFilters.unread'), countKey: 'unread' },
-    { id: 'read', label: t('messageType.readFilters.read'), countKey: 'read' }
+    { id: 'all', label: t('messageType.readFilters.all'), countKey: 'read_all' },
+    { id: 'unread', label: t('messageType.readFilters.unread'), countKey: 'read_unread' },
+    { id: 'read', label: t('messageType.readFilters.read'), countKey: 'read_read' }
   ];
 
+  // 👇 Оновлені ключі (countKey)
   const typeFilters = [
-    { id: 'all', label: t('messageType.typeFilters.all'), countKey: 'all' },
-    { id: 'user', label: t('messageType.typeFilters.user'), countKey: 'user' }, 
-    { id: 'system', label: t('messageType.typeFilters.system'), countKey: 'system' }
+    { id: 'all', label: t('messageType.typeFilters.all'), countKey: 'type_all' },
+    { id: 'user', label: t('messageType.typeFilters.user'), countKey: 'type_user' }, 
+    { id: 'system', label: t('messageType.typeFilters.system'), countKey: 'type_system' }
   ];
 
   return (
     <div className="message-type">
-      {/* Перша група фільтрів */}
       <div className="message-type__container">
         {readFilters.map((type) => (
           <div
@@ -30,15 +30,14 @@ const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType, cou
             onClick={() => setActiveRead(type.id)}
           >
             <span>{type.label}</span>
-            {/* 👇 Виводимо цифру, якщо counts існує */}
             <span className="message-type__count">
+                {/* Без змін, просто переконайтесь що counts існує */}
                 {counts ? counts[type.countKey] : 0}
             </span>
           </div>
         ))}
       </div>
 
-      {/* Друга група фільтрів */}
       <div className="message-type__container">
         {typeFilters.map((type) => (
           <div

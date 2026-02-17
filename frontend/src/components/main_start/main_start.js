@@ -11,7 +11,7 @@ const Main_start = () => {
     <div className="main_start">
       
       {/* 👇 Додана змійка */}
-      <img src="mainPagePhoto/snake2.png" alt="" className="snake-background" />
+      <img src="mainPagePhoto/snake2.png" alt="" className="snake2" />
 
       <div className="main_start__container">
         <h1>

@@ -34,17 +34,35 @@ const MessagesPage = () => {
     }
   };
 
+// MessagesPage.js
+
 const counts = useMemo(() => {
-    if (!Array.isArray(notifications)) return { all: 0, unread: 0, read: 0, user: 0, system: 0 };
+    if (!Array.isArray(notifications)) return {};
+
+    const filteredByType = notifications.filter(n => {
+      if (filterSenderType === 'user') return !!n.sender;
+      if (filterSenderType === 'system') return !n.sender;
+      return true; // 'all'
+    });
+
+    const filteredByRead = notifications.filter(n => {
+      if (filterReadStatus === 'unread') return !n.read;
+      if (filterReadStatus === 'read') return n.read;
+      return true; // 'all'
+    });
 
     return {
-      all: notifications.length,
-      unread: notifications.filter(n => !n.read).length,
-      read: notifications.filter(n => n.read).length,
-      user: notifications.filter(n => !!n.sender).length, // Якщо є sender - це User
-      system: notifications.filter(n => !n.sender).length // Якщо немає sender - це System
+      // Ключі для першої групи (Read Filters)
+      read_all: filteredByType.length,
+      read_unread: filteredByType.filter(n => !n.read).length,
+      read_read: filteredByType.filter(n => n.read).length,
+
+      // Ключі для другої групи (Type Filters)
+      type_all: filteredByRead.length,
+      type_user: filteredByRead.filter(n => !!n.sender).length,
+      type_system: filteredByRead.filter(n => !n.sender).length
     };
-  }, [notifications]);
+  }, [notifications, filterReadStatus, filterSenderType]); // 👈 Додали залежності
 
   useEffect(() => {
     fetchNotifications();
@@ -77,6 +95,7 @@ const counts = useMemo(() => {
       setNotifications(prev => prev.map(n => 
         n.id === id ? { ...n, read: true } : n
       ));
+      window.dispatchEvent(new Event('notificationsUpdated'));
     } catch (error) {
       console.error("Помилка:", error);
     }

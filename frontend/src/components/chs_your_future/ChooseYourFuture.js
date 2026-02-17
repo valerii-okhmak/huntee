@@ -33,7 +33,7 @@ const ChooseYourFuture = () => {
       <img 
         src="/mainPagePhoto/snake1.png" 
         alt="background" 
-        className="snake-background" 
+        className="snake1" 
       />
 
       <div className="content-wrapper">
