@@ -155,7 +155,33 @@
     background-color: #91200f;
 }
 
+.btn-duplicate {
+    background-color: #93a836; 
+    color: #ffffff;
+    transition: background-color 0.2s ease;
+}
 
+.btn-duplicate:hover {
+    background-color: #6b7a25;
+}
+
+/* Стилі для неактивної кнопки редагування */
+.btn-disabled {
+    background-color: #d1d5db !important; /* Світло-сірий колір */
+    color: #6b7280 !important; /* Темно-сірий текст */
+    cursor: not-allowed !important; /* Курсор заборони */
+    transform: none !important; /* Прибираємо анімацію натискання */
+}
+
+.btn-disabled:hover {
+    background-color: #d1d5db !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+.btn-disabled:active {
+    transform: none !important;
+}
 
 @media screen and (max-width: 450px) {
     .testcard {

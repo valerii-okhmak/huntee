@@ -8,13 +8,16 @@ import ConfirmDeleteTestModal from '../../modal_windows/ConfirmDeleteTestModal';
 import ErrorModal from '../../modal_windows/ErrorModal';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faTrashCan, faCopy } from '@fortawesome/free-regular-svg-icons';
 
-const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, onDeleteSuccess }) => {
+// 1. Додаємо status у пропси 👇
+const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, status, onDeleteSuccess}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [errorState, setErrorState] = useState({ isOpen: false, message: '' });
+
+  const isEditDisabled = status === 'Active';
 
   const openDeleteModal = (e) => {
     e.preventDefault();
@@ -36,6 +39,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
   };
 
   const handleDelete = async (e) => {
+    // ... ваш код видалення без змін ...
     e.preventDefault(); 
     e.stopPropagation(); 
 
@@ -69,6 +73,9 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
     e.preventDefault();
     e.stopPropagation();
 
+    // Додаткова перевірка на випадок, якщо HTML атрибут disabled буде знято вручну
+    if (isEditDisabled) return;
+
     navigate('/testcreation/start', {
       state: {
         mode: 'edit',
@@ -90,8 +97,10 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
           
           <div className="testcard-buttons">
             <button
-              className="testcard-action-btn btn-edit"
-              onClick={handleEdit}
+              className={`testcard-action-btn btn-edit ${isEditDisabled ? 'btn-disabled' : ''}`}
+              onClick={isEditDisabled ? (e) => { e.preventDefault(); e.stopPropagation(); } : handleEdit}
+              disabled={isEditDisabled}
+              title={isEditDisabled ? "Неможливо редагувати активний тест" : ""}
             >
               <FontAwesomeIcon icon={faPenToSquare} />
               <span>{t('testCard.edit')}</span>
@@ -103,6 +112,12 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
             >
               <FontAwesomeIcon icon={faTrashCan} />
               <span>{t('testCard.delete')}</span>
+            </button>
+            <button
+              className="testcard-action-btn btn-duplicate"
+            >
+              <FontAwesomeIcon icon={faCopy} />
+              <span>{t('testCard.duplicate')}</span>
             </button>
           </div>
 

@@ -322,6 +322,7 @@
     "registered": "Registriert",
     "edit": "Bearbeiten",
     "delete": "Löschen",
+    "duplicate": "Duplizieren",
     "deleteError": "Löschen fehlgeschlagen. Möglicherweise fehlen Berechtigungen.",
     "errorTitle": "FEHLER BEIM LÖSCHEN"
   },

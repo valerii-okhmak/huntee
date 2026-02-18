@@ -321,6 +321,7 @@
     },    "registered": "Registered",
     "edit": "Edit",
     "delete": "Delete",
+    "duplicate": "Duplicate",
     "deleteError": "Failed to delete test. You may not have enough permissions.",
     "errorTitle": "DELETE ERROR"
   },
