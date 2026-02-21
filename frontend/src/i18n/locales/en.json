@@ -1111,5 +1111,46 @@
       "noRecipient": "Please select a recipient.",
       "generic": "Error sending message. Please try again later."
     }
+  },
+  "trialTest": {
+    "testName": "Demonstration Test",
+    "questions": {
+      "q1": {
+        "text": "Which planet is the third from the Sun?",
+        "options": {
+          "o1": "Mars",
+          "o2": "Earth",
+          "o3": "Venus"
+        }
+      },
+      "q2": {
+        "text": "Which of these animals are mammals?",
+        "options": {
+          "o4": "Dog",
+          "o5": "Eagle",
+          "o6": "Whale",
+          "o7": "Crocodile"
+        }
+      },
+      "q3": {
+        "text": "What is the capital of Ukraine? (enter one word)",
+        "correctAnswer": "kyiv"
+      },
+      "q4": {
+        "text": "Write a function sum(a, b) that returns the sum of two numbers.",
+        "template": "function sum(a, b) {\n  // Your code here\n}"
+      }
+    },
+    "simulation": {
+      "init": "Simulating run...\n",
+      "pass": "Test Case #1: PASS\nInput: 2, 3\nExpected: 5\nActual: 5\n",
+      "fail": "Test Case #1: FAIL\nInput: 2, 3\nExpected: 5\nActual: undefined\n"
+    },
+    "results": {
+      "passed": "1/1 Passed",
+      "failed": "0/1 Failed",
+      "commentSuccess": "Great job!",
+      "commentFail": "Try again!"
+    }
   }
 }

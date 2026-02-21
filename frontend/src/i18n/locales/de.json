@@ -1045,5 +1045,46 @@
     "close": "Schließen",
     "defaultMessage": "Test konnte nicht gestartet werden. Zeit abgelaufen або nicht registriert.",
     "understood": "Verstanden"
+  },
+  "trialTest": {
+    "testName": "Demonstrationstest",
+    "questions": {
+      "q1": {
+        "text": "Welcher Planet ist der dritte von der Sonne aus gesehen?",
+        "options": {
+          "o1": "Mars",
+          "o2": "Erde",
+          "o3": "Venus"
+        }
+      },
+      "q2": {
+        "text": "Welche dieser Tiere sind Säugetiere?",
+        "options": {
+          "o4": "Hund",
+          "o5": "Adler",
+          "o6": "Wal",
+          "o7": "Krokodil"
+        }
+      },
+      "q3": {
+        "text": "Was ist die Hauptstadt der Ukraine? (ein Wort eingeben)",
+        "correctAnswer": "kiew"
+      },
+      "q4": {
+        "text": "Schreibe eine Funktion sum(a, b), die die Summe von zwei Zahlen zurückgibt.",
+        "template": "function sum(a, b) {\n  // Dein Code hier\n}"
+      }
+    },
+    "simulation": {
+      "init": "Simulation läuft...\n",
+      "pass": "Test Case #1: PASS\nInput: 2, 3\nExpected: 5\nActual: 5\n",
+      "fail": "Test Case #1: FAIL\nInput: 2, 3\nExpected: 5\nActual: undefined\n"
+    },
+    "results": {
+      "passed": "1/1 Bestanden",
+      "failed": "0/1 Durchgefallen",
+      "commentSuccess": "Hervorragend!",
+      "commentFail": "Versuchen Sie es erneut!"
+    }
   }
 }

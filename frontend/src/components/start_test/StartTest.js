@@ -8,7 +8,7 @@ const StartTest = ({text, gradienttext}) => {
     const navigate = useNavigate();
     
     const handleGoTrialTest = () => {
-        navigate('/test');
+        navigate('/trialtest');
     };
 
   return (
