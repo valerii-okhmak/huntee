@@ -1,13 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .choose-your-future {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(to bottom right, #001aff 60%, #ffffff 100%);
+    background: linear-gradient(to bottom right, #2B00FF 60%, #049FFF 100%);
     background-size: 400% 300%; 
     animation: gradientAnimation 20s infinite linear;
     color: white;
     position: relative;
+    overflow: hidden;  
     padding-top: clamp(20px, 6vw, 50px);
+}
+
+.snake1 {
+    position: absolute;
+    top: -7%;
+    height: 50%;
+    width: auto;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 6vw, 50px);
 }
 
 @keyframes gradientAnimation {
@@ -18,17 +40,16 @@
 
 .choose-your-future-title {
     display: flex;
-    flex-direction: column;   /* щоб текст вирівнювався по осі X */
-    justify-content: center;  /* центрує по вертикалі */
-    align-items: flex-start;  /* текст на початку */
+    flex-direction: column;
+    align-items: flex-start;
     width: 75%;
-    margin: 0 auto;           /* центрує контейнер */
+    margin: 0 auto;
 }
 
 .choose-your-future-title h2 {
-    font-family: 'MyFont1', sans-serif; 
+    font-family: 'Montserrat', sans-serif; 
     color: white;
-    font-size: clamp(32px, 8vw, 80px);
+    font-size: clamp(32px, 8vw, 110px);
 }
 
 .choose-your-future .browser-bottom-block {
@@ -38,7 +59,7 @@
 }
 
 @media screen and (max-width: 768px) {
-    .choose-your-future-title {
-        width: calc(100% - 30px);
-    }
+  .choose-your-future-title {
+    width: calc(100% - 30px);
+  }
 }

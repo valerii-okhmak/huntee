@@ -1,9 +1,12 @@
 package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.dreamteam.dto.CandidateDTO;
+import org.dreamteam.dto.ExportRequestDTO;
 import org.dreamteam.dto.MyTestDTO;
+import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
@@ -23,10 +26,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
-import com.nimbusds.oauth2.sdk.Response;
 
 @RestController
 @RequestMapping("/api/tests")
@@ -167,6 +171,41 @@ public class TestController {
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(testService.getTestAnalytics(id, userDetails.getUsername()));
+    }
+
+    @Operation(summary = "Експортувати результати тесту (Excel/PDF)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Файл успішно згенеровано"),
+        @ApiResponse(responseCode = "403", description = "Доступ заборонено (ви не автор тесту)")
+    })
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/{testId}/export")
+    public ResponseEntity<byte[]> exportResults(
+            @PathVariable UUID testId,
+            @RequestBody ExportRequestDTO request,
+            @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+        
+        byte[] fileContent = testService.exportTestResults(testId, request, userDetails.getUsername());
+        
+        boolean isPdf = "PDF".equalsIgnoreCase(request.getFormat());
+        String extension = isPdf ? ".pdf" : ".xlsx";
+        String fileName = "results_" + testId + extension;
+        
+        MediaType mediaType = isPdf 
+                ? MediaType.APPLICATION_PDF 
+                : MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .contentType(mediaType)
+                .body(fileContent);
+    }
+
+    @GetMapping("/{testId}/analytics/advanced")
+    public ResponseEntity<TestAdvancedAnalyticsDTO> getAdvancedAnalytics(
+            @PathVariable UUID testId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(testService.getAdvancedAnalytics(testId, userDetails.getUsername()));
     }
 }
 

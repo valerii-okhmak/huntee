@@ -1,15 +1,17 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 import './TestCreationMainCount.css'
 
 const TestCreationMainCount = ({questionsCount}) => {
+  const { t } = useTranslation();
   return (
     <div className='testCreationMainCount'>
         <div className='container testCreationMainCount__container'>
             <hr></hr>
-            <p>Даний тест містить: <span className='testCreationMainCount__number'>{questionsCount}</span> запитань </p>
+            <p>{t('testCreationMainCount.text', { count: questionsCount })}</p>
         </div>
     </div>
   )
 }
 
-export default TestCreationMainCount
+export default TestCreationMainCount;

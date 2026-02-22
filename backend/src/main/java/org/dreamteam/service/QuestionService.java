@@ -36,10 +36,7 @@ public class QuestionService {
     private final TestRepository testRepository;
     private final TestQuestionRepository testQuestionRepository;
     private final UserRepository userRepository;
-    private final ChoiceOptionRepository choiceOptionRepository;
-    private final TextAnswerRepository textAnswerRepository;
-    private final MatchingPairRepository matchingPairRepository;
-    private final CodeAnswerRepository codeAnswerRepository;
+
     
     @Transactional(readOnly = true)
     public List<QuestionResponse> getQuestionsByTestId(UUID testId, String userEmail) {

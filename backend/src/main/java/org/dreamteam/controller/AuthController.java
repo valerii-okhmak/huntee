@@ -26,7 +26,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) throws MessagingException, javax.mail.MessagingException {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) throws MessagingException, jakarta.mail.MessagingException {
         return authService.register(request);
     }
 

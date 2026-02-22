@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./GeneralInfo.css";
-import backgroundVideo from "../../video/welcomevideo.webm";
+import { useTranslation } from 'react-i18next';
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,8 +11,9 @@ import {
   faUserGraduate,
   faHandshake,
 } from "@fortawesome/free-solid-svg-icons";
+import "./GeneralInfo.css";
+import backgroundVideo from "../../video/welcomevideo.webm";
 
-// 🔹 SVG-стрілка
 const ArrowIcon = () => (
   <svg
     className="arrow"
@@ -33,12 +33,11 @@ const ArrowIcon = () => (
 );
 
 const GeneralInfo = ({
-  title_button1,
-  title_button2,
   first_step,
   second_step,
   third_step,
 }) => {
+  const { t } = useTranslation();
   const overlayRef = useRef(null);
   const [animate, setAnimate] = useState(false);
 
@@ -66,53 +65,49 @@ const GeneralInfo = ({
 
   return (
     <div className="general-wrapper">
-      {/* Ключові переваги */}
       <section className="benefits-section">
-        <h2>Основні переваги</h2>
+        <h2>{t('generalInfo.benefits.title')}</h2>
         <div className="benefits-grid">
           <div className="benefit-card">
             <FontAwesomeIcon icon={faRobot} size="2x" />
-            <h3>Автоматизація</h3>
-            <p>
-              Система бере на себе рутину: перевірка резюме, контроль доброчесності та перший відбір.
-            </p>
+            <h3>{t('generalInfo.benefits.automation')}</h3>
+            <p>{t('generalInfo.benefits.automationDesc')}</p>
           </div>
           <div className="benefit-card">
             <FontAwesomeIcon icon={faChartLine} size="2x" />
-            <h3>Аналітика</h3>
-            <p>Детальні звіти допомагають HR приймати рішення швидше та якісніше.</p>
+            <h3>{t('generalInfo.benefits.analytics')}</h3>
+            <p>{t('generalInfo.benefits.analyticsDesc')}</p>
           </div>
           <div className="benefit-card">
             <FontAwesomeIcon icon={faUsers} size="2x" />
-            <h3>Масовий відбір</h3>
-            <p>Працюйте з сотнями кандидатів одночасно без перевантаження.</p>
+            <h3>{t('generalInfo.benefits.massSelection')}</h3>
+            <p>{t('generalInfo.benefits.massSelectionDesc')}</p>
           </div>
           <div className="benefit-card">
             <FontAwesomeIcon icon={faClock} size="2x" />
-            <h3>Економія часу</h3>
-            <p>Швидкий пошук і відбір — від заявки до найму у кілька кліків.</p>
+            <h3>{t('generalInfo.benefits.timeSaving')}</h3>
+            <p>{t('generalInfo.benefits.timeSavingDesc')}</p>
           </div>
         </div>
       </section>
 
-      {/* Для кого ця платформа */}
       <section className="audience-section">
-        <h2>Для кого ця платформа?</h2>
+        <h2>{t('generalInfo.audience.title')}</h2>
         <div className="audience-grid">
           <div className="audience-card">
             <FontAwesomeIcon icon={faUserGraduate} size="2x" />
-            <h3>Студенти</h3>
-            <p>Швидкий старт кар’єри та чесний відбір. Допомога в пошуках роботи.</p>
+            <h3>{t('generalInfo.audience.students')}</h3>
+            <p>{t('generalInfo.audience.studentsDesc')}</p>
           </div>
           <div className="audience-card">
             <FontAwesomeIcon icon={faBuilding} size="2x" />
-            <h3>Компанії</h3>
-            <p>Ефективний масовий рекрутинг і прозорі результати.</p>
+            <h3>{t('generalInfo.audience.companies')}</h3>
+            <p>{t('generalInfo.audience.companiesDesc')}</p>
           </div>
           <div className="audience-card">
             <FontAwesomeIcon icon={faHandshake} size="2x" />
-            <h3>HR та рекрутери</h3>
-            <p>Зручні інструменти для пошуку найкращих талантів.</p>
+            <h3>{t('generalInfo.audience.hr')}</h3>
+            <p>{t('generalInfo.audience.hrDesc')}</p>
           </div>
         </div>
       </section>
@@ -125,7 +120,7 @@ const GeneralInfo = ({
         </video>
 
         <div className="overlay" ref={overlayRef}>
-          <div className="happens">Як це працює?</div>
+          <div className="happens">{t('generalInfo.howItWorks')}</div>
           <div className={`steps ${animate ? "pan-animation" : ""}`}>
             <div className="step">{first_step}</div>
             <ArrowIcon />
@@ -137,16 +132,16 @@ const GeneralInfo = ({
 
         <div className="bottom-content">
           <div className='general__button'>
-            <p>FOR STUDENTS</p>
+            <p>{t('generalInfo.forStudents')}</p>
             <Link to="/alltests">
-              <button className="general_info_button">Найближчі набори</button>
+              <button className="general_info_button">{t('generalInfo.buttons.closestSets')}</button>
             </Link>
           </div>
     
           <div className='general__button'>
-          <p>FOR COMPANIES</p>
+          <p>{t('generalInfo.forCompanies')}</p>
           <Link to="/">
-            <button className="general_info_button">Створити тест</button>
+            <button className="general_info_button">{t('generalInfo.buttons.createTest')}</button>
           </Link>
           </div>
         </div>

@@ -1,18 +1,23 @@
+// MessageType.js
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './MessageType.css';
 
-const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType }) => {
+const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType, counts }) => {
+  const { t } = useTranslation();
   
+  // 👇 Оновлені ключі (countKey)
   const readFilters = [
-    { id: 'all', label: 'Всі' },
-    { id: 'unread', label: 'Непрочитані' },
-    { id: 'read', label: 'Прочитані' }
+    { id: 'all', label: t('messageType.readFilters.all'), countKey: 'read_all' },
+    { id: 'unread', label: t('messageType.readFilters.unread'), countKey: 'read_unread' },
+    { id: 'read', label: t('messageType.readFilters.read'), countKey: 'read_read' }
   ];
 
+  // 👇 Оновлені ключі (countKey)
   const typeFilters = [
-    { id: 'all', label: 'Всі' },
-    { id: 'user', label: 'Користувач' }, 
-    { id: 'system', label: 'Системні' }
+    { id: 'all', label: t('messageType.typeFilters.all'), countKey: 'type_all' },
+    { id: 'user', label: t('messageType.typeFilters.user'), countKey: 'type_user' }, 
+    { id: 'system', label: t('messageType.typeFilters.system'), countKey: 'type_system' }
   ];
 
   return (
@@ -24,7 +29,10 @@ const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType }) =
             className={`message-type__item ${activeRead === type.id ? 'message-type__item--active' : ''}`}
             onClick={() => setActiveRead(type.id)}
           >
-            {type.label}
+            <span>{type.label}</span>
+            <span className="message-type__count">
+                {counts ? counts[type.countKey] : 0}
+            </span>
           </div>
         ))}
       </div>
@@ -36,7 +44,10 @@ const MessageType = ({ activeRead, setActiveRead, activeType, setActiveType }) =
             className={`message-type__item ${activeType === type.id ? 'message-type__item--active' : ''}`}
             onClick={() => setActiveType(type.id)}
           >
-            {type.label}
+            <span>{type.label}</span>
+            <span className="message-type__count">
+                {counts ? counts[type.countKey] : 0}
+            </span>
           </div>
         ))}
       </div>

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { getAccessToken } from '../utils/auth'; 
 import OurDataFilter from '../components/my_tests/OurDataFilter/OurDataFilter';
 import TestsBlock from '../components/my_tests/TestsBlock/TestsBlock';
 import CustomTitle from '../components/custom_title/CustomTitle';
-import Loader from '../components/loader/Loader';
 
 const MyTestsPage = () => {
+  const { t } = useTranslation();
   const object = { logo: null, line: true };
 
   const [tests, setTests] = useState([]);
@@ -20,7 +21,7 @@ const MyTestsPage = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `/api/tests/my`, 
+          `${process.env.REACT_APP_BACKEND}/api/tests/my`, 
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
@@ -34,8 +35,9 @@ const MyTestsPage = () => {
             location: t.city || "-",
             date: startDate ? startDate.toLocaleDateString("uk-UA") : "-",
             time: startDate ? startDate.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }) : "-",
+            startDateObj: startDate, 
             candidatesCount: t.candidatesCount ?? 0,
-            status: t.statusTest, // Використовуємо статус із бекенду (Active, Scheduled, Closed)
+            status: t.statusTest, 
             link: `/testpage/${t.id}`
           };
         });
@@ -52,7 +54,6 @@ const MyTestsPage = () => {
     fetchMyTests();
   }, []);
 
-  // ОНОВЛЕНО: Підрахунок статистики за статусами
   const stats = useMemo(() => {
     return {
       total: tests.length,
@@ -62,36 +63,27 @@ const MyTestsPage = () => {
     };
   }, [tests]);
 
-  // ОНОВЛЕНО: Фільтрація списку
   const filteredTests = useMemo(() => {
-    if (selectedFilter === 'Активні тести') {
-      return tests.filter(t => t.status === 'Active');
-    }
-    if (selectedFilter === 'Заплановані тести') {
-      return tests.filter(t => t.status === 'Scheduled');
-    }
-    if (selectedFilter === 'Завершені тести') {
-      return tests.filter(t => t.status === 'Closed');
-    }
+    // Note: Filter values should match those in OurDataFilter (which translates labels but keeps values)
+    if (selectedFilter === 'Активні тести') return tests.filter(t => t.status === 'Active');
+    if (selectedFilter === 'Заплановані тести') return tests.filter(t => t.status === 'Scheduled');
+    if (selectedFilter === 'Завершені тести') return tests.filter(t => t.status === 'Closed');
     return tests;
   }, [tests, selectedFilter]);
 
   return (
     <div className="page">
-      <CustomTitle title='Мої тести!' data={object} />
+      <CustomTitle title={t('myTestsPage.title')} data={object} />
       <div className='testsMain container'>
-
-        {/* Передаємо об'єкт stats замість окремих count */}
         <OurDataFilter
           selected={selectedFilter}
           onSelect={setSelectedFilter}
           stats={stats}
         />
-
         {isLoading ? (
-          <Loader />
+          <div>{t('myTestsPage.loading')}</div>
         ) : error ? (
-          <div>Помилка: {error}</div>
+          <div>{t('myTestsPage.error')}: {error}</div>
         ) : (
           <TestsBlock allTests={filteredTests} />
         )}

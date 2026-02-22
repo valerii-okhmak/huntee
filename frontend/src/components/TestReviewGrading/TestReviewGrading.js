@@ -1,25 +1,27 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './TestReviewGrading.css';
 import { Link } from 'react-router-dom';
 
 const TestReviewGrading = ({ score, totalMaxScore}) => {
+  const { t } = useTranslation();
   const safeMaxScore = totalMaxScore > 0 ? totalMaxScore : 1;
   const percentage = (score / safeMaxScore) * 100;
   const isPassed = percentage >= 60; 
   const containerClass = isPassed ? 'testReviewGrading testReviewGrading-green' : 'testReviewGrading testReviewGrading-red';
-  const scoreClass = isPassed ? 'testReviewGrading__title-green' : 'testReviewGrading__title-red'; // Припускаємо, що у вас є клас для червоного тексту
+  const scoreClass = isPassed ? 'testReviewGrading__title-green' : 'testReviewGrading__title-red';
 
   return (
     <div className={containerClass}>
         <div className='container'>
             <h2 className='testReviewGrading__title'>
-                Ваша оцінка: <span className={scoreClass}>{score}/{totalMaxScore}</span>
+                {t('testReviewGrading.score')}: <span className={scoreClass}>{score}/{totalMaxScore}</span>
             </h2>
-            <p className='testReviewGrading__text'>Для заліку необхідно отримати принаймні 60%</p>
+            <p className='testReviewGrading__text'>{t('testReviewGrading.passCondition')}</p>
             
             <Link to="/viewingtests">
                 <button className="testDashboard__analytics-btn-dark">
-                    До моїх тестів
+                    {t('testReviewGrading.myTests')}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="34"

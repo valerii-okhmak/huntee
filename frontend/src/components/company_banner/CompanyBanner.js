@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next'; 
 import "./CompanyBanner.css";
 
 const CompanyBanner = () => {
   const [visible, setVisible] = useState(false);
   const [closed, setClosed] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 1000);
@@ -26,18 +28,22 @@ const CompanyBanner = () => {
 
   return (
     <div className="banner-wrapper">
-    <div className={`company-banner ${closed ? "hide" : "show"}`} onClick={handleClick}>
-      <button className="close-btn" onClick={handleClose}>
-        ✖
-      </button>
-      <div className="banner-content">
-        <div>
-          <h4>ВИ ПРЕДСТАВНИК<br/>КОМПАНІЙ?</h4>
-          <p>Переходьте на сторінку компаній!</p>
+      <div className={`company-banner ${closed ? "hide" : "show"}`} onClick={handleClick}>
+        <button className="close-btn" onClick={handleClose}>
+          ✖
+        </button>
+        <div className="banner-content">
+          <div>
+            <h4>
+              {t('companyBanner.titleLine1')}
+              <br/>
+              {t('companyBanner.titleLine2')}
+            </h4>
+            <p>{t('companyBanner.description')}</p>
+          </div>
+          <span className="arrow">➜</span>
         </div>
-        <span className="arrow">➜</span>
       </div>
-    </div>
     </div>
   );
 };

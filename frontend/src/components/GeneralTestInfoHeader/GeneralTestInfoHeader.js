@@ -2,7 +2,7 @@ import React from 'react'
 import './GeneralTestInfoHeader.css'
 import location_icon from '../../img/test/location.png'
 
-const generalTestInfoHeader = ({ field, title, location, date, time, name }) => {
+const GeneralTestInfoHeader = ({ field, title, location, date, time, name }) => {
   return (
     <div className='generalTestInfoHeader'>
         <div className='container generalTestInfoHeader__container'>
@@ -30,4 +30,4 @@ const generalTestInfoHeader = ({ field, title, location, date, time, name }) => 
   )
 }
 
-export default generalTestInfoHeader
+export default GeneralTestInfoHeader

@@ -1,33 +1,34 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './OurDataFilter.css';
 
 const OurDataFilter = ({ selected, onSelect, stats }) => {
+  const { t } = useTranslation();
   const [hidden, setHidden] = useState(false);
 
   const toggleFilter = () => {
     setHidden(!hidden);
   };
 
-  // ОНОВЛЕНО: Додано Scheduled статус
   const options = [
-    { label: 'Всі тести', count: stats?.total || 0 }, 
-    { label: 'Активні тести', count: stats?.active || 0 }, 
-    { label: 'Заплановані тести', count: stats?.scheduled || 0 },
-    { label: 'Завершені тести', count: stats?.closed || 0 },
+    { label: t('ourDataFilter.all'), count: stats?.total || 0, value: 'Всі тести' }, 
+    { label: t('ourDataFilter.active'), count: stats?.active || 0, value: 'Активні тести' }, 
+    { label: t('ourDataFilter.scheduled'), count: stats?.scheduled || 0, value: 'Заплановані тести' },
+    { label: t('ourDataFilter.closed'), count: stats?.closed || 0, value: 'Завершені тести' },
   ];
 
-  const handleSelect = (label) => {
-    if (selected === label) {
+  const handleSelect = (option) => {
+    if (selected === option.value) {
         onSelect('Всі тести');
     } else {
-        onSelect(label);
+        onSelect(option.value);
     }
   };
 
   return (
     <div className='ourdata_filter'>
       <div className='ourdata_filter_name'>
-        <h2 className='ourdata_filter_title'>НАШІ ДАНІ</h2>
+        <h2 className='ourdata_filter_title'>{t('ourDataFilter.title')}</h2>
         <div className='ourdata_filter_action' onClick={toggleFilter}>
           <div className={`ourdata_filter_button ${hidden ? 'plus' : ''}`}></div>
         </div>
@@ -40,8 +41,8 @@ const OurDataFilter = ({ selected, onSelect, stats }) => {
             <input
               type='checkbox' 
               className='custom-input'
-              checked={selected === opt.label}
-              onChange={() => handleSelect(opt.label)}
+              checked={selected === opt.value}
+              onChange={() => handleSelect(opt)}
             />
             <span className='checkbox-square'></span>
             <span className='ourdata_checkbox-label'>{opt.label}</span>

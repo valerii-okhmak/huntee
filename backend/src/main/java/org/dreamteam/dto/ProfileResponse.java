@@ -2,10 +2,7 @@ package org.dreamteam.dto;
 
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
-
-import org.dreamteam.Entity.OAuthProvider;
 
 import lombok.Builder;
 import lombok.Data;

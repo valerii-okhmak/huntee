@@ -1,11 +1,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-.main_start{
-    min-height: 101vh;
+.main_start {
+    min-height: 100vh; /* Змінив на 100vh рівно */
     background: linear-gradient(45deg, #4a0b7e, #17868b, #22e0fd,#423bce,#84efff);
     background-size: 90% 90%; 
     animation: gradientAnimation 20s infinite linear;
+    position: relative; /* Це база для змійки */
+    overflow: hidden; 
+}
+
+/* 👇👇👇 СТИЛІ ЗМІЙКИ 👇👇👇 */
+.snake2 {
+    position: absolute; /* гарантує застосування */
     
+    bottom: 0;      /* Притискаємо до самого низу */
+    left: 0;        /* Притискаємо вліво */
+    top: auto;      /* Скасовуємо верхнє притискання */
+    right: auto;    /* Скасовуємо праве притискання */
+    
+    /* Розмір */
+    height: 70vh;   /* 👈 ГРАЙСЯ З ЦИМ ЧИСЛОМ (50vh, 70vh) */
+    width: auto;    /* Автоширина збереже пропорції */
+    max-width: 80vw; /* Обмеження ширини, щоб не була на весь екран */
+    
+    object-fit: contain; 
+    object-position: bottom left; 
+    
+    z-index: 0; 
+    pointer-events: none; 
+    display: block;
 }
 
 @keyframes gradientAnimation {
@@ -14,38 +37,40 @@
     100% { background-position: 0% 50%; }
 }
 
-.main_start__container{
+.main_start__container {
     display: flex;
     flex-direction: column;
-    min-height: 101vh;
+    min-height: 100vh; /* Вирівнюємо по висоті екрану */
     padding: 5% 5%;
+    position: relative;
+    z-index: 1; /* Текст над змійкою */
+    justify-content: center; /* Центруємо контент вертикально */
 }
 
-.main_start__container h1{
+.main_start__container h1 {
     font-family: 'MyFont1', sans-serif; 
-    line-height: 8rem;
+    line-height: 1.1; /* Трохи зменшив, щоб рядки не розлітались */
     font-weight: 900;
-    font-size: 7rem;
+    font-size: clamp(4rem, 8vw, 7rem); /* Адаптивний розмір */
     color: #fff;
-    margin: 0;
+    margin: 0 0 20px 0;
     user-select: none;
 }
-.main_start__container h2{
+
+.main_start__container h2 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: clamp(1rem, 2vw + 0.5rem, 2rem);
     color: #fff;
-    margin: 0;
+    margin: 0 0 40px 0;
     text-decoration: none;
 }
 
-.main_start__buttons{
-    align-self: center;
-    justify-content: center;
+.main_start__buttons {
     display: flex;
     flex-direction: row;
-    gap: 2%;
-    padding-top: 10%;
+    gap: 20px;
+    /* padding-top прибрав, бо тепер flex-gap робить відступи */
 }
 
 .button {
@@ -69,25 +94,28 @@
 }
 
 @media screen and (max-width: 958px) {
-    .main_start__container h1{
+    .main_start__container h1 {
         font-size: 5.5rem;
-        line-height: 1.2;
     }
 }
 
 @media screen and (max-width: 768px) {
-    .main_start__buttons{
+    .main_start__buttons {
         flex-direction: column;
-        gap: 20px;
-        padding-top: 5%;
         width: 80%;
+    }
+    
+    /* Адаптив змійки для мобільних */
+    .snake2 {
+        height: 40vh; /* Менша на телефоні */
+        opacity: 0.8;
     }
 }
 
 @media screen and (max-width: 500px) {
-    .main_start__container h1{
-        word-spacing: 1000px;
+    .main_start__container h1 {
         font-size: 4rem;
+        word-spacing: normal; /* Прибрав дивний відступ 1000px */
     }
 }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { getAccessToken } from '../utils/auth'; 
 import Filters from '../components/tests/Filters/Filters';
 import TestsBlock from '../components/tests/TestsBlock/TestsBlock';
@@ -8,11 +9,13 @@ import { useLocation } from 'react-router-dom';
 import Loader from '../components/loader/Loader';
 
 const AllTestsPage = () => {
+  const { t } = useTranslation();
+  
   const object = {
     logo: null,
     line: true,
-    strong: 'Вакансії для початківців в IT',
-    p: 'Обери найкращу сферу для себе та зроби перший крок!'
+    strong: t('allTestsPage.title.strong'),
+    p: t('allTestsPage.title.p')
   };
 
   const [allTests, setAllTests] = useState([]);
@@ -42,7 +45,6 @@ const AllTestsPage = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // Фільтруємо тести: залишаємо лише ті, де isPrivate === false
         const publicTestsOnly = response.data.filter(test => test.isPrivate === false);
 
         const mappedTests = publicTestsOnly.map(test => {
@@ -62,14 +64,14 @@ const AllTestsPage = () => {
         setError(null);
       } catch (err) {
         console.error("Помилка завантаження тестів:", err);
-        setError(err.message || 'Не вдалося завантажити тести');
+        setError(err.message || t('allTestsPage.error'));
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchTests();
-  }, []);
+  }, [t]);
 
   const filteredTests = useMemo(() => {
     return allTests.filter(test => {
@@ -81,7 +83,7 @@ const AllTestsPage = () => {
 
   return (
     <div className="page">
-      <CustomTitle title='Приєднуйся!' data={object} />
+      <CustomTitle title={t('allTestsPage.mainTitle')} data={object} />
       <div className='testsMain container'>
         <Filters 
           allTests={allTests}
@@ -94,7 +96,7 @@ const AllTestsPage = () => {
         {isLoading ? (
           <Loader />
         ) : error ? (
-          <div>Помилка: {error}</div>
+          <div>{t('allTestsPage.errorPrefix')}: {error}</div>
         ) : (
           <TestsBlock 
             allTests={filteredTests}

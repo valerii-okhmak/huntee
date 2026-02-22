@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import './Contacts.css';
+import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
-
+import './Contacts.css';
 
 const Contacts = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,40 +20,65 @@ const Contacts = () => {
     e.preventDefault();
     const { name, email, message } = formData;
 
-    const mailtoLink = `mailto:a.petrykovych@gmail.com?subject=Повідомлення від ${encodeURIComponent(name)}&body=${encodeURIComponent(message)}%0A%0AEmail: ${encodeURIComponent(email)}`;
+    const subject = t('contacts.mailtoSubject', { name });
+    const mailtoLink = `mailto:a.petrykovych@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}%0A%0AEmail: ${encodeURIComponent(email)}`;
     window.location.href = mailtoLink;
   };
 
   return (
     <div className="contacts__form-wrapper">
       <p className="contacts__subtitle">
-        Маєте запитання або потребуєте додаткової інформації? Ми завжди раді допомогти!  Не соромтеся звертатися до нас з коментарями або запитаннями.<br /><br />
-        📩 <strong>Електронна пошта:</strong> huntee@gmail.com<br />
-        📞 <strong>Телефон:</strong> +38 (098) 222 64 19<br />
-        🕒 <strong>Графік роботи:</strong> Пн–Пт, з 18:00 до 18:01<br /><br />
-        Також ви можете скористатися контактною формою нижче – ми відповімо Вам якомога швидше.
+        {t('contacts.intro')}
+        <br /><br />
+        📩 <strong>{t('contacts.emailLabel')}:</strong> huntee@gmail.com<br />
+        📞 <strong>{t('contacts.phoneLabel')}:</strong> +38 (098) 222 64 19<br />
+        🕒 <strong>{t('contacts.scheduleLabel')}:</strong> {t('contacts.scheduleValue')}<br /><br />
+        {t('contacts.outro')}
       </p>
 
       <form className="contacts__form" onSubmit={handleSubmit}>
-        <h2 className="contacts__form-title">Надішліть нам повідомлення</h2>
+        <h2 className="contacts__form-title">{t('contacts.formTitle')}</h2>
 
-        <label htmlFor="name">Ваше ім’я</label>
-        <input type="text" id="name" name="name" placeholder="Введіть ім’я" value={formData.name} onChange={handleChange} required />
+        <label htmlFor="name">{t('contacts.labels.name')}</label>
+        <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            placeholder={t('contacts.placeholders.name')} 
+            value={formData.name} 
+            onChange={handleChange} 
+            required 
+        />
 
-        <label htmlFor="email">Ваша електронна пошта</label>
-        <input type="email" id="email" name="email" placeholder="example@email.com" value={formData.email} onChange={handleChange} required />
+        <label htmlFor="email">{t('contacts.labels.email')}</label>
+        <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder={t('contacts.placeholders.email')} 
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+        />
 
-        <label htmlFor="message">Ваше повідомлення</label>
-        <textarea id="message" name="message" placeholder="Ваше повідомлення" value={formData.message} onChange={handleChange} required />
+        <label htmlFor="message">{t('contacts.labels.message')}</label>
+        <textarea 
+            id="message" 
+            name="message" 
+            placeholder={t('contacts.placeholders.message')} 
+            value={formData.message} 
+            onChange={handleChange} 
+            required 
+        />
 
         <button type="submit" className="contacts__button">
-          Відправити
+          {t('contacts.submit')}
         </button>
       </form>
 
       <div className="contacts__socials">
-        <h3>Соціальні мережі</h3>
-        <p>Будьте на зв’язку з нами у соцмережах, щоб дізнаватись першими про новини та оновлення:</p>
+        <h3>{t('contacts.socialsTitle')}</h3>
+        <p>{t('contacts.socialsText')}</p>
         <div className="contacts__icons">
             <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className='contact__icon_facebook'>
                 <FontAwesomeIcon icon={faFacebookF} />

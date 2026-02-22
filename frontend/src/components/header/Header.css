@@ -20,6 +20,28 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); 
 }
   
+.notification-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -60%;
+  right: -30%; 
+  
+  background-color: #0096F3;
+  color: white;
+  border-radius: 50%;
+  width: 20px;       /* Фіксована ширина */
+  height: 20px;      /* Фіксована висота (має дорівнювати ширині) */
+  padding: 0;        /* Прибираємо padding, щоб не розтягувало */
+  
+  font-size: 10px;   /* Розмір шрифту має бути меншим за контейнер */
+  font-weight: bold; /* Жирний шрифт краще читається */
+  line-height: 1;    /* Щоб текст був точно по центру вертикально */
+  
+  box-shadow: 0 0 0 2px white; /* Опціонально: біла обводка, щоб відділити від іконки */
+}
+
 .header .logo h1 {
   margin: 0;
 }
@@ -59,6 +81,7 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  position: relative;
 }
   
 .nav ul {

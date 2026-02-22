@@ -1,11 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
+import { useTranslation } from 'react-i18next';
 import './AddTestsButton.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 const AddTestsButton = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate(); 
 
   const handleClick = () => {
@@ -15,7 +17,7 @@ const AddTestsButton = () => {
   return (
     <button className="add-tests-button-block" onClick={handleClick}> 
       <FontAwesomeIcon icon={faFileCirclePlus} className="addtestbtn" />
-      <span className="add-tests-button-text">Додати тест</span>
+      <span className="add-tests-button-text">{t('addTestsButton.text')}</span>
     </button>
   );
 };
