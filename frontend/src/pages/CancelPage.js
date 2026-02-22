@@ -1,4 +1,3 @@
-// CancelPage.jsx
 const CancelPage = () => (
   <div>
     <h2>Оплата скасована</h2>

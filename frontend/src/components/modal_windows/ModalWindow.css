@@ -250,13 +250,12 @@
   scale: 1;
 }
 
-/* Додаткові класи для модальних кнопок "Так" і "Ні" */
 .modal-button-submit.green-hover.active:hover::before {
-  background-color: #1DAD00; /* зелений */
+  background-color: #1DAD00;
 }
 
 .modal-button-submit.red-hover.active:hover::before {
-  background-color: #C32C2C; /* червоний */
+  background-color: #C32C2C; 
 }
 
 .confirm-modal{
@@ -276,21 +275,20 @@
 }
 
 .invite-modal-list {
-    list-style-type: disc; /* Стандартна заповнена крапка */
-    list-style-position: inside; /* Крапка стає частиною текстового блоку, а не виноситься ліворуч */
+    list-style-type: disc; 
+    list-style-position: inside; 
     padding: 0; 
     text-align: left;
 }
 
 .invite-modal-list li {
-    text-indent: -1.2em; /* Вирівнює другий і наступні рядки під першим словом, а не під крапкою */
-    padding-left: 1.2em; /* Компенсує відступ для крапки */
-    display: list-item; /* Гарантує відображення маркера */
+    text-indent: -1.2em; 
+    padding-left: 1.2em; 
+    display: list-item; 
 }
 
-/* Якщо хочете, щоб крапка була кольоровою */
 .invite-modal-list li::marker {
-    color: #000000; /* Ваш колір */
+    color: #000000; 
     font-size: 15px;
 }
 
@@ -333,7 +331,7 @@
     height: 2px;
     margin-top: 3%;
     margin-bottom: 2%;
-    background-color: #000000; /* Колір лінії */
+    background-color: #000000; 
 }
 
 .modal-content-wrapper {
@@ -475,7 +473,7 @@ transform: rotate(180deg);
 }
 
 .hidden-file-input {
-  display: none; /* Приховує елемент візуально */
+  display: none; 
 }
 
 .full-width-line {
@@ -483,7 +481,7 @@ transform: rotate(180deg);
   height: 1px;
   background-color: rgb(0, 0, 0, 0.2); 
   margin: 1rem 0; 
-  margin-left: -1.5rem; /* Відступ для вирівнювання з краями */
+  margin-left: -1.5rem; 
 }
 
 .modal-info-section {
@@ -525,11 +523,87 @@ transform: rotate(180deg);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  opacity: 0; /* приховує стандартну іконку */
+  opacity: 0; 
   cursor: pointer;
   position: relative;
   z-index: 1;
 }
+.export-compact {
+    padding: 40px 50px !important; 
+    gap: 15px !important;
+}
+
+.select-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.format-icon {
+    position: absolute;
+    left: 12px;
+    z-index: 2;
+    font-size: 18px;
+}
+
+.format-icon.excel { color: #1D6F42; }
+.format-icon.pdf { color: #E02424; }
+
+.select-with-icon .modal-select {
+    padding-left: 40px; 
+}
+
+.export-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.export-item-mini {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px; 
+    background: #f8f8f8;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.export-item-mini.active {
+    background: #fff;
+    border-color: #000;
+}
+
+.mini-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #000;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.mini-checkbox.checked {
+    background: #000;
+    color: #fff;
+}
+
+.export-item-mini span {
+    font-size: 13px; 
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.export-format-wrapper, .export-columns-wrapper {
+    width: 100%;
+}
+
+
 @media (max-width: 768px) {
 .modal-label {
   text-align: center;
@@ -539,7 +613,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   flex-direction: column;
 }
 .right-side-modal {
-  width: 100%; /* Змінюємо на 1, щоб зайняти всю ширину */
+  width: 100%; 
 }
 .modal-buttons{
   gap: 1rem;
@@ -560,3 +634,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 100%;
   }
 }
+
+

@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './DashboardStudentCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 
-const DashboardStudentCard = ({ student, type }) => {
+const DashboardStudentCard = ({ student, type, onMessageClick }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleViewProfile = () => {
@@ -17,14 +19,16 @@ const DashboardStudentCard = ({ student, type }) => {
     if (student.attemptId) {
       navigate(`/testreview/${student.attemptId}`);
     } else {
-      console.error("Не знайдено ID спроби (attemptId) для цього студента:", student);
+      console.error("Attempt ID not found for student:", student);
     }
   };
 
   const maxScore = student.totalMaxScore || 100;
-  const successPercentage = student.score ? (student.score / maxScore) * 100 : 0;
-  const isPassed = successPercentage >= 60;
+  const score = student.score;
+  const successPercentage = score ? (score / maxScore) * 100 : 0;
+  const isPassed = successPercentage >= 60; 
 
+  const isPendingReview = type === 'results' && score === null;
 
   return (
     <div className="testDashboard__student-card">
@@ -35,16 +39,16 @@ const DashboardStudentCard = ({ student, type }) => {
           <>
             <div 
               className={`testDashboard__card-score ${
-                student.score === null 
-                  ? 'testDashboard__card-score-null' 
+                isPendingReview
+                  ? 'testDashboard__card-score-pending' 
                   : isPassed
-                    ? 'testDashboard__card-score-good' 
-                    : 'testDashboard__card-score-bad' 
+                    ? 'testDashboard__card-score-good'  
+                    : 'testDashboard__card-score-bad'   
               }`}
             >
-              {student.score === null 
-                  ? 'Тест не пройдено' 
-                  : `${student.score}/${student.totalMaxScore || '?'}`
+              {isPendingReview 
+                  ? t('dashboardStudentCard.pending') 
+                  : `${score}/${maxScore}`
               }
             </div>
             
@@ -53,7 +57,7 @@ const DashboardStudentCard = ({ student, type }) => {
                 className="testDashboard__card-info" 
                 style={{cursor: 'pointer', textDecoration: 'underline'}}
             >
-                Переглянути інформацію про студента
+                {t('dashboardStudentCard.viewDetails')}
             </span>
           </>
         )}
@@ -62,15 +66,19 @@ const DashboardStudentCard = ({ student, type }) => {
       <div className="testDashboard__card-actions">
         {type === 'registered' ? (
            <button className="testDashboard__card-btn" onClick={handleViewProfile}>
-               Переглянути профіль
+               {t('dashboardStudentCard.viewProfile')}
            </button>
         ) : (
            <button className="testDashboard__card-btn" onClick={handleViewResults}>
-               Переглянути результати
+               {isPendingReview ? t('dashboardStudentCard.checkTest') : t('dashboardStudentCard.viewResults')}
            </button>
         )}
         
-        <button className="testDashboard__card-btn-chat" title="Написати повідомлення">
+        <button 
+            className="testDashboard__card-btn-chat" 
+            title={t('dashboardStudentCard.sendMessage')}
+            onClick={() => onMessageClick(student)}
+        >
           <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
         </button>
       </div>

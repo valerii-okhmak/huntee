@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +32,12 @@ public class UserAnswer {
 
     @Column(name = "given_text", columnDefinition = "TEXT", nullable = true)
     private String givenText;
+
+    @Column(name = "awarded_score")
+    private BigDecimal awardedScore; 
+
+    @Column(name = "teacher_comment", columnDefinition = "TEXT")
+    private String teacherComment;
 
     @Column(name = "is_correct")
     private Boolean isCorrect;

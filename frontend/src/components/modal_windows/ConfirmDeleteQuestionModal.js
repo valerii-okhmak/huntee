@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import ModalMini from "./ModalMini";
 import "./ModalWindow.css";
 
@@ -8,6 +9,8 @@ const ConfirmDeleteQuestionModal = ({
   onConfirm, 
   questionNumber 
 }) => {
+  const { t } = useTranslation();
+
   if (!isOpen) return null;
 
   return (
@@ -15,7 +18,7 @@ const ConfirmDeleteQuestionModal = ({
       <button
         className="modal-close"
         onClick={onClose}
-        aria-label="Закрити"
+        aria-label={t('confirmDeleteQuestionModal.close')}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
           <path d="M14.2548 4.75488C14.5282 4.48152 14.9717 4.48152 15.2451 4.75488C15.5184 5.02825 15.5184 5.47175 15.2451 5.74512L10.9902 10L15.2451 14.2549C15.5184 14.5283 15.5184 14.9717 15.2451 15.2451C14.9717 15.5184 14.5282 15.5184 14.2548 15.2451L10 10.9902L5.74512 15.2451C5.47175 15.5184 5.02825 15.5184 4.75488 15.2451C4.48146 14.9717 4.48146 14.5283 4.75488 14.2549L9.00977 10L4.75488 5.74512C4.48146 5.47175 4.48146 5.02825 4.75488 4.75488C5.02825 4.48152 5.47175 4.48152 5.74512 4.75488L10 9.00977L14.2548 4.75488Z" />
@@ -23,13 +26,13 @@ const ConfirmDeleteQuestionModal = ({
       </button>
 
       <div className="confirm-modal">
-        <h3 className="modalmini-title">ВИДАЛИТИ ЗАПИТАННЯ?</h3>
+        <h3 className="modalmini-title">{t('confirmDeleteQuestionModal.title')}</h3>
 
         <p className="modalmini-subtitle">
-          Ви впевнені, що хочете видалити запитання <strong>#{questionNumber}</strong>?
+          {t('confirmDeleteQuestionModal.confirmText', { number: questionNumber })}
         </p>
         <p className="modalmini-minisubtitle">
-          Цю дію неможливо буде скасувати.
+          {t('confirmDeleteQuestionModal.warning')}
         </p>
 
         <div className="modalmini-buttons">
@@ -37,14 +40,14 @@ const ConfirmDeleteQuestionModal = ({
             className="modalmini-button modalmini-button-cancel"
             onClick={onClose}
           >
-            Ні, залишити
+            {t('confirmDeleteQuestionModal.cancel')}
           </button>
 
           <button
             className="modalmini-button modalmini-button-submit modalmini-button-submit-danger"
             onClick={onConfirm}
           >
-            Так, видалити
+            {t('confirmDeleteQuestionModal.delete')}
           </button>
         </div>
       </div>

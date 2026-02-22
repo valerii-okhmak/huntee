@@ -1,89 +1,57 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import '../components/pricing_plans/pricing.css';
 import checkMark from '../img/check_mark.png';
 
 const PricingPage = () => {
+  const { t } = useTranslation();
+  
+  // Data structure moved to component to use t()
   const plansData = {
     yearly: [
       {
         name: 'Starter',
         price: '$0',
-        description: 'Ідеально для знайомства.',
-        features: [
-          'Доступ до аналізів тестів.',
-          'Доступ до пробного тесту.',
-          'Доступ до звіту з твого результату.',
-          'Тест на Soft & Hard IT.',
-          'Високі рекомендації.',
-          'Можливість повторного проходження протягом 30 днів.',
-        ],
+        description: t('pricingPage.plans.starter.description'),
+        features: t('pricingPage.plans.starter.features', { returnObjects: true }),
       },
       {
         name: 'Pro Journey',
         price: '$10',
         priceId: 'price_1Rl6oNCkXSDPUZVKQF8reeM1',
         popular: true,
-        description: 'Оптимальний вибір для тих, хто хоче більше.',
-        features: [
-          'Розширені тести.',
-          'Детальний аналіз результатів.',
-          'PDF-роздрук з твого результату.',
-          'Доступ до мобільних копій.',
-          'Гнучке проходження будь-якого тесту в зручний час.',
-        ],
+        description: t('pricingPage.plans.pro.description'),
+        features: t('pricingPage.plans.pro.features', { returnObjects: true }),
       },
       {
         name: 'Ultimate Self',
         price: '$24',
         priceId: 'price_1Rl6pACkXSDPUZVKvENoUIsz',
-        description: 'Для тих, хто серйозно.',
-        features: [
-          'Індивідуальний підхід.',
-          'Доступ до спеціального звіту-порівняння твоїх результатів із групою.',
-          'Інсайти зі справжніми кейсами.',
-          'Супровід від Soft Skills Simulation – симуляторів інтерв’ю та вибору рішень.',
-        ],
+        description: t('pricingPage.plans.ultimate.description'),
+        features: t('pricingPage.plans.ultimate.features', { returnObjects: true }),
       },
     ],
     monthly: [
       {
         name: 'Starter',
         price: '$0',
-        description: 'Ідеально для знайомства.',
-        features: [
-          'Доступ до аналізів тестів.',
-          'Доступ до пробного тесту.',
-          'Доступ до звіту з твого результату.',
-          'Тест на Soft & Hard IT.',
-          'Високі рекомендації.',
-          'Можливість повторного проходження протягом 30 днів.',
-        ],
+        description: t('pricingPage.plans.starter.description'),
+        features: t('pricingPage.plans.starter.features', { returnObjects: true }),
       },
       {
         name: 'Pro Journey',
         price: '$12',
         priceId: 'price_1Rl6qyCkXSDPUZVKNHTUzPQ0',
         popular: true,
-        description: 'Оптимальний вибір для тих, хто хоче більше.',
-        features: [
-          'Розширені тести.',
-          'Детальний аналіз результатів.',
-          'PDF-роздрук з твого результату.',
-          'Доступ до мобільних копій.',
-          'Гнучке проходження будь-якого тесту в зручний час.',
-        ],
+        description: t('pricingPage.plans.pro.description'),
+        features: t('pricingPage.plans.pro.features', { returnObjects: true }),
       },
       {
         name: 'Ultimate Self',
         price: '$30',
         priceId: 'price_1Rl6rpCkXSDPUZVK42uEPSu0',
-        description: 'Для тих, хто серйозно.',
-        features: [
-          'Індивідуальний підхід.',
-          'Доступ до спеціального звіту-порівняння твоїх результатів із групою.',
-          'Інсайти зі справжніми кейсами.',
-          'Супровід від Soft Skills Simulation – симуляторів інтерв’ю та вибору рішень.',
-        ],
+        description: t('pricingPage.plans.ultimate.description'),
+        features: t('pricingPage.plans.ultimate.features', { returnObjects: true }),
       },
     ],
   };
@@ -104,7 +72,7 @@ const PricingPage = () => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      alert('Помилка: ' + (errorData.error || 'Невідома помилка'));
+      alert(t('pricingPage.errorPrefix') + (errorData.error || t('pricingPage.unknownError')));
       setLoading(false);
       return;
     }
@@ -113,10 +81,10 @@ const PricingPage = () => {
     if (data.url) {
       window.location.href = data.url;
     } else {
-      alert('Не вдалося створити сесію оплати');
+      alert(t('pricingPage.sessionError'));
     }
   } catch (error) {
-    alert('Помилка: ' + error.message);
+    alert(t('pricingPage.errorPrefix') + error.message);
   } finally {
     setLoading(false);
   }
@@ -132,15 +100,15 @@ const PricingPage = () => {
             id="yearly-button"
             onClick={() => setIsYearly(true)}
           >
-            <div className="text-button">Річна підписка</div>{' '}
-            {isYearly && <span className="discount">до -20%🔥</span>}
+            <div className="text-button">{t('pricingPage.yearly')}</div>{' '}
+            {isYearly && <span className="discount">{t('pricingPage.discount')}</span>}
           </button>
           <button
             className={!isYearly ? 'active' : ''}
             id="monthly-button"
             onClick={() => setIsYearly(false)}
           >
-            Місячна підписка
+            {t('pricingPage.monthly')}
           </button>
         </div>
 
@@ -149,14 +117,14 @@ const PricingPage = () => {
             <div key={plan.priceId || plan.name} className="plan-wrapper">
               <div className={`plan ${plan.popular ? 'popular' : ''}`}>
                 <div className="plan-information">
-                  {plan.popular && <div className="badge">Найкраща пропозиція</div>}
+                  {plan.popular && <div className="badge">{t('pricingPage.bestOffer')}</div>}
 
                   <h3>{plan.name}</h3>
 
                   <p className="price">
                     {plan.price}{' '}
                     <span className="mounth-span">
-                      / {isYearly ? 'рік' : 'місяць'}
+                      / {isYearly ? t('pricingPage.perYear') : t('pricingPage.perMonth')}
                     </span>
                   </p>
 
@@ -168,15 +136,14 @@ const PricingPage = () => {
                       disabled={loading}
                       onClick={() => handleSubscribe(plan.priceId)}
                     >
-                      {loading ? 'Обробка...' : 'ОФОРМИТИ ЗАРАЗ'}
+                      {loading ? t('pricingPage.processing') : t('pricingPage.subscribeBtn')}
                     </button>
                   )}
                 </div>
 
-                {/* Особливості тарифу */}
                 <div className="features">
                   <ul>
-                    {plan.features.map((feature, i) => (
+                    {Array.isArray(plan.features) && plan.features.map((feature, i) => (
                       <li key={i}>
                         <img src={checkMark} alt="checkMark" /> <span>{feature}</span>
                       </li>

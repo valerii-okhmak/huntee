@@ -57,9 +57,11 @@ public class User implements UserDetails {
     private List<OAuthIdentity> oauthIdentities;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<Test> authoredTests = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<UserTestAttempt> attempts = new HashSet<>();
 
     @Override

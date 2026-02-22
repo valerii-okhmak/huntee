@@ -21,6 +21,7 @@ const TestsList = ({ tests, onDeleteTest }) => {
             link={test.link}
             candidatesCount={test.candidatesCount}
             onDeleteSuccess={onDeleteTest}
+            status={test.status}
         />
       ))}
     </div>

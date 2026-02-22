@@ -21,7 +21,7 @@ const VerticalStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [showReturnButton, setShowReturnButton] = useState(false);
-  const [showToggleButton, setShowToggleButton] = useState(true); // для миттєвого контролю кнопки закриття
+  const [showToggleButton, setShowToggleButton] = useState(true); 
 
   const observerRef = useRef(null);
 
@@ -55,7 +55,7 @@ const VerticalStepper = () => {
   useEffect(() => {
     let timer;
     if (!isVisible) {
-      timer = setTimeout(() => setShowReturnButton(true), 400); // кнопка повернення з'явиться з затримкою
+      timer = setTimeout(() => setShowReturnButton(true), 400); 
     } else {
       setShowReturnButton(false);
     }
@@ -63,14 +63,14 @@ const VerticalStepper = () => {
   }, [isVisible]);
 
   const handleClose = () => {
-    setShowToggleButton(false); // кнопка закриття зникає одразу
-    setIsVisible(false);        // панель ховаємо (з анімацією)
+    setShowToggleButton(false); 
+    setIsVisible(false);        
   };
 
   const handleOpen = () => {
-    setIsVisible(true);         // панель показуємо
-    setShowReturnButton(false); // сховати кнопку повернення
-    setShowToggleButton(true);  // показати кнопку закриття
+    setIsVisible(true);         
+    setShowReturnButton(false); 
+    setShowToggleButton(true);  
   };
 
   const scrollTo = (id) => {

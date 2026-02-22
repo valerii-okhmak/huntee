@@ -22,6 +22,7 @@ public class CodeExecutionService {
     private final ObjectMapper objectMapper;
     private static final String PISTON_API_URL = "https://emkc.org/api/v2/piston/execute";
 
+    @SuppressWarnings("unchecked")
     public CodeRunResponse runCode(String userCode, CodeAnswer codeAnswer) {
         List<CodeRunResponse.TestCaseResult> results = new ArrayList<>();
         boolean allPassed = true;

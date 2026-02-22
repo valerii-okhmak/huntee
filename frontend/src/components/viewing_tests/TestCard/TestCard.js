@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './TestCard.css';
 import location_icon from '../../../img/test/location.png';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,11 +7,17 @@ import { getAccessToken } from '../../../utils/auth';
 import ConfirmDeleteTestModal from '../../modal_windows/ConfirmDeleteTestModal';
 import ErrorModal from '../../modal_windows/ErrorModal';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrashCan, faCopy } from '@fortawesome/free-regular-svg-icons';
 
-const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, onDeleteSuccess }) => {
+// 1. Додаємо status у пропси 👇
+const TestCard = ({ id, title, type, location, date, time, link, candidatesCount, status, onDeleteSuccess}) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [errorState, setErrorState] = useState({ isOpen: false, message: '' });
+
+  const isEditDisabled = status === 'Active';
 
   const openDeleteModal = (e) => {
     e.preventDefault();
@@ -32,6 +39,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
   };
 
   const handleDelete = async (e) => {
+    // ... ваш код видалення без змін ...
     e.preventDefault(); 
     e.stopPropagation(); 
 
@@ -46,7 +54,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Не вдалося видалити тест. Можливо, у вас недостатньо прав.');
+        throw new Error(errorData.message || t('testCard.deleteError'));
       }
 
       setIsDeleteModalOpen(false);
@@ -65,6 +73,9 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
     e.preventDefault();
     e.stopPropagation();
 
+    // Додаткова перевірка на випадок, якщо HTML атрибут disabled буде знято вручну
+    if (isEditDisabled) return;
+
     navigate('/testcreation/start', {
       state: {
         mode: 'edit',
@@ -79,23 +90,34 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
         <div className='testcard-container'>
           <div className='testcard-top_row'>
             <p className='testcard-type'>{type}</p>
-              <p className='testcard-status-active'>Зареєстровано: {candidatesCount}</p>
+              <p className='testcard-status-active'>{t('testCard.registered')}: {candidatesCount}</p>
           </div>
 
           <div className='testcard-title'>{title}</div>
+          
           <div className="testcard-buttons">
             <button
-              className="testcard-button testcard-button-cancel"
-              onClick={handleEdit}
+              className={`testcard-action-btn btn-edit ${isEditDisabled ? 'btn-disabled' : ''}`}
+              onClick={isEditDisabled ? (e) => { e.preventDefault(); e.stopPropagation(); } : handleEdit}
+              disabled={isEditDisabled}
+              title={isEditDisabled ? "Неможливо редагувати активний тест" : ""}
             >
-              Редагувати
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <span>{t('testCard.edit')}</span>
             </button>
 
             <button
-              className="testcard-button testcard-button-submit testcard-button-submit-danger"
+              className="testcard-action-btn btn-delete"
               onClick={openDeleteModal}
             >
-              Видалити
+              <FontAwesomeIcon icon={faTrashCan} />
+              <span>{t('testCard.delete')}</span>
+            </button>
+            <button
+              className="testcard-action-btn btn-duplicate"
+            >
+              <FontAwesomeIcon icon={faCopy} />
+              <span>{t('testCard.duplicate')}</span>
             </button>
           </div>
 
@@ -122,7 +144,7 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
       <ErrorModal
         isOpen={errorState.isOpen}
         onClose={closeErrorModal}
-        title="ПОМИЛКА ВИДАЛЕННЯ"
+        title={t('testCard.errorTitle')}
         errorMessage={errorState.message}
       />
     </>

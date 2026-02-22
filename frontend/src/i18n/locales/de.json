@@ -1,0 +1,1090 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "language": "Sprache"
+  },
+  "modal": {
+    "confirmTitle": "Sind Sie sicher?",
+    "confirmText": "Der Fortschritt kann nach Abschluss nicht mehr geändert werden.",
+    "yes": "Ja, abschließen",
+    "no": "Nein, zurück"
+  },
+  "burger": {
+    "whatIsPlatform": "Was ist diese Plattform?",
+    "forStudents": "für Studierende",
+    "myAccount": "Mein Konto",
+    "activeTests": "Aktive Tests",
+    "practiceTests": "Übungstest",
+    "howToChoose": "IT-Pfad wählen?",
+    "forCompanies": "für Unternehmen",
+    "companyMain": "Unternehmen Hauptseite",
+    "howToCreate": "Test erstellen?",
+    "processAndResults": "Bewertung & Ergebnisse",
+    "tempUnavailable": "(Vorübergehend nicht verfügbar)"
+  },
+  "companyBanner": {
+    "titleLine1": "SIND SIE EIN",
+    "titleLine2": "UNTERNEHMENSVERTRETER?",
+    "description": "Gehen Sie zur Unternehmensseite!"
+  },
+  "companyAboutUs": {
+    "title": "ÜBER UNS",
+    "hello": "Hallo!",
+    "description": "Huntee ist eine moderne Plattform für die automatisierte und schnelle Kandidatenauswahl, entwickelt für die Bedürfnisse von IT-Unternehmen und Recruitern, die Wert auf Zeit, Effizienz und Qualität legen. Wir kombinieren Kompetenztests, Analysen und automatisierte Compliance-Prüfungen, damit Unternehmen nur relevante Kandidaten erhalten — schnell, objektiv und ohne unnötige Kosten.",
+    "whyChoose": "Warum Huntee wählen?",
+    "benefits": {
+      "precise": "🔍 Präzise Auswahl",
+      "time": "⏱ Zeitersparnis",
+      "objective": "📊 Objektive Bewertung",
+      "flexible": "🛠 Flexible Anpassung an Ihre Vakanz",
+      "experience": "🤝 Bessere Erfahrung für Kandidaten"
+    }
+  },
+  "companyFromIdea": {
+    "title": "Von der Idee zur Bewertung",
+    "subtitle": "Wir bieten zwei bequeme Optionen zur Erstellung eines Tests — je nach Bedarf, Budget und technischen Fähigkeiten:",
+    "option1": {
+      "title": "Test selbst erstellen",
+      "subtitle": "Wenn Sie die volle Kontrolle über das Aussehen und die Struktur des Tests haben möchten. Es ist ganz einfach:",
+      "step1": "Vorlage wählen oder Layout von Grund auf neu erstellen.",
+      "step2": "Inhalt bearbeiten und Fragen erstellen.",
+      "step3": "Test mit einem Klick veröffentlichen."
+    },
+    "option2": {
+      "title": "Fertigen Test wählen",
+      "subtitle": "Keine Zeit oder Lust zur Entwicklung? Wir haben bereits professionelle Testvorlagen für verschiedene Bereiche vorbereitet!",
+      "step1": "Wählen Sie einen fertigen Test aus dem Katalog.",
+      "step2": "Datum und Uhrzeit festlegen.",
+      "step3": "Test mit einem Klick veröffentlichen."
+    }
+  },
+  "companyOptions": {
+    "title": "Finden Sie Ihre besten Talente",
+    "createTest": "EIGENEN TEST ERSTELLEN",
+    "viewTemplates": "VORLAGEN ANSEHEN"
+  },
+  "companyWelcome": {
+    "title": "HIER SIND IHRE ZUKÜNFTIGEN MITARBEITER",
+    "subtitle": "Tests, die Studierenden helfen, ihre Karriere in der IT zu finden",
+    "buttons": {
+      "details": "Mehr über uns",
+      "howTo": "Wie funktioniert die Testerstellung?"
+    },
+    "steps": {
+      "account": "Konto erstellen",
+      "create": "Tests erstellen",
+      "results": "Testergebnisse erhalten",
+      "candidates": "Liste der Top-Kandidaten für eine bestimmte Vakanz erhalten"
+    }
+  },
+  "contacts": {
+    "intro": "Haben Sie Fragen або benötigen Sie zusätzliche Informationen? Wir helfen Ihnen gerne weiter! Kontaktieren Sie uns jederzeit.",
+    "emailLabel": "E-Mail",
+    "phoneLabel": "Telefon",
+    "scheduleLabel": "Arbeitszeiten",
+    "scheduleValue": "Mo–Fr, von 18:00 bis 18:01",
+    "outro": "Sie können auch das Kontaktformular unten nutzen – wir antworten so schnell wie möglich.",
+    "formTitle": "Senden Sie uns eine Nachricht",
+    "labels": {
+      "name": "Ihr Name",
+      "email": "Ihre E-Mail",
+      "message": "Ihre Nachricht"
+    },
+    "placeholders": {
+      "name": "Geben Sie Ihren Namen ein",
+      "email": "beispiel@email.com",
+      "message": "Ihre Nachricht"
+    },
+    "submit": "Senden",
+    "socialsTitle": "Soziale Netzwerke",
+    "socialsText": "Bleiben Sie über soziale Medien mit uns in Kontakt, um als Erster von Neuigkeiten zu erfahren:",
+    "mailtoSubject": "Nachricht von {{name}}"
+  },
+  "createTestInfo": {
+    "howItHappens": "Wie läuft es ab?"
+  },
+  "diagram": {
+    "averageScore": "Durchschnittliche Punktzahl",
+    "direction": "Richtung"
+  },
+  "findYourself": {
+    "title": "Finde dich selbst",
+    "subtitle": "Wissen Sie nicht, wo Sie Ihre IT-Reise beginnen sollen?",
+    "description": "Dies ist eine kurze, aber fundierte Umfrage, die ermittelt, ob Analytik, Entwicklung, Design, Cybersicherheit, Testing, DevOps oder vielleicht etwas ganz Unerwartetes am besten zu Ihnen passt!",
+    "button": "Test machen"
+  },
+  "footer": {
+    "contactsTitle": "KONTAKTE",
+    "menu": {
+      "about": "Über uns",
+      "questions": "Fragen & Vorschläge",
+      "forCompanies": "Für Unternehmen",
+      "pricing": "Preise",
+      "cooperation": "Kooperation",
+      "investments": "Investitionen",
+      "privacy": "Datenschutz & Sicherheit"
+    },
+    "labels": {
+      "address": "Adresse",
+      "phone": "Telefon",
+      "email": "E-Mail",
+      "worktime": "Arbeitszeiten"
+    },
+    "addressValue": "15 Kvitnya Straße, 1, Ternopil, Region Ternopil, 46023, Ukraine",
+    "worktimeValue": "Mo–Fr, 9:00–18:00",
+    "copied": "Kopiert!",
+    "viewMap": "Auf Karte anzeigen",
+    "joinUs": "Folgen Sie uns:"
+  },
+  "forCompany": {
+    "title": "Sucht Ihr Unternehmen Mitarbeiter?",
+    "subtitle": "Wir haben eine separate Seite mit allen notwendigen Informationen für Sie vorbereitet: wie die Plattform funktioniert, welche Vorteile Sie haben, wie Sie Kandidaten finden und wie die Zusammenarbeit mit Huntee beginnt.",
+    "descriptionLine1": "Erfahren Sie, wie Sie noch heute",
+    "descriptionLine2": "effektiv Talente gewinnen!",
+    "button": "Seite für Unternehmen"
+  },
+  "testPage": {
+    "start": "Test starten",
+    "finish": "Test beenden",
+    "next": "Nächste Frage",
+    "prev": "Vorherige Frage",
+    "questionNum": "Frage #{{number}}",
+    "saving": "Speichern...",
+    "saved": "Änderungen gespeichert",
+    "promptMessage": "Sind Sie sicher? Der Fortschritt könnte verloren gehen.",
+    "status": {
+      "saving": "Speichern...",
+      "saved": "Gespeichert",
+      "error": "Fehler beim Speichern",
+      "processing": "Verarbeitung..."
+    },
+    "buttons": {
+      "next": "Nächste Frage",
+      "finish": "Test beenden"
+    },
+    "timer": {
+      "hours": "Stunden",
+      "minutes": "Minuten",
+      "seconds": "Sekunden"
+    },
+    "codeResult": {
+      "pass": "✅ Alle Tests bestanden!\n",
+      "fail": "❌ Einige Tests fehlgeschlagen.\n"
+    },
+    "errors": {
+      "startFailed": "Test konnte nicht gestartet werden.",
+      "loadData": "Fehler beim Laden der Daten",
+      "runCode": "Fehler beim Ausführen des Codes.",
+      "noId": "Test beendet, aber keine ID erhalten.",
+      "finishFailed": "Test konnte auf dem Server nicht beendet werden."
+    },
+    "language": "Sprache",
+    "runCode": "Code ausführen",
+    "compiling": "Kompilieren...",
+    "unknownType": "Unbekannter Fragentyp",
+    "placeholder": "Geben Sie Ihre Antwort ein..."
+  },
+  "generalInfo": {
+    "benefits": {
+      "title": "Hauptvorteile",
+      "automation": "Automatisierung",
+      "automationDesc": "Das System übernimmt Routineaufgaben: Prüfung von Lebensläufen, Integritätskontrolle und Erstscreening.",
+      "analytics": "Analytik",
+      "analyticsDesc": "Detaillierte Berichte helfen HR, Entscheidungen schneller und besser zu treffen.",
+      "massSelection": "Massenauswahl",
+      "massSelectionDesc": "Arbeiten Sie gleichzeitig mit hunderten von Kandidaten ohne Überlastung.",
+      "timeSaving": "Zeitersparnis",
+      "timeSavingDesc": "Schnelle Suche und Auswahl — von der Bewerbung bis zur Einstellung mit wenigen Klicks."
+    },
+    "audience": {
+      "title": "Für wen ist diese Plattform?",
+      "students": "Studierende",
+      "studentsDesc": "Schneller Karrierestart und faire Auswahl. Hilfe bei der Jobsuche.",
+      "companies": "Unternehmen",
+      "companiesDesc": "Effektives Massenrecruiting und transparente Ergebnisse.",
+      "hr": "HR und Recruiter",
+      "hrDesc": "Praktische Tools, um die besten Talente zu finden."
+    },
+    "howItWorks": "Wie funktioniert es?",
+    "forStudents": "FÜR STUDIERENDE",
+    "forCompanies": "FÜR UNTERNEHMEN",
+    "buttons": {
+      "closestSets": "Kommende Stellenangebote",
+      "createTest": "Test erstellen"
+    }
+  },
+  "header": {
+    "closestSets": "Kommende Stellen",
+    "messages": "Nachrichten",
+    "profile": "Profil",
+    "menu": "Menü"
+  },
+  "joinToUs": {
+    "titleLine1": "Mach",
+    "titleLine2": "mit!",
+    "button": "Einloggen",
+    "sloganLine1": "Lass uns jetzt",
+    "sloganLine2": "gemeinsam starten"
+  },
+  "mainStart": {
+    "titleLine1": "LASS UNS JETZT",
+    "titleLine2": "GEMEINSAM STARTEN!",
+    "subtitle": "Tests, die Studierenden helfen, ihre Karriere in der IT zu finden",
+    "activeTests": "Aktive Tests",
+    "practiceTest": "Übungstest",
+    "itNavigator": "IT-Navigator"
+  },
+  "messageList": {
+    "empty": "Keine Nachrichten"
+  },
+  "messageTitle": {
+    "text": "Nachrichten",
+    "placeholder": "Suche nach Titel, Absender oder Text...",
+    "MarkAllAsRead": "Alle als gelesen markieren"
+  },
+  "messageType": {
+    "readFilters": {
+      "all": "Alle",
+      "unread": "Ungelesen",
+      "read": "Gelesen"
+    },
+    "typeFilters": {
+      "all": "Alle",
+      "user": "Benutzer",
+      "system": "System"
+    }
+  },
+  "additionalInfoModal": {
+    "title": "Zusätzliche Informationen",
+    "close": "Schließen",
+    "aboutYou": "Über Sie",
+    "placeholderAbout": "Fügen Sie ein paar Details über sich hinzu...",
+    "additionalLinks": "Zusätzliche Links",
+    "selectPlatform": "Plattform wählen",
+    "link": "Link",
+    "placeholderLink": "Link für {{link}} eingeben, z.B. https://...",
+    "save": "Speichern"
+  },
+  "aiGenerationModal": {
+    "title": "✨ KI-Fragen-Generierung",
+    "subtitle": "Parameter für die automatische Generierung konfigurieren.",
+    "labels": {
+      "topic": "Thema",
+      "count": "Anzahl",
+      "level": "Niveau",
+      "type": "Fragentyp",
+      "language": "Sprache"
+    },
+    "placeholders": {
+      "topic": "z.B. Java Collections"
+    },
+    "loading": {
+      "generating": "Fragen werden generiert...",
+      "wait": "Dies kann bis zu 30 Sekunden dauern"
+    },
+    "buttons": {
+      "cancel": "Abbrechen",
+      "generating": "Generierung...",
+      "generate": "✨ Generieren"
+    },
+    "alertTopic": "Bitte geben Sie ein Thema an."
+  },
+  "confirmDeleteQuestionModal": {
+    "title": "FRAGE LÖSCHEN?",
+    "close": "Schließen",
+    "confirmText": "Sind Sie sicher, dass Sie Frage #{{number}} löschen möchten?",
+    "warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "cancel": "Nein, behalten",
+    "delete": "Ja, löschen"
+  },
+  "ourDataFilter": {
+    "title": "UNSERE DATEN",
+    "all": "Alle Tests",
+    "active": "Aktive Tests",
+    "scheduled": "Geplante Tests",
+    "closed": "Abgeschlossene Tests"
+  },
+  "testCard": {
+    "movedToActive": "Test wurde zu \"Aktive Tests\" verschoben!",
+    "time": {
+      "days": "T",
+      "hours": "Std",
+      "minutes": "Min",
+      "seconds": "Sek"
+    },
+    "buttons": {
+      "takeTest": "Test machen",
+      "results": "Ergebnisse"
+    },
+    "registered": "Registriert",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "duplicate": "Duplizieren",
+    "deleteError": "Löschen fehlgeschlagen. Möglicherweise fehlen Berechtigungen.",
+    "errorTitle": "FEHLER BEIM LÖSCHEN"
+  },
+  "testsBlock": {
+    "placeholder": "Suche nach Titel, Bereich, Ort..."
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden :(",
+    "message": "Entschuldigung, die gesuchte Seite existiert nicht."
+  },
+  "profileItem": {
+    "view": "Ansehen"
+  },
+  "profile": {
+    "tabs": {
+      "cabinet": "Mein Bereich",
+      "admin": "Admin-Bereich"
+    },
+    "personalInfo": "Persönliche Informationen",
+    "additionalInfo": "Zusätzliche Informationen",
+    "achievements": {
+      "title": "Erfolge",
+      "passedTests": "Bestandene Tests",
+      "successful": "Erfolgreich"
+    },
+    "education": {
+      "title": "Bildung",
+      "empty": "Universität hinzufügen."
+    },
+    "certificates": {
+      "title": "Zertifikate",
+      "empty": "Zertifikatsinformationen hinzufügen."
+    },
+    "projects": {
+      "title": "Projekte",
+      "empty": "Projektinformationen hinzufügen."
+    },
+    "analytics": {
+      "title": "Analytik",
+      "viewDetailed": "Detaillierte Analyse anzeigen"
+    },
+    "adminStats": {
+      "createdTests": "Erstellte Tests",
+      "activeTests": "Aktive Tests"
+    },
+    "password": {
+      "title": "Passwort",
+      "desc": "Wir empfehlen, Ihr Passwort regelmäßig zu ändern.",
+      "changeBtn": "Passwort ändern"
+    },
+    "placeholders": {
+      "about": "Helfen Sie Recruitern, Sie besser kennenzulernen..."
+    },
+    "buttons": {
+      "shareLink": "Link teilen",
+      "myTests": "Meine Tests",
+      "logout": "Abmelden",
+      "testConstructor": "Test-Konstruktor"
+    },
+    "copied": "Kopiert!",
+    "age": {
+      "year": "Jahr",
+      "years_2_4": "Jahre",
+      "years": "Jahre"
+    }
+  },
+  "userProfile": {
+    "contact": "Kontakt",
+    "placeholders": {
+      "about": "Helfen Sie Recruitern, Sie besser kennenzulernen: Beschreiben Sie, was Sie zu einem großartigen Kandidaten macht, und teilen Sie weitere Links."
+    }
+  },
+  "regForm": {
+    "title": "Registrieren bei",
+    "labels": {
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "age": "Alter",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen"
+    },
+    "buttons": {
+      "register": "Registrieren",
+      "sending": "Wird gesendet...",
+      "confirm": "Bestätigen",
+      "verifying": "Wird verifiziert...",
+      "back": "Zurück"
+    },
+    "confirmText": "Wir haben einen Bestätigungscode gesendet an",
+    "haveAccount": "Haben Sie bereits ein Konto?",
+    "login": "Einloggen",
+    "errors": {
+      "passwordMismatch": "Passwörter stimmen nicht überein.",
+      "firstNameRequired": "Vorname ist erforderlich.",
+      "lastNameRequired": "Nachname ist erforderlich.",
+      "invalidAge": "Geben Sie ein gültiges Alter ein.",
+      "invalidEmail": "Geben Sie eine gültige E-Mail ein.",
+      "passwordLength": "Passwort muss mindestens 6 Zeichen lang sein.",
+      "invalidData": "Ungültige Daten. Überprüfen Sie alle Felder.",
+      "accessDenied": "Zugriff verweigert. Nur @lpnu.ua E-Mails sind erlaubt.",
+      "userExists": "Benutzer mit dieser E-Mail existiert bereits.",
+      "serverError": "Serverfehler. Versuchen Sie es später erneut.",
+      "unknownError": "Unbekannter Fehler.",
+      "invalidCodeLength": "Geben Sie einen 6-stelligen Code ein.",
+      "invalidCode": "Ungültiger Bestätigungscode.",
+      "serverErrorRetry": "Serverfehler. Bitte erneut versuchen.",
+      "confirmationError": "Bestätigung fehlgeschlagen."
+    }
+  },
+  "slider": {
+    "slide1": "SUCHT IHR UNTERNEHMEN MITARBEITER?",
+    "slide2": "WAS IST DIESE PLATTFORM?",
+    "slide3": "SUCHEN SIE EINEN EINSTIEG IN DIE IT?",
+    "slide4": "HABEN SIE FRAGEN ODER VORSCHLÄGE?",
+    "learnMore": "Mehr erfahren"
+  },
+  "socialLogin": {
+    "googleError": "Google-Login fehlgeschlagen.",
+    "googleLoginFailed": "Google-Anmeldung fehlgeschlagen"
+  },
+  "softSkillsTrial": {
+    "title": "SOFT SKILLS TEST",
+    "subtitle": "Dies ist eine kurze, informative Bewertung Ihrer \"Soft Skills\", die heute bei Einstellungen entscheidend sind.",
+    "step1": "Test machen",
+    "step2": "Stärken entdecken",
+    "step3": "Nutzen für die Arbeit verstehen",
+    "step4": "Besser auf Vorstellungsgespräche vorbereiten",
+    "button": "Test machen",
+    "info": "TESTERGEBNISSE WERDEN IN IHREM PROFIL ANGEZEIGT"
+  },
+  "startTest": {
+    "button": "Test machen"
+  },
+  "subscriptions": {
+    "title": "Abonnements",
+    "subtitle": "Finden Sie heraus, was unsere Pläne bieten!",
+    "plan1": { "desc": "Ideal zum Kennenlernen." },
+    "plan2": { "desc": "Für alle, die mehr wollen." },
+    "plan3": { "desc": "Für ernsthafte Ambitionen." },
+    "footer": "-20% BEIM KAUF EINES JAHRESABONNEMENTS"
+  },
+  "templatesHuntee": {
+    "intro": "Um die Testerstellung schnell und bequem zu machen, haben wir <strong>4 einzigartige Vorlagen</strong> vorbereitet. Jede Vorlage hat ein eigenes Konzept, damit Sie die passende für Ihre Ziele wählen können.",
+    "baseTest": {
+      "desc": "Einfaches Format: Fragen mit einer oder mehreren richtigen Antworten. Geeignet für theoretisches Wissen.",
+      "examples": "Beispiele: technischer Basis-Check, Werkzeugkenntnisse, Fachbegriffe."
+    },
+    "mixedMode": {
+      "desc": "Kombination aus Tests, offenen Fragen und Logikaufgaben. Ermöglicht eine umfassende Bewertung.",
+      "examples": "Beispiele: universelle Auswahl für technische oder kreative Positionen."
+    },
+    "practicalTask": {
+      "desc": "Test mit realen Arbeitsaufgaben: kleine Cases, Code-Snippets oder Design-Layouts.",
+      "examples": "Beispiele: Simulation von Arbeitssituationen für Entwickler, Designer, Tester."
+    },
+    "scenarioTest": {
+      "desc": "Situationsbedingter Test: Der Kandidat muss die beste Lösung für ein Szenario wählen. Prüft kritisches Denken.",
+      "examples": "Beispiele: Auswahl von Managern oder Entwicklern, wenn praktisches Denken wichtig ist."
+    },
+    "useTemplate": "VORLAGE NUTZEN",
+    "viewTemplates": "VORLAGEN ANSEHEN"
+  },
+  "testCreation": {
+    "intro": "Die Plattform bietet zwei Ansätze zur Testerstellung. <strong>Der erste ist die individuelle Erstellung</strong>, bei der Sie Fragen selbst wählen oder hinzufügen. <strong>Der zweite ist die Nutzung fertiger Tests</strong>, die von Experten entwickelt wurden.",
+    "step1": {
+      "title": "Test selbst erstellen",
+      "desc": "Passen Sie den Inhalt exakt an Ihre Anforderungen an. Wählen Sie Fragen aus der Datenbank oder erstellen Sie eigene.",
+      "button": "EIGENEN TEST ERSTELLEN"
+    },
+    "step2": {
+      "title": "Fertigen Test wählen",
+      "desc": "Optimal für einen schnellen Start. Wir bieten professionelle Tests für Front-End, Back-End, UI/UX, Data Science und mehr.",
+      "button": "VORLAGEN ANSEHEN"
+    },
+    "gradient": {
+      "title": "HABEN SIE<br/>FRAGEN?",
+      "button": "KONTAKTIEREN SIE UNS"
+    }
+  },
+  "dashboardStudentCard": {
+    "pending": "Wartet auf Überprüfung",
+    "viewDetails": "Details ansehen",
+    "viewProfile": "Profil ansehen",
+    "checkTest": "Test prüfen",
+    "viewResults": "Ergebnisse ansehen",
+    "sendMessage": "Nachricht senden"
+  },
+  "dashboardTabNavigation": {
+    "registered": "Registriert",
+    "results": "Ergebnisse",
+    "analytics": "Analytik"
+  },
+  "testDashboardAnalytics": {
+    "error": "Analytik konnte nicht geladen werden",
+    "description": "Hier können Sie detaillierte Analysen der Testergebnisse sehen.",
+    "avgScore": "Durchschnitt für bewertete Tests",
+    "downloadResults": "Ergebnisse herunterladen",
+    "stats": {
+      "passed": "Bestanden",
+      "failed": "Nicht bestanden",
+      "review": "Wartet auf Bewertung",
+      "total": "Versuche insgesamt"
+    }
+  },
+  "testDashboardList": {
+    "error": "Liste konnte nicht geladen werden",
+    "desc": {
+      "registered": "Hier sehen Sie die registrierten Studierenden...",
+      "results": "Hier sehen Sie die Testergebnisse..."
+    },
+    "quote": {
+      "line1": "Um allen eine Nachricht zu senden, klicken Sie auf den Button neben der Suche.",
+      "line2": "Um eine Einzelperson zu kontaktieren, nutzen Sie den Button neben deren Ergebnis."
+    },
+    "search": "Suche",
+    "messageAll": "Alle benachrichtigen",
+    "viewAnalytics": "Analytik anzeigen",
+    "invite": "Teilnehmer einladen",
+    "empty": "Liste ist leer"
+  },
+  "workResponsibilities": {
+    "title": "Aufgabenbereiche",
+    "register": "Registrieren"
+  },
+  "testRules": {
+    "title": "Regeln für Online-Tests",
+    "rule1": { "bold": "1. Test nur einmal machbar.", "text": "Wiederholung oder Neustart ist nicht erlaubt." },
+    "rule2": { "bold": "2. Begrenzte Zeit.", "text": "Nach Ablauf der Zeit wird der Test automatisch abgeschickt." },
+    "rule3": { "bold": "3. Seite nicht aktualisieren.", "text": "Aktualisieren kann zum Datenverlust führen." },
+    "rule4": { "bold": "4. Keine fremde Hilfe.", "text": "Nutzung von Hilfsmitteln oder anderen Personen ist untersagt." },
+    "rule5": { "bold": "5. Automatische Speicherung.", "text": "Stellen Sie sicher, dass alle Fragen beantwortet sind." },
+    "rule6": { "bold": "6. Ergebnisse einsehbar.", "text": "Format der Anzeige hängt von den Testeinstellungen ab." },
+    "rule7": { "bold": "7. Technische Probleme sofort melden.", "text": "Spätere Reklamationen werden ggf. nicht berücksichtigt." },
+    "rule8": { "bold": "8. Eigenverantwortung", "text": "Der Nutzer ist für Internetstabilität verantwortlich." },
+    "rule9": { "bold": "9. Bestätigung der Regeln", "text": "Mit Testbeginn stimmen Sie den Regeln zu." },
+    "rule10": { "bold": "10. Annullierung möglich", "text": "Die Administration kann Ergebnisse bei Verstößen annullieren." },
+    "buttons": {
+      "processing": "Verarbeitung...",
+      "confirm": "Registrierung bestätigen"
+    },
+    "errors": {
+      "failed": "Registrierung fehlgeschlagen."
+    },
+    "modal": {
+      "close": "Schließen",
+      "title": "<strong>Glückwunsch zur<br/>Erfolgreichen Registrierung!</strong>",
+      "subtitle": "Ihr erster Schritt zu einer IT-Karriere!",
+      "toMain": "Zur Hauptseite",
+      "toMyTests": "Zu meinen Tests"
+    }
+  },
+  "testCreationSelectField": {
+    "search": "Suche",
+    "datePlaceholder": "Datum und Uhrzeit wählen",
+    "time": {
+      "none": "Kein Zeitlimit",
+      "fixed": "Feste Zeit"
+    },
+    "class": {
+      "none": "Frage nicht klassifizieren",
+      "custom": "Klassen für Test hinzufügen"
+    },
+    "testType": {
+      "public": "Öffentlich",
+      "private": "Privat",
+      "publicDesc": "Verfügbar für alle Plattformnutzer",
+      "privateDesc": "Nur über Link oder Einladung verfügbar"
+    },
+    "list": {
+      "placeholder": "Aufgabe #{{number}}",
+      "add": "Aufgabe hinzufügen",
+      "remove": "Entfernen"
+    },
+    "sorting": {
+      "fixed": "Feste Reihenfolge",
+      "random": "Zufällige Reihenfolge",
+      "questionsFixedDesc": "Fragenreihenfolge bleibt wie erstellt",
+      "questionsRandomDesc": "Fragen werden jedes Mal gemischt",
+      "answersFixedDesc": "Antwortreihenfolge bleibt fest",
+      "answersRandomDesc": "Antworten werden jedes Mal gemischt"
+    },
+    "showResults": {
+      "yes": "Ja, Ergebnisse zeigen",
+      "no": "Nein, nicht zeigen",
+      "yesDesc": "Ergebnisse werden nach Abschluss angezeigt",
+      "noDesc": "Ergebnisse werden nach Abschluss nicht angezeigt"
+    }
+  },
+  "testCreationAnswers": {
+    "addOption": "Option hinzufügen",
+    "addImage": "Bild hinzufügen",
+    "removeOption": "Option entfernen",
+    "commentLabel": "Kommentar (Hinweis für Studierende):",
+    "expectedAnswerLabel": "Erwartete Antwort",
+    "placeholders": {
+      "option": "Antwortoption eingeben",
+      "comment": "Kommentar eingeben",
+      "answer": "Antwort eingeben",
+      "method": "z.B.: sum"
+    },
+    "titles": {
+      "singleChoice": "Antwort (eine korrekt)",
+      "multipleChoice": "Antwort (mind. eine korrekt)",
+      "answer": "Antwort",
+      "codeSettings": "Code-Einstellungen"
+    },
+    "code": {
+      "language": "Programmiersprache",
+      "methodName": "Methodenname",
+      "template": "Code-Vorlage",
+      "testCases": "Testfälle (JSON)"
+    },
+    "errors": {
+      "fillOption": "Option ausfüllen!",
+      "fillExpected": "Erwartete Antwort eingeben!",
+      "methodRequired": "Methodenname erforderlich!",
+      "templateRequired": "Code-Vorlage für Studierende eingeben!",
+      "jsonError": "JSON-Formatfehler!"
+    }
+  },
+  "testCreationMainCount": {
+    "text": "Dieser Test enthält: {{count}} Fragen"
+  },
+  "testCreationCreator": {
+    "chooseType": "Fragentyp wählen:",
+    "questionLabel": "Frage",
+    "pointsLabel": "Punkte für richtige Antwort:",
+    "addImage": "Bild hinzufügen",
+    "placeholders": {
+      "question": "Frage eingeben",
+      "points": "Gewichtung eingeben"
+    },
+    "types": {
+      "single": "Single Choice",
+      "multiple": "Multiple Choice",
+      "open": "Offene Antwort",
+      "practical": "Praktischer Test"
+    },
+    "errors": {
+      "questionRequired": "Fragentext eingeben!",
+      "pointsRequired": "Gewichtung eingeben!",
+      "minOptions": "Mindestens {{count}} Optionen erforderlich",
+      "selectCorrect": "Richtige Antwort wählen",
+      "selectOneCorrect": "Mindestens eine richtige Antwort wählen",
+      "invalidJson": "Ungültiges JSON-Format",
+      "invalidPoints": "Gültige Punktzahl eingeben (z.B. 1 oder 1.5)"
+    }
+  },
+  "testCreationPreview": {
+    "noQuestions": "Keine Fragen zur Vorschau",
+    "hint": "Hinweis",
+    "correctAnswer": "Richtige Antwort",
+    "yourAnswerPlaceholder": "Ihre Antwort...",
+    "language": "Sprache",
+    "unknownType": "Unbekannter Typ",
+    "nextQuestion": "Nächste Frage",
+    "edit": "Bearbeiten",
+    "delete": "Löschen"
+  },
+  "testCreationStart": {
+    "labels": {
+      "testName": "Testname eingeben",
+      "field": "Bereich wählen",
+      "level": "Niveau wählen",
+      "city": "Stadt wählen",
+      "description": "Vakanz-Beschreibung",
+      "responsibilities": "Aufgabenbereiche",
+      "startDate": "Startdatum",
+      "endDate": "Enddatum",
+      "timer": "Timer",
+      "testType": "Testtyp",
+      "questionOrder": "Fragenreihenfolge",
+      "answerOrder": "Antwortreihenfolge",
+      "showResults": "Ergebnisse nach Abschluss zeigen"
+    },
+    "options": {
+      "public": "Öffentlich",
+      "private": "Privat",
+      "fixed": "Feste Reihenfolge",
+      "random": "Zufällig",
+      "yes": "Ja",
+      "no": "Nein"
+    },
+    "cities": {
+      "ternopil": "Ternopil",
+      "frankivsk": "Ivano-Frankivsk",
+      "lviv": "Lemberg (Lviv)",
+      "online": "Online"
+    },
+    "buttons": {
+      "next": "Nächste Seite",
+      "save": "Test bearbeiten"
+    },
+    "errors": {
+      "testName": "Testname eingeben",
+      "field": "Bereich wählen",
+      "level": "Niveau wählen",
+      "city": "Stadt wählen",
+      "date": "Gültiges Datum (TT.MM.JJJJ)",
+      "endDate": "Enddatum muss nach Startdatum liegen"
+    }
+  },
+  "testReviewGrading": {
+    "score": "Punktzahl",
+    "passCondition": "Sie benötigen mindestens 60% zum Bestehen",
+    "myTests": "Zu meinen Tests"
+  },
+  "testReviewQuestions": {
+    "hint": "Hinweis",
+    "correctAnswer": "Richtige Antwort",
+    "graded": "Bewertet",
+    "notGraded": "Nicht bewertet",
+    "language": "Sprache",
+    "codeMissing": "Code fehlt",
+    "testCases": "Testfälle",
+    "manualGrading": "Bewertung",
+    "points": "Punkte",
+    "commentStudent": "Kommentar an Studierende",
+    "save": "Speichern",
+    "currentStatus": "Aktueller Status",
+    "pointsLabel": "Punkte",
+    "loading": "Lade Fragen oder Liste ist leer...",
+    "finishReview": "Bewertung abschließen"
+  },
+  "filters": {
+    "location": "ORT",
+    "sphere": "BEREICH"
+  },
+  "testsTop": {
+    "join": "Mach mit!",
+    "vacancies": "Vakanzen für IT-Einsteiger",
+    "choose": "Wähle den besten Bereich für dich und mache den ersten Schritt!"
+  },
+  "trialTesting": {
+    "title": "Probe<br/>Test",
+    "subtitle": "Erfahren Sie, wie das Testing funktioniert!",
+    "link": "Ausprobieren"
+  },
+  "addTestsButton": {
+    "text": "Test hinzufügen"
+  },
+  "fieldsFilter": {
+    "title": "BEREICHE",
+    "noSpheres": "Keine Bereiche verfügbar"
+  },
+  "searchBar": {
+    "placeholder": "Suchen"
+  },
+  "allTestsPage": {
+    "mainTitle": "Mach mit!",
+    "title": {
+      "strong": "Vakanzen für IT-Einsteiger",
+      "p": "Wähle den besten Bereich für dich!"
+    },
+    "error": "Tests konnten nicht geladen werden",
+    "errorPrefix": "Fehler"
+  },
+  "contactsPage": {
+    "title": "FRAGEN?",
+    "subtitle": "Kontaktieren Sie uns!"
+  },
+  "generalInfoPage": {
+    "title": "WILLKOMMEN BEI HUNTEE!",
+    "subtitle": "Warum gibt es uns?",
+    "browserText": "Huntee ist eine moderne Web-Plattform für Online-Tests von Kandidaten mit integrierten Integritätskontrollen. \nWir verbinden den Bedarf von Unternehmen nach schneller Auswahl mit der Chance für Talente, ihr Können zu zeigen. \nTransparent. Objektiv. Ohne Umwege.",
+    "steps": {
+      "first": "Unternehmen erstellen Tests und laden Kandidaten ein.",
+      "second": "Kandidaten machen den Test online mit Kontrolle.",
+      "third": "Unternehmen erhalten Ergebnisse und wählen die Besten aus."
+    },
+    "buttons": {
+      "batches": "KOMMENDE STELLEN",
+      "create": "TEST ERSTELLEN"
+    }
+  },
+  "messageTextPage": {
+    "notFound": "Nachricht nicht gefunden",
+    "loadError": "Fehler beim Laden",
+    "errorGeneric": "Fehler",
+    "systemMessage": "Systemnachricht"
+  },
+  "myTestsPage": {
+    "title": "Meine Tests!",
+    "loading": "Laden...",
+    "error": "Fehler"
+  },
+  "pricingPage": {
+    "plans": {
+      "starter": {
+        "description": "Ideal zum Einstieg.",
+        "features": ["Zugang zu Analysen.", "Probe-Test.", "Ergebnisbericht.", "Soft & Hard IT Test.", "Empfehlungen.", "Wiederholung nach 30 Tagen möglich."]
+      },
+      "pro": {
+        "description": "Optimale Wahl für mehr Details.",
+        "features": ["Erweiterte Tests.", "Detailanalyse.", "PDF-Ausdruck.", "Mobile Kopien.", "Flexible Zeitplanung."]
+      },
+      "ultimate": {
+        "description": "Für ernsthafte Ambitionen.",
+        "features": ["Individueller Ansatz.", "Gruppenvergleichs-Report.", "Insights aus realen Cases.", "Soft Skills Simulation Support."]
+      }
+    },
+    "yearly": "Jahresabo",
+    "monthly": "Monatsabo",
+    "discount": "bis zu -20%🔥",
+    "bestOffer": "Bestes Angebot",
+    "perYear": "Jahr",
+    "perMonth": "Monat",
+    "subscribeBtn": "JETZT ABONNIEREN",
+    "processing": "Verarbeitung...",
+    "errorPrefix": "Fehler: ",
+    "unknownError": "Unbekannter Fehler",
+    "sessionError": "Zahlungssitzung fehlgeschlagen"
+  },
+  "startITPage": {
+    "title": "WILLKOMMEN BEI HUNTEE!",
+    "subtitle": "Wir helfen beim Job!",
+    "who": "Liebe Studierende",
+    "browserText": "Deine Karriere startet hier! Wir helfen dir, den ersten Schritt ins Berufsleben zu machen. Finde Möglichkeiten zur Entwicklung praktischer Skills. Wir sind dein Partner auf dem Weg zum Erfolg.",
+    "button": "KOMMENDE STELLEN",
+    "steps": {
+      "first": "Konto erstellen",
+      "second": "Richtung und Stadt wählen",
+      "third": "Test zum geplanten Zeitpunkt machen",
+      "fourth": "Jobangebot erhalten!"
+    }
+  },
+  "testPageTrial": {
+    "title": "Probetest machen",
+    "gradientText": "Der Probetest besteht aus 10 Fragen, damit du die Oberfläche kennenlernen und Stress abbauen kannst.",
+    "text": "Dieser Test dient nur dem Verständnis des Formats. Er beeinflusst nicht deinen Fortschritt."
+  },
+  "templatesHunteePage": {
+    "title": "Huntee-Vorlagen",
+    "subtitle": "Nutzen Sie Vorlagen zur schnellen Erstellung!"
+  },
+  "testCreationMain": {
+    "defaultTestName": "Neuer Test",
+    "buttons": {
+      "cancelEdit": "Abbrechen",
+      "confirmEdit": "Änderungen bestätigen",
+      "aiGenerate": "✨ KI-Generierung",
+      "addQuestion": "Frage hinzufügen",
+      "viewResult": "Ergebnis ansehen",
+      "backToCreate": "Zurück zum Editor",
+      "finishCreation": "Erstellung beenden"
+    },
+    "notSpecified": "nicht angegeben"
+  },
+  "testCreationPage": {
+    "title": "Testerstellung",
+    "subtitle": "Wir helfen, Qualitätspersonal zu finden!"
+  },
+  "authForm": {
+    "title": "Anmeldung bei",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "buttons": {
+      "loggingIn": "Wird angemeldet...",
+      "login": "Einloggen"
+    },
+    "noAccount": "Noch kein Konto?",
+    "register": "Registrieren",
+    "errors": {
+      "invalidEmail": "Gültige E-Mail eingeben.",
+      "passwordRequired": "Passwort eingeben.",
+      "badRequest": "Ungültige Daten.",
+      "unauthorized": "E-Mail oder Passwort falsch.",
+      "forbidden": "Zugriff verweigert.",
+      "serverError": "Serverfehler.",
+      "unknown": "Unbekannter Fehler."
+    }
+  },
+  "confirmDeleteTestModal": {
+    "title": "TEST LÖSCHEN?",
+    "close": "Schließen",
+    "confirmText": "Sind Sie sicher, dass Sie löschen möchten",
+    "warning": "Dies kann nicht rückgängig gemacht werden.",
+    "cancel": "Nein, behalten",
+    "delete": "Ja, löschen"
+  },
+  "confirmFinalizeModal": {
+    "title": "BEWERTUNG ABSCHLIESSEN?",
+    "close": "Schließen",
+    "confirmText": "Sind Sie sicher, dass Sie die Bewertung beenden möchten?",
+    "warning": "Studierende sehen sofort ihre Punktzahl. Dies ist endgültig.",
+    "cancel": "Abbrechen",
+    "confirm": "Ja, beenden"
+  },
+  "confirmTestCreateModal": {
+    "title": "ERSTELLUNG BEENDEN?",
+    "close": "Schließen",
+    "questionCount": "Ihr Test enthält so viele Fragen:",
+    "scheduledFor": "Geplant für",
+    "at": "um",
+    "noDate": "Datum/Uhrzeit nicht angegeben.",
+    "editable": "Bearbeitung später möglich.",
+    "cancel": "Nein, weiter bearbeiten",
+    "confirm": "Ja, beenden",
+    "saving": "Speichert..."
+  },
+  "confirmTestEndModal": {
+    "title": "ACHTUNG!",
+    "close": "Schließen",
+    "confirmText": "Test wirklich beenden?",
+    "warning": "Nach der Bestätigung können Antworten nicht mehr geändert werden.",
+    "unansweredCount": "Unbeantwortete Fragen",
+    "savedInfo": "Der Test wird in \"Meine Tests\" gespeichert.",
+    "cancel": "Zurück",
+    "finish": "Test beenden"
+  },
+  "coursesModal": {
+    "title": "Zertifikat hinzufügen",
+    "close": "Schließen",
+    "labels": {
+      "name": "Name",
+      "link": "Link zum Zertifikat",
+      "desc": "Beschreibung"
+    },
+    "placeholders": {
+      "name": "z.B.: React Developer",
+      "desc": "Kurzbeschreibung"
+    },
+    "save": "Speichern"
+  },
+  "editProfileModal": {
+    "title": "Profil bearbeiten",
+    "close": "Schließen",
+    "changePhoto": "Foto ändern",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "birthDate": "Geburtsdatum",
+    "placeholders": {
+      "firstName": "Vorname",
+      "lastName": "Nachname"
+    },
+    "save": "Speichern"
+  },
+  "educationModal": {
+    "title": "Bildung",
+    "close": "Schließen",
+    "labels": {
+      "institution": "Einrichtung",
+      "speciality": "Fachrichtung"
+    },
+    "placeholders": {
+      "institution": "Universität hinzufügen",
+      "speciality": "Fachrichtung hinzufügen"
+    },
+    "save": "Speichern"
+  },
+  "errorModal": {
+    "defaultTitle": "FEHLER",
+    "defaultMessage": "Ein unerwarteter Fehler ist aufgetreten. Bitte später versuchen.",
+    "close": "Schließen",
+    "closeBtn": "Verstanden"
+  },
+  "experienceModal": {
+    "title": "Projekt hinzufügen",
+    "close": "Schließen",
+    "labels": {
+      "name": "Name",
+      "link": "Projekt-Link",
+      "desc": "Beschreibung"
+    },
+    "placeholders": {
+      "name": "z.B.: Meine Portfolio-App",
+      "desc": "Kurze Projektbeschreibung"
+    },
+    "save": "Speichern"
+  },
+  "finishTestInfoModal": {
+    "title": "TEST ABGESCHLOSSEN!",
+    "close": "Schließen",
+    "scoreText": "Sie haben {{score}} / {{total}} Punkte erreicht.",
+    "teacherNote": "Ihre Punktzahl kann bei Bedarf noch angepasst werden!",
+    "reviewNote": "Sie können Ihre Antworten nach Abschluss der Testphase einsehen.",
+    "understood": "Verstanden"
+  },
+  "inviteModal": {
+    "title": "TEILNEHMER EINLADEN",
+    "close": "Schließen",
+    "subtitle": "Laden Sie Teilnehmer auf bequeme Weise ein:",
+    "options": {
+      "email": "Einladung per E-Mail senden.",
+      "link": "Über Link beitreten."
+    },
+    "methods": {
+      "email": "Per E-Mail senden",
+      "link": "Über Link beitreten"
+    },
+    "copied": "Link kopiert!",
+    "success": "Einladung erfolgreich gesendet!",
+    "errors": {
+      "emptyEmail": "E-Mail-Adresse eingeben",
+      "generic": "Fehler beim Senden"
+    },
+    "cancel": "Abbrechen",
+    "sendBtn": "Senden",
+    "copyBtn": "Kopieren",
+    "sending": "Wird gesendet..."
+  },
+  "passwordModal": {
+    "title": "Passwort ändern",
+    "close": "Schließen",
+    "desc": "Wir empfehlen, Ihr Passwort regelmäßig zu ändern.",
+    "placeholders": {
+      "current": "Aktuelles Passwort",
+      "new": "Neues Passwort",
+      "confirm": "Neues Passwort bestätigen"
+    },
+    "errors": {
+      "mismatch": "Passwörter stimmen nicht überein",
+      "failed": "Fehler beim Ändern. Eingaben prüfen."
+    },
+    "save": "Speichern"
+  },
+  "startTestErrorModal": {
+    "title": "ZUGRIFFSFEHLER",
+    "close": "Schließen",
+    "defaultMessage": "Test konnte nicht gestartet werden. Zeit abgelaufen або nicht registriert.",
+    "understood": "Verstanden"
+  },
+  "trialTest": {
+    "testName": "Demonstrationstest",
+    "questions": {
+      "q1": {
+        "text": "Welcher Planet ist der dritte von der Sonne aus gesehen?",
+        "options": {
+          "o1": "Mars",
+          "o2": "Erde",
+          "o3": "Venus"
+        }
+      },
+      "q2": {
+        "text": "Welche dieser Tiere sind Säugetiere?",
+        "options": {
+          "o4": "Hund",
+          "o5": "Adler",
+          "o6": "Wal",
+          "o7": "Krokodil"
+        }
+      },
+      "q3": {
+        "text": "Was ist die Hauptstadt der Ukraine? (ein Wort eingeben)",
+        "correctAnswer": "kiew"
+      },
+      "q4": {
+        "text": "Schreibe eine Funktion sum(a, b), die die Summe von zwei Zahlen zurückgibt.",
+        "template": "function sum(a, b) {\n  // Dein Code hier\n}"
+      }
+    },
+    "simulation": {
+      "init": "Simulation läuft...\n",
+      "pass": "Test Case #1: PASS\nInput: 2, 3\nExpected: 5\nActual: 5\n",
+      "fail": "Test Case #1: FAIL\nInput: 2, 3\nExpected: 5\nActual: undefined\n"
+    },
+    "results": {
+      "passed": "1/1 Bestanden",
+      "failed": "0/1 Durchgefallen",
+      "commentSuccess": "Hervorragend!",
+      "commentFail": "Versuchen Sie es erneut!"
+    }
+  }
+}

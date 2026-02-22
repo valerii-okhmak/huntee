@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { getAccessToken } from '../utils/auth';
+import { getAccessToken, getUserEmailFromToken } from '../utils/auth';
 import GeneralTestInfoHeader from '../components/GeneralTestInfoHeader/GeneralTestInfoHeader';
 import TestReviewGrading from '../components/TestReviewGrading/TestReviewGrading';
 import TestReviewQuestions from '../components/TestReviewQuestions/TestReviewQuestions';
 import Loader from '../components/loader/Loader';
+import ConfirmFinalizeModal from '../components/modal_windows/ConfirmFinalizeModal'; 
 
 const TestReviewPage = () => {
   const navigate = useNavigate();
   const { attemptId } = useParams();
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthor, setIsAuthor] = useState(false); 
+
+  const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false);
+
+  const currentUserEmail = getUserEmailFromToken(); 
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -22,9 +28,13 @@ const TestReviewPage = () => {
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         setResultData(response.data);
+        
+        if (response.data.authorEmail === currentUserEmail) {
+            setIsAuthor(true); 
+        }
+
       } catch (error) {
         console.error("Помилка завантаження результатів:", error);
-        // Можна також перенаправляти тут, якщо помилка критична
       } finally {
         setLoading(false);
       }
@@ -33,27 +43,64 @@ const TestReviewPage = () => {
     if (attemptId) {
         fetchResults();
     }
-  }, [attemptId]);
+  }, [attemptId, currentUserEmail]);
 
-  // ВИПРАВЛЕННЯ: Виносимо навігацію в окремий useEffect
   useEffect(() => {
     if (!loading && !resultData) {
       navigate('/notfound');
     }
   }, [loading, resultData, navigate]);
 
+
+  const handleGradeAnswer = async (questionId, points, comment) => {
+    try {
+        const token = getAccessToken();
+        await axios.post(
+            `/api/attempts/${attemptId}/questions/${questionId}/grade`,
+            { points, comment },
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        
+        setResultData(prev => ({
+            ...prev,
+            questions: prev.questions.map(q => 
+                q.questionId === questionId 
+                ? { ...q, isCorrect: points > 0, userAnswer: q.userAnswer }
+                : q
+            )
+        }));
+    } catch (e) {
+        console.error(e);
+    }
+  };
+
+  const handleFinalizeClick = () => {
+      setIsFinalizeModalOpen(true);
+  };
+
+  const confirmFinalize = async () => {
+      try {
+        const token = getAccessToken();
+        const response = await axios.post(
+            `/api/attempts/${attemptId}/finalize`,
+            {},
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        setResultData(prev => ({ ...prev, score: response.data.score })); 
+        
+        setIsFinalizeModalOpen(false);
+        navigate('/test-dashboard'); 
+      } catch (e) {
+          console.error(e);
+          setIsFinalizeModalOpen(false);
+      }
+  };
+
   if (loading) return <div className="page"><Loader /></div>;
-  
-  // Якщо даних немає, але ми ще не встигли перенаправити (чекаємо useEffect),
-  // повертаємо null, щоб не рендерити решту коду з помилками.
   if (!resultData) return null; 
 
-  // Безпечна перевірка дати
-  const isTimePassed = resultData.endTime 
-    ? new Date() > new Date(resultData.endTime) 
-    : false;
-
-  const shouldShowQuestions = resultData.isShown || isTimePassed;
+  const isPendingReview = resultData.score === null;
+  const showGradingControls = isAuthor && isPendingReview;
 
   return (
     <div className='page'>
@@ -63,20 +110,35 @@ const TestReviewPage = () => {
             name={resultData.candidateName || "Кандидат"}
         />
 
-        <TestReviewGrading score={resultData.score} totalMaxScore={resultData.totalMaxScore} />
+        <TestReviewGrading 
+            score={resultData.score} 
+            totalMaxScore={resultData.totalMaxScore} 
+            isPending={isPendingReview}
+        />
+        
+        {showGradingControls && (
+            <div className="container" style={{ marginBottom: '20px', textAlign: 'right' }}>
+                <button 
+                    className="black-btn"
+                    style={{ padding: '12px 24px', fontSize: '16px' }} 
+                    onClick={handleFinalizeClick} 
+                >
+                    Завершити оцінювання
+                </button>
+            </div>
+        )}
 
-        {shouldShowQuestions ? (
-          <TestReviewQuestions questionsLink={resultData.questions} />
-        ) : (
-          <div className="container">
-            <p className="modalmini-subtitle">
-                Ваш бал може бути змінений викладачем при потребі!
-            </p>
-            <p className="modalmini-subtitle">
-                Переглянути свої відповіді зможете після завершення тестування.
-            </p>
-          </div>
-        )} 
+        <TestReviewQuestions 
+            questionsLink={resultData.questions} 
+            isGradingMode={showGradingControls}
+            onGrade={handleGradeAnswer}
+        />
+
+        <ConfirmFinalizeModal 
+            isOpen={isFinalizeModalOpen}
+            onClose={() => setIsFinalizeModalOpen(false)}
+            onConfirm={confirmFinalize}
+        />
     </div>
   );
 };

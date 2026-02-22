@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import ModalMini from "./ModalMini";
 import axios from "axios";
 import { getAccessToken } from "../../utils/auth";
 import "./ModalWindow.css";
 
 const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
+  const { t } = useTranslation();
   const [inviteMethod, setInviteMethod] = useState("email"); 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,7 +18,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(testLink);
-    setMessage({ text: "Посилання скопійовано!", type: "success" });
+    setMessage({ text: t('inviteModal.copied'), type: "success" });
     setTimeout(() => setMessage({ text: "", type: "" }), 3000);
   };
 
@@ -27,7 +29,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
     }
 
     if (!email.trim()) {
-      setMessage({ text: "Будь ласка, введіть email", type: "error" });
+      setMessage({ text: t('inviteModal.errors.emptyEmail'), type: "error" });
       return;
     }
 
@@ -48,11 +50,11 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
         }
       );
 
-      setMessage({ text: "Запрошення успішно надіслано!", type: "success" });
+      setMessage({ text: t('inviteModal.success'), type: "success" });
       setEmail("");
       setTimeout(onClose, 2000);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || "Помилка при відправці";
+      const errorMsg = error.response?.data?.message || t('inviteModal.errors.generic');
       setMessage({ text: errorMsg, type: "error" });
     } finally {
       setLoading(false);
@@ -61,20 +63,20 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
 
   return (
     <ModalMini isOpen={isOpen} onClose={onClose}>
-      <button className="modal-close" onClick={onClose} aria-label="Закрити">
+      <button className="modal-close" onClick={onClose} aria-label={t('inviteModal.close')}>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
           <path d="M14.2548 4.75488C14.5282 4.48152 14.9717 4.48152 15.2451 4.75488C15.5184 5.02825 15.5184 5.47175 15.2451 5.74512L10.9902 10L15.2451 14.2549C15.5184 14.5283 15.5184 14.9717 15.2451 15.2451C14.9717 15.5184 14.5282 15.5184 14.2548 15.2451L10 10.9902L5.74512 15.2451C5.47175 15.5184 5.02825 15.5184 4.75488 15.2451C4.48146 14.9717 4.48146 14.5283 4.75488 14.2549L9.00977 10L4.75488 5.74512C4.48146 5.47175 4.48146 5.02825 4.75488 4.75488C5.02825 4.48152 5.47175 4.48152 5.74512 4.75488L10 9.00977L14.2548 4.75488Z" />
         </svg>
       </button>
 
       <div className="invite-modal">
-        <h3 className="modalmini-title">ЗАПРОСИТИ УЧАСНИКІВ</h3>
+        <h3 className="modalmini-title">{t('inviteModal.title')}</h3>
         
         <div className="invite-modal-text">
-            <p className="modalmini-subtitle">Ви можете запросити учасників до проходження тесту зручним для вас способом:</p>
+            <p className="modalmini-subtitle">{t('inviteModal.subtitle')}</p>
             <ul className="invite-modal-list">
-                <li className="modalmini-subtitle">Надіслати запрошення на пошту.</li>
-                <li className="modalmini-subtitle">Приєднання за посиланням.</li>
+                <li className="modalmini-subtitle">{t('inviteModal.options.email')}</li>
+                <li className="modalmini-subtitle">{t('inviteModal.options.link')}</li>
             </ul>
         </div>
 
@@ -88,7 +90,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
             />
             <span className="radio-circle-blue"></span>
             <div className="invite-method-info">
-              <span className="modalmini-subtitle method-title">Надіслати на пошту</span>
+              <span className="modalmini-subtitle method-title">{t('inviteModal.methods.email')}</span>
             </div>
           </label>
 
@@ -101,7 +103,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
             />
             <span className="radio-circle-blue"></span>
             <div className="invite-method-info">
-              <span className="modalmini-subtitle method-title">Приєднання за посиланням</span>
+              <span className="modalmini-subtitle method-title">{t('inviteModal.methods.link')}</span>
             </div>
           </label>
         </div>
@@ -130,7 +132,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
 
         <div className="modalmini-buttons">
           <button className="modalmini-button modalmini-button-cancel" onClick={onClose}>
-            Скасувати
+            {t('inviteModal.cancel')}
           </button>
 
           <button
@@ -138,7 +140,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
             onClick={handleInvite}
             disabled={loading}
           >
-            {loading ? "Надсилаємо..." : (inviteMethod === "email" ? "Надіслати інвайт" : "Скопіювати")}
+            {loading ? t('inviteModal.sending') : (inviteMethod === "email" ? t('inviteModal.sendBtn') : t('inviteModal.copyBtn'))}
           </button>
         </div>
       </div>

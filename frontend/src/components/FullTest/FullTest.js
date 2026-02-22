@@ -1,35 +1,64 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import axios from "axios";
+import Editor from "react-simple-code-editor";
+import { highlight, languages } from "prismjs/components/prism-core";
+
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-java";
+import "prismjs/components/prism-python";
+import "prismjs/components/prism-csharp";
+import "prismjs/themes/prism.css"; 
+
 import { getAccessToken } from "../../utils/auth";
 import "./FullTest.css";
-import ConfirmTestEndModal from '../modal_windows/ConfirmTestEndModal';
-import StartTestErrorModal from '../modal_windows/StartTestErrorModal';
+import ConfirmTestEndModal from "../modal_windows/ConfirmTestEndModal";
+import StartTestErrorModal from "../modal_windows/StartTestErrorModal";
 import Loader from "../loader/Loader";
 
+const usePrompt = (message, when = true) => {
+  useEffect(() => {
+    if (!when) return;
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = message;
+      return message;
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [message, when]);
+};
 
 const TestPage = ({ testType }) => { 
+  const { t } = useTranslation();
   const { testId } = useParams(); 
   const navigate = useNavigate();
 
   const [attemptData, setAttemptData] = useState(null); 
   const [current, setCurrent] = useState(0); 
+  
   const [answers, setAnswers] = useState({}); 
-  const [codeOutput, setCodeOutput] = useState({}); 
+  const [outputMap, setOutputMap] = useState({}); 
 
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState(null); 
+  
   const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [saveStatus, setSaveStatus] = useState('saved');
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [finalScore, setFinalScore] = useState(null);
-  const [attemptIdForReview, setAttemptIdForReview] = useState(null);
-
   const [unansweredCount, setUnansweredCount] = useState(0);
   const [unansweredLabels, setUnansweredLabels] = useState("");
 
   const [isStartTestErrorModalOpen, setIsStartTestErrorModalOpen] = useState(false);
   const [startErrorMessage, setStartErrorMessage] = useState("");
+
+  const answersRef = useRef({});
+  const attemptDataRef = useRef(null);
+
+  usePrompt(t('testPage.promptMessage'), !!attemptData);
 
   const handleCloseErrorModal = () => {
     setIsStartTestErrorModalOpen(false);
@@ -38,6 +67,7 @@ const TestPage = ({ testType }) => {
 
   useEffect(() => {
     const startTest = async () => {
+      console.log(`🔍 Starting test ID: ${testId}`);
       try {
         const token = getAccessToken();
         const response = await axios.post(
@@ -48,68 +78,50 @@ const TestPage = ({ testType }) => {
 
         const attempt = response.data;
         setAttemptData(attempt);
+        attemptDataRef.current = attempt;
 
-        // ... ваша логіка таймера та перевірки завершення (без змін) ...
         if (attempt.hasCompletedAttempt) {
+             console.log("Already completed.");
              navigate(`/testreview/${attempt.completedAttemptId}`);
-             return; 
+             return;
         }
 
         if (attempt.isFixedTime && attempt.endTime) {
           const endTime = new Date(attempt.endTime).getTime();
           const now = new Date().getTime();
           const secondsRemaining = Math.floor((endTime - now) / 1000);
-          
           setTimeLeft(secondsRemaining);
-
-          if (secondsRemaining <= 0) {
-             navigate(`/testreview/${attempt.id}`);
-             return;
-          }
         } else {
           setTimeLeft(null); 
         }
-
-        setLoading(false); // Все добре, прибираємо лоадер
+        setLoading(false);
 
       } catch (error) {
-        console.error("Помилка старту тесту:", error);
-        
-        // --- ДОДАНО ОБРОБКУ ПОМИЛОК ---
-        
-        let message = "Не вдалося розпочати тест.";
-
-        // Перевіряємо, чи прийшла відповідь від сервера
-        if (error.response) {
-            // Якщо сервер повернув повідомлення (наприклад, "Тест ще не розпочався")
-            if (error.response.data && error.response.data.message) {
-                message = error.response.data.message;
-            } else if (error.response.status === 403) {
-                message = "Доступ до тесту заборонено або він ще не почався.";
-            }
+        console.error("🔍 Start Error:", error);
+        let message = t('testPage.errors.startFailed');
+        if (error.response?.data?.message) {
+            message = error.response.data.message;
         }
-
-        setStartErrorMessage(message);     // 1. Встановлюємо текст помилки
-        setIsStartTestErrorModalOpen(true); // 2. Відкриваємо модалку
-        setLoading(false);                 // 3. ОБОВ'ЯЗКОВО прибираємо лоадер, щоб React відрендерив модалку
+        setStartErrorMessage(message);     
+        setIsStartTestErrorModalOpen(true); 
+        setLoading(false);                 
       }
     };
 
     if (testId) startTest();
-  }, [testId]);
+  }, [testId, navigate, t]);
 
+  // --- ТАЙМЕР ---
   useEffect(() => {
-    // Якщо таймер не встановлений (null) або час вийшов
     if (timeLeft === null) return;
     if (timeLeft <= 0) {
-        handleFinishTest(); 
+        console.log("🔍 Time limit reached!");
+        finishTestForce(); 
         return;
     }
-
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
-
     return () => clearInterval(timer);
   }, [timeLeft]);
 
@@ -121,44 +133,88 @@ const TestPage = ({ testType }) => {
     return { h, m, s };
   };
 
-  const handleAnswerChange = (questionId, value) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
-  };
-
-  const saveCurrentAnswer = async () => {
-    if (!attemptData) return;
+  const saveAnswerToBackend = async (questionIndex) => {
+    const currentAttempt = attemptDataRef.current;
+    if (!currentAttempt) return;
     
-    const question = attemptData.questions[current];
-    const currentAnswer = answers[question.questionId];
+    const question = currentAttempt.questions[questionIndex];
+    const currentAnswer = answersRef.current[question.questionId];
 
-    if (currentAnswer === undefined || currentAnswer === null || (Array.isArray(currentAnswer) && currentAnswer.length === 0)) {
-        return; 
-    }
+    if (currentAnswer === undefined || currentAnswer === null) return;
+    if (typeof currentAnswer === 'string' && currentAnswer.trim() === '') return;
+    if (Array.isArray(currentAnswer) && currentAnswer.length === 0) return;
 
+    setSaveStatus('saving');
     try {
       const token = getAccessToken();
-      
       let body = { questionType: question.questionType };
 
       if (question.questionType === 'SINGLE_CHOICE') {
          body.selectedOptionIds = [currentAnswer]; 
-      } else if (question.questionType === 'MULTIPLE_CHOICE') {
+      } 
+      else if (question.questionType === 'MULTIPLE_CHOICE') {
          body.selectedOptionIds = currentAnswer;
-      } else if (question.questionType === 'TEXT' || question.questionType === 'CODE') {
+      } 
+      else if (question.questionType === 'TEXT' || question.questionType === 'CODE') {
          body.givenText = currentAnswer;
       }
 
       await axios.post(
-        `/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/answer`,
+        `/api/attempts/${currentAttempt.attemptId}/questions/${question.questionId}/answer`,
         body,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
+      setSaveStatus('saved');
+
     } catch (error) {
-      console.error("Помилка збереження відповіді:", error);
+      // Ігнорування 400 (duplicate)
+      if (error.response && error.response.status === 400) {
+          console.warn("Backend error 400 (Duplicate). Treating as SUCCESS.");
+          setSaveStatus('saved');
+          return; 
+      }
+      
+      console.error("Save FAILED:", error);
+      setSaveStatus('error');
+      throw error;
     }
+  };
+
+
+  const handleAnswerChange = (questionId, value) => {
+    setAnswers(prev => {
+        const newState = { ...prev, [questionId]: value };
+        answersRef.current = newState;
+        return newState;
+    });
+  };
+
+  const handleNext = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+        await saveAnswerToBackend(current);
+        if (current < attemptData.questions.length - 1) {
+            setCurrent(prev => prev + 1);
+        }
+    } catch (e) {
+        console.error("Navigation blocked by save error");
+    } finally {
+        setIsSubmitting(false);
+    }
+  };
+
+  const handleJumpToQuestion = async (index) => {
+      if (index === current || isSubmitting) return;
+      setIsSubmitting(true);
+      try {
+          await saveAnswerToBackend(current);
+          setCurrent(index);
+      } catch(e) {
+          console.error("Jump blocked");
+      } finally {
+          setIsSubmitting(false);
+      }
   };
 
   const handleRunCode = async (question) => {
@@ -166,7 +222,7 @@ const TestPage = ({ testType }) => {
     if (!code) return;
 
     try {
-        setOutputMap(prev => ({ ...prev, [question.questionId]: "Compiling..." }));
+        setOutputMap(prev => ({ ...prev, [question.questionId]: t('testPage.compiling') }));
         const token = getAccessToken();
         const response = await axios.post(
             `/api/attempts/${attemptData.attemptId}/questions/${question.questionId}/run`,
@@ -175,32 +231,72 @@ const TestPage = ({ testType }) => {
         );
 
         const result = response.data; 
-        let outputText = result.allPassed ? "✅ All tests passed!\n" : "❌ Some tests failed.\n";
+        let outputText = result.allPassed ? t('testPage.codeResult.pass') : t('testPage.codeResult.fail');
         result.results.forEach((res, idx) => {
             outputText += `\nTest Case #${idx + 1}:\nInput: ${res.input}\nExpected: ${res.expectedOutput}\nActual: ${res.actualOutput}\n${res.passed ? "Result: PASS" : "Result: FAIL"}\n`;
         });
         setOutputMap(prev => ({ ...prev, [question.questionId]: outputText }));
     } catch (error) {
-        setOutputMap(prev => ({ ...prev, [question.questionId]: "Error running code." }));
+        setOutputMap(prev => ({ ...prev, [question.questionId]: t('testPage.errors.runCode') }));
     }
   };
 
-  const [outputMap, setOutputMap] = useState({});
 
-  const handleNext = async () => {
+  const handleFinishButton = async () => {
     setIsSubmitting(true);
-    await saveCurrentAnswer(); 
-    if (current < attemptData.questions.length - 1) {
-      setCurrent(prev => prev + 1);
+    try {
+        await saveAnswerToBackend(current);
+    } catch (e) {
+    } finally {
+        setIsSubmitting(false);
     }
-    setIsSubmitting(false);
+
+    const details = getUnansweredDetails();
+    setUnansweredCount(details.count);
+    setUnansweredLabels(details.labels);
+    
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmFinishTest = async () => {
+      console.log("🔍 Confirming finish...");
+      try {
+        const token = getAccessToken();
+        const currentAttemptId = attemptDataRef.current.attemptId;
+
+        const response = await axios.post(
+            `/api/attempts/${currentAttemptId}/finish`,
+            {},
+            { headers: { 'Authorization': `Bearer ${token}` } }
+        );
+        
+        console.log("🔍 Finish SUCCESS. Data:", response.data);
+        
+        const redirectId = response.data?.attemptId || currentAttemptId;
+
+        if (redirectId) {
+             navigate(`/testreview/${redirectId}`, { state: { fromFinish: true } });
+        } else {
+             alert(t('testPage.errors.noId'));
+             navigate('/test-dashboard');
+        }
+
+      } catch (error) {
+        console.error("Finish FAILED:", error);
+        alert(t('testPage.errors.finishFailed'));
+      }
+  };
+
+  const finishTestForce = async () => {
+      try { await saveAnswerToBackend(current); } catch(e){}
+      await confirmFinishTest();
   };
 
   const getUnansweredDetails = () => {
     if (!attemptData) return { count: 0, labels: "" };
     const indices = attemptData.questions
       .map((q, index) => {
-        const ans = answers[q.questionId];
+        const ans = answersRef.current[q.questionId];
         const isEmpty = (ans === undefined || ans === null || ans === "" || (Array.isArray(ans) && ans.length === 0));
         return isEmpty ? index + 1 : null;
       })
@@ -212,47 +308,21 @@ const TestPage = ({ testType }) => {
     };
   };
 
-  const handleFinishTest = async () => {
-    setIsSubmitting(true);
-    await saveCurrentAnswer(); 
 
-    const details = getUnansweredDetails();
-    setUnansweredCount(details.count);
-    setUnansweredLabels(details.labels);
-
-    try {
-        const token = getAccessToken();
-        const response = await axios.post(
-            `/api/attempts/${attemptData.attemptId}/finish`,
-            {},
-            { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        
-        setFinalScore(response.data.score);
-        setAttemptIdForReview(response.data.attemptId);
-        setIsConfirmModalOpen(true); 
-
-    } catch (error) {
-        console.error("Помилка завершення:", error);
-    } finally {
-        setIsSubmitting(false);
-    }
+  const highlightCode = (code, language) => {
+    let lang = languages.js;
+    if (language === 'java') lang = languages.java;
+    if (language === 'python') lang = languages.python;
+    if (language === 'csharp') lang = languages.csharp;
+    return highlight(code, lang);
   };
 
   const renderQuestion = (q) => {
-    const commentBlock = q.comment ? (
-      <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
-          <small style={{fontWeight: 'bold', color: '#555'}}>Підказка:</small>
-          <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
-      </div>
-    ) : null;
-
     const answer = answers[q.questionId];
 
     switch (q.questionType) {
       case "SINGLE_CHOICE":
         return (
-          <>
           <div className="choices">
             {q.choiceOptions.map((opt) => (
               <label className="custom-radio" key={opt.optionId}>
@@ -269,20 +339,17 @@ const TestPage = ({ testType }) => {
               </label>
             ))}
           </div>
-          {commentBlock}
-          </>
         );
+
       case "MULTIPLE_CHOICE":
         const selectedIds = Array.isArray(answer) ? answer : [];
         return (
-          <>
           <div className="choices">
             {q.choiceOptions.map((opt) => (
               <label className="custom-checkbox" key={opt.optionId}>
                 <input
                   className="choices-input"
                   type="checkbox"
-                  value={opt.optionId}
                   checked={selectedIds.includes(opt.optionId)}
                   onChange={() => {
                     let newIds = selectedIds.includes(opt.optionId) 
@@ -296,77 +363,80 @@ const TestPage = ({ testType }) => {
               </label>
             ))}
           </div>
-          {commentBlock}
-          </>
         );
+
       case "TEXT":
         return (
-          <>
           <textarea
             rows="6"
             value={answer || ""}
             onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
-            placeholder="Введіть вашу відповідь..."
+            placeholder={t('testPage.placeholder')}
+            style={{width: '100%', padding: '10px', marginTop: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
           />
-          {commentBlock}
-          </>
         );
+
       case "CODE":
         return (
-          <>
+          <div style={{ marginTop: '10px' }}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px'}}>
-              <span style={{fontWeight: 'bold', color: '#555'}}>Мова: {q.codeLanguage}</span>
-              <button className="run-button" onClick={() => handleRunCode(q)} disabled={!answer}>Run Code</button>
+              <span style={{fontWeight: 'bold', color: '#555'}}>{t('testPage.language')}: {q.codeLanguage || "text"}</span>
+              <button className="run-button" onClick={() => handleRunCode(q)} disabled={!answer}>{t('testPage.runCode')}</button>
             </div>
-            <textarea
-              rows="12"
-              style={{fontFamily: 'monospace', backgroundColor: '#f5f5f5', border: '1px solid #ccc'}}
-              value={answer || q.templateCode || ""}
-              onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
-            />
+            
+            <div className="code-editor-wrapper" style={{ border: '1px solid #ccc', borderRadius: '5px', overflow: 'hidden' }}>
+                <Editor
+                    value={answer || q.templateCode || ""}
+                    onValueChange={(code) => handleAnswerChange(q.questionId, code)}
+                    highlight={(code) => highlightCode(code, q.codeLanguage || 'javascript')}
+                    padding={15}
+                    style={{
+                        fontFamily: '"Fira code", "Fira Mono", monospace',
+                        fontSize: 14,
+                        backgroundColor: '#f5f5f5',
+                        minHeight: '200px'
+                    }}
+                />
+            </div>
             {outputMap[q.questionId] && (
               <div className="code-output" style={{marginTop: '15px', padding: '10px', background: '#222', color: '#fff', borderRadius: '5px', fontFamily: 'monospace', whiteSpace: 'pre-wrap'}}>
                 {outputMap[q.questionId]}
               </div>
             )}
-            {commentBlock}
-          </>
+          </div>
         );
+
       default:
-        return <p>Невідомий тип питання</p>;
+        return <p>{t('testPage.unknownType')}</p>;
     }
   };
 
   if (loading) return <div className="page"><Loader /></div>;
-  if (!attemptData) {
-    return (
-      <StartTestErrorModal
-        isOpen={isStartTestErrorModalOpen}
-        onClose={handleCloseErrorModal}
-        errorMessage={startErrorMessage}
-      />
-    );
-  }
+  if (!attemptData) return <div className="page">{t('testPage.errors.loadData')}</div>;
 
-  const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
   const currentQuestion = attemptData.questions[current];
+  const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
 
   return (
-    <div className={`FullTest ${testType === "softskills" ? 'FullTest-gradient' : 'FullTest-regular'}`}>
+    <div className={`FullTest ${testType === "softskills" ? 'FullTest-gradient' : 'FullTest-regular'}`} style={{userSelect: 'none'}}>
+      
       {testType !== "softskills" &&
         <div className="header-bar">
             <div className="top-section">
               <div className="top-line"><div className="category">{attemptData.sphere}</div></div>
               <h1 className="fulltest-title">{attemptData.testName}</h1>
-              <div className="top-line"></div>
+              <div className="top-line">
+                  <span style={{fontSize: '12px', fontWeight:'bold', color: saveStatus === 'error' ? 'red' : saveStatus === 'saving' ? 'orange' : 'green'}}>
+                      {saveStatus === 'saving' ? t('testPage.status.saving') : saveStatus === 'error' ? t('testPage.status.error') : t('testPage.status.saved')}
+                  </span>
+              </div>
             </div>
           
-          {/* Умовний рендеринг таймера на основі isFixedTime */}
-          {attemptData.isFixedTime && (
+          {attemptData.isFixedTime && timeLeft !== null && (
             <div className="timer-box">
-              <div className="time"><span className="time-val">{h}</span><span className="time-label">годин</span></div>
-              <div className="time"><span className="time-val">{m}</span><span className="time-label">хвилин</span></div>
-              <div className="time"><span className="time-val">{s}</span><span className="time-label">секунд</span></div>
+              <div className="time"><span className="time-val">{h}</span><span className="time-label">{t('testPage.timer.hours')}</span></div>
+              <div className="time"><span className="time-val">{m}</span><span className="time-label">{t('testPage.timer.minutes')}</span></div>
+              <div className="time"><span className="time-val">{s}</span><span className="time-label">{t('testPage.timer.seconds')}</span></div>
             </div>
           )}
         </div>
@@ -376,8 +446,9 @@ const TestPage = ({ testType }) => {
         {attemptData.questions.map((_, i) => (
           <button
             key={i}
-            onClick={async () => { await saveCurrentAnswer(); setCurrent(i); }}
+            onClick={() => handleJumpToQuestion(i)}
             className={i === current ? "active" : ""}
+            disabled={isSubmitting} 
           >
             {i + 1}
           </button>
@@ -385,16 +456,31 @@ const TestPage = ({ testType }) => {
       </div>
 
       <div className={`test-container ${testType === "softskills" ? 'test-container-transparent' : ''}`}>
-        <h2 className="question">{currentQuestion.questionText}</h2>
-        <div className="answer">{renderQuestion(currentQuestion)}</div>
+        <h2 className="question">
+            <span style={{color:'#888', marginRight:'10px'}}>#{current+1}</span>
+            {currentQuestion.questionText}
+        </h2>
+        
+        <div className="answer">
+            {renderQuestion(currentQuestion)}
+        </div>
+
         <div className="test-buttons">
           {current < attemptData.questions.length - 1 ? (
-            <button className={`next-button ${testType === "softskills" ? 'finish-button' : ''}`} onClick={handleNext} disabled={isSubmitting}>
-              Наступне питання
+            <button 
+                className={`next-button ${testType === "softskills" ? 'finish-button' : ''}`} 
+                onClick={handleNext} 
+                disabled={isSubmitting}
+            >
+              {isSubmitting ? t('testPage.status.saving') : t('testPage.buttons.next')}
             </button>
           ) : (
-            <button className="next-button finish-button" onClick={handleFinishTest} disabled={isSubmitting}>
-              Завершити тест
+            <button 
+                className="next-button finish-button" 
+                onClick={handleFinishButton} 
+                disabled={isSubmitting}
+            >
+              {isSubmitting ? t('testPage.status.processing') : t('testPage.buttons.finish')}
             </button>
           )}
         </div>
@@ -403,12 +489,11 @@ const TestPage = ({ testType }) => {
       <ConfirmTestEndModal
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
-        score={finalScore}
-        onViewResults={() => navigate(`/testreview/${attemptIdForReview}`)}
+        onConfirm={confirmFinishTest} 
         unansweredCount={unansweredCount}
         unansweredLabels={unansweredLabels}
-        text={"Чи ви впевнені, що хочете завершити спробу?"}
       />
+      
       <StartTestErrorModal
         isOpen={isStartTestErrorModalOpen}
         onClose={handleCloseErrorModal}

@@ -10,6 +10,7 @@ import org.dreamteam.dto.TestAttemptReviewResponse;
 import org.dreamteam.dto.TestResultResponse;
 import org.dreamteam.dto.TestTakeResponse;
 import org.dreamteam.dto.InviteResponseDto;
+import org.dreamteam.dto.ManualGradeRequest;
 import org.dreamteam.service.TestAttemptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,11 +23,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.dreamteam.service.CodeExecutionService;
 import org.dreamteam.Entity.Question;
 import org.dreamteam.repository.QuestionRepository;
-import org.dreamteam.dto.CodeRunResponse;
 import org.dreamteam.dto.InviteRequestDto;
 import org.dreamteam.service.TestInvitationService;
 
@@ -134,8 +133,39 @@ public class TestAttemptController {
     public ResponseEntity<TestAttemptReviewResponse> reviewAttempt(
             @PathVariable UUID attemptId,
             @AuthenticationPrincipal UserDetails userDetails) {
-
         TestAttemptReviewResponse review = testAttemptService.getAttemptReview(attemptId, userDetails.getUsername());
         return ResponseEntity.ok(review);
     }
+
+    @PostMapping("/attempts/{attemptId}/questions/{questionId}/grade")
+    public ResponseEntity<Void> gradeAnswer(
+            @PathVariable UUID attemptId,
+            @PathVariable UUID questionId,
+            @RequestBody ManualGradeRequest request,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String authorEmail = userDetails.getUsername(); 
+        testAttemptService.gradeAnswerManually(
+                attemptId, 
+                questionId, 
+                request.getPoints(), 
+                request.getComment(), 
+                authorEmail
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/attempts/{attemptId}/finalize")
+    public ResponseEntity<TestResultResponse> finalizeGrading(
+            @PathVariable UUID attemptId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String authorEmail = userDetails.getUsername();
+        TestResultResponse result = testAttemptService.finalizeAttemptGrading(attemptId, authorEmail);
+        return ResponseEntity.ok(result);
+    }
+
+
 }

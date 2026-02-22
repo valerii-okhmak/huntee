@@ -107,52 +107,81 @@
     width: 100%;
 }
 
-.testcard-button{
-    font-size: clamp(12px, 2vw, 16px);
-    padding: clamp(8px, 2vw, 12px) clamp(10px, 2vw, 15px);
+.testcard-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.testcard-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 18px;
+    font-size: 15px;
     font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
     border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s ease, filter 0.2s ease;
 }
 
-.testcard-button-submit{
-    background: #000000;
+.testcard-action-btn:active {
+    transform: scale(0.96);
+}
+
+.btn-edit {
+    background-color: #1657b8;
     color: #ffffff;
-    border: 2px solid rgb(0, 0, 0);
-    font-weight: 600;
-    transition: all 0.1s ease;
-    cursor: pointer;
-}
-  
-.testcard-button-submit:hover{
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-}
-  
-.testcard-button-cancel{
-    background: #ffffff;
-    color: #000000;
-    border: 2px solid rgb(0, 0, 0);
-    font-weight: 600;
-    transition: all 0.1s ease;
-    cursor: pointer;
-}
-  
-.testcard-button-cancel:hover{
-    background-color: rgb(0, 0, 0);
-    color: rgb(255, 255, 255);
+    transition: background-color 0.2s ease;
 }
 
-.testcard-button-submit-danger{
-    background-color: #dc3545;
-    color: white;
-}
-  
-.testcard-button-submit-danger:hover {
-    background-color: #a71d2a;
-    color: white;
+.btn-edit:hover {
+    background-color: #0f3d82; 
 }
 
+.btn-delete {
+    background-color: #ba2a14; 
+    color: #ffffff;
+    transition: background-color 0.2s ease;
+}
 
+.btn-delete:hover {
+    background-color: #91200f;
+}
+
+.btn-duplicate {
+    background-color: #93a836; 
+    color: #ffffff;
+    transition: background-color 0.2s ease;
+}
+
+.btn-duplicate:hover {
+    background-color: #6b7a25;
+}
+
+/* Стилі для неактивної кнопки редагування */
+.btn-disabled {
+    background-color: #d1d5db !important; /* Світло-сірий колір */
+    color: #6b7280 !important; /* Темно-сірий текст */
+    cursor: not-allowed !important; /* Курсор заборони */
+    transform: none !important; /* Прибираємо анімацію натискання */
+}
+
+.btn-disabled:hover {
+    background-color: #d1d5db !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+.btn-disabled:active {
+    transform: none !important;
+}
 
 @media screen and (max-width: 450px) {
     .testcard {

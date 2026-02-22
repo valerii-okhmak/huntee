@@ -21,12 +21,87 @@
     gap: 15px;
 }
 
-.testCreationMainCreatorAnswers__75p {
-    width: 75%;
+/* Контейнер для чекбокса/радіо */
+/* Контейнер для чекбокса/радіо */
+.testCreationMainCreatorAnswers__control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; /* Це важливо */
+    user-select: none; /* Щоб не виділялось при швидкому кліку */
+}
+
+/* --- ОБГОРТКА ІНПУТУ З КНОПКАМИ --- */
+.testCreationMainCreatorAnswers__input-wrapper {
+    width: 75%; /* Задаємо ширину тут */
+    background-color: #F1F1F1;
+    display: flex;
+    align-items: center;
+    padding-right: 15px; /* Відступ справа для кнопок */
+    border: 1px solid transparent; /* Щоб не скакало при помилці */
+    transition: 0.2s;
+}
+
+/* Сам інпут тепер прозорий всередині обгортки */
+.testCreationMainCreatorAnswers__input {
+    flex: 1; /* Займає всю вільну ширину */
+    padding: 15px;
+    border: none;
+    background-color: transparent; /* Прозорий фон */
+    font-size: 18px;
+    outline: none;
+    color: #000000;
+    font-weight: 700;
+    min-width: 0;
+}
+
+.testCreationMainCreatorAnswers__input::placeholder {
+    color: #737373;
+}
+
+/* --- КНОПКИ ВСЕРЕДИНІ ІНПУТУ --- */
+.testCreationMainCreatorAnswers__btns {
     display: flex;
     align-items: center;
     gap: 15px;
 }
+
+.testCreationMainCreator__icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ADADAD;
+    font-size: 24px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.testCreationMainCreator__icon-btn:hover {
+    transform: scale(1.1);
+    color: #000000;
+}
+
+.testCreationMainCreatorAnswers__btn-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: red;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 0;
+    transition: .1s;
+    display: flex;
+    align-items: center;
+    padding-right: 4.5px;
+}
+.testCreationMainCreatorAnswers__btn-remove:hover {
+    transform: scale(1.1);
+}
+
+/* --- РЕШТА СТИЛІВ БЕЗ ЗМІН --- */
 
 .testCreationMainCreatorAnswers__none {
     display: none;
@@ -55,37 +130,15 @@
 }
 
 
-.testCreationMainCreatorAnswers__input {
-    flex: 1;
-    padding: 15px;
-    border: none;
-    background-color: #F1F1F1;
-    font-size: 18px;
-    outline: none;
-    transition: 0.2s;
-    color: #000000;
-    font-weight: 700;
+/* Помилка */
+.input-error-placeholder {
+    border: 1px solid red;
+    background-color: #ffe6e6;
 }
-.testCreationMainCreatorAnswers__input::placeholder {
-    color: #737373;
+.input-error-placeholder .testCreationMainCreatorAnswers__input::placeholder {
+    color: #d32f2f;
 }
 
-.testCreationMainCreatorAnswers__btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.testCreationMainCreatorAnswers__btn--remove {
-    color: red;
-    font-size: 36px;
-    font-weight: 800;
-    margin-left: 30px;
-    transition: .1s;
-}
-.testCreationMainCreatorAnswers__btn--remove:hover {
-    transform: scale(1.1);
-}
 
 .testCreationMainCreatorAnswers__add {
     background-color: #F1F1F1;
@@ -112,9 +165,6 @@
 .testCreationMainCreatorAnswers__add:hover {
     background-color: #c3c3c3;
 }
-
-
-
 
 
 .testCreationMainCreatorAnswers-open {

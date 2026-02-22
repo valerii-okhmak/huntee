@@ -19,7 +19,6 @@ public class PaymentController {
     @PostMapping("/create-checkout-session")
     public ResponseEntity<?> createCheckoutSession(@RequestBody CreateCheckoutSessionRequest request,
                                                    Authentication authentication) {
-        String userEmail = authentication.getName();
 
         try {
             String url = stripeService.createCheckoutSession(request.getPriceId());

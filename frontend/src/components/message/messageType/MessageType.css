@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .message-type {
     width: 10%;
     flex: 0 0 30%;
@@ -5,32 +7,51 @@
     flex-direction: column;
     gap: 30px;
 }
+
 .message-type__container {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 25px 10px 60px 10px;
+    padding: 25px 10px;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 25px;
+    /* Тінь для краси, як на скріні */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+    flex : 1 1 auto;
 }
 
 .message-type__item {
-    font-size: clamp(18px, 2vw, 22px);
-    font-family: 'MyFont', sans-serif;
+    font-size: clamp(16px, 1.5vw, 18px); /* Трохи зменшив шрифт для акуратності */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
     color: #000000;
-    padding: 8px 25px;
-    border-radius: 8px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.message-type__count {
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 5px 15px;
+    color: #191919; 
+    font-weight: 500;
+    font-size: clamp(8px, 2vw, 12px);
 }
 
 .message-type__item--active {
-    background-color: #F1F1F1;
+    background-color: rgb(241,245,249);
 }
 
 .message-type__item:hover {
-    background-color: #F1F1F1;
+    background-color: rgb(228, 236, 243);
     cursor: pointer;
 }
 
+/* Адаптивність */
 @media screen and (max-width: 704px) {
     .message-type {
         flex-direction: row;
@@ -43,7 +64,7 @@
     }
         
     .message-type__item {
-        padding: 8px;
+        padding: 10px 15px;
     }
 }
 

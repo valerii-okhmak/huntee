@@ -1,9 +1,10 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import "./WorkResponsibilities.css";
 import { useNavigate } from "react-router-dom"; 
 
 const WorkResponsibilities = ({ responsibilities, testId }) => { 
- 
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const handleRegistration = () => {
@@ -13,7 +14,7 @@ const WorkResponsibilities = ({ responsibilities, testId }) => {
   return (
     <div className="responsibilities-info">
       <div className="responsibilities-info-container">
-        <h3>Обов'язки</h3>
+        <h3>{t('workResponsibilities.title')}</h3>
         <ul>
           {responsibilities.map((item, index) => (
             <li key={index}>{item}</li>
@@ -22,7 +23,7 @@ const WorkResponsibilities = ({ responsibilities, testId }) => {
       </div>
       <div className='reg-button'>
         <button className="reg-button" onClick={handleRegistration}>
-            Зареєструватися
+            {t('workResponsibilities.register')}
         </button>
       </div>
     </div>

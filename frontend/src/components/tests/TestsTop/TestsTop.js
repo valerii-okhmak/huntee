@@ -1,22 +1,24 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 import './TestsTop.css'
 
 const TestsTop = () => {
+  const { t } = useTranslation();
   return (
     <div className='testsTop'>
         <div className='container testsTop_container'>
             <div className='main'>
                 <div className='blackbox'></div>
-                <h1 className='addtitle'>Приєднуйся!</h1>
+                <h1 className='addtitle'>{t('testsTop.join')}</h1>
             </div>
             <div className='additional'>
                 <div className='addline'></div>
-                <strong>Вакансії для початківців в IT </strong>
-                <p>Обери найкращу сферу для себе та зроби перший крок!</p>
+                <strong>{t('testsTop.vacancies')}</strong>
+                <p>{t('testsTop.choose')}</p>
             </div>
         </div>
     </div>
   )
 }
 
-export default TestsTop
+export default TestsTop;

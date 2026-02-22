@@ -8,7 +8,7 @@ const Modal = ({ isOpen, onClose, children }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div 
         className="modal-content" 
-        onClick={(e) => e.stopPropagation()}  // блокує клік всередині
+        onClick={(e) => e.stopPropagation()}  
       >
         {children}
       </div>

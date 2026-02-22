@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import './Slider.css';
 import { Link } from 'react-router-dom';
 
 const Slider = () => {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startX = useRef(null);
   const currentX = useRef(null);
 
   const slides = [
-    { id: 1, text: 'ВАША КОМПАНІЯ В ПОШУКУ СПІВРОБІТНИКІВ?', link: '/companymain' },
-    { id: 2, text: 'ЩО ЦЕ ЗА ПЛАТФОРМА?', link: '/generalinfo' },
-    { id: 3, text: 'ШУКАЄШ СТАРТ В IT?', link: '/startIT' },
-    { id: 4, text: 'МАЄТЕ ЗАПИТАННЯ АБО ПРОПОЗИЦІЇ?', link: '/contacts' },
+    { id: 1, text: t('slider.slide1'), link: '/companymain' },
+    { id: 2, text: t('slider.slide2'), link: '/generalinfo' },
+    { id: 3, text: t('slider.slide3'), link: '/startIT' },
+    { id: 4, text: t('slider.slide4'), link: '/contacts' },
   ];
   const totalSlides = slides.length;
 
@@ -29,13 +31,11 @@ const Slider = () => {
   const nextSlide = () => showSlide(currentSlide + 1);
   const prevSlide = () => showSlide(currentSlide - 1);
 
-  // Автоматична прокрутка
   useEffect(() => {
     const interval = setInterval(() => showSlide(currentSlide + 1), 3000);
     return () => clearInterval(interval);
   }, [currentSlide, showSlide]);
 
-  // --- Touch events ---
   const handleTouchStart = (e) => {
     startX.current = e.touches[0].clientX;
   };
@@ -45,7 +45,6 @@ const Slider = () => {
     handleSwipe();
   };
 
-  // --- Mouse events ---
   const handleMouseDown = (e) => {
     setIsDragging(true);
     startX.current = e.clientX;
@@ -97,7 +96,7 @@ const Slider = () => {
           {slides.map((slide) => (
             <div key={slide.id} className="slide">
               <h2>{slide.text}</h2>
-              <Link to={slide.link} className="learn-more-btn">Дізнатися більше</Link>
+              <Link to={slide.link} className="learn-more-btn">{t('slider.learnMore')}</Link>
             </div>
           ))}
         </div>
