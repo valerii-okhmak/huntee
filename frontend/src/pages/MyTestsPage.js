@@ -21,7 +21,7 @@ const MyTestsPage = () => {
       try {
         const token = getAccessToken();
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND}/api/tests/my`, 
+          `/api/tests/my`, 
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
 
