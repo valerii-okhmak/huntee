@@ -74,6 +74,12 @@ main {
   overflow: hidden;
 }
 
+.message-page-block{
+  display: flex;
+  gap: 30px;
+  margin: 30px 0;
+}
+
 @keyframes gradientAnimation {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -102,6 +108,13 @@ main {
 
 input::placeholder, textarea::placeholder {
   color: #000000;
+}
+
+@media screen and (max-width: 988px) {
+  .message-page-block {
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 
 @media screen and (max-width: 900px) {
