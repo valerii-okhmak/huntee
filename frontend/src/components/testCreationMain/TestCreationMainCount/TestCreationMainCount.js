@@ -6,7 +6,7 @@ const TestCreationMainCount = ({questionsCount}) => {
   const { t } = useTranslation();
   return (
     <div className='testCreationMainCount'>
-        <div className='container testCreationMainCount__container'>
+        <div className='testCreationMainCount__container'>
             <hr></hr>
             <p>{t('testCreationMainCount.text', { count: questionsCount })}</p>
         </div>

@@ -259,7 +259,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
 
   return (
     <div className='testCreationMainCreator'>
-      <div className='container testCreationMainCreator__container'>
+      <div className='testCreationMainCreator__container'>
         <h2 className='testCreationMainCreator__title'>{t('testCreationCreator.chooseType')}</h2>
 
         <div className='testCreationMainCreator__typeSelector'>

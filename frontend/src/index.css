@@ -138,27 +138,40 @@ input::placeholder, textarea::placeholder {
   }
 }
 
-
 .testCreationMainButtons__container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 40px;
-  margin-top: 20px;
-  margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+    gap: clamp(10px, 2vw, 15px);
+    width: 75%;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 40px) 0;
+  }
+
+.testCreationMainButtons__button {
+  cursor: pointer;
+  padding: 10px 15px;
+  font-size: clamp(16px, 2vw, 22px);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
+.ai-btn {
+    background: #6c5ce7;
+    border: 2px solid #6c5ce7;
+    color: #ffffff;
+    transition: .3s;
+}
 
+.ai-btn:hover {
+    background-color: #5b4bc4; 
+    border-color: #5b4bc4;
+}
 
 .white-btn {
   background: none;
-  cursor: pointer;
-  padding: 10px 15px;
   border: 1px solid black;
-  font-size: clamp(16px, 2vw, 22px);
-  font-family: 'Montserrat', sans-serif;
   color: #000000;
-  font-weight: 700;
   transition: .3s;
 }
 .white-btn:hover {
@@ -166,15 +179,34 @@ input::placeholder, textarea::placeholder {
 }
 .black-btn {
   background: #000000;
-  cursor: pointer;
-  padding: 10px 15px;
   border: 1px solid black;
-  font-size: clamp(16px, 2vw, 22px);
-  font-family: 'Montserrat', sans-serif;
   color: #ffffff;
-  font-weight: 700;
   transition: .3s;
 }
+
 .black-btn:hover {
   background: #777777;
+}
+
+@media screen and (max-width: 768px) {
+    .testCreationMainButtons__container {
+        justify-content: center; /* На планшетах центруємо кнопки */
+    }
+}
+
+/* --- АДАПТАЦІЯ ДЛЯ ТЕЛЕФОНІВ (аж до 320px) --- */
+@media screen and (max-width: 578px) {
+    .testCreationMainButtons__container {
+        flex-direction: column; 
+        width: 100%;
+        padding: 20px 15px;
+
+    }
+
+    .testCreationMainButtons__container button {
+        width: 100%; /* Кожна кнопка займає 100% ширини для зручного натискання пальцем */
+    }
+    
+    /* Додатково: якщо ви хочете, щоб кнопка AI була першою або останньою на мобільному, 
+       можна використовувати властивість order. За замовчуванням вони йдуть як у HTML */
 }
