@@ -135,6 +135,7 @@
   gap: 0.5rem;
   transition: font-size 0.3s ease;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .edit-icon {

@@ -169,7 +169,7 @@ const MessagesPage = () => {
            onMarkAllRead={markAllAsRead}
         />
         
-        <div style={{ display: 'flex', gap: '30px', marginTop: '30px', flexWrap: 'wrap' }}>
+        <div className='message-page-block'>
           <MessageType 
             activeRead={filterReadStatus}
             setActiveRead={setFilterReadStatus}

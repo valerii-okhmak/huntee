@@ -1,91 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap');
 
 .testcard-container {
     background-color: #fff;
     border-radius: 3px;
     box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.3);
-    padding: 20px 35px;
+    padding: clamp(15px, 4vw, 20px) clamp(15px, 5vw, 35px);
     font-family: "MyFont", sans-serif;
     font-optical-sizing: auto;
     font-weight: normal;
     font-style: normal;
     transition: all 0.25s ease;
-}
-
-.testcard-top_row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.testcard-type {
-    color: #000;
-    font-size: clamp(16px, 2vw, 18px);
-    font-family: 'Montserrat', sans-serif;
-}
-
-.testcard-title {
-    font-weight: bold;
-    color: #000;
-    font-size: clamp(22px, 2vw, 30px);
-    text-decoration: none;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.testcard-bottom_row {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.testcard-location{
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.testcard-location p{
-    color: #848282;
-    font-size: clamp(16px, 2vw, 18px);
-    font-family: 'Montserrat', sans-serif;
-}
-
-.location_icon {
-    height: 22px;
-}
-
-.testcard-date {
-    display: flex;
-}
-.testcard-date p{
-    color: #848282;
-    font-size: clamp(16px, 2vw, 18px);
-    font-family: 'Montserrat', sans-serif;
-}
-
-.testcard-time {
-    margin-left: 15px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.testcard-status-active{
-    color: #679C6A; 
-    font-weight: bold;
-    padding: 10px 15px;
-    font-size: 20px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.testcard-status-unactive{
-    background-color: #679C6A;
-    color: #ffffff;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
 }
 
 .testcard-link {
@@ -99,20 +24,46 @@
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
 }
 
-
-.testcard-buttons {
+.testcard-top_row {
     display: flex;
-    justify-content: flex-start;
-    gap: clamp(10px, 2vw, 20px);
-    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.testcard-type {
+    color: #000;
+    font-size: clamp(14px, 2.5vw, 18px);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+}
+
+.testcard-status-active {
+    color: #679C6A; 
+    font-weight: bold;
+    font-size: clamp(14px, 3vw, 20px);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+}
+
+.testcard-title {
+    font-weight: bold;
+    color: #000;
+    font-size: clamp(18px, 4vw, 30px);
+    font-family: 'Montserrat', sans-serif;
+    margin: clamp(10px, 2vw, 15px) 0;
+    overflow-wrap: break-word; 
+    word-break: break-word;
 }
 
 .testcard-buttons {
     display: flex;
     justify-content: flex-start;
-    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap; 
+    gap: clamp(8px, 2vw, 12px);
     width: 100%;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .testcard-action-btn {
@@ -120,74 +71,105 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 8px 18px;
-    font-size: 15px;
+    padding: clamp(8px, 2vw, 10px) clamp(14px, 3vw, 18px);
+    font-size: clamp(13px, 2.5vw, 15px);
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     border: none;
     border-radius: 50px;
     cursor: pointer;
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.5);
-    transition: transform 0.1s ease, filter 0.2s ease;
+    transition: transform 0.1s ease, filter 0.2s ease, background-color 0.2s ease;
 }
 
 .testcard-action-btn:active {
     transform: scale(0.96);
 }
 
-.btn-edit {
-    background-color: #1657b8;
-    color: #ffffff;
-    transition: background-color 0.2s ease;
-}
+.btn-edit { background-color: #1657b8; color: #ffffff; }
+.btn-edit:hover { background-color: #0f3d82; }
 
-.btn-edit:hover {
-    background-color: #0f3d82; 
-}
+.btn-delete { background-color: #ba2a14; color: #ffffff; }
+.btn-delete:hover { background-color: #91200f; }
 
-.btn-delete {
-    background-color: #ba2a14; 
-    color: #ffffff;
-    transition: background-color 0.2s ease;
-}
+.btn-duplicate { background-color: #93a836; color: #ffffff; }
+.btn-duplicate:hover { background-color: #6b7a25; }
 
-.btn-delete:hover {
-    background-color: #91200f;
-}
-
-.btn-duplicate {
-    background-color: #93a836; 
-    color: #ffffff;
-    transition: background-color 0.2s ease;
-}
-
-.btn-duplicate:hover {
-    background-color: #6b7a25;
-}
-
-/* Стилі для неактивної кнопки редагування */
 .btn-disabled {
-    background-color: #d1d5db !important; /* Світло-сірий колір */
-    color: #6b7280 !important; /* Темно-сірий текст */
-    cursor: not-allowed !important; /* Курсор заборони */
-    transform: none !important; /* Прибираємо анімацію натискання */
-}
-
-.btn-disabled:hover {
     background-color: #d1d5db !important;
+    color: #6b7280 !important;
+    cursor: not-allowed !important;
     transform: none !important;
-    filter: none !important;
+    box-shadow: none; 
+}
+.btn-disabled:hover { background-color: #d1d5db !important; }
+
+.testcard-bottom_row {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
 }
 
-.btn-disabled:active {
-    transform: none !important;
+.testcard-location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-@media screen and (max-width: 450px) {
-    .testcard {
-        padding: 20px;
+.location_icon {
+    height: clamp(18px, 4vw, 22px);
+}
+
+.testcard-location p,
+.testcard-date p,
+.testcard-time {
+    color: #848282;
+    font-size: clamp(14px, 3vw, 18px);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+}
+
+.testcard-date {
+    display: flex;
+    align-items: center;
+}
+
+.testcard-time {
+    margin-left: 15px;
+}
+
+@media screen and (max-width: 576px) {
+    .testcard-top_row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
     }
-    .location_icon {
-        height: 20px;
+
+    .testcard-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .testcard-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .testcard-bottom_row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .testcard-date {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .testcard-time {
+        margin-left: 0;
     }
 }

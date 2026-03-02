@@ -242,6 +242,7 @@
   },
   "messageTitle": {
     "text": "Nachrichten",
+    "subtext": "Benachrichtigungen verwalten, nach Status und Typ filtern.",
     "placeholder": "Suche nach Titel, Absender oder Text...",
     "MarkAllAsRead": "Alle als gelesen markieren"
   },

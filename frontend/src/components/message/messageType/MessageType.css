@@ -52,6 +52,14 @@
 }
 
 /* Адаптивність */
+
+@media screen and (max-width: 988px) {
+    .message-type {
+        flex-direction: row;
+        width: 100%;
+    }
+}
+
 @media screen and (max-width: 704px) {
     .message-type {
         flex-direction: row;
@@ -65,6 +73,16 @@
         
     .message-type__item {
         padding: 10px 15px;
+    }
+}
+
+@media screen and (max-width: 592px) {
+    .message-type__container {
+        width: 100%;
+    }
+
+        .message-type {
+        flex-direction: column;
     }
 }
 

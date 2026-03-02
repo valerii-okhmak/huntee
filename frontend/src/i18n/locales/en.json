@@ -242,6 +242,7 @@
   },
   "messageTitle": {
     "text": "Messages",
+    "subtext": "Manage notifications, filter by status and type.",
     "placeholder": "Search by title, sender, or text...",
     "MarkAllAsRead": "Mark all as read"
   },

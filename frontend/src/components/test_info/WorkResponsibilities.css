@@ -20,28 +20,3 @@
   margin-bottom: clamp(10px, 3vw, 30px);
   font-size: clamp(16px, 4vw, 22px);
 }
-
-.reg-button {
-  display: inline-block;
-  margin: clamp(20px, 4vw, 40px) auto;
-  float: right;
-}
-
-.reg-button button {
-  background-color: #000000;
-  font-family: 'MyFont', sans-serif;
-  color: white;
-  padding: clamp(10px, 3vw, 20px) clamp(20px, 6vw, 40px);
-  font-size: clamp(18px, 5vw, 40px);
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  display: inline-block;
-  text-align: center;
-  margin-right: clamp(10px, 5vw, 50px);
-}
-
-.reg-button:hover button {
-  background-color: #a3a3a3;
-  color: black;
-}
