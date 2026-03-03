@@ -573,7 +573,9 @@
       "title": "<strong>Glückwunsch zur<br/>Erfolgreichen Registrierung!</strong>",
       "subtitle": "Ihr erster Schritt zu einer IT-Karriere!",
       "toMain": "Zur Hauptseite",
-      "toMyTests": "Zu meinen Tests"
+      "toMyTests": "Zu meinen Tests",
+      "alreadyRegisteredTitle" : "Sie sind bereits für diesen Test registriert!",
+      "alreadyRegisteredSubtitle": "Sie können zu Ihren Tests gehen, um diesen einzusehen oder andere Tests zu absolvieren."
     }
   },
   "testCreationSelectField": {

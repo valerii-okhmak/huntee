@@ -573,7 +573,9 @@
       "title": "<strong>Вітаємо з успішною<br/>реєстрацією!</strong>",
       "subtitle": "Це твій перший крок до успішної IT-кар’єри!",
       "toMain": "Перейти на головну",
-      "toMyTests": "Перейти в мої тести"
+      "toMyTests": "Перейти в мої тести",
+      "alreadyRegisteredTitle" : "Ви вже зареєстровані на цей тест!",
+      "alreadyRegisteredSubtitle": "Ви можете перейти до своїх тестів, щоб переглянути його або пройти інші тести."
     }
   },
   "testCreationSelectField": {

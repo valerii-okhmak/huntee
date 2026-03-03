@@ -572,7 +572,9 @@
       "title": "<strong>Congratulations on successful<br/>registration!</strong>",
       "subtitle": "This is your first step towards a successful IT career!",
       "toMain": "Go to Main",
-      "toMyTests": "Go to My Tests"
+      "toMyTests": "Go to My Tests",
+      "alreadyRegisteredTitle" : "You are already registered for this test!",
+      "alreadyRegisteredSubtitle": "You can go to your tests to view it or take other tests."
     }
   },
   "testCreationSelectField": {
