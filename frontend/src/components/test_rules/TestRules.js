@@ -9,6 +9,7 @@ const TestRules = () => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
+  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,6 +17,7 @@ const TestRules = () => {
 
   const onClose = () => {
     setShowModal(false);
+    setIsAlreadyRegistered(false);
   };
 
   const handleConfirmRegistration = async () => {
@@ -39,11 +41,17 @@ const TestRules = () => {
         );
 
         setShowModal(true);
+        setIsAlreadyRegistered(false);
 
     } catch (error) {
         console.error("Registration error:", error);
-        const message = error.response?.data || t('testRules.errors.failed');
-        console.log(message); 
+          
+        if (error.response && error.response.status === 409) {
+            setIsAlreadyRegistered(true);
+            setShowModal(true);
+        } else {
+            alert(t('testRules.errors.failed'));
+        } 
     } finally {
         setIsLoading(false);
     }
@@ -82,8 +90,16 @@ const TestRules = () => {
               </svg>
             </button>
 
-            <h1 dangerouslySetInnerHTML={{ __html: t('testRules.modal.title') }}></h1>
-            <p>{t('testRules.modal.subtitle')}</p>
+            <h1 dangerouslySetInnerHTML={{ 
+              __html: isAlreadyRegistered 
+                ? t('testRules.modal.alreadyRegisteredTitle') 
+                : t('testRules.modal.title') 
+            }}></h1>
+            <p>
+              {isAlreadyRegistered 
+                ? t('testRules.modal.alreadyRegisteredSubtitle') 
+                : t('testRules.modal.subtitle')}
+            </p>
 
             <div className="modal-buttons-test">
               <button onClick={() => navigate('/')} className="test-rules-button"> 

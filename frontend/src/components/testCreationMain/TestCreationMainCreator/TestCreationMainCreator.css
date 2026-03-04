@@ -1,7 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 .testCreationMainCreator {
-    margin-top: 40px;
+    margin-top: clamp(10px, 4vw, 40px);
+}
+
+.testCreationMainCreator__container{
+    width: 75%;
+    margin: 0 auto;
 }
 
 .testCreationMainCreator__title {
@@ -9,7 +14,7 @@
     font-family: 'Montserrat', sans-serif;
     color: #000000;
     font-weight: 700;
-    margin-bottom: 30px;
+    margin-bottom: clamp(10px, 3vw, 30px);
 }
 
 .testCreationMainCreator__typeSelector {
@@ -53,7 +58,7 @@
 }
 
 .testCreationMainCreator__questionField-title {
-    font-size: clamp(12px, 2vw, 20px);
+    font-size: clamp(16px, 2vw, 20px);
     font-family: 'Montserrat', sans-serif;
     color: #000000;
     font-weight: 700;
@@ -116,11 +121,15 @@
     padding: 15px;
     border: none;
     background-color: transparent;
-    font-size: 18px;
+    font-size: clamp(12px, 2vw, 20px);
     outline: none;
     color: #000000;
     font-weight: 700;
     min-width: 0;
+}
+
+.testCreationMainCreator__questionField-input-field {
+    padding: 0;
 }
 
 .testCreationMainCreator__questionField-input::placeholder {
@@ -173,4 +182,25 @@
     .testCreationMainCreator__questionField-wrapper {
         width: 100%;
     }
+    .testCreationMainCreator__typeSelector {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Створює 2 колонки однакової ширини */
+        gap: 10px; /* Відстань між кнопками */
+    }
+
+    .testCreationMainCreator__selectedType {
+        /* Прибираємо flex: 1, оскільки тепер керує grid */
+        flex: none; 
+        width: 100%; /* Кнопка розтягується на всю ширину своєї комірки */
+        padding: 15px 5px; /* Трохи зменшуємо внутрішні відступи на мобільних */
+        font-size: 14px; /* Забезпечуємо, щоб текст краще влазив */
+    }
+}
+
+@media screen and (max-width: 578px) {
+    .testCreationMainCreator__container {
+        width: 100%;
+        padding: 0 15px;
+    }
+    
 }

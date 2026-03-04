@@ -242,6 +242,7 @@
   },
   "messageTitle": {
     "text": "Messages",
+    "subtext": "Manage notifications, filter by status and type.",
     "placeholder": "Search by title, sender, or text...",
     "MarkAllAsRead": "Mark all as read"
   },
@@ -571,7 +572,9 @@
       "title": "<strong>Congratulations on successful<br/>registration!</strong>",
       "subtitle": "This is your first step towards a successful IT career!",
       "toMain": "Go to Main",
-      "toMyTests": "Go to My Tests"
+      "toMyTests": "Go to My Tests",
+      "alreadyRegisteredTitle" : "You are already registered for this test!",
+      "alreadyRegisteredSubtitle": "You can go to your tests to view it or take other tests."
     }
   },
   "testCreationSelectField": {
@@ -649,6 +652,7 @@
   "testCreationCreator": {
     "chooseType": "Choose question type:",
     "questionLabel": "Question",
+    "categoryLabel": "Category (optional)",
     "pointsLabel": "Points for correct answer:",
     "addImage": "Add Image",
     "placeholders": {
@@ -704,7 +708,8 @@
       "fixed": "Fixed Order",
       "random": "Random Order",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "mixed": "Do not choose"
     },
     "cities": {
       "ternopil": "Ternopil",

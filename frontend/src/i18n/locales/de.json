@@ -242,6 +242,7 @@
   },
   "messageTitle": {
     "text": "Nachrichten",
+    "subtext": "Benachrichtigungen verwalten, nach Status und Typ filtern.",
     "placeholder": "Suche nach Titel, Absender oder Text...",
     "MarkAllAsRead": "Alle als gelesen markieren"
   },
@@ -572,7 +573,9 @@
       "title": "<strong>Glückwunsch zur<br/>Erfolgreichen Registrierung!</strong>",
       "subtitle": "Ihr erster Schritt zu einer IT-Karriere!",
       "toMain": "Zur Hauptseite",
-      "toMyTests": "Zu meinen Tests"
+      "toMyTests": "Zu meinen Tests",
+      "alreadyRegisteredTitle" : "Sie sind bereits für diesen Test registriert!",
+      "alreadyRegisteredSubtitle": "Sie können zu Ihren Tests gehen, um diesen einzusehen oder andere Tests zu absolvieren."
     }
   },
   "testCreationSelectField": {
@@ -650,6 +653,7 @@
   "testCreationCreator": {
     "chooseType": "Fragentyp wählen:",
     "questionLabel": "Frage",
+    "categoryLabel": "Kategorie (optional)",
     "pointsLabel": "Punkte für richtige Antwort:",
     "addImage": "Bild hinzufügen",
     "placeholders": {
@@ -705,7 +709,8 @@
       "fixed": "Feste Reihenfolge",
       "random": "Zufällig",
       "yes": "Ja",
-      "no": "Nein"
+      "no": "Nein",
+      "mixed": "Wählen Sie nicht"
     },
     "cities": {
       "ternopil": "Ternopil",

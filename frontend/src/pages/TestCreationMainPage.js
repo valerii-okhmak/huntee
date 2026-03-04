@@ -344,7 +344,7 @@ const TestCreationMainPage = () => {
       <TestCreationMainCount questionsCount={questionsCount} />
 
       {mode === 'create' ? (
-        <TestCreationMainCreator ref={creatorRef} />
+        <TestCreationMainCreator ref={creatorRef} globalSphere={testMeta.sphere} />
       ) : (
         <TestCreationMainPreview
           questions={questions}
@@ -354,33 +354,31 @@ const TestCreationMainPage = () => {
         />
       )}
 
-      <div className='testCreationMainButtons'>
-        <div className='container testCreationMainButtons__container'>
+        <div className='testCreationMainButtons__container'>
           {mode === 'create' ? (
             editingIndex !== null ? (
               <>
-                 <button className='testCreationMainButtons__next white-btn' onClick={handleEditCancel}>
+                 <button className='testCreationMainButtons__button white-btn' onClick={handleEditCancel}>
                    {t('testCreationMain.buttons.cancelEdit')}
                  </button>
-                 <button className='testCreationMainButtons__finish black-btn' onClick={handleEditConfirm}>
+                 <button className='testCreationMainButtons__button black-btn' onClick={handleEditConfirm}>
                    {t('testCreationMain.buttons.confirmEdit')}
                  </button>
               </>
             ) : (
               <>
                 <button 
-                  className='testCreationMainButtons__ai black-btn' 
-                  style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7', color: 'white', marginRight: '10px' }}
+                  className='testCreationMainButtons__button ai-btn' 
                   onClick={() => setIsAiModalOpen(true)}
                 >
                   {t('testCreationMain.buttons.aiGenerate')}
                 </button>
 
-                <button className='testCreationMainButtons__next white-btn' onClick={handleNextQuestion}>
+                <button className='testCreationMainButtons__button white-btn' onClick={handleNextQuestion}>
                   {t('testCreationMain.buttons.addQuestion')}
                 </button>
                 <button
-                  className='testCreationMainButtons__finish black-btn'
+                  className='testCreationMainButtons__button black-btn'
                   onClick={() => {
                     addCurrentQuestionIfExists();
                     setMode('preview');
@@ -392,16 +390,15 @@ const TestCreationMainPage = () => {
             )
           ) : (
             <>
-              <button className='testCreationMainButtons__back white-btn' onClick={() => setMode('create')} disabled={loading}>
+              <button className='testCreationMainButtons__button white-btn' onClick={() => setMode('create')} disabled={loading}>
                 {t('testCreationMain.buttons.backToCreate')}
               </button>
-              <button className='testCreationMainButtons__publish black-btn' onClick={handleTryPublish} disabled={loading}>
+              <button className='testCreationMainButtons__button black-btn' onClick={handleTryPublish} disabled={loading}>
                 {t('testCreationMain.buttons.finishCreation')}
               </button>
             </>
           )}
         </div>
-      </div>
       
       <ConfirmationTestCreateModal
         isOpen={isModalOpen}

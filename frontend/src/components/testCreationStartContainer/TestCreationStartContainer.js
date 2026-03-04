@@ -28,11 +28,12 @@ const TestCreationStartContainer = ({ mode, testId }) => {
   const [errors, setErrors] = useState({});
 
   const fieldOptions = [
+    { value: 'mixed', label: t('testCreationStart.options.mixed') },
     { value: 'frontend', label: 'FRONTEND' },
     { value: 'backend', label: 'BACKEND' },
     { value: 'devops', label: 'DEVOPS' },
     { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
-    { value: 'dataanalyst', label: 'DATA ANALYST' }
+    { value: 'dataanalyst', label: 'DATA ANALYST' },
   ];
 
   const levelOptions = [

@@ -9,10 +9,10 @@
 .testDashboard__analytics-btn-dark {
     font-family: 'Montserrat', sans-serif;
     color: white;
-    font-size: 20px;
+    font-size: clamp(14px, 2vw, 20px);
     font-weight: 700;
     background-color: black;
-    padding: 10px 15px;
+    padding: clamp(6px, 2vw, 10px) clamp(8px, 2vw, 15px);
     border: none;
     cursor: pointer;
     position: relative;

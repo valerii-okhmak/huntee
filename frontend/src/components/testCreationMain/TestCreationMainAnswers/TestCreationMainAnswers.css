@@ -7,7 +7,7 @@
 }
 
 .testCreationMainCreatorAnswers__title {
-    font-size: clamp(12px, 2vw, 20px);
+    font-size: clamp(16px, 2vw, 20px);
     font-family: 'Montserrat', sans-serif;
     color: #000000;
     font-weight: 700;
@@ -48,7 +48,7 @@
     padding: 15px;
     border: none;
     background-color: transparent; /* Прозорий фон */
-    font-size: 18px;
+    font-size: clamp(12px, 2vw, 20px);
     outline: none;
     color: #000000;
     font-weight: 700;
@@ -144,7 +144,7 @@
     background-color: #F1F1F1;
     border: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: clamp(12px, 2vw, 20px);
     color: #737373;
     font-weight: 700;
     margin-top: 10px;
@@ -156,10 +156,10 @@
 }
 
 .testCreationMainCreatorAnswers__add span {
-    font-size: 40px;
+    font-size: clamp(24px, 2vw, 40px);
     line-height: 1;
     font-weight: 100;
-    margin-top: -5px;
+    color: #3b3a3a;
 }
 
 .testCreationMainCreatorAnswers__add:hover {
@@ -190,7 +190,7 @@
     padding: 15px;
     border: none;
     background-color: #F1F1F1;
-    font-size: 18px;
+    font-size: clamp(12px, 2vw, 20px);
     outline: none;
     transition: 0.2s;
     color: #000000;

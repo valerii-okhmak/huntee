@@ -2,6 +2,7 @@ package org.dreamteam.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.dreamteam.dto.CandidateDTO;
 import org.dreamteam.dto.ExportRequestDTO;
@@ -126,12 +127,17 @@ public class TestController {
     }
 
     @PostMapping("/{id}/register")
-    public ResponseEntity<Void> registerForTest(
-            @PathVariable UUID id,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        
-        testService.registerForTest(id, userDetails.getUsername());
-        return ResponseEntity.ok().build();
+        public ResponseEntity<?> registerForTest(
+                @PathVariable UUID id,
+                @AuthenticationPrincipal UserDetails userDetails) {
+            
+            try {
+                testService.registerForTest(id, userDetails.getUsername());
+                return ResponseEntity.ok().build(); 
+                
+            } catch (IllegalStateException e) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+           }
     }
 
     @GetMapping("/created") 
