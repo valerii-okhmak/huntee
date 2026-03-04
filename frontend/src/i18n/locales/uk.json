@@ -653,6 +653,7 @@
   "testCreationCreator": {
     "chooseType": "Оберіть тип запитання:",
     "questionLabel": "Запитання",
+    "categoryLabel": "Категорія (необов’язково)",
     "pointsLabel": "Кількість балів за правильну відповідь:",
     "addImage": "Додати зображення",
     "placeholders": {
@@ -708,7 +709,8 @@
       "fixed": "Фіксований порядок",
       "random": "Випадковий порядок",
       "yes": "Так",
-      "no": "Ні"
+      "no": "Ні",
+      "mixed": "Не вибирати"
     },
     "cities": {
       "ternopil": "Тернопіль",

@@ -344,7 +344,7 @@ const TestCreationMainPage = () => {
       <TestCreationMainCount questionsCount={questionsCount} />
 
       {mode === 'create' ? (
-        <TestCreationMainCreator ref={creatorRef} />
+        <TestCreationMainCreator ref={creatorRef} globalSphere={testMeta.sphere} />
       ) : (
         <TestCreationMainPreview
           questions={questions}

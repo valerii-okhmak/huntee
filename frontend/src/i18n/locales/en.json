@@ -652,6 +652,7 @@
   "testCreationCreator": {
     "chooseType": "Choose question type:",
     "questionLabel": "Question",
+    "categoryLabel": "Category (optional)",
     "pointsLabel": "Points for correct answer:",
     "addImage": "Add Image",
     "placeholders": {
@@ -707,7 +708,8 @@
       "fixed": "Fixed Order",
       "random": "Random Order",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "mixed": "Do not choose"
     },
     "cities": {
       "ternopil": "Ternopil",

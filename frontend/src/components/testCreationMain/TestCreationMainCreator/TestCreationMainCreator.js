@@ -10,16 +10,18 @@ import {
   faImage
 } from '@fortawesome/free-solid-svg-icons';
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
+import Select from 'react-select';
 
 const MIN_BASE_OPTIONS = 2;
 
-const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
+const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere }, ref) => {
   const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState("regular");
   const [questionText, setQuestionText] = useState("");
   const [comment, setComment] = useState("");
   const [points, setPoints] = useState("1"); 
   const [errors, setErrors] = useState({});
+  const [questionSphere, setQuestionSphere] = useState(null);
 
   const [options, setOptions] = useState(["", ""]);
   const [regularCorrect, setRegularCorrect] = useState(null);
@@ -32,6 +34,15 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
   const [codeMethodName, setCodeMethodName] = useState("");
   const [codeTemplate, setCodeTemplate] = useState("");
   const [codeTestCasesJSON, setCodeTestCasesJSON] = useState('[{"args": [1, 2], "expected": 3}]');
+
+  const fieldOptions = [
+    { value: 'mixed', label: t('testCreationStart.options.mixed') },
+    { value: 'frontend', label: 'FRONTEND' },
+    { value: 'backend', label: 'BACKEND' },
+    { value: 'devops', label: 'DEVOPS' },
+    { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
+    { value: 'dataanalyst', label: 'DATA ANALYST' }
+  ];
 
   const clearError = (field) => {
     if (errors[field]) {
@@ -148,6 +159,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
         setCodeTemplate("");
         setCodeTestCasesJSON('[{"args": [1, 2], "expected": 3}]');
       }
+      setQuestionSphere(fieldOptions.find(o => o.value === q.sphere) || null);
     },
 
     getCurrentQuestionAndReset() {
@@ -174,7 +186,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
           questionText: questionText.trim(),
           comment: comment.trim(),
           questionType: backendType,
-          points: floatPoints
+          points: floatPoints,  
+          sphere: globalSphere === 'mixed' ? questionSphere?.value : globalSphere
       };
 
       if (selectedType === "regular" || selectedType === "multiple") {
@@ -238,6 +251,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
       }
 
       // Скидання форми (reset)
+      setQuestionSphere(null);
       setQuestionText("");
       setComment("");
       setPoints("1"); 
@@ -316,6 +330,30 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange }, ref) => {
               <FontAwesomeIcon icon={faImage} />
             </button>
           </div>
+
+          {globalSphere === 'mixed' && (
+            <>
+              <div className="testCreationMainCreator__questionField-header">
+                <h2 className="testCreationMainCreator__questionField-title">
+                  {t('testCreationCreator.categoryLabel')}
+                </h2>
+              </div>
+              <div className={'testCreationMainCreator__questionField-wrapper' }>
+                <Select
+                  options={fieldOptions}
+                  value={questionSphere}
+                  onChange={(val) => {
+                    setQuestionSphere(val);
+                    if (errors.questionSphere) setErrors(prev => ({...prev, questionSphere: false}));
+                  }} 
+                  isSearchable
+                  placeholder={t('testCreationSelectField.search')}
+                  className={`testCreationMainCreator__questionField-input testCreationMainCreator__questionField-input-field ${!!errors.questionSphere ? 'has-error' : ''}`}
+                  classNamePrefix="select-field-tc__custom-select"
+                />
+              </div>
+            </>
+          )}
 
           <div className="testCreationMainCreator__questionField-header">
             <h2 className="testCreationMainCreator__questionField-title">{t('testCreationCreator.pointsLabel')}</h2>

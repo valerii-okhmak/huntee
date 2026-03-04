@@ -653,6 +653,7 @@
   "testCreationCreator": {
     "chooseType": "Fragentyp wählen:",
     "questionLabel": "Frage",
+    "categoryLabel": "Kategorie (optional)",
     "pointsLabel": "Punkte für richtige Antwort:",
     "addImage": "Bild hinzufügen",
     "placeholders": {
@@ -708,7 +709,8 @@
       "fixed": "Feste Reihenfolge",
       "random": "Zufällig",
       "yes": "Ja",
-      "no": "Nein"
+      "no": "Nein",
+      "mixed": "Wählen Sie nicht"
     },
     "cities": {
       "ternopil": "Ternopil",
