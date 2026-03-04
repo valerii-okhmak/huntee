@@ -390,10 +390,10 @@ const TestCreationMainPage = () => {
             )
           ) : (
             <>
-              <button className='testCreationMainButtons__back white-btn' onClick={() => setMode('create')} disabled={loading}>
+              <button className='testCreationMainButtons__button white-btn' onClick={() => setMode('create')} disabled={loading}>
                 {t('testCreationMain.buttons.backToCreate')}
               </button>
-              <button className='testCreationMainButtons__publish black-btn' onClick={handleTryPublish} disabled={loading}>
+              <button className='testCreationMainButtons__button black-btn' onClick={handleTryPublish} disabled={loading}>
                 {t('testCreationMain.buttons.finishCreation')}
               </button>
             </>
