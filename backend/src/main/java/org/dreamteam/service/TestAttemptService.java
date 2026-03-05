@@ -34,6 +34,7 @@ public class TestAttemptService {
     private final TextAnswerRepository textAnswerRepository;
     private final MatchingPairRepository matchingPairRepository;
     private final TestInvitationService invitationService;
+    private final TestAccessCodeRepository accessCodeRepository;
     
     private static final long TIME_BUFFER_SECONDS = 30;
 
@@ -60,7 +61,8 @@ public class TestAttemptService {
                 .orElse(null);
         if (attempt == null) {
             if (Boolean.TRUE.equals(test.getIsPrivate())){
-                validateTokenForTest(invitationToken, test, userEmail);
+                // Передаємо також user, щоб перевірити його коди
+                validateAccessForPrivateTest(invitationToken, test, userEmail, user);
             }
             attempt = new UserTestAttempt(user, test);
             attempt.setStartedAt(OffsetDateTime.now());
@@ -624,20 +626,37 @@ private void checkTestAvailabilityDates(Test test, OffsetDateTime now) {
 }
 
 
-private void validateTokenForTest(String token, Test test, String userEmail) {
-        if (token == null || token.isBlank()) {
-            throw new AccessDeniedException("Цей тест є приватним. Потрібен токен запрошення.");
+private void validateAccessForPrivateTest(String token, Test test, String userEmail, User user) {
+        boolean hasValidEmailToken = false;
+        String tokenErrorMsg = null;
+
+        if (token != null && !token.isBlank()) {
+            try {
+                TestInvitation invitation = invitationService.validateAndConsumeToken(token);
+                if (!invitation.getTest().getTestId().equals(test.getTestId())) {
+                    tokenErrorMsg = "This invitation token is not valid for this test.";
+                } else if (!invitation.getEmail().equalsIgnoreCase(userEmail)) {
+                    tokenErrorMsg = "This invitation token is not associated with your email.";
+                } else {
+                    hasValidEmailToken = true;
+                }
+            } catch (Exception e) {
+                tokenErrorMsg = "Invalid or used invitation token.";
+            }
         }
 
-        TestInvitation invitation = invitationService.validateAndConsumeToken(token);
+        if (!hasValidEmailToken) {
+            boolean hasUsedAccessCode = accessCodeRepository
+                    .findByTest_TestIdAndUsedByUser_Id(test.getTestId(), user.getId())
+                    .isPresent();
 
-        
-        if (!invitation.getTest().getTestId().equals(test.getTestId())) {
-            throw new AccessDeniedException("Цей токен не підходить до цього тесту.");
+            if (!hasUsedAccessCode) {
+                if (tokenErrorMsg != null) {
+                    throw new AccessDeniedException(tokenErrorMsg); 
+                } else {
+                    throw new AccessDeniedException("This test is private. An invitation token or access code is required.");
+                }
+            }
         }
-
-        if (!invitation.getEmail().equalsIgnoreCase(userEmail)) {
-            throw new AccessDeniedException("Ви повинні увійти з пошти, на яку прийшло запрошення (" + invitation.getEmail() + ").");
-        }
-    }
+}
 }
