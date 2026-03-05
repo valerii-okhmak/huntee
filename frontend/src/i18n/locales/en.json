@@ -327,7 +327,8 @@
     "errorTitle": "DELETE ERROR"
   },
   "testsBlock": {
-    "placeholder": "Search by title, sphere, location..."
+    "placeholder": "Search by title, sphere, location...",
+    "joinByCode": "Join by code"
   },
   "notFound": {
     "title": "Page Not Found :(",
@@ -1006,27 +1007,43 @@
     "understood": "Understood"
   },
   "inviteModal": {
-    "title": "INVITE PARTICIPANTS",
+    "copied": "Link copied!",
+    "success": "Invitation sent!",
+    "codesGenerated": "Codes generated successfully!",
+    "codesCopied": "All codes copied!",
     "close": "Close",
-    "subtitle": "You can invite participants to take the test in a way convenient for you:",
+    "title": "INVITE PARTICIPANTS",
+    "subtitle": "You can invite participants to take the test in a convenient way:",
     "options": {
-      "email": "Send invitation by email.",
-      "link": "Join via link."
+      "email": "Send an email invitation.",
+      "link": "Join via link.",
+      "code": "Generate and join via group codes (e.g., CS-101)."
     },
     "methods": {
-      "email": "Send via email",
-      "link": "Join via link"
+      "email": "Send to email",
+      "link": "Join via link",
+      "code": "Generate and join via codes (for groups)"
     },
-    "copied": "Link copied!",
-    "success": "Invitation sent successfully!",
-    "errors": {
-      "emptyEmail": "Please enter an email",
-      "generic": "Error sending invitation"
+    "generateTitle": "GENERATE GROUP CODES",
+    "generateLabels": {
+      "tag": "Group name or tag (e.g., CS-101)",
+      "count": "Number of codes to generate"
     },
+    "generateBtn": "Generate codes",
+    "generatedListText": "List of generated codes for the group",
+    "copyAll": "Copy all",
+    "downloadCsv": "Download CSV",
     "cancel": "Cancel",
-    "sendBtn": "Send Invite",
+    "sending": "Sending...",
+    "sendBtn": "Send invite",
     "copyBtn": "Copy",
-    "sending": "Sending..."
+    "doneBtn": "Done",
+    "errors": {
+      "emptyEmail": "Enter an Email",
+      "invalidData": "Enter a valid group name and quantity",
+      "generate": "Error generating codes",
+      "generic": "Sending error"
+    }
   },
   "passwordModal": {
     "title": "Change Password",
@@ -1157,5 +1174,15 @@
       "commentSuccess": "Great job!",
       "commentFail": "Try again!"
     }
+  },
+  "activateCodeModal": {
+    "title": "Join by Code",
+    "placeholder": "Example: AB3-K9M",
+    "close": "Close",
+    "cancel": "Cancel",
+    "submitBtn": "Join",
+    "emptyCodeError": "Enter a code",
+    "success": "Success!",
+    "defaultError": "Activation error or invalid code"
   }
 }
