@@ -34,10 +34,10 @@ public class TestAccessCodeService {
     @Transactional
     public List<String> generateCodes(UUID testId, String tag, int count, String authorEmail) {
         Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new EntityNotFoundException("Тест не знайдено"));
+                .orElseThrow(() -> new EntityNotFoundException("Test not found"));
 
         if (!test.getUser().getEmail().equals(authorEmail)) {
-            throw new AccessDeniedException("Тільки автор тесту може генерувати коди");
+            throw new AccessDeniedException("Only the test author can generate access codes");
         }
 
         List<TestAccessCode> newCodes = new ArrayList<>();
