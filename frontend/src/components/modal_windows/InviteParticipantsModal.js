@@ -7,21 +7,24 @@ import "./ModalWindow.css";
 
 const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
   const { t } = useTranslation();
+  
+  // Стани для базових методів
   const [inviteMethod, setInviteMethod] = useState("email"); 
   const [email, setEmail] = useState("");
-  
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
+
+  // Стани для нової категорії (генерація кодів)
   const [tag, setTag] = useState("");
   const [count, setCount] = useState(30);
   const [generatedCodes, setGeneratedCodes] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ text: "", type: "" });
-
   if (!isOpen) return null;
 
   const testLink = `${window.location.origin}/testpage/${testId}`;
 
+  // Універсальна функція для показу повідомлень
   const showMessage = (text, type) => {
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: "", type: "" }), 3000);
@@ -39,7 +42,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
     }
 
     if (inviteMethod === "code") {
-        onClose(); 
+        onClose(); // Для кодів ми просто закриваємо модалку, бо коди вже згенеровані
         return;
     }
 
@@ -53,11 +56,18 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
 
     try {
       const token = getAccessToken();
+      
       await axios.post(
         `/api/tests/${testId}/invite`,
         { email: email.trim() }, 
-        { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } }
+        { 
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          } 
+        }
       );
+
       showMessage(t('inviteModal.success', 'Запрошення надіслано!'), "success");
       setEmail("");
       setTimeout(onClose, 2000);
@@ -69,6 +79,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
     }
   };
 
+  // Логіка для генерації кодів
   const handleGenerateCodes = async () => {
     if (!tag.trim() || count < 1) {
         showMessage(t('inviteModal.errors.invalidData', 'Введіть коректну назву групи та кількість'), "error");
@@ -126,13 +137,19 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
             <ul className="invite-modal-list">
                 <li className="modalmini-subtitle">{t('inviteModal.options.email', 'Надіслати запрошення на пошту.')}</li>
                 <li className="modalmini-subtitle">{t('inviteModal.options.link', 'Приєднання за посиланням.')}</li>
-                <li className="modalmini-subtitle">{t('inviteModal.options.code', 'Генерація та приєднання за кодами для груп (напр., ОІ-11).')}</li>
+                {/* Новий пункт в списку */}
+                <li className="modalmini-subtitle">{t('inviteModal.options.code', 'Генерація та приєднання за кодами (для груп).')}</li>
             </ul>
         </div>
 
         <div className="invite-methods">
           <label className="custom-radio">
-            <input type="radio" name="inviteMethod" checked={inviteMethod === "email"} onChange={() => setInviteMethod("email")} />
+            <input 
+              type="radio" 
+              name="inviteMethod" 
+              checked={inviteMethod === "email"} 
+              onChange={() => setInviteMethod("email")}
+            />
             <span className="radio-circle-blue"></span>
             <div className="invite-method-info">
               <span className="modalmini-subtitle method-title">{t('inviteModal.methods.email', 'Надіслати на пошту')}</span>
@@ -140,7 +157,12 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
           </label>
 
           <label className="custom-radio">
-            <input type="radio" name="inviteMethod" checked={inviteMethod === "link"} onChange={() => setInviteMethod("link")} />
+            <input 
+              type="radio" 
+              name="inviteMethod" 
+              checked={inviteMethod === "link"} 
+              onChange={() => setInviteMethod("link")}
+            />
             <span className="radio-circle-blue"></span>
             <div className="invite-method-info">
               <span className="modalmini-subtitle method-title">{t('inviteModal.methods.link', 'Приєднання за посиланням')}</span>
@@ -148,10 +170,15 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
           </label>
 
           <label className="custom-radio">
-            <input type="radio" name="inviteMethod" checked={inviteMethod === "code"} onChange={() => setInviteMethod("code")} />
+            <input 
+              type="radio" 
+              name="inviteMethod" 
+              checked={inviteMethod === "code"} 
+              onChange={() => setInviteMethod("code")}
+            />
             <span className="radio-circle-blue"></span>
             <div className="invite-method-info">
-              <span className="modalmini-subtitle method-title">{t('inviteModal.methods.code', 'Генерація та приєднання за кодами (для груп)')}</span>
+              <span className="modalmini-subtitle method-title">{t('inviteModal.methods.code', 'Генерація та приєднання за кодами')}</span>
             </div>
           </label>
         </div>
@@ -175,44 +202,64 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
 
             {inviteMethod === "code" && (
                 <div className="generate-codes-box">
-                    <h4 className="generate-codes-title">{t('inviteModal.generateTitle')}</h4>
+                    <h4 className="generate-codes-title">{t('inviteModal.generateTitle', 'ГЕНЕРАЦІЯ КОДІВ')}</h4>
                     
                     <div className="generate-codes-inputs">
                         <div className="generate-input-group">
-                            <label>{t('inviteModal.generateLabels.tag')}</label>
+                            <label>{t('inviteModal.generateLabels.tag', 'Тег групи')}</label>
                             <input 
                                 value={tag} 
                                 onChange={(e) => setTag(e.target.value)} 
-                                placeholder={t('inviteModal.generateLabels.placeholder', 'e.g. CS-101')} 
-                                className="modal-input" 
+                                placeholder="Напр. CS-101" 
+                                className="modal-invite-input" 
                             />
                         </div>
                         
                         <div className="generate-input-group">
-                            <label>{t('inviteModal.generateLabels.count')}</label>
-                            <div className="generate-count-wrapper">
-                                <input 
-                                    type="number" 
-                                    value={count} 
-                                    onChange={(e) => setCount(e.target.value)} 
-                                    className="modal-input count-input" 
-                                    min="1" max="100"
-                                />
-                                <button 
-                                    onClick={handleGenerateCodes} 
-                                    className="generate-btn"
-                                    disabled={isGenerating}
-                                >
-                                    {isGenerating ? "..." : t('inviteModal.generateBtn')}
-                                </button>
-                            </div>
+                            <label>{t('inviteModal.generateLabels.count', 'Кількість')}</label>
+                        <div className="generate-count-wrapper">
+                            <input 
+                                type="number" 
+                                value={count} 
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val === '') {
+                                        setCount('');
+                                        return;
+                                    }
+
+                                    const num = Number(val);
+                                    
+                                    if (num > 100) {
+                                        setCount(100);
+                                    } else {
+                                        setCount(num);
+                                    }
+                                }} 
+                                onBlur={() => {
+                                    if (count === '' || Number(count) < 1) {
+                                        setCount(1);
+                                    }
+                                }}
+                                className="modal-invite-input count-input" 
+                                min="1" 
+                                max="100"
+                            />
+                            <button 
+                                onClick={handleGenerateCodes} 
+                                className="generate-btn"
+                                disabled={isGenerating}
+                            >
+                                {isGenerating ? "..." : t('inviteModal.generateBtn', 'Згенерувати')}
+                            </button>
+                        </div>
                         </div>
                     </div>
 
                     {generatedCodes.length > 0 && (
                         <div className="generated-results">
                             <p className="generated-subtitle">
-                                {t('inviteModal.generatedListText')} [{tag}]
+                                {t('inviteModal.generatedListText', 'Згенеровані коди')} <strong className="tag-badge">{tag}</strong>
                             </p>
                             <div className="codes-grid">
                                 {generatedCodes.map((code, index) => (
@@ -222,11 +269,11 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
                             <div className="codes-actions">
                                 <button className="action-btn-text" onClick={handleCopyAllCodes}>
                                     <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                    {t('inviteModal.copyAll')}
+                                    {t('inviteModal.copyAll', 'Копіювати')}
                                 </button>
                                 <button className="action-btn-text" onClick={handleDownloadCSV}>
                                     <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                    {t('inviteModal.downloadCsv')}
+                                    {t('inviteModal.downloadCsv', 'Завантажити CSV')}
                                 </button>
                             </div>
                         </div>
