@@ -51,7 +51,6 @@ const TestReviewPage = () => {
     }
   }, [loading, resultData, navigate]);
 
-
   const handleGradeAnswer = async (questionId, points, comment) => {
     try {
         const token = getAccessToken();
@@ -89,7 +88,13 @@ const TestReviewPage = () => {
         setResultData(prev => ({ ...prev, score: response.data.score })); 
         
         setIsFinalizeModalOpen(false);
-        navigate('/test-dashboard'); 
+        
+        if (resultData && resultData.testId) {
+            navigate(`/test/${resultData.testId}/dashboard`);
+        } else {
+            navigate('/viewingtests'); 
+        }
+
       } catch (e) {
           console.error(e);
           setIsFinalizeModalOpen(false);
@@ -116,8 +121,8 @@ const TestReviewPage = () => {
             isPending={isPendingReview}
         />
         
-        {showGradingControls && (
-            <div className="container" style={{ marginBottom: '20px', textAlign: 'right' }}>
+        <div className="container" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end', gap: '15px' }}>
+            {showGradingControls ? (
                 <button 
                     className="black-btn"
                     style={{ padding: '12px 24px', fontSize: '16px' }} 
@@ -125,8 +130,24 @@ const TestReviewPage = () => {
                 >
                     Завершити оцінювання
                 </button>
-            </div>
-        )}
+            ) : (
+                <button 
+                    className="black-btn"
+                    style={{ padding: '12px 24px', fontSize: '16px' }} 
+                    onClick={() => {
+                        // Якщо це автор (але перевірка вже завершена) — кидаємо на дашборд тесту
+                        // Якщо це студент — кидаємо на сторінку "Мої тести"
+                        if (isAuthor && resultData.testId) {
+                            navigate(`/test/${resultData.testId}/dashboard`);
+                        } else {
+                            navigate('/mytests');
+                        }
+                    }} 
+                >
+                    {isAuthor ? 'Повернутися до дашборду' : 'Перейти до моїх тестів'}
+                </button>
+            )}
+        </div>
 
         <TestReviewQuestions 
             questionsLink={resultData.questions} 

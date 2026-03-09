@@ -67,7 +67,7 @@ public class TestService {
         Test test = findTestById(testId);
 
         if (registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), testId)) {
-            throw new IllegalStateException("User is already registered for this test.");
+            throw new IllegalStateException("User is already registered for this test."); 
         }
 
         TestRegistration registration = new TestRegistration(user, test);

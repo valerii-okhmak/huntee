@@ -1,14 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 .generalTestInfoHeader {
-    padding-top: 100px;
-    padding-bottom: 20px;
+    padding-top: clamp(80px, 5vw, 100px);
+    padding-bottom: clamp(10px, 3vw, 20px);
 }
 
 .generalTestInfoHeader__container {
     display: flex;
     justify-content: flex-start;
     gap: 50px;
+    width: 75%;
+    margin: 0 auto;
 }
 
 .generalTestInfoHeader__left {
@@ -48,4 +50,11 @@
     font-family: 'Montserrat', sans-serif;
     color: #848282;
     font-weight: 400;
+}
+
+@media screen and (max-width: 578px) {
+        .generalTestInfoHeader__container {
+            width: 100%;
+            padding: 0 15px;
+        }
 }

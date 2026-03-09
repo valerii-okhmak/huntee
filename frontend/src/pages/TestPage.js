@@ -6,6 +6,7 @@ import { getAccessToken } from '../utils/auth';
 import AboutTest from '../components/test_info/about_test/AboutTest';
 import AboutWork from '../components/test_info/AboutWork';
 import WorkResponsibilities from '../components/test_info/WorkResponsibilities';
+import RegisterButton from '../components/test_info/RegisterButton'; 
 import Loader from '../components/loader/Loader';
 
 const TestPage = () => {
@@ -69,15 +70,24 @@ const TestPage = () => {
             responsibilitiesList = testData.responsibilities;
         }
     }
+    const hasVacancyDescription = testData.vacancyDescription && testData.vacancyDescription.trim() !== '';
+    const hasResponsibilities = responsibilitiesList && responsibilitiesList.length > 0;
 
     return (
         <div className="page">
             <AboutTest testData={testData} />
-            <AboutWork vacancyDescription={testData.vacancyDescription} />
-            <WorkResponsibilities 
-                responsibilities={responsibilitiesList} 
-                testId={testId} 
-            />
+        
+            {hasVacancyDescription && (
+                <AboutWork vacancyDescription={testData.vacancyDescription} />
+            )}
+
+            <div className="responsibilities-info">
+                {hasResponsibilities && (
+                    <WorkResponsibilities responsibilities={responsibilitiesList} />
+                )}
+                
+                <RegisterButton testId={testId} />
+            </div>
         </div>
     );
 };

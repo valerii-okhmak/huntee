@@ -32,10 +32,11 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
 
   const renderQuestion = (q) => {
     if (!q) return null;
+    
     const commentBlock = q.comment ? (
-      <div className="preview-comment" style={{marginTop: '15px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', borderLeft: '4px solid #007bff'}}>
-        <small style={{fontWeight: 'bold', color: '#555'}}>{t('testCreationPreview.hint')}:</small>
-        <p style={{margin: 0, fontSize: '14px'}}>{q.comment}</p>
+      <div className="preview-comment-block">
+        <small className="preview-comment-hint">{t('testCreationPreview.hint')}:</small>
+        <p className="preview-comment-text">{q.comment}</p>
       </div>
     ) : null;
 
@@ -74,7 +75,7 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
         return (
           <>
             <textarea rows="4" placeholder={t('testCreationPreview.yourAnswerPlaceholder')} disabled className="preview-textarea" />
-            <div style={{marginTop: '10px', color: '#28a745'}}>
+            <div className="preview-text-answer-correct">
               <small>{t('testCreationPreview.correctAnswer')}: <strong>{q.textAnswer?.correctText}</strong></small>
             </div>
             {commentBlock}
@@ -83,15 +84,15 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
       case "CODE":
         return (
           <div className="code-block">
-            <div className="code-preview" style={{background: '#ffffff', border: '1px solid #ccc', padding: '15px', borderRadius: '5px', fontFamily: 'monospace'}}>
-              <div style={{marginBottom: '10px', color: '#007bff', fontWeight: 'bold'}}>{t('testCreationPreview.language')}: {q.codeAnswer?.language}</div>
-              <pre style={{whiteSpace: 'pre-wrap', margin: 0}}>{q.codeAnswer?.templateCode || "// Код"}</pre>
+            <div className="preview-code-block">
+              <div className="preview-code-lang">{t('testCreationPreview.language')}: {q.codeAnswer?.language}</div>
+              <pre className="preview-code-pre">{q.codeAnswer?.templateCode || "// Код"}</pre>
             </div>
             {commentBlock}
           </div>
         );
       default:
-        return <div style={{color: 'red'}}>{t('testCreationPreview.unknownType')}</div>;
+        return <div className="preview-unknown-type">{t('testCreationPreview.unknownType')}</div>;
     }
   };
 
@@ -100,7 +101,7 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
       <div className="testCreationMainPreview">
         <div className='container'>
           <div className="test-container">
-            <h2 className="question" style={{ color: showError ? '#dc3545' : 'inherit', transition: 'color 0.3s ease' }}>
+            <h2 className={`question preview-no-questions ${showError ? 'error' : ''}`}>
               {t('testCreationPreview.noQuestions')}
             </h2>
           </div>
@@ -114,26 +115,15 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
       <div className='container'>
         <div className="test-container">
           <h2 className="question">
-            <span style={{color: '#888', marginRight: '10px'}}>#{safeIndex + 1}</span>
+            <span className="preview-question-number">#{safeIndex + 1}</span>
             {q.questionText} 
           </h2>
           
           <div className="answer">{renderQuestion(q)}</div>
 
-          {/* БЛОК КНОПОК */}
-          <div className="test-buttons" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: '25px', flexWrap: 'wrap', gap: '15px' }}>
+          <div className="test-buttons">
             
-            {/* Кнопка "Наступне питання" зліва */}
-            <button
-              className="next-button"
-              disabled={safeIndex >= questions.length - 1}
-              onClick={() => setCurrent(prev => prev + 1)}
-            >
-              {t('testCreationPreview.nextQuestion')}
-            </button>
-
-            {/* Група кнопок Редагувати/Видалити справа */}
-            <div className="testcard-buttons" style={{ width: 'auto', margin: 0 }}>
+            <div className="testcard-buttons">
                 <button
                   className="testcard-action-btn btn-edit"
                   onClick={() => onEditQuestion(safeIndex)}
@@ -150,6 +140,14 @@ const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuest
                   <span>{t('testCreationPreview.delete')}</span>
                 </button>
             </div>
+
+            <button
+              className="next-button"
+              disabled={safeIndex >= questions.length - 1}
+              onClick={() => setCurrent(prev => prev + 1)}
+            >
+              {t('testCreationPreview.nextQuestion')}
+            </button>
 
           </div>
         </div>

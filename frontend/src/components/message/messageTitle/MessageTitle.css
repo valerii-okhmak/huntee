@@ -3,14 +3,29 @@
 .message-title-container {
     margin-top: 100px;
     background-color: #ffffff;
-    padding: 20px 30px;
+    padding: clamp(20px, 3vw, 30px) clamp(20px, 3vw, 40px);
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     
     display: flex;
-    justify-content: space-between;
-    align-items: center; 
-    gap: 20px;
+    flex-direction: column; /* Елементи йдуть зверху вниз */
+    gap: 20px; /* Відстань між верхнім рядком і полем пошуку */
+}
+
+/* Новий клас для першого рядка */
+.message-title-top-row {
+    display: flex;
+    justify-content: space-between; /* Розносить текст і кнопку по краях */
+    align-items: center; /* Центрує їх по вертикалі відносно один одного */
+    gap: 15px;
+    width: 100%;
+}
+
+/* Виправлено: додано крапку на початку */
+.message-title-text-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .message-title-text {
@@ -18,9 +33,18 @@
     color: black;
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
-    font-size: clamp(24px, 3vw, 48px);
+    font-size: clamp(16px, 3vw, 32px);
     text-align: left;
     text-transform: uppercase;
+}
+
+.message-title-subtext {
+    margin: 0;
+    color: #000000;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: clamp(10px, 2vw, 16px); /* Збільшив мінімум до 10px, бо 8px занадто дрібно */
+    text-align: left;
 }
 
 .message-search-container {
@@ -28,8 +52,9 @@
     align-items: center;
     background: #ffffff;
     border: 1px solid #969696;
-    padding: 5px 10px;
+    padding: 10px 15px;
     width: 100%;
+    box-sizing: border-box; /* Щоб padding не збільшував загальну ширину більше 100% */
     border-radius: 10px;
 }
 
@@ -38,12 +63,13 @@
     outline: none;
     background: transparent;
     margin-left: 8px;
-    font-size: 20px;
+    font-size: clamp(12px, 2vw, 16px);
     color: #000000;
     width: 100%;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
 }
+
 .message-search-container input::placeholder{
     color: #8F8D8D;
 }
@@ -51,15 +77,16 @@
 .message-search_icon {
     color: #000000;
     font-weight: 100;
-    font-size: 20px;
+    font-size: clamp(12px, 2vw, 16px);
 }
 
 .mark-all-as-read-button {
+    flex-shrink: 0; /* Забороняє кнопці стискатися, якщо текст заголовоку занадто довгий */
     background-color: rgba(0, 150, 243, 0.15);
     border: 2px solid #0096F3;
     color: #0096F3;
     padding: 10px 15px;
-    font-size: clamp(8px, 2vw, 14px);
+    font-size: clamp(10px, 2vw, 14px);
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     border-radius: 12px;
@@ -67,21 +94,17 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Адаптив */
+/* Додано ховер для кнопки, щоб вона була приємнішою */
+.mark-all-as-read-button:hover {
+    background-color: #0096F3;
+    color: #ffffff;
+}
+
+/* Адаптив для телефонів */
 @media screen and (max-width: 704px){
-    .message-title-container {
-        flex-direction: column; /* На мобільному в колонку */
+    .message-title-top-row {
+        flex-direction: column; /* На вузьких екранах текст і кнопка теж стають один під одним */
         align-items: stretch;
-        gap: 15px;
         text-align: center;
-    }
-
-    .message-title-text {
-        text-align: center;
-        font-size: 32px;
-    }
-
-    .message-search-wrapper {
-        flex: 1; 
     }
 }

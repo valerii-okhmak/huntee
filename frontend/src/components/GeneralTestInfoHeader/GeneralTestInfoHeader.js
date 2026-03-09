@@ -5,7 +5,7 @@ import location_icon from '../../img/test/location.png'
 const GeneralTestInfoHeader = ({ field, title, location, date, time, name }) => {
   return (
     <div className='generalTestInfoHeader'>
-        <div className='container generalTestInfoHeader__container'>
+        <div className='generalTestInfoHeader__container'>
             <div className='generalTestInfoHeader__left'>
                 <h3 className='generalTestInfoHeader__field'>{field}</h3>
                 <h2 className='generalTestInfoHeader__title'>{title}</h2>

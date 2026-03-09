@@ -1,22 +1,59 @@
-.viewing-tests-page{
+.viewing-tests-page {
     display: flex;
     flex-direction: row;
-    gap: 20px;
-    margin: 120px auto;
+    gap: clamp(15px, 3vw, 25px); 
+    margin: clamp(70px, 10vw, 120px) auto ;
 }
 
 /* Ліва частина - 67% */
 .viewing-tests-left-side {
-  flex: 0 0 67%;
-  display: flex;
-  flex-direction: column;
-  gap: 25px
+    /* Дозволяємо блоку стискатися (1 1 замість 0 0) */
+    flex: 1 1 67%; 
+    display: flex;
+    flex-direction: column;
+    gap: clamp(15px, 3vw, 25px);
+    /* Запобігає вилазенню контенту за межі блоку на малих екранах */
+    min-width: 0; 
 }
 
 /* Права частина - 33% */
 .viewing-tests-right-side {
-  flex: 0 0 33%;
-  display: flex;
-  flex-direction: column;
-  gap: 25px
+    flex: 1 1 33%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(15px, 3vw, 25px);
+    min-width: 0;
+}
+
+/* --- АДАПТАЦІЯ ДЛЯ ПЛАНШЕТІВ ТА МОБІЛЬНИХ (до 992px) --- */
+@media screen and (max-width: 992px) {
+    .viewing-tests-page {
+        /* Переводимо макет у вертикальну колонку */
+        flex-direction: column;
+    }
+
+    .viewing-tests-left-side,
+    .viewing-tests-right-side {
+        /* Кожен блок тепер займає 100% ширини */
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    /* Піднімаємо праву частину (фільтри та кнопку додати) НАД списком тестів */
+    .viewing-tests-right-side {
+        order: -1; 
+    }
+}
+
+/* --- АДАПТАЦІЯ ДЛЯ НАЙМЕНШИХ ЕКРАНІВ (до 576px, аж до 320px) --- */
+@media screen and (max-width: 576px) {
+    .viewing-tests-page {
+        /* Додаємо невеликі відступи по боках, щоб контент не прилипав до країв екрану */
+        padding: 0 clamp(10px, 4vw, 20px);
+    }
+    
+    .viewing-tests-left-side,
+    .viewing-tests-right-side {
+        gap: 15px; /* Робимо відстані між елементами ще компактнішими */
+    }
 }

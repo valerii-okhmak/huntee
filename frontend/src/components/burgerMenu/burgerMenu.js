@@ -14,7 +14,7 @@ const BurgerMenu = ({ menuRef, toggleMenu }) => {
       <div className='burger-menu'>
         <div className='burger-line'></div>
         
-        <div className="burger-lang-container" style={{ padding: '20px 40px 0' }}>
+        <div className="burger-lang-container">
             <LanguageSwitcher />
         </div>
 
