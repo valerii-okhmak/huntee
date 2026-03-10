@@ -61,6 +61,15 @@ public class Question {
     @Column(name = "weight", nullable = false)
     private Double weight = 1.0;
 
+    @ElementCollection(targetClass = QuestionCategory.class, fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "question_categories",
+            joinColumns = @JoinColumn(name = "question_id") 
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category_name", nullable = false)
+    private Set <QuestionCategory> categories = new HashSet<>();
+
     public Question(String questionText, QuestionType questionType, User author) {
         this.questionText = questionText;
         this.questionType = questionType;
