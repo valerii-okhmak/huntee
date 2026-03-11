@@ -16,7 +16,7 @@ const DashboardTabNavigation = ({ activeTab, setActiveTab }) => {
     };
 
   return (
-    <nav className="container testDashboard__tabs-nav">
+    <nav className="testDashboard__tabs-nav">
       {tabNames.map((tab) => (
         <button
           key={tab}

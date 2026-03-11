@@ -74,18 +74,20 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
       </div>
 
       <div className="testDashboard__toolbar">
-        <div className="search-container">
-          <img src={lupa} alt='search' className='search_icon' />
-          <input type="text" placeholder={t('testDashboardList.search')}/>
+        <div className="testDashboard__search-message-group">
+          <div className="search-container">
+            <img src={lupa} alt='search' className='search_icon' />
+            <input type="text" placeholder={t('testDashboardList.search')}/>
+          </div>
+          
+          <button 
+              className="testDashboard__message" 
+              title={t('testDashboardList.messageAll')}
+              onClick={handleOpenGeneralMessage}
+          >
+            <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
+          </button>
         </div>
-        
-        <button 
-            className="testDashboard__message" 
-            title={t('testDashboardList.messageAll')}
-            onClick={handleOpenGeneralMessage}
-        >
-          <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
-        </button>
 
         <button className="testDashboard__btn-analytics" onClick={() => setActiveTab('analytics')}>
           {t('testDashboardList.viewAnalytics')}

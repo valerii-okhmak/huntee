@@ -34,3 +34,17 @@
     width: 18px;
     height: 18px;
 }
+
+.tests-controls-row{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px
+}
+@media (max-width: 600px) {
+   .tests-controls-row {
+       flex-direction: column;
+       align-items: stretch;
+       margin-bottom: 15px;
+   }
+}
