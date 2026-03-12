@@ -42,8 +42,16 @@ public class QuestionController {
         return ResponseEntity.ok(questions);
     }
 
-
-
+    @Operation(summary = "Отримати всі питання автора (Банк питань)")
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/questions/my-bank")
+    public ResponseEntity<List<QuestionResponse>> getMyQuestionBank(
+            @AuthenticationPrincipal UserDetails userDetails) {
+            
+        List<QuestionResponse> myQuestions = questionService.getAllQuestionsByAuthor(userDetails.getUsername());
+            
+        return ResponseEntity.ok(myQuestions);
+    }
 
     @Operation(summary = "Створити та додати нове питання до тесту")
     @SecurityRequirement(name = "bearerAuth")
@@ -109,6 +117,8 @@ public class QuestionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+
 
 
     @Operation(summary = "Отримати деталі одного питання")

@@ -91,6 +91,14 @@ public class QuestionService {
         return mapToQuestionResponse(question);
     }
 
+    @Transactional(readOnly = true)
+    public List<QuestionResponse> getAllQuestionsByAuthor(String authorEmail) {
+        List<Question> questions = questionRepository.findAllByAuthor_Email(authorEmail);
+        return questions.stream()
+                .map(this::mapToQuestionResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public QuestionResponse updateQuestion(UUID questionId, QuestionUpdateRequest request, String authorEmail) {
         Question question = findQuestionById(questionId);
@@ -104,8 +112,57 @@ public class QuestionService {
     }
  
     @Transactional
-    public QuestionResponse duplicateQuestion(UUID questionId, String username){
-        throw new UnsupportedOperationException("Функція дублювання ще в розробці");
+    public QuestionResponse duplicateQuestion(UUID questionId, String authorEmail){
+        Question originalQuestion = findQuestionById(questionId);
+        User author = findUserByEmail(authorEmail);
+        Question copyQuestion = new Question();
+        copyQuestion.setAuthor(author);
+        copyQuestion.setWeight(originalQuestion.getWeight());
+        copyQuestion.setComment(originalQuestion.getComment());
+        copyQuestion.setImageUrl(originalQuestion.getImageUrl());
+        copyQuestion.setQuestionText(originalQuestion.getQuestionText());
+        copyQuestion.setQuestionType(originalQuestion.getQuestionType());
+        copyQuestion.setCategories(new HashSet<>(originalQuestion.getCategories()));
+        
+
+        switch(originalQuestion.getQuestionType()){
+            case SINGLE_CHOICE, MULTIPLE_CHOICE:
+                if (originalQuestion.getChoiceOptions() != null) {
+                    Set<ChoiceOption> clonedOptions = originalQuestion.getChoiceOptions().stream()
+                            .map(o -> new ChoiceOption(copyQuestion, o.getOptionText(), o.isCorrect()))
+                            .collect(Collectors.toSet());
+                    copyQuestion.setChoiceOptions(clonedOptions);
+                }
+                break;
+            
+            case TEXT:
+                TextAnswer originalText = originalQuestion.getTextAnswer();
+                if (originalText != null){
+                    copyQuestion.setTextAnswer(new TextAnswer(copyQuestion, originalText.getCorrectText(), originalText.isCaseSensitive()));
+                }
+                break;
+            
+            case MATCHING:
+                if (originalQuestion.getMatchingPairs() != null) {
+                    Set<MatchingPair> clonedPairs = originalQuestion.getMatchingPairs().stream()
+                            .map(p -> new MatchingPair(copyQuestion, p.getPrompt(), p.getAnswer()))
+                            .collect(Collectors.toSet());
+                    copyQuestion.setMatchingPairs(clonedPairs);
+                }
+                break;
+            
+            case CODE:
+                CodeAnswer oldCode = originalQuestion.getCodeAnswer();
+                if (oldCode != null) {
+                    copyQuestion.setCodeAnswer(new CodeAnswer(
+                            copyQuestion, oldCode.getTemplateCode(), oldCode.getTestCases(), 
+                            oldCode.getLanguage(), oldCode.getMethodName()
+                    ));
+                }
+                break;
+        }
+        Question savedQuestion = questionRepository.save(copyQuestion);
+        return mapToQuestionResponse(savedQuestion);
     }
 
     @Transactional

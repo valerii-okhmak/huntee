@@ -69,10 +69,4 @@ public class Question {
     @Enumerated(EnumType.STRING)
     @Column(name = "category_name", nullable = false)
     private Set <QuestionCategory> categories = new HashSet<>();
-
-    public Question(String questionText, QuestionType questionType, User author) {
-        this.questionText = questionText;
-        this.questionType = questionType;
-        this.author = author;
-    }
 }
