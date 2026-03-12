@@ -3,10 +3,12 @@ package org.dreamteam.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import org.dreamteam.Entity.QuestionCategory;
 import org.dreamteam.Entity.QuestionType;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Set;
 
 @Data
 @Builder
@@ -21,4 +23,5 @@ public class QuestionResponse {
     private TextAnswerDTO textAnswer;
     private List<MatchingPairDTO> matchingPairs;
     private CodeAnswerDTO codeAnswer;
+    private Set<QuestionCategory> categories;
 }

@@ -3,7 +3,9 @@ package org.dreamteam.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
+import java.util.Set;
 
+import org.dreamteam.Entity.QuestionCategory;
 import org.dreamteam.Entity.QuestionType;
 
 @Data
@@ -17,4 +19,5 @@ public class QuestionUpdateRequest {
     private TextAnswerDTO textAnswer;
     private List<MatchingPairDTO> matchingPairs;
     private CodeAnswerDTO codeAnswer;
+    private Set<QuestionCategory> categories;
 }

@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.http.MediaType;
 
-import org.dreamteam.dto.QuestionCreateRequest;
-import org.dreamteam.dto.QuestionResponse;
-import org.dreamteam.dto.QuestionUpdateRequest;
+import org.dreamteam.dto.*;
 import org.dreamteam.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -91,6 +89,27 @@ public class QuestionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Дублювати питання до особистого банку")
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/questions/{questionId}/duplicate") 
+    public ResponseEntity<?> duplicateQuestion(
+            @PathVariable UUID questionId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        try {
+            QuestionResponse response = questionService.duplicateQuestion(questionId, userDetails.getUsername());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 
     @Operation(summary = "Отримати деталі одного питання")
     @SecurityRequirement(name = "bearerAuth")

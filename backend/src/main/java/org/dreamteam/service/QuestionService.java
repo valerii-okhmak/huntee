@@ -71,10 +71,9 @@ public class QuestionService {
         
         User author = findUserByEmail(authorEmail);
 
-        Question question = new Question(request.getQuestionText(), request.getQuestionType(), author);
-        question.setComment(request.getComment());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
-        
+        Question question = new Question();
+        question.setAuthor(author);
+        mapToQuestion(question, request);
         processQuestionAnswers(question, request);
 
         Question savedQuestion = questionRepository.save(question);
@@ -96,18 +95,17 @@ public class QuestionService {
     public QuestionResponse updateQuestion(UUID questionId, QuestionUpdateRequest request, String authorEmail) {
         Question question = findQuestionById(questionId);
         checkQuestionOwnership(question, authorEmail);
-
-        question.setQuestionText(request.getQuestionText());
-        question.setComment(request.getComment());
-        question.setQuestionType(request.getQuestionType());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : question.getWeight());
-        question.setQuestionText(request.getQuestionText());
-        
+        mapToQuestion(question, request);
         clearExistingAnswers(question);
         processQuestionAnswers(question, request);
 
         Question updatedQuestion = questionRepository.save(question);
         return mapToQuestionResponse(updatedQuestion);
+    }
+ 
+    @Transactional
+    public QuestionResponse duplicateQuestion(UUID questionId, String username){
+        throw new UnsupportedOperationException("Функція дублювання ще в розробці");
     }
 
     @Transactional
@@ -269,11 +267,8 @@ public class QuestionService {
         for(QuestionCreateRequest request : questionRequests){
             validateQuestionRequest(request);
             Question question = new Question();
-            question.setQuestionText(request.getQuestionText());
-            question.setQuestionType(request.getQuestionType());
-            question.setComment(request.getComment());
             question.setAuthor(author);
-            question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
+            mapToQuestion(question, request);
             processQuestionAnswers(question, request);
             questionsToSave.add(question);
         }
@@ -401,6 +396,22 @@ public class QuestionService {
         }
     }
 
+    private void mapToQuestion(Question question, QuestionCreateRequest request) {
+        question.setQuestionText(request.getQuestionText());
+        question.setQuestionType(request.getQuestionType());
+        question.setComment(request.getComment());
+        question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
+        question.setCategories(request.getCategories() != null ? request.getCategories() : new HashSet<>());
+    }
+
+    private void mapToQuestion(Question question, QuestionUpdateRequest request) {
+        question.setQuestionText(request.getQuestionText());
+        question.setQuestionType(request.getQuestionType());
+        question.setComment(request.getComment());
+        question.setWeight(request.getWeight() != null ? request.getWeight() : question.getWeight());
+        question.setCategories(request.getCategories() != null ? request.getCategories() : question.getCategories());
+    }
+
     private QuestionResponse mapToQuestionResponse(Question question) {
         QuestionResponse.QuestionResponseBuilder builder = QuestionResponse.builder()
                 .questionId(question.getQuestionId())
@@ -408,7 +419,8 @@ public class QuestionService {
                 .comment(question.getComment())
                 .questionType(question.getQuestionType())
                 .weight(question.getWeight())
-                .authorEmail(question.getAuthor().getUsername());
+                .authorEmail(question.getAuthor().getUsername())
+                .categories(question.getCategories());
 
         switch (question.getQuestionType()) {
             case SINGLE_CHOICE, MULTIPLE_CHOICE:
