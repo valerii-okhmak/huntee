@@ -432,7 +432,8 @@
       "invalidCode": "Invalid confirmation code or email.",
       "serverErrorRetry": "Server error. Try again later.",
       "confirmationError": "Confirmation failed. Try again."
-    }
+    },
+    "socialLoginDivider": "Or log in with"
   },
   "slider": {
     "slide1": "IS YOUR COMPANY LOOKING FOR EMPLOYEES?",
@@ -899,7 +900,8 @@
       "forbidden": "Access denied.",
       "serverError": "Server error.",
       "unknown": "Unknown error."
-    }
+    },
+    "socialLoginDivider": "Or log in with"
   },"confirmDeleteTestModal": {
     "title": "DELETE TEST?",
     "close": "Close",

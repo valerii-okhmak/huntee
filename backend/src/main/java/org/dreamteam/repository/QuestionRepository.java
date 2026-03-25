@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface QuestionRepository extends JpaRepository<Question, UUID> {
-    
+public interface QuestionRepository extends JpaRepository<Question, UUID> {  
     List<Question> findByQuestionType(QuestionType questionType);
+    List<Question> findAllByAuthor_Email(String email);
 }

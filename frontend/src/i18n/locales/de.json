@@ -432,7 +432,8 @@
       "invalidCode": "Ungültiger Bestätigungscode.",
       "serverErrorRetry": "Serverfehler. Bitte erneut versuchen.",
       "confirmationError": "Bestätigung fehlgeschlagen."
-    }
+    },
+    "socialLoginDivider": "Oder loggen Sie sich mit ein"
   },
   "slider": {
     "slide1": "SUCHT IHR UNTERNEHMEN MITARBEITER?",
@@ -899,7 +900,8 @@
       "forbidden": "Zugriff verweigert.",
       "serverError": "Serverfehler.",
       "unknown": "Unbekannter Fehler."
-    }
+    },
+    "socialLoginDivider": "Oder loggen Sie sich mit ein"
   },
   "confirmDeleteTestModal": {
     "title": "TEST LÖSCHEN?",

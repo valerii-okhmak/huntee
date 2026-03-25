@@ -31,14 +31,24 @@
     white-space: pre-line; 
 }
 
-
 .testDashboard__toolbar {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
     align-items: stretch;
+    flex-wrap: wrap;
 }
 
+.testDashboard__search-message-group {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    min-width: 350px;
+}
+
+.search-container {
+    flex: 1;
+}
 
 .testDashboard__message {
     background-color: #FFFBFB;
@@ -50,7 +60,9 @@
     cursor: pointer;
     transition: 0.2s;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
 }
+
 .testDashboard__message:hover {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
@@ -70,13 +82,14 @@
     color: #363636;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
+
 .testDashboard__btn-analytics:hover {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     transform: translateY(-1px);
 }
 
-.testDashboard__btn-invite-container{
+.testDashboard__btn-invite-container {
     display: flex;
     justify-content: flex-end;
 }
@@ -95,6 +108,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     margin-bottom: 24px;
 }
+
 .testDashboard__btn-invite:hover {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
@@ -102,10 +116,37 @@
     color: #000000;
 }
 
-
 .testDashboard__cards-list {
     display: flex;
     flex-direction: column;
     gap: 30px;
     margin-bottom: 50px;
+}
+
+@media screen and (max-width: 600px) {
+    .testDashboard__toolbar {
+        flex-direction: column;
+    }
+
+    .testDashboard__search-message-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .testDashboard__message {
+        padding: 0 25px; 
+    }
+
+    .testDashboard__btn-analytics {
+        width: 100%;
+        text-align: center;
+    }
+
+    .testDashboard__btn-invite-container {
+        justify-content: stretch;
+    }
+
+    .testDashboard__btn-invite {
+        width: 100%;
+    }
 }

@@ -52,11 +52,15 @@ const SocialLogin = ({ setError }) => {
   };
 
   return (
-    <div className="social-login">
-      <GoogleLogin 
-        onSuccess={handleGoogleLogin}
-        onError={() => setError(t('socialLogin.googleLoginFailed'))}
-      />
+    <div className="social-login-wrapper">
+      <div className="social-login-btn-container">
+        <GoogleLogin 
+          onSuccess={handleGoogleLogin}
+          onError={() => setError(t('socialLogin.googleLoginFailed'))}
+          text="signin_with" /* Можна змінити текст на кнопці, якщо треба */
+          shape="rectangular"
+        />
+      </div>
     </div>
   );
 };

@@ -84,7 +84,6 @@
 
 
 .testDashboard__advanced-section {
-    margin-top: 60px;
     border-top: 1px solid #ccc;
     padding-top: 40px;
 }
@@ -93,7 +92,6 @@
     font-family: 'Montserrat', sans-serif;
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 30px;
     color: black;
 }
 
@@ -102,6 +100,8 @@
     grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
     gap: 24px;
     width: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .analytics-card {
@@ -164,5 +164,14 @@
 
     .testDashboard__analytics-stats-row {
         gap: 15px;
+    }
+}
+
+@media (max-width: 578px) {
+    .testDashboard__analytics-actions{
+        justify-content: center;
+    }
+    .testDashboard__section-title{
+        text-align: center;
     }
 }

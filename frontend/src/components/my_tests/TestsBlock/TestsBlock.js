@@ -28,7 +28,7 @@ const TestsBlock = ({ selectedLocations = [], allTests = [] }) => {
   return (
     <div className='testsBlock'>
       
-      <div className="tests-controls-row" style={{ display: 'flex', gap: '15px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
+      <div className="tests-controls-row">
         
         <div className="search-container" style={{ margin: 0, flex: 1 }}>
           <img src={lupa} alt='search' className='search_icon' />
