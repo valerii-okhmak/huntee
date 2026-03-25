@@ -131,25 +131,15 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
       </div>
 
       {uniqueGroups.length > 1 && ( 
-        <div className="groups-filter-tabs" style={{ display: 'flex', gap: '10px', overflowX: 'auto', marginBottom: '20px', paddingBottom: '5px' }}>
+        <div className="testDashboard__groups-filter-tabs">
           {uniqueGroups.map(group => (
             <button
               key={group}
               onClick={() => setSelectedGroupTag(group)}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '20px',
-                border: selectedGroupTag === group ? '2px solid #000' : '1px solid #ccc',
-                background: selectedGroupTag === group ? '#000' : '#fff',
-                color: selectedGroupTag === group ? '#fff' : '#000',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                fontFamily: "'Montserrat', sans-serif",
-                fontSize: '13px'
-              }}
+              className={`testDashboard__group-btn ${selectedGroupTag === group ? 'testDashboard__group-btn--active' : ''}`}
             >
               {group === 'ALL' ? t('analytics.allGroups', 'Всі групи') : group}
-              <span style={{ opacity: 0.7, marginLeft: '6px', fontSize: '11px' }}>
+              <span className="testDashboard__group-btn-count">
                 ({group === 'ALL' ? students.length : students.filter(s => s.groupTag === group).length})
               </span>
             </button>

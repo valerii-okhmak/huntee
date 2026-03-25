@@ -123,6 +123,54 @@
     margin-bottom: 50px;
 }
 
+.groups-filter-tabs{
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+}
+
+.testDashboard__groups-filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.testDashboard__group-btn {
+    padding: clamp(8px, 2vw, 10px) clamp(14px, 3vw, 20px);
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(14px, 2vw, 20px);
+    transition: all 0.2s ease;
+}
+
+.testDashboard__group-btn:hover {
+    background: #f5f5f5;
+}
+
+.testDashboard__group-btn--active {
+    border: 2px solid #000;
+    background: #000;
+    color: #fff;
+}
+
+.testDashboard__group-btn--active:hover {
+    background: #222;
+}
+
+.testDashboard__group-btn-count {
+    opacity: 0.7;
+    margin-left: 6px;
+    font-size: clamp(14px, 2vw, 20px);
+}
+
 @media screen and (max-width: 600px) {
     .testDashboard__toolbar {
         flex-direction: column;
