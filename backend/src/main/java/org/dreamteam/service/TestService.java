@@ -7,6 +7,7 @@ import org.dreamteam.Entity.AttemptStatus;
 import org.dreamteam.Entity.Question;
 import org.dreamteam.Entity.QuestionType;
 import org.dreamteam.Entity.Test;
+import org.dreamteam.Entity.TestAccessCode;
 import org.dreamteam.Entity.TestQuestion;
 import org.dreamteam.Entity.TestRegistration;
 import org.dreamteam.Entity.User;
@@ -24,6 +25,7 @@ import org.dreamteam.dto.TestUpdateRequest;
 import org.dreamteam.repository.TestQuestionRepository;
 import org.dreamteam.repository.TestRegistrationRepository;
 import org.dreamteam.repository.QuestionRepository;
+import org.dreamteam.repository.TestAccessCodeRepository;
 import org.dreamteam.repository.TestRepository;
 import org.dreamteam.repository.UserRepository;
 import org.dreamteam.repository.UserTestAttemptRepository;
@@ -59,6 +61,7 @@ public class TestService {
     private final NotificationService notificationService;
     private final QuestionRepository questionRepository;
     private final ExportService exportService;
+    private final TestAccessCodeRepository testAccessCodeRepository;
 
 
     @Transactional
@@ -495,13 +498,19 @@ public class TestService {
                 .build();
     }
 
-    private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
+private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
         User u = reg.getUser();
+        
+        String tag = testAccessCodeRepository.findByTest_TestIdAndUsedByUser_Id(reg.getTest().getTestId(), u.getId())
+                .map(code -> code.getTag())
+                .orElse("-");
+
         return CandidateDTO.builder()
                 .userId(u.getId())
                 .fullName(getFullName(u))
                 .email(u.getEmail())
                 .profileImageUrl(getAvatarUrl(u))
+                .groupTag(tag) 
                 .status("REGISTERED")
                 .date(reg.getRegisteredAt())
                 .score(null)
@@ -510,17 +519,27 @@ public class TestService {
 
     private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt, BigDecimal totalMaxScore) {
         User u = attempt.getUser();
+        
+        String tag = testAccessCodeRepository.findByTest_TestIdAndUsedByUser_Id(attempt.getTest().getTestId(), u.getId())
+                .map(code -> code.getTag()) 
+                .orElse("-");
+
         return CandidateDTO.builder()
                 .userId(u.getId())
                 .fullName(getFullName(u))
                 .email(u.getEmail())
-                .profileImageUrl(getAvatarUrl(u))
+                .groupTag(tag) 
                 .status("COMPLETED")
                 .date(attempt.getCompletedAt())
                 .score(attempt.getScore())
                 .totalMaxScore(totalMaxScore)
                 .attemptId(attempt.getAttemptId())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getTestGroups(UUID testId) {
+        return testAccessCodeRepository.findUniqueTagsByTestId(testId);
     }
 
     private Test findTestById(UUID testId) {

@@ -213,6 +213,11 @@ public class TestController {
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(testService.getAdvancedAnalytics(testId, userDetails.getUsername()));
     }
+
+    @GetMapping("/{testId}/groups")
+    public ResponseEntity<List<String>> getTestGroups(@PathVariable UUID testId) {
+        return ResponseEntity.ok(testService.getTestGroups(testId));
+}
 }
 
 

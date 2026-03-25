@@ -18,4 +18,5 @@ public class CandidateDTO {
     private BigDecimal totalMaxScore; 
     private OffsetDateTime date;
     private UUID attemptId;
+    private String groupTag;
 }

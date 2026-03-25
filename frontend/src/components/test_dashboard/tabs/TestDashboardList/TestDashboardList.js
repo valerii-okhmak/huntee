@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react'; 
 import { useTranslation } from 'react-i18next';
 import './TestDashboardList.css';
 import DashboardStudentCard from '../../DashboardStudentCard/DashboardStudentCard';
@@ -21,10 +21,15 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
+  const [selectedGroupTag, setSelectedGroupTag] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         setLoading(true);
+        setSelectedGroupTag('ALL'); 
+        
         const token = getAccessToken();
         const endpoint = activeTab === 'registered' 
           ? `/api/tests/${testId}/candidates`
@@ -56,6 +61,23 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
     setIsMessageModalOpen(true);
   };
 
+  const uniqueGroups = useMemo(() => {
+    const tags = students.map(s => s.groupTag).filter(Boolean); 
+    return ['ALL', ...new Set(tags)];
+  }, [students]);
+
+  const filteredStudents = useMemo(() => {
+    return students.filter(student => {
+      const matchesSearch = student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            student.email?.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesGroup = selectedGroupTag === 'ALL' || student.groupTag === selectedGroupTag;
+      
+      return matchesSearch && matchesGroup;
+    });
+  }, [students, searchQuery, selectedGroupTag]);
+
+
   const description = activeTab === 'registered'
     ? t('testDashboardList.desc.registered')
     : t('testDashboardList.desc.results');
@@ -76,7 +98,12 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
       <div className="testDashboard__toolbar">
         <div className="search-container">
           <img src={lupa} alt='search' className='search_icon' />
-          <input type="text" placeholder={t('testDashboardList.search')}/>
+          <input 
+            type="text" 
+            placeholder={t('testDashboardList.search')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
         
         <button 
@@ -101,9 +128,36 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         </button>
       </div>
 
+      {uniqueGroups.length > 1 && ( 
+        <div className="groups-filter-tabs" style={{ display: 'flex', gap: '10px', overflowX: 'auto', marginBottom: '20px', paddingBottom: '5px' }}>
+          {uniqueGroups.map(group => (
+            <button
+              key={group}
+              onClick={() => setSelectedGroupTag(group)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '20px',
+                border: selectedGroupTag === group ? '2px solid #000' : '1px solid #ccc',
+                background: selectedGroupTag === group ? '#000' : '#fff',
+                color: selectedGroupTag === group ? '#fff' : '#000',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                fontFamily: "'Montserrat', sans-serif",
+                fontSize: '13px'
+              }}
+            >
+              {group === 'ALL' ? t('analytics.allGroups', 'Всі групи') : group}
+              <span style={{ opacity: 0.7, marginLeft: '6px', fontSize: '11px' }}>
+                ({group === 'ALL' ? students.length : students.filter(s => s.groupTag === group).length})
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="testDashboard__cards-list">
-        {students.length > 0 ? (
-          students.map(student => (
+        {filteredStudents.length > 0 ? (
+          filteredStudents.map(student => (
             <DashboardStudentCard 
               key={student.userId} 
               student={student} 
@@ -128,7 +182,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         isOpen={isMessageModalOpen}
         onClose={() => setIsMessageModalOpen(false)}
         student={selectedStudent}
-        allStudents={students}
+        allStudents={filteredStudents} 
       />
     </div>
   )

@@ -32,14 +32,12 @@ const TestDashboardAnalytics = ({ testId }) => {
   const { t } = useTranslation();
   
   const [analytics, setAnalytics] = useState(null);
-  
   const [advancedData, setAdvancedData] = useState(null);
-  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+  const [availableGroups, setAvailableGroups] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,9 +46,10 @@ const TestDashboardAnalytics = ({ testId }) => {
         const token = getAccessToken();
         const headers = { 'Authorization': `Bearer ${token}` };
 
-        const [basicRes, advancedRes] = await Promise.allSettled([
+        const [basicRes, advancedRes, groupsRes] = await Promise.allSettled([
             axios.get(`/api/tests/${testId}/analytics`, { headers }),
-            axios.get(`/api/tests/${testId}/analytics/advanced`, { headers })
+            axios.get(`/api/tests/${testId}/analytics/advanced`, { headers }),
+            axios.get(`/api/tests/${testId}/groups`, { headers })
         ]);
 
         if (basicRes.status === 'fulfilled') {
@@ -63,6 +62,10 @@ const TestDashboardAnalytics = ({ testId }) => {
             setAdvancedData(advancedRes.value.data);
         } else {
             console.warn("Advanced analytics failed to load");
+        }
+
+        if (groupsRes.status === 'fulfilled') {
+            setAvailableGroups(groupsRes.value.data);
         }
 
       } catch (err) {
@@ -154,7 +157,6 @@ const TestDashboardAnalytics = ({ testId }) => {
       backgroundColor: '#0984e3',
     }]
   } : null;
-
 
   if (loading) return <Loader />;
   if (error) return <div className='container'>{error}</div>;
@@ -267,6 +269,7 @@ const TestDashboardAnalytics = ({ testId }) => {
         onClose={() => setIsExportModalOpen(false)}
         onExport={handleExportResults}
         loading={exportLoading}
+        availableGroups={availableGroups}
       />
     </div>
   )
