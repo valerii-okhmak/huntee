@@ -10,6 +10,10 @@ const TestCreationStartContainer = ({ mode, testId }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [fieldOptions, setFieldOptions] = useState([]);
+  const [levelOptions, setLevelOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
+
   const [testName, setTestName] = useState('');
   const [selectedField, setSelectedField] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState(null);
@@ -27,29 +31,6 @@ const TestCreationStartContainer = ({ mode, testId }) => {
 
   const [errors, setErrors] = useState({});
 
-  const fieldOptions = [
-    { value: 'mixed', label: t('testCreationStart.options.mixed') },
-    { value: 'frontend', label: 'FRONTEND' },
-    { value: 'backend', label: 'BACKEND' },
-    { value: 'devops', label: 'DEVOPS' },
-    { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
-    { value: 'dataanalyst', label: 'DATA ANALYST' },
-  ];
-
-  const levelOptions = [
-    { value: 'junior', label: 'JUNIOR' },
-    { value: 'middle', label: 'MIDDLE' },
-    { value: 'senior', label: 'SENIOR' },
-    { value: 'trainee', label: 'TRAINEE' },
-  ];
-
-  const cityOptions = [
-    { value: 'ternopil', label: t('testCreationStart.cities.ternopil') },
-    { value: 'ivano-frankivsk', label: t('testCreationStart.cities.frankivsk') },
-    { value: 'lviv', label: t('testCreationStart.cities.lviv') },
-    { value: 'online', label: t('testCreationStart.cities.online') },
-  ];
-
   const refs = {
     testName: useRef(null),
     field: useRef(null),
@@ -60,45 +41,61 @@ const TestCreationStartContainer = ({ mode, testId }) => {
   };
 
   useEffect(() => {
-    if (mode !== 'edit' || !testId) return;
+    const fetchData = async () => {
+      try {
+        const token = getAccessToken();
+        const config = {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        };
 
-    const token = getAccessToken();
+        const dictRes = await axios.get('/api/dictionaries', config);
+        const { fields, levels, cities } = dictRes.data;
+        
+        setFieldOptions(fields);
+        setLevelOptions(levels);
+        setCityOptions(cities);
 
-    axios.get(`/api/tests/${testId}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
-    }).then(res => {
-      const tData = res.data;
+        if (mode === 'edit' && testId) {
+          const testRes = await axios.get(`/api/tests/${testId}`, config);
+          const tData = testRes.data;
 
-      setTestName(tData.testName);
-      setSelectedField(fieldOptions.find(o => o.value === tData.sphere));
-      setSelectedLevel(levelOptions.find(o => o.value === tData.level));
-      setSelectedCity(cityOptions.find(o => o.value === tData.city));
-      setDescription(tData.vacancyDescription || '');
-      setResponsibilities(tData.responsibilities || '');
-      setStartingDate(tData.startTime ? new Date(tData.startTime) : null);
-      setFinishingDate(tData.endTime ? new Date(tData.endTime) : null);
-      setSelectedTime(tData.durationMinutes || 0);
+          setTestName(tData.testName);
+          setSelectedField(fields.find(o => o.value === tData.sphere) || null);
+          setSelectedLevel(levels.find(o => o.value === tData.level) || null);
+          setSelectedCity(cities.find(o => o.value === tData.city) || null);
+          
+          setDescription(tData.vacancyDescription || '');
+          setResponsibilities(tData.responsibilities || '');
+          setStartingDate(tData.startTime ? new Date(tData.startTime) : null);
+          setFinishingDate(tData.endTime ? new Date(tData.endTime) : null);
+          setSelectedTime(tData.durationMinutes || 0);
 
-      setSelectedTestType(tData.isPrivate
-        ? { value: 'private', label: t('testCreationStart.options.private') }
-        : { value: 'public', label: t('testCreationStart.options.public') }
-      );
+          setSelectedTestType(tData.isPrivate
+            ? { value: 'private', label: t('testCreationStart.options.private') }
+            : { value: 'public', label: t('testCreationStart.options.public') }
+          );
 
-      setSelectedShowResults(tData.isShowResult
-        ? { value: 'yes', label: t('testCreationStart.options.yes') }
-        : { value: 'no', label: t('testCreationStart.options.no') }
-      );
+          setSelectedShowResults(tData.isShowResult
+            ? { value: 'yes', label: t('testCreationStart.options.yes') }
+            : { value: 'no', label: t('testCreationStart.options.no') }
+          );
 
-      setSelectedTestQuestionsSorting(tData.isFixedQuestionOrder
-        ? { value: 'fixed', label: t('testCreationStart.options.fixed') }
-        : { value: 'random', label: t('testCreationStart.options.random') }
-      );
+          setSelectedTestQuestionsSorting(tData.isFixedQuestionOrder
+            ? { value: 'fixed', label: t('testCreationStart.options.fixed') }
+            : { value: 'random', label: t('testCreationStart.options.random') }
+          );
 
-      setSelectedTestAnswersSorting(tData.isFixedAnswerOrder
-        ? { value: 'fixed', label: t('testCreationStart.options.fixed') }
-        : { value: 'random', label: t('testCreationStart.options.random') }
-      );
-    });
+          setSelectedTestAnswersSorting(tData.isFixedAnswerOrder
+            ? { value: 'fixed', label: t('testCreationStart.options.fixed') }
+            : { value: 'random', label: t('testCreationStart.options.random') }
+          );
+        }
+      } catch (error) {
+        console.error("Помилка завантаження даних:", error);
+      }
+    };
+
+    fetchData();
   }, [mode, testId, t]);
 
   const validate = () => {
