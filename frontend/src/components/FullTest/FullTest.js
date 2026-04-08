@@ -35,6 +35,7 @@ const TestPage = ({ testType }) => {
   const { t } = useTranslation();
   const { testId } = useParams(); 
   const navigate = useNavigate();
+  const getLocalKey = (tId) => `test_progress_${tId}`;
 
   const [attemptData, setAttemptData] = useState(null); 
   const [current, setCurrent] = useState(0); 
@@ -95,6 +96,14 @@ const TestPage = ({ testType }) => {
           setTimeLeft(null); 
         }
         setLoading(false);
+
+        const savedProgress = localStorage.getItem(getLocalKey(testId));
+        if (savedProgress) {
+            const parsed = JSON.parse(savedProgress);
+            setAnswers(parsed);
+            answersRef.current = parsed;
+            console.log("🔄 Progress restored from LocalStorage");
+        }
 
       } catch (error) {
         console.error("🔍 Start Error:", error);
@@ -181,12 +190,30 @@ const TestPage = ({ testType }) => {
   };
 
 
+  const saveTimeoutRef = useRef(null);
+
   const handleAnswerChange = (questionId, value) => {
     setAnswers(prev => {
-        const newState = { ...prev, [questionId]: value };
-        answersRef.current = newState;
-        return newState;
+      const newState = { ...prev, [questionId]: value };
+      answersRef.current = newState;
+      
+      const currentQuestion = attemptData.questions[current];
+      
+      if (currentQuestion.questionType.includes('CHOICE')) {
+          localStorage.setItem(getLocalKey(testId), JSON.stringify(newState));
+      } else {
+          if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+          
+          saveTimeoutRef.current = setTimeout(() => {
+              localStorage.setItem(getLocalKey(testId), JSON.stringify(newState));
+              console.log("💾 Auto-saved to LocalStorage after 3s pause");
+          }, 3000);
+      }
+      
+      return newState;
     });
+    
+    setSaveStatus('unsaved'); 
   };
 
   const handleNext = async () => {
@@ -271,6 +298,8 @@ const TestPage = ({ testType }) => {
         );
         
         console.log("🔍 Finish SUCCESS. Data:", response.data);
+        localStorage.removeItem(getLocalKey(testId)); 
+        navigate(`/testreview/${redirectId}`);
         
         const redirectId = response.data?.attemptId || currentAttemptId;
 
