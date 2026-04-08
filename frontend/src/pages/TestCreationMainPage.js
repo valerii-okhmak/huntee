@@ -11,6 +11,11 @@ import AiGenerationModal from '../components/modal_windows/AiGenerationModal';
 import Loader from '../components/loader/Loader';
 import { getAccessToken } from '../utils/auth';
 
+const STORAGE_QUESTIONS_KEY = 'tc_questions_list';
+const STORAGE_META_KEY = 'test_creation_draft';
+const STORAGE_MODE_KEY = 'tc_page_mode';
+const STORAGE_EDIT_INDEX_KEY = 'tc_editing_index';
+
 const TestCreationMainPage = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
@@ -19,10 +24,14 @@ const TestCreationMainPage = () => {
   const isEditMode = location.state?.mode === 'edit';
   const testId = location.state?.testId;
 
-  const [mode, setMode] = useState('create');
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [questionsCount, setQuestionsCount] = useState(0);
-  const [questions, setQuestions] = useState([]);
+  const [mode, setMode] = useState(() => {
+    if (isEditMode) return 'preview';
+    return localStorage.getItem(STORAGE_MODE_KEY) || 'create';
+  });
+  const [editingIndex, setEditingIndex] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_EDIT_INDEX_KEY);
+    return saved !== null ? parseInt(saved) : null;
+  });
   const [originalQuestions, setOriginalQuestions] = useState([]);
   
   const [loading, setLoading] = useState(false);
@@ -33,6 +42,31 @@ const TestCreationMainPage = () => {
   const [aiLoading, setAiLoading] = useState(false);
 
   const creatorRef = useRef(null);
+
+  const [questions, setQuestions] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_QUESTIONS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [questionsCount, setQuestionsCount] = useState(questions.length);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      localStorage.setItem(STORAGE_QUESTIONS_KEY, JSON.stringify(questions));
+      setQuestionsCount(questions.length);
+    }
+  }, [questions, isEditMode]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      localStorage.setItem(STORAGE_MODE_KEY, mode);
+      if (editingIndex !== null) {
+        localStorage.setItem(STORAGE_EDIT_INDEX_KEY, editingIndex.toString());
+      } else {
+        localStorage.removeItem(STORAGE_EDIT_INDEX_KEY);
+      }
+    }
+  }, [mode, editingIndex, isEditMode]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -135,26 +169,28 @@ const TestCreationMainPage = () => {
   const handleEditCancel = () => {
     setEditingIndex(null);
     setMode('preview');
+    localStorage.removeItem(STORAGE_EDIT_INDEX_KEY);
+    if (creatorRef.current) {
+        creatorRef.current.resetForm(); 
+    }
   };
 
   const handleEditConfirm = () => {
     const updatedQuestion = creatorRef.current?.getCurrentQuestionAndReset();
-    
     if (!updatedQuestion) return;
 
     setQuestions(prev => {
       const newList = [...prev];
-      const originalId = newList[editingIndex].id;
-      if (originalId) {
-        updatedQuestion.id = originalId;
+      if (newList[editingIndex]?.id) {
+        updatedQuestion.id = newList[editingIndex].id;
       }
-      
       newList[editingIndex] = updatedQuestion;
       return newList;
     });
 
     setEditingIndex(null);
     setMode('preview');
+    localStorage.removeItem(STORAGE_EDIT_INDEX_KEY);
   };
 
 
@@ -320,6 +356,15 @@ const TestCreationMainPage = () => {
           );
         }
       }      
+
+      const draftKeys = [
+        STORAGE_META_KEY, 
+        STORAGE_QUESTIONS_KEY, 
+        'tc_current_creator_q',
+        'tc_name', 'tc_field', 'tc_level'
+      ];
+      [STORAGE_MODE_KEY, STORAGE_EDIT_INDEX_KEY].forEach(k => localStorage.removeItem(k));
+      draftKeys.forEach(key => localStorage.removeItem(key));
   
       navigate('/viewingtests');
     } catch (e) {
