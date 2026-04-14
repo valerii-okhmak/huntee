@@ -1,6 +1,7 @@
 # Huntee App
 
 - [UA version](READMEFILES/ua/README.md)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 
 **Huntee** is a web platform for online candidate testing with built-in integrity control mechanisms. The platform provides IT companies with an effective tool for initial candidate screening, and students — with the opportunity to showcase their skills and receive interview invitations.
