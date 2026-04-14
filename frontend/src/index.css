@@ -181,6 +181,7 @@ input::placeholder, textarea::placeholder {
   background: #000000;
   border: 1px solid black;
   color: #ffffff;
+  cursor: pointer;
   transition: .3s;
 }
 
@@ -190,11 +191,10 @@ input::placeholder, textarea::placeholder {
 
 @media screen and (max-width: 768px) {
     .testCreationMainButtons__container {
-        justify-content: center; /* На планшетах центруємо кнопки */
+        justify-content: center; 
     }
 }
 
-/* --- АДАПТАЦІЯ ДЛЯ ТЕЛЕФОНІВ (аж до 320px) --- */
 @media screen and (max-width: 578px) {
     .testCreationMainButtons__container {
         flex-direction: column; 
@@ -204,9 +204,6 @@ input::placeholder, textarea::placeholder {
     }
 
     .testCreationMainButtons__container button {
-        width: 100%; /* Кожна кнопка займає 100% ширини для зручного натискання пальцем */
+        width: 100%;
     }
-    
-    /* Додатково: якщо ви хочете, щоб кнопка AI була першою або останньою на мобільному, 
-       можна використовувати властивість order. За замовчуванням вони йдуть як у HTML */
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './TestCreationStartContainer.css';
 import SelectField from '../testCreation_SelectField/TestCreation_SelectField';
@@ -99,10 +99,13 @@ useEffect(() => {
     fetchData();
   }, [mode, testId, t]);
 
-  const validate = () => {
+const validate = () => {
     const newErrors = {};
     if (!testName?.trim()) newErrors.testName = t('testCreationStart.errors.testName');
     if (!selectedField) newErrors.field = t('testCreationStart.errors.field');
+    
+    if (!selectedLevel) newErrors.level = t('testCreationStart.errors.level');
+    if (!selectedCity) newErrors.city = t('testCreationStart.errors.city');
     
     const isValidDate = (d) => d && !isNaN(new Date(d).getTime());
 

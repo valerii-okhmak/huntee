@@ -1,0 +1,7 @@
+.join-by-code-btn {
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 25px;
+  color: white;
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 700;
+}
