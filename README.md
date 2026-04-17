@@ -1,75 +1,78 @@
 # Huntee App
 
-- [English version](READMEFILES/eng/README.md)
+- [UA version](READMEFILES/ua/README.md)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**Huntee** — веб-платформа для онлайн тестування кандидатів з вбудованими механізмами контролю доброчесності. Платформа забезпечує IT-компаніям ефективний інструмент для первинного відбору спеціалістів, а студентам — можливість продемонструвати свої навички та отримати запрошення на співбесіду.
 
-## Зміст
-
-- [Опис проєкту](#опис)
-- [Можливості для компаній](READMEFILES/ua/companies.md)
-- [Можливості для студентів](READMEFILES/ua/students.md)
-- [Формат тестування та захист](READMEFILES/ua/test-format.md)
-- [Технології](READMEFILES/ua/technologies.md)
-- [Встановлення та запуск](READMEFILES/ua/setup.md)
-- [Контакти](#-контакти)
+**Huntee** is a web platform for online candidate testing with built-in integrity control mechanisms. The platform provides IT companies with an effective tool for initial candidate screening, and students — with the opportunity to showcase their skills and receive interview invitations.
 
 
-## Опис
+## Table of Contents
 
-Huntee App — це платформа, яка має на меті автоматизувати процес первинного відбору IT-кандидатів шляхом онлайн тестування з контролем доброчесності.  
+- [Project Overview](#project-overview)
+- [Features for Companies](READMEFILES/eng/companies.md)
+- [Features for Students](READMEFILES/eng/students.md)
+- [Test Format & Security](READMEFILES/eng/test-format.md)
+- [Soft Skills Assessment](READMEFILES/eng/soft-skills-logic.md)
+- [Career Test Logic & Flow](READMEFILES/eng/career-test-logic.md)
+- [University Verification (SSO)](READMEFILES/eng/university-verification-logic.md)
+- [Technologies Used](READMEFILES/eng/technologies.md)
+- [Installation & Setup](READMEFILES/eng/setup.md)
+- [Contact](#contact)
 
-### Ключові можливості:  
-- Проведення онлайн тестів із контролем доброчесності: Використання технологій, що забезпечують моніторинг та верифікацію чесності кандидата під час тестування ( відстеження активності, блокування копіювання, захист від мультизадачності).  
-- Інтуїтивно зрозумілий інтерфейс: Зручний користувацький досвід як для IT-компаній, що створюють та керують тестами, так і для кандидатів, які проходять оцінювання.  
-- Автоматична оцінка результатів: Миттєвий аналіз відповідей кандидатів з формуванням детальних звітів та рейтингу.
-- Запрошення на співбесіду: Система автоматично надсилає запрошення кандидатам, які успішно пройшли тестування, що прискорює процес найму. 
+## Project Overview
 
-### Технологічний стек
+Huntee App is a platform designed to automate the preliminary selection process of IT candidates through online testing with integrity control.
 
-Платформа побудована з використанням сучасних і надійних технологій, що забезпечують ефективність, масштабованість та безпеку:
+### Key Features:  
+- **Online testing with integrity control:** Utilizes technologies that monitor and verify candidate honesty during testing (activity tracking, copy blocking, multitasking prevention).  
+- **Intuitive interface:** Provides a user-friendly experience for IT companies creating and managing tests as well as for candidates taking assessments.  
+- **Automatic result evaluation:** Instant analysis of candidates' answers with detailed reports and rankings.  
+- **Interview invitations:** The system automatically sends invitations to candidates who successfully pass the tests, speeding up the hiring process.
 
-- Frontend:
-    - React — бібліотека для створення динамічних інтерфейсів користувача, яка дозволяє будувати швидкі, гнучкі та масштабовані веб-додатки з компонентною архітектурою.
-- Backend:
-    - Java — мова програмування, що використовується для розробки надійної серверної логіки та обробки запитів.
-    - Spring Boot — фреймворк на базі Java, який спрощує створення, налаштування та розгортання веб-додатків і RESTful API.
-    - Swagger — інструмент для автоматичної генерації документації API, що полегшує інтеграцію, тестування та підтримку серверних інтерфейсів.
-- База даних:
-    - MySQL — система керування реляційними базами даних, яка забезпечує надійне зберігання, організацію та швидку обробку даних.
+### Technology Stack
 
-### Встановлення та запуск
+The platform is built using modern and reliable technologies that ensure efficiency, scalability, and security:
 
-Детальні інструкції щодо встановлення, налаштування середовища та запуску платформи наведені у розділі [Встановлення та запуск](READMEFILES/ua/setup.md).  
-Цей розділ містить інформацію про системні вимоги, конфігурацію серверу та запуск необхідних служб.
+- **Frontend:**  
+  - React — a library for building dynamic user interfaces, enabling fast, flexible, and scalable web applications with a component-based architecture.
 
+- **Backend:**  
+  - Java — a programming language used to develop robust server-side logic and handle requests.  
+  - Spring Boot — a Java-based framework that simplifies the creation, configuration, and deployment of web applications and RESTful APIs.  
+  - Swagger — a tool for automatic API documentation generation, facilitating integration, testing, and maintenance of server interfaces.
 
-## 📞 Контакти
+- **Database:**  
+  - MySQL — a relational database management system that provides reliable data storage, organization, and fast processing.
 
-**Автори:**
+### Installation and Setup
 
-- Охмак Валерій  
-- Петрикович Антоніна  
-- Рибачок Роман  
-- Романів Святослав  
-- Джебко Юрій  
-- Старицька Оксана
+Detailed instructions for installing, configuring the environment, and running the platform are provided in the [Installation and Setup](READMEFILES/eng/setup.md) section.  
+This section contains information on system requirements, server configuration, and running necessary services.
 
-**Email:** 
+## 📞 Contact
+
+**Authors:**
+
+- Valerii Okhmak  
+- Antonina Petrykovych  
+- Roman Rybachok  
+- Sviatoslav Romaniv  
+- Yurii Dzhebko  
+
+**Email:**  
 [a.petrykovych@gmail.com](mailto:a.petrykovych@gmail.com)
 
 ---
 
-> Детальні описи можливостей, інструкцій та форматів тестування доступні у відповідних розділах каталогу `READMEFILES/ua/`.
+> Detailed feature descriptions, setup instructions, and test format information are available in the respective sections of the `READMEFILES/eng/` directory.
 
-## Ліцензія
+## License
 
-Цей проєкт поширюється на умовах [ліцензії MIT](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
 
-Ліцензія MIT надає дозвіл на використання, копіювання, зміну, злиття, публікацію, розповсюдження, субліцензування та/або продаж копій програмного забезпечення без обмежень.  
-Єдина умова — збереження повідомлення про авторські права та текст ліцензії в усіх копіях або значних частинах програмного забезпечення.
+The MIT License permits reuse, modification, merging, publishing, distribution, sublicensing, and/or selling copies of the software without restriction.  
+The only requirement is to include the original copyright notice and license text in all copies or substantial portions of the software.
 
-> **Застереження:** програмне забезпечення надається «як є», без жодних гарантій, явних чи неявних. Автори не несуть відповідальності за будь-які збитки або шкоду, що виникають у зв'язку з використанням цього програмного забезпечення.
-
+> **Disclaimer:** The software is provided "as is", without any warranty of any kind, express or implied. The authors are not liable for any damages arising from the use of this software.
 
