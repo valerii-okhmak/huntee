@@ -299,7 +299,6 @@ const TestPage = ({ testType }) => {
         
         console.log("🔍 Finish SUCCESS. Data:", response.data);
         localStorage.removeItem(getLocalKey(testId)); 
-        navigate(`/testreview/${redirectId}`);
         
         const redirectId = response.data?.attemptId || currentAttemptId;
 
