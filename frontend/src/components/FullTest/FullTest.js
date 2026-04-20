@@ -13,6 +13,7 @@ import "prismjs/components/prism-csharp";
 import "prismjs/themes/prism.css"; 
 
 import { getAccessToken } from "../../utils/auth";
+import ProctoringTracker from "../../utils/ProctoringTracker";
 import "./FullTest.css";
 import ConfirmTestEndModal from "../modal_windows/ConfirmTestEndModal";
 import StartTestErrorModal from "../modal_windows/StartTestErrorModal";
@@ -58,6 +59,8 @@ const TestPage = ({ testType }) => {
 
   const answersRef = useRef({});
   const attemptDataRef = useRef(null);
+  const proctoringTrackerRef = useRef(null);
+
 
   usePrompt(t('testPage.promptMessage'), !!attemptData);
 
@@ -68,7 +71,7 @@ const TestPage = ({ testType }) => {
 
   useEffect(() => {
     const startTest = async () => {
-      console.log(`🔍 Starting test ID: ${testId}`);
+      console.log(`Starting test ID: ${testId}`);
       try {
         const token = getAccessToken();
         const response = await axios.post(
@@ -86,6 +89,17 @@ const TestPage = ({ testType }) => {
              navigate(`/testreview/${attempt.completedAttemptId}`);
              return;
         }
+
+        if (!proctoringTrackerRef.current) {
+             proctoringTrackerRef.current = new ProctoringTracker(
+                 attempt.attemptId, 
+                 (type, desc) => {
+                     alert(`Увага! Зафіксовано порушення: ${desc}. Ця дія записана.`);
+                 }
+             );
+        }
+
+
 
         if (attempt.isFixedTime && attempt.endTime) {
           const endTime = new Date(attempt.endTime).getTime();
@@ -118,6 +132,12 @@ const TestPage = ({ testType }) => {
     };
 
     if (testId) startTest();
+    return () => {
+      if (proctoringTrackerRef.current) {
+        proctoringTrackerRef.current.stop();
+        proctoringTrackerRef.current = null;
+      }
+    };
   }, [testId, navigate, t]);
 
   // --- ТАЙМЕР ---
@@ -287,6 +307,10 @@ const TestPage = ({ testType }) => {
 
   const confirmFinishTest = async () => {
       console.log("🔍 Confirming finish...");
+      if (proctoringTrackerRef.current) {
+          proctoringTrackerRef.current.stop();
+          proctoringTrackerRef.current = null;
+      }
       try {
         const token = getAccessToken();
         const currentAttemptId = attemptDataRef.current.attemptId;
