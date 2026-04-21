@@ -106,6 +106,7 @@ const TestReviewPage = () => {
 
   const isPendingReview = resultData.score === null;
   const showGradingControls = isAuthor && isPendingReview;
+  const canViewQuestions = isAuthor || resultData.isShown;
 
   return (
     <div className='page'>
@@ -135,8 +136,6 @@ const TestReviewPage = () => {
                     className="black-btn"
                     style={{ padding: '12px 24px', fontSize: '16px' }} 
                     onClick={() => {
-                        // Якщо це автор (але перевірка вже завершена) — кидаємо на дашборд тесту
-                        // Якщо це студент — кидаємо на сторінку "Мої тести"
                         if (isAuthor && resultData.testId) {
                             navigate(`/test/${resultData.testId}/dashboard`);
                         } else {
@@ -149,11 +148,18 @@ const TestReviewPage = () => {
             )}
         </div>
 
-        <TestReviewQuestions 
-            questionsLink={resultData.questions} 
-            isGradingMode={showGradingControls}
-            onGrade={handleGradeAnswer}
-        />
+        {canViewQuestions ? (
+            <TestReviewQuestions 
+                questionsLink={resultData.questions} 
+                isGradingMode={showGradingControls}
+                onGrade={handleGradeAnswer}
+            />
+        ) : (
+            <div className="container" style={{ marginTop: '30px', textAlign: 'center', color: '#666' }}>
+                <h3>Відповіді приховано</h3>
+                <p>Автор тесту обмежив перегляд питань та відповідей після завершення.</p>
+            </div>
+        )}
 
         <ConfirmFinalizeModal 
             isOpen={isFinalizeModalOpen}

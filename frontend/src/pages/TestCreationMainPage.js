@@ -389,7 +389,18 @@ const TestCreationMainPage = () => {
       <TestCreationMainCount questionsCount={questionsCount} />
 
       {mode === 'create' ? (
-        <TestCreationMainCreator ref={creatorRef} globalSphere={testMeta.sphere} />
+      <TestCreationMainCreator 
+          ref={creatorRef} 
+          globalSphere={testMeta.sphere} 
+          onImportSuccess={(newQuestions) => {
+              setQuestions(prev => {
+                  const updated = [...prev, ...newQuestions];
+                  setQuestionsCount(updated.length);
+                  return updated;
+              });
+              setMode('preview'); 
+          }}
+      />
       ) : (
         <TestCreationMainPreview
           questions={questions}

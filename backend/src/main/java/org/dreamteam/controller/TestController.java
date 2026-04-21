@@ -7,12 +7,14 @@ import org.springframework.http.MediaType;
 import org.dreamteam.dto.CandidateDTO;
 import org.dreamteam.dto.ExportRequestDTO;
 import org.dreamteam.dto.MyTestDTO;
+import org.dreamteam.dto.QuestionImportDTO;
 import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
 import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
+import org.dreamteam.service.QuestionImportService;
 import org.dreamteam.service.TestService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -40,6 +43,8 @@ import java.util.UUID;
 
 public class TestController {
     private final TestService testService;
+    private final QuestionImportService questionImportService;
+
     @Operation(summary = "Створити новий тест")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тест успішно створено (повертає деталі тесту)"),
@@ -177,6 +182,16 @@ public class TestController {
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(testService.getTestAnalytics(id, userDetails.getUsername()));
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<List<QuestionImportDTO>> importQuestions(@RequestParam("file") MultipartFile file) {
+        try {
+            List<QuestionImportDTO> importedQuestions = questionImportService.parseImportFile(file);
+            return ResponseEntity.ok(importedQuestions);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build(); 
+        }
     }
 
     @Operation(summary = "Експортувати результати тесту (Excel/PDF)")

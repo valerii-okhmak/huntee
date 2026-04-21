@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle, useEffect } from "react";
+import React, { useState, forwardRef, useImperativeHandle, useEffect, useRef } from "react";
 import { useTranslation } from 'react-i18next';
 import './TestCreationMainCreator.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,19 +7,22 @@ import {
   faListCheck, 
   faKeyboard, 
   faLaptopCode,
-  faImage
+  faImage,
+  faFileImport // ДОДАНО ІКОНКУ ДЛЯ ІМПОРТУ
 } from '@fortawesome/free-solid-svg-icons';
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
 import Select from 'react-select';
 import { useLocalStorage } from '../../../utils/useLocalStorage';
+import axios from 'axios';
+import { getAccessToken } from '../../../utils/auth';
+
 
 const STORAGE_DRAFT_KEY = 'tc_current_creator_q';
 const MIN_BASE_OPTIONS = 2;
 
-const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere }, ref) => {
+const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, onImportSuccess }, ref) => {
   const { t } = useTranslation();
 
-  // --- 1. Використовуємо хук для синхронізації всього об'єкта чернетки ---
   const [draftQ, setDraftQ] = useLocalStorage(STORAGE_DRAFT_KEY, {
     questionText: "",
     points: "1",
@@ -36,7 +39,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
     codeTestCasesJSON: '[{"args": [1, 2], "expected": 3}]'
   });
 
-  // --- 2. Ініціалізація локальних станів із чернетки (із захистом від undefined) ---
   const [questionText, setQuestionText] = useState(draftQ?.questionText || "");
   const [points, setPoints] = useState(draftQ?.points || "1");
   const [selectedType, setSelectedType] = useState(draftQ?.selectedType || "regular");
@@ -54,7 +56,9 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
   const [errors, setErrors] = useState({});
   const [questionSphere, setQuestionSphere] = useState(null);
 
-  // --- 3. Автозбереження будь-яких змін у localStorage ---
+  // ДОДАНО РЕФ ДЛЯ ІНПУТУ ФАЙЛУ
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     setDraftQ({
       questionText, points, selectedType, comment,
@@ -118,10 +122,45 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
   const updateOption = (idx, value) => {
     setOptions(prev => prev.map((opt, i) => (i === idx ? value : opt)));
     clearError('emptyOptions');
+    clearError('duplicateOptions');
+  };
+
+const handleImportQuestions = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const token = getAccessToken();
+      
+      const response = await axios.post('/api/tests/import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const importedQuestions = response.data.map(q => ({
+          ...q,
+          id: `imported_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` 
+      }));
+
+      if (onImportSuccess) {
+          onImportSuccess(importedQuestions);
+      }
+
+    } catch (error) {
+      console.error("Помилка імпорту:", error);
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   useImperativeHandle(ref, () => ({
-    // Метод для завантаження даних у форму (редагування)
     loadQuestion(q) {
       if (!q) return;
 
@@ -148,7 +187,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
         ? q.codeAnswer.testCases 
         : JSON.stringify(q.codeAnswer?.testCases || []);
 
-      // 1. Оновлюємо локальні стейти React
       setQuestionText(q.questionText || "");
       setComment(q.comment || "");
       setPoints(String(q.points || 1));
@@ -164,7 +202,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
       setCodeTestCasesJSON(tCases);
       setQuestionSphere(fieldOptions.find(o => o.value === q.sphere) || null);
 
-      // 2. Оновлюємо чернетку в localStorage, щоб при F5 дані лишилися
       setDraftQ({
         questionText: q.questionText || "",
         points: String(q.points || 1),
@@ -184,7 +221,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
       setErrors({});
     },
 
-    // Метод повного очищення форми та сховища
     resetForm() {
       const defaultState = {
         questionText: "",
@@ -202,10 +238,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
         codeTestCasesJSON: '[{"args": [1, 2], "expected": 3}]'
       };
 
-      // Скидаємо localStorage
       setDraftQ(defaultState);
 
-      // Скидаємо стейти
       setQuestionText("");
       setPoints("1");
       setSelectedType("regular");
@@ -223,7 +257,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
       setErrors({});
     },
 
-    // Метод отримання даних для збереження
     getCurrentQuestionAndReset() {
       const newErrors = {};
       const currentQuestionText = (questionText || "").trim();
@@ -247,13 +280,20 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
           sphere: globalSphere === 'mixed' ? questionSphere?.value : globalSphere
       };
 
-      // Валідація варіантів
       if (selectedType === "regular" || selectedType === "multiple") {
         if (options.length < MIN_BASE_OPTIONS) {
           newErrors.optionsCount = t('testCreationCreator.errors.minOptions', { count: MIN_BASE_OPTIONS });
         }
         if (options.some(o => !(o || "").trim())) {
           newErrors.emptyOptions = true;
+        }
+
+        const trimmedOptions = options.map(o => (o || "").trim());
+        const hasDuplicates = trimmedOptions.some((opt, index) => 
+          opt !== "" && trimmedOptions.indexOf(opt) !== index
+        );
+        if (hasDuplicates) {
+          newErrors.duplicateOptions = t('testCreationCreator.errors.duplicateOptions', 'Варіанти відповіді не можуть повторюватись');
         }
 
         if (selectedType === "regular") {
@@ -273,13 +313,11 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
         }
       }
 
-      // Валідація текстової відповіді
       if (selectedType === "open") {
         if (openExpectedEnabled && !currentOpenExpectedText) newErrors.openExpectedText = true;
         payload.textAnswer = { correctText: currentOpenExpectedText, isCaseSensitive: false };
       }
 
-      // Валідація практичного завдання
       if (selectedType === "practical") {
          const currentCodeMethodName = (codeMethodName || "").trim();
          const currentCodeTemplate = (codeTemplate || "").trim();
@@ -306,7 +344,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
         return null;
       }
 
-      // Викликаємо очищення після успішного формування результату
       this.resetForm();
 
       onQuestionsChange?.(prev => (typeof prev === 'number' ? prev + 1 : prev));
@@ -317,7 +354,30 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
   return (
     <div className='testCreationMainCreator'>
       <div className='testCreationMainCreator__container'>
-        <h2 className='testCreationMainCreator__title'>{t('testCreationCreator.chooseType')}</h2>
+        
+        {/* ДОДАНО: Обгортка для заголовка та кнопки імпорту */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 className='testCreationMainCreator__title' style={{ margin: 0 }}>
+            {t('testCreationCreator.chooseType')}
+          </h2>
+
+          <input 
+            type="file" 
+            accept=".xml,.txt" 
+            style={{ display: 'none' }} 
+            ref={fileInputRef}
+            onChange={handleImportQuestions}
+          />
+          
+          <button 
+            className="white-btn" 
+            style={{ padding: '8px 16px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+            onClick={() => fileInputRef.current.click()}
+          >
+            <FontAwesomeIcon icon={faFileImport} />
+            Імпорт (Moodle/GIFT/Aiken)
+          </button>
+        </div>
 
         <div className='testCreationMainCreator__typeSelector'>
           {['regular', 'multiple', 'open', 'practical'].map(type => (
@@ -416,9 +476,9 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere },
           setCodeTestCasesJSON={(val) => { setCodeTestCasesJSON(val); clearError('codeTestCasesJSON'); }}
         />
 
-        {(errors.optionsCount || errors.correctSelection || errors.codeTestCasesJSON || errors.points) && (
+        {(errors.optionsCount || errors.duplicateOptions || errors.correctSelection || errors.codeTestCasesJSON || errors.points) && (
           <div className="test-creator__error-message">
-            {errors.optionsCount || errors.correctSelection || (errors.points && t('testCreationCreator.errors.invalidPoints'))}
+            {errors.optionsCount || errors.duplicateOptions || errors.correctSelection || (errors.points && t('testCreationCreator.errors.invalidPoints'))}
           </div>
         )}
       </div>

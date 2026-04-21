@@ -63,12 +63,23 @@ const MyTestsPage = () => {
     };
   }, [tests]);
 
-  const filteredTests = useMemo(() => {
-    // Note: Filter values should match those in OurDataFilter (which translates labels but keeps values)
+const filteredTests = useMemo(() => {
     if (selectedFilter === 'Активні тести') return tests.filter(t => t.status === 'Active');
     if (selectedFilter === 'Заплановані тести') return tests.filter(t => t.status === 'Scheduled');
     if (selectedFilter === 'Завершені тести') return tests.filter(t => t.status === 'Closed');
-    return tests;
+    
+    const statusPriority = {
+      'Active': 1,
+      'Scheduled': 2,
+      'Closed': 3
+    };
+
+    return [...tests].sort((a, b) => {
+      const priorityA = statusPriority[a.status] || 99;
+      const priorityB = statusPriority[b.status] || 99;
+      
+      return priorityA - priorityB;
+    });
   }, [tests, selectedFilter]);
 
   return (

@@ -35,7 +35,7 @@ const AllTestsPage = () => {
     }
   }, [location.search]);
 
-  useEffect(() => {
+useEffect(() => {
     const fetchTests = async () => {
       try {
         setIsLoading(true);
@@ -45,9 +45,17 @@ const AllTestsPage = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const publicTestsOnly = response.data.filter(test => test.isPrivate === false);
+        const now = new Date();
 
-        const mappedTests = publicTestsOnly.map(test => {
+        const activePublicTests = response.data.filter(test => {
+          const isPublic = !test.isPrivate;
+
+          const isActiveTime = test.endTime ? new Date(test.endTime) > now : true;
+
+          return isPublic && isActiveTime; 
+        });
+
+        const mappedTests = activePublicTests.map(test => {
           const startDate = new Date(test.startTime);
           return {
             id: test.testId,
