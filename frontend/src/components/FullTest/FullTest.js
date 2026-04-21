@@ -94,7 +94,7 @@ const TestPage = ({ testType }) => {
              proctoringTrackerRef.current = new ProctoringTracker(
                  attempt.attemptId, 
                  (type, desc) => {
-                     alert(`Увага! Зафіксовано порушення: ${desc}. Ця дія записана.`);
+                     console.log(`Увага! Зафіксовано порушення: ${desc}. Ця дія записана.`);
                  }
              );
         }
