@@ -92,11 +92,10 @@ public class QuestionImportService {
     }
 
     // ============================
-    // 2. GIFT PARSER (Базовий)
+    // 2. GIFT PARSER (Оновлений)
     // ============================
     private List<QuestionImportDTO> parseGift(String content) {
         List<QuestionImportDTO> questions = new ArrayList<>();
-        // Розбиваємо по порожніх рядках, бо питання в GIFT розділяються ними
         String[] blocks = content.split("\\n\\s*\\n");
 
         for (String block : blocks) {
@@ -108,12 +107,10 @@ public class QuestionImportService {
 
             if (startBracket != -1 && endBracket != -1) {
                 String questionText = block.substring(0, startBracket).trim();
-                // Видаляємо коментарі GIFT, якщо вони є (наприклад ::Title::)
                 questionText = questionText.replaceAll("^::.*?::\\s*", "");
 
                 String answersPart = block.substring(startBracket + 1, endBracket).trim();
                 
-                // Якщо відповідь просто True/False
                 if (answersPart.equals("T") || answersPart.equals("TRUE") || answersPart.equals("F") || answersPart.equals("FALSE")) {
                     boolean isTrue = answersPart.startsWith("T");
                     List<ChoiceOptionImportDTO> options = List.of(
@@ -124,19 +121,29 @@ public class QuestionImportService {
                     continue;
                 }
 
-                // Multiple/Single choice
                 String[] rawOptions = answersPart.split("(?=[=~])");
                 List<ChoiceOptionImportDTO> choiceOptions = new ArrayList<>();
                 int order = 0;
-                boolean hasMultipleCorrect = false;
                 int correctCount = 0;
+                boolean hasTilde = false; // Прапорець для перевірки наявності неправильних відповідей
 
                 for (String opt : rawOptions) {
                     opt = opt.trim();
                     if (opt.isEmpty()) continue;
                     
+                    if (opt.startsWith("~")) hasTilde = true;
+
                     boolean isCorrect = opt.startsWith("=");
-                    // Видаляємо = або ~ та відсотки, якщо це Moodle-specific GIFT
+                    
+                    // Обробка відсотків для Moodle GIFT (~%50% або ~%-100%)
+                    if (opt.startsWith("~%")) {
+                        try {
+                            String weightStr = opt.substring(2, opt.indexOf("%", 2));
+                            double weight = Double.parseDouble(weightStr);
+                            if (weight > 0) isCorrect = true; // Якщо відсоток > 0, вважаємо це правильною відповіддю
+                        } catch (Exception e) {}
+                    }
+
                     String text = opt.substring(1).replaceAll("^%[\\d-]+%\\s*", "").trim();
                     
                     if (isCorrect) correctCount++;
@@ -148,14 +155,31 @@ public class QuestionImportService {
                             .build());
                 }
 
-                QuestionType type = correctCount > 1 ? QuestionType.MULTIPLE_CHOICE : QuestionType.SINGLE_CHOICE;
+                // ЛОГІКА ВИЗНАЧЕННЯ ТИПУ ПИТАННЯ
+                if (!hasTilde && correctCount > 0) {
+                    // Якщо немає '~', а є тільки '=' — це ВІДКРИТА ВІДПОВІДЬ (Short Answer)
+                    TextAnswerImportDTO textAnswer = TextAnswerImportDTO.builder()
+                            .correctText(choiceOptions.get(0).getOptionText()) // Беремо перший збіг як правильний текст
+                            .isCaseSensitive(false)
+                            .build();
 
-                questions.add(QuestionImportDTO.builder()
-                        .questionText(questionText)
-                        .questionType(type)
-                        .points(1.0)
-                        .choiceOptions(choiceOptions)
-                        .build());
+                    questions.add(QuestionImportDTO.builder()
+                            .questionText(questionText)
+                            .questionType(QuestionType.TEXT)
+                            .points(1.0)
+                            .textAnswer(textAnswer)
+                            .build());
+                } else {
+                    // Якщо є '~' — це ОДИНОЧНИЙ або МНОЖИННИЙ вибір
+                    QuestionType type = correctCount > 1 ? QuestionType.MULTIPLE_CHOICE : QuestionType.SINGLE_CHOICE;
+
+                    questions.add(QuestionImportDTO.builder()
+                            .questionText(questionText)
+                            .questionType(type)
+                            .points(1.0)
+                            .choiceOptions(choiceOptions)
+                            .build());
+                }
             }
         }
         return questions;

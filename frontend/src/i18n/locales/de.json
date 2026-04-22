@@ -675,7 +675,8 @@
       "selectOneCorrect": "Mindestens eine richtige Antwort wählen",
       "invalidJson": "Ungültiges JSON-Format",
       "invalidPoints": "Gültige Punktzahl eingeben (z.B. 1 oder 1.5)"
-    }
+    },
+    "importBtnLabel": "Der Import"
   },
   "testCreationPreview": {
     "noQuestions": "Keine Fragen zur Vorschau",

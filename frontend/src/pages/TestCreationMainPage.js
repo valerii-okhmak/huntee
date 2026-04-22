@@ -361,7 +361,19 @@ const TestCreationMainPage = () => {
         STORAGE_META_KEY, 
         STORAGE_QUESTIONS_KEY, 
         'tc_current_creator_q',
-        'tc_name', 'tc_field', 'tc_level'
+        'tc_name', 
+        'tc_field', 
+        'tc_level',
+        'tc_city',
+        'tc_desc',
+        'tc_resp',
+        'tc_start_date',
+        'tc_end_date',
+        'tc_time',
+        'tc_type',
+        'tc_q_sort',
+        'tc_a_sort',
+        'tc_results'
       ];
       [STORAGE_MODE_KEY, STORAGE_EDIT_INDEX_KEY].forEach(k => localStorage.removeItem(k));
       draftKeys.forEach(key => localStorage.removeItem(key));

@@ -142,17 +142,26 @@ const TestPage = ({ testType }) => {
 
   // --- ТАЙМЕР ---
   useEffect(() => {
-    if (timeLeft === null) return;
-    if (timeLeft <= 0) {
+    if (!attemptData || !attemptData.isFixedTime || !attemptData.endTime) return;
+
+    const endTimeMs = new Date(attemptData.endTime).getTime();
+
+    const timer = setInterval(() => {
+      const nowMs = new Date().getTime();
+      const secondsRemaining = Math.floor((endTimeMs - nowMs) / 1000);
+
+      if (secondsRemaining <= 0) {
+        clearInterval(timer);
+        setTimeLeft(0);
         console.log("🔍 Time limit reached!");
         finishTestForce(); 
-        return;
-    }
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      } else {
+        setTimeLeft(secondsRemaining);
+      }
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [attemptData]);
 
   const formatTime = (sec) => {
     if (sec < 0) sec = 0;

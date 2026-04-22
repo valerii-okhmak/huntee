@@ -676,7 +676,8 @@
       "selectOneCorrect": "Позначте щонайменше одну правильну відповідь",
       "invalidJson": "Невірний формат JSON",
       "invalidPoints": "Введіть коректну кількість балів (напр. 1 або 1.5)"
-    }
+    },
+    "importBtnLabel": "Імпорт"
   },
   "testCreationPreview": {
     "noQuestions": "Немає питань для перегляду",
