@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle, useEffect, useRef } from "react";
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from "react"; // useRef видалено
 import { useTranslation } from 'react-i18next';
 import './TestCreationMainCreator.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,7 @@ import {
   faKeyboard, 
   faLaptopCode,
   faImage,
-  faFileImport // ДОДАНО ІКОНКУ ДЛЯ ІМПОРТУ
+  faFileImport
 } from '@fortawesome/free-solid-svg-icons';
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
 import Select from 'react-select';
@@ -16,6 +16,8 @@ import { useLocalStorage } from '../../../utils/useLocalStorage';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
+// ДОДАНО: Імпорт нового модального вікна
+import ImportQuestionsModal from '../../modal_windows/ImportQuestionsModal';
 
 const STORAGE_DRAFT_KEY = 'tc_current_creator_q';
 const MIN_BASE_OPTIONS = 2;
@@ -24,6 +26,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   const { t } = useTranslation();
 
   const [draftQ, setDraftQ] = useLocalStorage(STORAGE_DRAFT_KEY, {
+    // ... твій існуючий стейт
     questionText: "",
     points: "1",
     selectedType: "regular",
@@ -56,8 +59,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   const [errors, setErrors] = useState({});
   const [questionSphere, setQuestionSphere] = useState(null);
 
-  // ДОДАНО РЕФ ДЛЯ ІНПУТУ ФАЙЛУ
-  const fileInputRef = useRef(null);
+  // ДОДАНО: Стан для керування модальним вікном імпорту
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   useEffect(() => {
     setDraftQ({
@@ -125,10 +128,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
     clearError('duplicateOptions');
   };
 
-const handleImportQuestions = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
+  // ЗМІНЕНО: Тепер приймає файл та бали безпосередньо з модалки
+  const handleImportSubmit = async (file, importedPoints) => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -142,9 +143,13 @@ const handleImportQuestions = async (e) => {
         }
       });
 
+      // Парсимо обрані користувачем бали (якщо поле порожнє, даємо 1 бал)
+      const parsedPoints = parseFloat(importedPoints) || 1;
+
       const importedQuestions = response.data.map(q => ({
           ...q,
-          id: `imported_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` 
+          id: `imported_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          points: parsedPoints // ДОДАНО: Присвоюємо обрану вагу кожному питанню
       }));
 
       if (onImportSuccess) {
@@ -153,15 +158,12 @@ const handleImportQuestions = async (e) => {
 
     } catch (error) {
       console.error("Помилка імпорту:", error);
-    } finally {
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
     }
   };
 
   useImperativeHandle(ref, () => ({
     loadQuestion(q) {
+      // ... твій існуючий код ...
       if (!q) return;
 
       let type = "regular";
@@ -222,6 +224,7 @@ const handleImportQuestions = async (e) => {
     },
 
     resetForm() {
+       // ... твій існуючий код ...
       const defaultState = {
         questionText: "",
         points: "1",
@@ -258,6 +261,7 @@ const handleImportQuestions = async (e) => {
     },
 
     getCurrentQuestionAndReset() {
+      // ... твій існуючий код ...
       const newErrors = {};
       const currentQuestionText = (questionText || "").trim();
       const currentComment = (comment || "").trim();
@@ -353,43 +357,42 @@ const handleImportQuestions = async (e) => {
 
   return (
     <div className='testCreationMainCreator'>
+      {/* ДОДАНО: Модальне вікно для імпорту */}
+      <ImportQuestionsModal 
+        isOpen={isImportModalOpen} 
+        onClose={() => setIsImportModalOpen(false)} 
+        onImport={handleImportSubmit} 
+      />
+
       <div className='testCreationMainCreator__container'>
-        
-        {/* ДОДАНО: Обгортка для заголовка та кнопки імпорту */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 className='testCreationMainCreator__title' style={{ margin: 0 }}>
             {t('testCreationCreator.chooseType')}
           </h2>
 
-          <input 
-            type="file" 
-            accept=".xml,.txt" 
-            style={{ display: 'none' }} 
-            ref={fileInputRef}
-            onChange={handleImportQuestions}
-          />
-          
+          {/* ЗМІНЕНО: Тепер кнопка відкриває модалку, а прихований input видалено */}
           <button 
             className="import-btn" 
-            onClick={() => fileInputRef.current.click()}
+            onClick={() => setIsImportModalOpen(true)}
           >
-          <div className="svg-wrapper-1">
-            <div className="svg-wrapper">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                className="icon"
-              >
-                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-              </svg>
+            <div className="svg-wrapper-1">
+              <div className="svg-wrapper">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  className="icon"
+                >
+                  <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                </svg>
+              </div>
             </div>
-          </div>
-          <span>{t('testCreationCreator.importBtnLabel')}</span>
-        </button>
+            <span>{t('testCreationCreator.importBtnLabel')}</span>
+          </button>
         </div>
 
+        {/* ... решта твого JSX без змін ... */}
         <div className='testCreationMainCreator__typeSelector'>
           {['regular', 'multiple', 'open', 'practical'].map(type => (
             <button

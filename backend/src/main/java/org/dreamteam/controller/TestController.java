@@ -16,6 +16,7 @@ import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
 import org.dreamteam.service.QuestionImportService;
 import org.dreamteam.service.TestService;
+import org.dreamteam.dto.QuestionPayloadDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -232,7 +232,19 @@ public class TestController {
     @GetMapping("/{testId}/groups")
     public ResponseEntity<List<String>> getTestGroups(@PathVariable UUID testId) {
         return ResponseEntity.ok(testService.getTestGroups(testId));
-}
+    }
+
+    @PostMapping("/{testId}/questions/bulk")
+    public ResponseEntity<Void> createQuestionsBulk(@PathVariable UUID testId, @RequestBody List<QuestionPayloadDTO> questions) {
+        testService.syncTestQuestionsBulk(testId, questions);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{testId}/questions/bulk")
+    public ResponseEntity<Void> updateQuestionsBulk(@PathVariable UUID testId, @RequestBody List<QuestionPayloadDTO> questions) {
+        testService.syncTestQuestionsBulk(testId, questions);
+        return ResponseEntity.ok().build();
+    }
 }
 
 

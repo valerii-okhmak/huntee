@@ -100,7 +100,6 @@ const TestCreationMainPage = () => {
     fetchQuestions();
   }, [isEditMode, testId]);  
 
-
   const [testMeta, setTestMeta] = useState(() => ({
     testName: passed?.testName || t('testCreationMain.defaultTestName'),
     sphere: passed?.field || 'unknown',
@@ -192,7 +191,6 @@ const TestCreationMainPage = () => {
     setMode('preview');
     localStorage.removeItem(STORAGE_EDIT_INDEX_KEY);
   };
-
 
   const handleDeleteQuestion = (index) => {
     setQuestions(prev => {
@@ -314,73 +312,65 @@ const TestCreationMainPage = () => {
       };
   
       let currentTestId = testId;
+
+      // Допоміжна функція для перевірки справжнього UUID з бекенду
+      const isValidUUID = (id) => {
+        if (!id) return false;
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        return uuidRegex.test(id);
+      };
+      
+      // Строгий мапінг, щоб бекенд не плювався помилкою 400
+      const questionsPayload = questions.map((q, i) => {
+        const payload = {
+          questionText: q.questionText,
+          questionType: q.questionType,
+          comment: q.comment || "",
+          weight: parseFloat(q.points) || 1.0,
+          orderIndex: i
+        };
+
+        // Додаємо ID тільки якщо це справжній UUID, а не imported_... чи ai_...
+        if (isValidUUID(q.id)) {
+          payload.id = q.id;
+        }
+
+        // Додаємо відповіді залежно від типу
+        if (q.questionType === 'SINGLE_CHOICE' || q.questionType === 'MULTIPLE_CHOICE') {
+          payload.choiceOptions = q.choiceOptions;
+        } else if (q.questionType === 'TEXT') {
+          payload.textAnswer = q.textAnswer;
+        } else if (q.questionType === 'CODE') {
+          payload.codeAnswer = q.codeAnswer;
+        }
+
+        return payload;
+      });
   
       if (isEditMode) {
         await axios.put(`/api/tests/${currentTestId}`, testPayload, { headers });
-
-        const originalIds = originalQuestions.map(q => q.id);
-        const currentIds = questions.filter(q => q.id).map(q => q.id);
-        const toDelete = originalIds.filter(id => !currentIds.includes(id));
-
-        for (let i = 0; i < questions.length; i++) {
-          const q = questions[i];
-          const isTempId = q.id && String(q.id).startsWith('ai_');
-          const payload = { ...q };
-          if (isTempId) delete payload.id; 
-
-          if (q.id && !isTempId) {
-            await axios.put(`/api/questions/${q.id}`, { ...payload, orderIndex: i }, { headers });
-          } else {
-            await axios.post(`/api/tests/${currentTestId}/questions`, { ...payload, orderIndex: i }, { headers });
-          }
-        }
-
-        for ( const id of toDelete) {
-          if (id) await axios.delete(`/api/questions/${id}`, { headers });
-        }
-        
+        await axios.put(`/api/tests/${currentTestId}/questions/bulk`, questionsPayload, { headers });
       } else {
         const res = await axios.post(`/api/tests`, testPayload, { headers });
         currentTestId = res.data?.testId;
-
-        for (let i = 0; i < questions.length; i++) {
-          const q = questions[i];
-          const isTempId = q.id && String(q.id).startsWith('ai_');
-          const payload = { ...q };
-          if (isTempId) delete payload.id;
-
-          await axios.post(
-            `/api/tests/${currentTestId}/questions`,
-            { ...payload, orderIndex: i, weight: payload.points },
-            { headers }
-          );
-        }
-      }      
+        await axios.post(`/api/tests/${currentTestId}/questions/bulk`, questionsPayload, { headers });
+      }
 
       const draftKeys = [
-        STORAGE_META_KEY, 
-        STORAGE_QUESTIONS_KEY, 
-        'tc_current_creator_q',
-        'tc_name', 
-        'tc_field', 
-        'tc_level',
-        'tc_city',
-        'tc_desc',
-        'tc_resp',
-        'tc_start_date',
-        'tc_end_date',
-        'tc_time',
-        'tc_type',
-        'tc_q_sort',
-        'tc_a_sort',
-        'tc_results'
+        STORAGE_META_KEY, STORAGE_QUESTIONS_KEY, 'tc_current_creator_q',
+        'tc_name', 'tc_field', 'tc_level', 'tc_city', 'tc_desc', 'tc_resp',
+        'tc_start_date', 'tc_end_date', 'tc_time', 'tc_type', 'tc_q_sort',
+        'tc_a_sort', 'tc_results'
       ];
       [STORAGE_MODE_KEY, STORAGE_EDIT_INDEX_KEY].forEach(k => localStorage.removeItem(k));
       draftKeys.forEach(key => localStorage.removeItem(key));
   
       navigate('/viewingtests');
     } catch (e) {
-      console.error(e);
+      console.error("Помилка публікації тесту:", e);
+      if (e.response && e.response.data) {
+        console.error("Деталі помилки з бекенду:", e.response.data);
+      }
     } finally {
       setLoading(false);
     }

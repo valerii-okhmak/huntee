@@ -36,15 +36,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import org.dreamteam.dto.QuestionPayloadDTO;
+
 import org.dreamteam.Entity.UserAnswer;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -580,5 +574,60 @@ private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
             return user.getProfile().getProfileImageUrl();
         }
         return null;
+    }
+
+    @Transactional
+    public void syncTestQuestionsBulk(UUID testId, List<QuestionPayloadDTO> incomingQuestions) {
+        Test test = findTestById(testId);
+
+        List<TestQuestion> existingLinks = testQuestionRepository.findByTest_TestId(testId);
+        
+        Set<UUID> incomingIds = incomingQuestions.stream()
+                .map(QuestionPayloadDTO::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        List<TestQuestion> linksToDelete = existingLinks.stream()
+                .filter(link -> !incomingIds.contains(link.getQuestion().getQuestionId()))
+                .collect(Collectors.toList());
+        
+        testQuestionRepository.deleteAll(linksToDelete);
+
+        List<Question> questionsToSave = new ArrayList<>();
+        
+        for (int i = 0; i < incomingQuestions.size(); i++) {
+            QuestionPayloadDTO dto = incomingQuestions.get(i);
+            Question question;
+
+            if (dto.getId() != null) {
+                question = questionRepository.findById(dto.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("Question not found"));
+            } else {
+                question = new Question();
+                question.setAuthor(test.getUser());
+            }
+
+            question.setQuestionText(dto.getQuestionText());
+            question.setQuestionType(dto.getQuestionType());
+            question.setWeight(dto.getWeight());
+            question.setComment(dto.getComment());
+            
+            questionsToSave.add(question);
+        }
+
+        List<Question> savedQuestions = questionRepository.saveAll(questionsToSave);
+
+        List<TestQuestion> newLinks = new ArrayList<>();
+        for (int i = 0; i < savedQuestions.size(); i++) {
+            Question savedQ = savedQuestions.get(i);
+            
+            TestQuestion link = testQuestionRepository.findByTestAndQuestion(test, savedQ)
+                    .orElse(new TestQuestion(test, savedQ, i));
+            
+            link.setOrderIndex(i); 
+            newLinks.add(link);
+        }
+
+        testQuestionRepository.saveAll(newLinks);
     }
 }
