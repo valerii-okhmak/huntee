@@ -1,13 +1,19 @@
 package org.dreamteam.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import java.io.Serializable;
 
 @Data
 @Builder
-public class TestSummaryResponse {
+@NoArgsConstructor
+@AllArgsConstructor
+public class TestSummaryResponse implements Serializable {
     private UUID testId;
     private String testName;
     private String sphere;

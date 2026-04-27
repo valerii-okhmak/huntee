@@ -46,6 +46,8 @@ import java.util.stream.Collectors;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import org.dreamteam.Entity.UserAnswer;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import java.time.Duration;
 import java.util.*;
 
@@ -81,6 +83,7 @@ public class TestService {
         notificationService.sendSystemNotification(user.getId(), title, message);
     }
 
+    @CacheEvict(value = "tests_list", allEntries = true)
     @Transactional
     public TestDetailResponse createTest(TestCreateRequest request, String authorEmail) {
         User author = findUserByEmail(authorEmail);
@@ -107,6 +110,7 @@ public class TestService {
         return mapToDetailResponse(savedTest);
     }
 
+    @Cacheable(value = "tests_list")
     @Transactional(readOnly = true)
     public List<TestSummaryResponse> getAllTests() {
         return testRepository.findAll()
@@ -115,12 +119,14 @@ public class TestService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "test_details", key = "#testId")
     @Transactional(readOnly = true)
     public TestDetailResponse getTestById(UUID testId) {
         Test test = findTestById(testId);
         return mapToDetailResponse(test);
     }
 
+    @CacheEvict(value = {"test_details", "tests_list"}, key = "#testId")
     @Transactional
     public TestDetailResponse updateTest(UUID testId, TestUpdateRequest request, String userEmail) {
         Test test = findTestById(testId);
@@ -149,6 +155,7 @@ public class TestService {
         return mapToDetailResponse(updatedTest);
     }
 
+    @CacheEvict(value = {"test_details", "tests_list", "test_analytics"}, allEntries = true)
     @Transactional
     public void deleteTest(UUID testId, String userEmail) {
         Test test = findTestById(testId);
@@ -231,6 +238,7 @@ public class TestService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "test_analytics", key = "#testId")
     @Transactional(readOnly = true)
     public TestAnalyticsDTO getTestAnalytics(UUID testId, String authorEmail) {
         Test test = findTestById(testId);
