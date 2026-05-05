@@ -478,6 +478,35 @@ const TestPage = ({ testType }) => {
   const currentQuestion = attemptData.questions[current];
   const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
 
+const generatePagination = (currentIndex, totalQuestions) => {
+  const currentPage = currentIndex + 1;
+
+  if (totalQuestions <= 7) {
+    return Array.from({ length: totalQuestions }, (_, i) => i + 1);
+  }
+
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, '...', totalQuestions];
+  }
+
+  if (currentPage >= totalQuestions - 3) {
+    return [1, '...', totalQuestions - 4, totalQuestions - 3, totalQuestions - 2, totalQuestions - 1, totalQuestions];
+  }
+
+  return [
+    1, 
+    '...', 
+    currentPage - 1, 
+    currentPage, 
+    currentPage + 1, 
+    '...', 
+    totalQuestions
+  ];
+};
+
+  const totalQuestions = attemptData.questions.length;
+  const paginationItems = generatePagination(current, totalQuestions);
+
   return (
     <div className={`FullTest ${testType === "softskills" ? 'FullTest-gradient' : 'FullTest-regular'}`} style={{userSelect: 'none'}}>
       
@@ -504,14 +533,14 @@ const TestPage = ({ testType }) => {
       }
 
       <div className={`Num ${testType === "softskills" ? 'Num-bg' : 'Num-regular'}`}>
-        {attemptData.questions.map((_, i) => (
+        {paginationItems.map((item, index) => (
           <button
-            key={i}
-            onClick={() => handleJumpToQuestion(i)}
-            className={i === current ? "active" : ""}
-            disabled={isSubmitting} 
+            key={index}
+            onClick={() => item !== '...' && handleJumpToQuestion(item - 1)}
+            className={item === current + 1 ? "active" : ""}
+            disabled={isSubmitting || item === '...'} 
           >
-            {i + 1}
+            {item}
           </button>
         ))}
       </div>

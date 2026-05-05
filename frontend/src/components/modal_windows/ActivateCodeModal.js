@@ -77,13 +77,15 @@ const ActivateCodeModal = ({ isOpen, onClose }) => {
     inputRefs.current[focusIndex]?.focus();
   };
 
-  const handleActivate = async () => {
-    const fullCode = codeValues.join("");
+const handleActivate = async () => {
+    const rawCode = codeValues.join("");
 
-    if (fullCode.length < 6) {
+    if (rawCode.length < 6) {
       setMessage({ text: t('activateCodeModal.emptyCodeError', 'Введіть код повністю'), type: 'error' });
       return;
     }
+
+    const fullCode = `${rawCode.slice(0, 3)}-${rawCode.slice(3)}`;
 
     setLoading(true);
     setMessage({ text: "", type: "" });
