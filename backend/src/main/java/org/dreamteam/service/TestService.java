@@ -2,14 +2,16 @@ package org.dreamteam.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-
 import org.dreamteam.Entity.AttemptStatus;
+import org.dreamteam.Entity.ChoiceOption;
+import org.dreamteam.Entity.CodeAnswer;
 import org.dreamteam.Entity.Question;
 import org.dreamteam.Entity.QuestionType;
 import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.TestAccessCode;
 import org.dreamteam.Entity.TestQuestion;
 import org.dreamteam.Entity.TestRegistration;
+import org.dreamteam.Entity.TextAnswer;
 import org.dreamteam.Entity.User;
 import org.dreamteam.Entity.UserAnswer;
 import org.dreamteam.Entity.UserTestAttempt;
@@ -33,15 +35,15 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.dreamteam.dto.QuestionPayloadDTO;
+
 import java.time.OffsetDateTime;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
-import org.dreamteam.dto.QuestionPayloadDTO;
-
-import org.dreamteam.Entity.UserAnswer;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import java.time.Duration;
 import java.util.*;
 
@@ -58,7 +60,6 @@ public class TestService {
     private final QuestionRepository questionRepository;
     private final ExportService exportService;
     private final TestAccessCodeRepository testAccessCodeRepository;
-
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
@@ -120,7 +121,10 @@ public class TestService {
         return mapToDetailResponse(test);
     }
 
-    @CacheEvict(value = {"test_details", "tests_list"}, key = "#testId")
+    @Caching(evict = {
+        @CacheEvict(value = "test_details", key = "#testId"),
+        @CacheEvict(value = "tests_list", allEntries = true)
+    })
     @Transactional
     public TestDetailResponse updateTest(UUID testId, TestUpdateRequest request, String userEmail) {
         Test test = findTestById(testId);
@@ -149,7 +153,11 @@ public class TestService {
         return mapToDetailResponse(updatedTest);
     }
 
-    @CacheEvict(value = {"test_details", "tests_list", "test_analytics"}, allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "test_details", key = "#testId"),
+        @CacheEvict(value = "test_analytics", key = "#testId"),
+        @CacheEvict(value = "tests_list", allEntries = true)
+    })
     @Transactional
     public void deleteTest(UUID testId, String userEmail) {
         Test test = findTestById(testId);
@@ -182,7 +190,6 @@ public class TestService {
         User user = findUserByEmail(userEmail);
         List<TestRegistration> registrations = registrationRepository.findByUser_Id(user.getId());
         
-
         return registrations.stream().map(reg -> {
             Test test = reg.getTest();
             String timeStatus = calculateTestStatus(test);
@@ -195,7 +202,6 @@ public class TestService {
                     .startTime(test.getStartTime())
                     .status("Registered")
                     .statusTest(timeStatus) 
-
                     .build();
         }).collect(Collectors.toList());
     }
@@ -397,7 +403,6 @@ public class TestService {
                 .build();
     }
 
-
     private String calculateTestStatus(Test test) {
         OffsetDateTime now = OffsetDateTime.now();
 
@@ -443,7 +448,6 @@ public class TestService {
         }
     }
     
-
     private TestDetailResponse mapToDetailResponse(Test test) {
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());
 
@@ -500,7 +504,7 @@ public class TestService {
                 .build();
     }
 
-private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
+    private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
         User u = reg.getUser();
         
         String tag = testAccessCodeRepository.findByTest_TestIdAndUsedByUser_Id(reg.getTest().getTestId(), u.getId())
@@ -576,6 +580,10 @@ private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
         return null;
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "test_details", key = "#testId"),
+        @CacheEvict(value = "test_analytics", key = "#testId")
+    })
     @Transactional
     public void syncTestQuestionsBulk(UUID testId, List<QuestionPayloadDTO> incomingQuestions) {
         Test test = findTestById(testId);
@@ -591,7 +599,11 @@ private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
                 .filter(link -> !incomingIds.contains(link.getQuestion().getQuestionId()))
                 .collect(Collectors.toList());
         
+        if (test.getTestQuestions() != null) {
+            test.getTestQuestions().removeAll(linksToDelete);
+        }
         testQuestionRepository.deleteAll(linksToDelete);
+        testRepository.flush();
 
         List<Question> questionsToSave = new ArrayList<>();
         
@@ -601,7 +613,7 @@ private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
 
             if (dto.getId() != null) {
                 question = questionRepository.findById(dto.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("Question not found"));
+                        .orElseThrow(() -> new EntityNotFoundException("Question not found: " + dto.getId()));
             } else {
                 question = new Question();
                 question.setAuthor(test.getUser());
@@ -609,9 +621,51 @@ private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
 
             question.setQuestionText(dto.getQuestionText());
             question.setQuestionType(dto.getQuestionType());
-            question.setWeight(dto.getWeight());
+            question.setWeight(dto.getWeight() != null ? dto.getWeight() : 1.0);
             question.setComment(dto.getComment());
             
+            // 1. Очищення старих відповідей (використовуємо Set як у твоєму QuestionService)
+            if (question.getChoiceOptions() != null) {
+                question.getChoiceOptions().clear();
+            } else {
+                question.setChoiceOptions(new HashSet<>());
+            }
+            
+            if (question.getTextAnswer() != null) {
+                question.setTextAnswer(null);
+            }
+            if (question.getCodeAnswer() != null) {
+                question.setCodeAnswer(null);
+            }
+            
+            // Якщо використовуєш MatchingPair, також очищуй:
+            // if (question.getMatchingPairs() != null) question.getMatchingPairs().clear();
+            // else question.setMatchingPairs(new HashSet<>());
+
+            // 2. Наповнення новими даними залежно від типу
+            if (dto.getChoiceOptions() != null && !dto.getChoiceOptions().isEmpty()) {
+                for (var optDto : dto.getChoiceOptions()) {
+                    ChoiceOption option = new ChoiceOption(question, optDto.getOptionText(), optDto.getIsCorrect());
+                    question.getChoiceOptions().add(option);
+                }
+            }
+
+            if (dto.getTextAnswer() != null) {
+                TextAnswer textAnswer = new TextAnswer(question, dto.getTextAnswer().getCorrectText(), dto.getTextAnswer().getIsCaseSensitive());
+                question.setTextAnswer(textAnswer);
+            }
+
+            if (dto.getCodeAnswer() != null) {
+                CodeAnswer codeAnswer = new CodeAnswer(
+                    question, 
+                    dto.getCodeAnswer().getTemplateCode(), 
+                    dto.getCodeAnswer().getTestCases(),
+                    dto.getCodeAnswer().getLanguage(),
+                    dto.getCodeAnswer().getMethodName()
+                );
+                question.setCodeAnswer(codeAnswer);
+            }
+
             questionsToSave.add(question);
         }
 
@@ -629,5 +683,11 @@ private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
         }
 
         testQuestionRepository.saveAll(newLinks);
+        
+        if (test.getTestQuestions() == null) {
+            test.setTestQuestions(new HashSet<>());
+        }
+        test.getTestQuestions().addAll(newLinks);
     }
+
 }

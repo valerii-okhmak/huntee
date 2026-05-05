@@ -41,3 +41,5 @@ backend/uploads/avatars/
 
 node_modules/
 
+docker-compose.yml
+

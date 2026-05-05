@@ -14,6 +14,8 @@ import java.util.UUID;
 
 @Data
 @Builder
+@NoArgsConstructor 
+@AllArgsConstructor
 public class TestDetailResponse implements Serializable {
     
     private UUID testId;

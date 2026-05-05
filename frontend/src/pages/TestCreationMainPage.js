@@ -313,14 +313,12 @@ const TestCreationMainPage = () => {
   
       let currentTestId = testId;
 
-      // Допоміжна функція для перевірки справжнього UUID з бекенду
       const isValidUUID = (id) => {
         if (!id) return false;
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         return uuidRegex.test(id);
       };
       
-      // Строгий мапінг, щоб бекенд не плювався помилкою 400
       const questionsPayload = questions.map((q, i) => {
         const payload = {
           questionText: q.questionText,
@@ -330,12 +328,10 @@ const TestCreationMainPage = () => {
           orderIndex: i
         };
 
-        // Додаємо ID тільки якщо це справжній UUID, а не imported_... чи ai_...
         if (isValidUUID(q.id)) {
           payload.id = q.id;
         }
 
-        // Додаємо відповіді залежно від типу
         if (q.questionType === 'SINGLE_CHOICE' || q.questionType === 'MULTIPLE_CHOICE') {
           payload.choiceOptions = q.choiceOptions;
         } else if (q.questionType === 'TEXT') {
