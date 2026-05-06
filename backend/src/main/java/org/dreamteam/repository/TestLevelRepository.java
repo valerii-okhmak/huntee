@@ -1,12 +1,10 @@
 package org.dreamteam.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.dreamteam.Entity.TestLevel;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
+import java.util.UUID;
 
-@Repository
 public interface TestLevelRepository extends JpaRepository<TestLevel, Long> {
-    Optional<TestLevel> findByNameIgnoreCase(String name);
-
+       Optional<TestLevel> findByTest_TestIdAndNameIgnoreCase(UUID testId, String name);
 }

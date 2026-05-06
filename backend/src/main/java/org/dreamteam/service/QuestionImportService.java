@@ -70,7 +70,7 @@ public class QuestionImportService {
                 questions.add(QuestionImportDTO.builder()
                         .questionText(questionText)
                         .questionType(QuestionType.SINGLE_CHOICE)
-                        .points(1.0)
+                        .customWeight(1.0)
                         .choiceOptions(choiceOptions)
                         .build());
 
@@ -117,7 +117,7 @@ public class QuestionImportService {
                             ChoiceOptionImportDTO.builder().optionText("True").isCorrect(isTrue).orderIndex(0).build(),
                             ChoiceOptionImportDTO.builder().optionText("False").isCorrect(!isTrue).orderIndex(1).build()
                     );
-                    questions.add(QuestionImportDTO.builder().questionText(questionText).questionType(QuestionType.SINGLE_CHOICE).points(1.0).choiceOptions(options).build());
+                    questions.add(QuestionImportDTO.builder().questionText(questionText).questionType(QuestionType.SINGLE_CHOICE).customWeight(1.0).choiceOptions(options).build());
                     continue;
                 }
 
@@ -166,7 +166,7 @@ public class QuestionImportService {
                     questions.add(QuestionImportDTO.builder()
                             .questionText(questionText)
                             .questionType(QuestionType.TEXT)
-                            .points(1.0)
+                            .customWeight(1.0)
                             .textAnswer(textAnswer)
                             .build());
                 } else {
@@ -176,7 +176,7 @@ public class QuestionImportService {
                     questions.add(QuestionImportDTO.builder()
                             .questionText(questionText)
                             .questionType(type)
-                            .points(1.0)
+                            .customWeight(1.0)
                             .choiceOptions(choiceOptions)
                             .build());
                 }
@@ -236,7 +236,7 @@ public class QuestionImportService {
                     questions.add(QuestionImportDTO.builder()
                             .questionText(questionText)
                             .questionType(qType)
-                            .points(1.0)
+                            .customWeight(1.0)
                             .choiceOptions(options)
                             .build());
 
@@ -254,7 +254,7 @@ public class QuestionImportService {
                         questions.add(QuestionImportDTO.builder()
                                 .questionText(questionText)
                                 .questionType(QuestionType.TEXT)
-                                .points(1.0)
+                                .customWeight(1.0)
                                 .textAnswer(textAnswer)
                                 .build());
                     }
