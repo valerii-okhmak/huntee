@@ -9,6 +9,7 @@ import org.dreamteam.Entity.Question;
 import org.dreamteam.Entity.QuestionType;
 import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.TestAccessCode;
+import org.dreamteam.Entity.TestLevel;
 import org.dreamteam.Entity.TestQuestion;
 import org.dreamteam.Entity.TestRegistration;
 import org.dreamteam.Entity.TextAnswer;
@@ -22,6 +23,7 @@ import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
+import org.dreamteam.dto.TestLevelDTO;
 import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
 import org.dreamteam.repository.TestQuestionRepository;
@@ -29,6 +31,7 @@ import org.dreamteam.repository.TestRegistrationRepository;
 import org.dreamteam.repository.QuestionRepository;
 import org.dreamteam.repository.TestAccessCodeRepository;
 import org.dreamteam.repository.TestRepository;
+import org.dreamteam.repository.TestLevelRepository;
 import org.dreamteam.repository.UserRepository;
 import org.dreamteam.repository.UserTestAttemptRepository;
 import org.springframework.security.access.AccessDeniedException;
@@ -39,6 +42,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.dreamteam.dto.QuestionPayloadDTO;
+
+
 
 import java.time.OffsetDateTime;
 import java.io.IOException;
@@ -60,6 +65,7 @@ public class TestService {
     private final QuestionRepository questionRepository;
     private final ExportService exportService;
     private final TestAccessCodeRepository testAccessCodeRepository;
+    private final TestLevelRepository testLevelRepository;
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
@@ -97,6 +103,8 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
+        Set<TestLevel> levels = processTestLevels(request.getLevels());
+        test.setTestLevels(levels);
 
         Test savedTest = testRepository.save(test);
 
@@ -144,6 +152,9 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
+        Set<TestLevel> updatedLevels = processTestLevels(request.getLevels());
+        test.getTestLevels().clear();
+        test.getTestLevels().addAll(updatedLevels);
 
         test.getTestQuestions().clear();
         testRepository.flush();
@@ -467,11 +478,18 @@ public class TestService {
                 })
                 .collect(Collectors.toList());
 
+        List<TestLevelDto> levelDtos = test.getTestLevels() != null 
+                ? test.getTestLevels().stream()
+                    .map(l -> new TestLevelDto(l.getLevelId(), l.getName()))
+                    .collect(Collectors.toList())
+                : new ArrayList<>();
+
         return TestDetailResponse.builder()
                 .testId(test.getTestId())
                 .testName(test.getTestName())
                 .sphere(test.getSphere())
                 .level(test.getLevel())
+                .levels(levelDtos)
                 .city(test.getCity())
                 .vacancyDescription(test.getVacancyDescription())
                 .responsibilities(test.getResponsibilities())
@@ -489,10 +507,18 @@ public class TestService {
     }
 
     private TestSummaryResponse mapToSummaryResponse(Test test) {
+
+        List<TestLevelDto> levelDtos = test.getTestLevels() != null 
+                ? test.getTestLevels().stream()
+                    .map(l -> new TestLevelDto(l.getLevelId(), l.getName()))
+                    .collect(Collectors.toList())
+                : new ArrayList<>();
+
         return TestSummaryResponse.builder()
                 .testId(test.getTestId())
                 .testName(test.getTestName())
                 .sphere(test.getSphere())
+                .levels(levelDtos)
                 .level(test.getLevel())
                 .city(test.getCity())
                 .startTime(test.getStartTime())
@@ -541,6 +567,30 @@ public class TestService {
                 .totalMaxScore(totalMaxScore)
                 .attemptId(attempt.getAttemptId())
                 .build();
+    }
+
+    private Set<TestLevel> processTestLevels(List<String> levelNames) {
+        Set<TestLevel> testLevels = new HashSet<>();
+        
+        if (levelNames != null && !levelNames.isEmpty()) {
+            for (String name : levelNames) {
+                if (name == null || name.trim().isEmpty()) {
+                    continue; 
+                }
+                
+                String trimmedName = name.trim();
+                
+                TestLevel testLevel = testLevelRepository.findByNameIgnoreCase(trimmedName)
+                        .orElseGet(() -> {
+                            TestLevel newLevel = new TestLevel();
+                            newLevel.setName(trimmedName);
+                            return testLevelRepository.save(newLevel);
+                        });
+                
+                testLevels.add(testLevel);
+            }
+        }
+        return testLevels;
     }
 
     @Transactional(readOnly = true)
@@ -638,11 +688,6 @@ public class TestService {
                 question.setCodeAnswer(null);
             }
             
-            // Якщо використовуєш MatchingPair, також очищуй:
-            // if (question.getMatchingPairs() != null) question.getMatchingPairs().clear();
-            // else question.setMatchingPairs(new HashSet<>());
-
-            // 2. Наповнення новими даними залежно від типу
             if (dto.getChoiceOptions() != null && !dto.getChoiceOptions().isEmpty()) {
                 for (var optDto : dto.getChoiceOptions()) {
                     ChoiceOption option = new ChoiceOption(question, optDto.getOptionText(), optDto.getIsCorrect());

@@ -61,7 +61,6 @@ public class TestAttemptService {
                 .orElse(null);
         if (attempt == null) {
             if (Boolean.TRUE.equals(test.getIsPrivate())){
-                // Передаємо також user, щоб перевірити його коди
                 validateAccessForPrivateTest(invitationToken, test, userEmail, user);
             }
             attempt = new UserTestAttempt(user, test);
@@ -212,7 +211,7 @@ public class TestAttemptService {
                     answer.setIsCorrect(isCorrect);
                     
                     if (isCorrect) {
-                        BigDecimal weight = BigDecimal.valueOf(q.getWeight() != null ? q.getWeight() : 1.0);
+                        BigDecimal weight = BigDecimal.valueOf(q.getCustomWeight() != null ? q.getCustomWeight() : 1.0);
                         answer.setAwardedScore(weight); 
                         currentAutoScore = currentAutoScore.add(weight);
                     } else {
@@ -290,7 +289,7 @@ public class TestAttemptService {
 
         BigDecimal totalMaxScore = attempt.getTest().getTestQuestions().stream()
          .map(tq -> {
-         Double w = tq.getQuestion().getWeight();
+         Double w = tq.getQuestion().getCustomWeight();
          return (w != null) ? BigDecimal.valueOf(w) 
                             : BigDecimal.ONE; 
     })
@@ -355,7 +354,7 @@ public class TestAttemptService {
                 .orElseThrow(() -> new EntityNotFoundException("Answer not found for question: " + questionId));
 
         Question q = answer.getQuestion();
-        BigDecimal maxWeight = BigDecimal.valueOf(q.getWeight() != null ? q.getWeight() : 1.0);
+        BigDecimal maxWeight = BigDecimal.valueOf(q.getCustomWeight() != null ? q.getCustomWeight() : 1.0);
 
         if (points.compareTo(maxWeight) > 0) {
             throw new IllegalArgumentException("Score cannot exceed the question weight (" + maxWeight + ")");
@@ -513,7 +512,7 @@ public class TestAttemptService {
             .questionText(q.getQuestionText())
             .type(q.getQuestionType())
             .comment(q.getComment())
-            .weight(q.getWeight() != null ? q.getWeight() : 1.0)
+            .weight(q.getCustomWeight() != null ? q.getCustomWeight() : 1.0)
             .isCorrect(isCorrect);
 
     switch (q.getQuestionType()) {
@@ -587,7 +586,7 @@ public class TestAttemptService {
                 
         BigDecimal totalMaxScore = attempt.getTest().getTestQuestions().stream()
             .map(tq -> {
-                Double w = tq.getQuestion().getWeight();
+                Double w = tq.getQuestion().getCustomWeight();
                 return (w != null) ? BigDecimal.valueOf(w) : BigDecimal.ONE;
             })
             .reduce(BigDecimal.ZERO, BigDecimal::add)

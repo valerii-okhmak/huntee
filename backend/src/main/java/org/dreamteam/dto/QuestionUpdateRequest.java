@@ -14,7 +14,9 @@ public class QuestionUpdateRequest {
     private String questionText;
     private QuestionType questionType;
     private String comment;
-    private Double weight;
+    private Double customWeight;
+    private Double effectiveWeight;
+    private Long levelId;
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;
     private List<MatchingPairDTO> matchingPairs;

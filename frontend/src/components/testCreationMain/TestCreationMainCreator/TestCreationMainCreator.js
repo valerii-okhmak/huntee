@@ -16,7 +16,6 @@ import { useLocalStorage } from '../../../utils/useLocalStorage';
 import axios from 'axios';
 import { getAccessToken } from '../../../utils/auth';
 
-// ДОДАНО: Імпорт нового модального вікна
 import ImportQuestionsModal from '../../modal_windows/ImportQuestionsModal';
 
 const STORAGE_DRAFT_KEY = 'tc_current_creator_q';
@@ -26,7 +25,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   const { t } = useTranslation();
 
   const [draftQ, setDraftQ] = useLocalStorage(STORAGE_DRAFT_KEY, {
-    // ... твій існуючий стейт
+
     questionText: "",
     points: "1",
     selectedType: "regular",
@@ -163,7 +162,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
   useImperativeHandle(ref, () => ({
     loadQuestion(q) {
-      // ... твій існуючий код ...
       if (!q) return;
 
       let type = "regular";
@@ -224,7 +222,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
     },
 
     resetForm() {
-       // ... твій існуючий код ...
       const defaultState = {
         questionText: "",
         points: "1",
@@ -261,7 +258,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
     },
 
     getCurrentQuestionAndReset() {
-      // ... твій існуючий код ...
       const newErrors = {};
       const currentQuestionText = (questionText || "").trim();
       const currentComment = (comment || "").trim();

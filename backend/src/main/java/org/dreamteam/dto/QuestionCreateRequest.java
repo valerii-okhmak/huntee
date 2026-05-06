@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import org.dreamteam.Entity.QuestionCategory;
 import org.dreamteam.Entity.QuestionType;
+import org.dreamteam.Entity.TestLevel;
+
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +17,9 @@ public class QuestionCreateRequest {
     private String questionText;
     private String imageUrl;
     private String comment;
-    private Double weight;
+    private Long levelId;
+    private Double customWeight;
+    private Double effectiveWeight;
     private Set<QuestionCategory> categories;
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;

@@ -117,7 +117,7 @@ public class QuestionService {
         User author = findUserByEmail(authorEmail);
         Question copyQuestion = new Question();
         copyQuestion.setAuthor(author);
-        copyQuestion.setWeight(originalQuestion.getWeight());
+        copyQuestion.setCustomWeight(originalQuestion.getCustomWeight());
         copyQuestion.setComment(originalQuestion.getComment());
         copyQuestion.setImageUrl(originalQuestion.getImageUrl());
         copyQuestion.setQuestionText(originalQuestion.getQuestionText());
@@ -457,16 +457,26 @@ public class QuestionService {
         question.setQuestionText(request.getQuestionText());
         question.setQuestionType(request.getQuestionType());
         question.setComment(request.getComment());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
+        question.setCustomWeight(request.getCustomWeight() != null ? request.getCustomWeight() : 1.0);
         question.setCategories(request.getCategories() != null ? request.getCategories() : new HashSet<>());
+        if (request.getLevelId() != null) {
+            TestLevel level = testLevelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено"));
+            question.setTestLevel(level);
+        }
     }
 
     private void mapToQuestion(Question question, QuestionUpdateRequest request) {
         question.setQuestionText(request.getQuestionText());
         question.setQuestionType(request.getQuestionType());
         question.setComment(request.getComment());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : question.getWeight());
+        question.setCustomWeight(request.getCustomWeight() != null ? request.getCustonWeight() : question.getCustomWeight());
         question.setCategories(request.getCategories() != null ? request.getCategories() : question.getCategories());
+        if (request.getLevelId() != null) {
+            TestLevel level = testLevelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено"));
+            question.setTestLevel(level);
+        }
     }
 
     private QuestionResponse mapToQuestionResponse(Question question) {
@@ -475,9 +485,10 @@ public class QuestionService {
                 .questionText(question.getQuestionText())
                 .comment(question.getComment())
                 .questionType(question.getQuestionType())
-                .weight(question.getWeight())
+                .customWeight(question.getCustomWeight())
                 .authorEmail(question.getAuthor().getUsername())
-                .categories(question.getCategories());
+                .categories(question.getCategories())
+                .levelId(question.getTestLevel() != null ? question.getTestLevel().getLevelId() : null);
 
         switch (question.getQuestionType()) {
             case SINGLE_CHOICE, MULTIPLE_CHOICE:

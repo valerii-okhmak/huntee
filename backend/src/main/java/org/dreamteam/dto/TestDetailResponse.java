@@ -36,6 +36,7 @@ public class TestDetailResponse implements Serializable {
     private Boolean isFixedQuestionOrder;
     private Boolean isFixedAnswerOrder;
     private Boolean isShowResult;
+    private List<TestLevelDTO> levels;
 
     
     @Data

@@ -9,8 +9,10 @@ import org.dreamteam.Entity.QuestionType;
 @Builder
 public class QuestionImportDTO {
     private String questionText;
-    private QuestionType questionType; 
-    private Double points;
+    private QuestionType questionType;
+    private Long levelId;
+    private Double customWeight;
+    private Double effectiveWeight;
     private String comment;
     private List<ChoiceOptionImportDTO> choiceOptions;
     private TextAnswerImportDTO textAnswer;

@@ -15,7 +15,9 @@ public class QuestionTakeResponse {
     private String questionText;
     private QuestionType questionType;
     private String comment;
-
+    private Long levelId;
+    private Double customWeight;
+    private Double effectiveWeight;
     private List<ChoiceOptionTakeDTO> choiceOptions;
     private List<MatchingPromptDTO> matchingPrompts;
     
