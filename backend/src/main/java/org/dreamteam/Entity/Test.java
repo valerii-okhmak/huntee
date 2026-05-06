@@ -36,12 +36,7 @@ public class Test {
     @Column(name = "level")
     private String level;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "test_levels", 
-        joinColumns = @JoinColumn(name = "test_id"), 
-        inverseJoinColumns = @JoinColumn(name = "level_id")
-    )
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TestLevel> testLevels = new HashSet<>();
 
     @Column(name = "city")

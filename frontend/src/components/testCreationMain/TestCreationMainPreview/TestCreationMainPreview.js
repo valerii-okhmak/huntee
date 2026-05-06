@@ -11,11 +11,11 @@ const TestCreationMainPreview = ({ questions = [], levels = [], onAddLevel, onEd
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   const [isCreatingLevel, setIsCreatingLevel] = useState(false);
-  const [editingLevelName, setEditingLevelName] = useState(null); // Стейт для збереження оригінальної назви при редагуванні
+  const [editingLevelName, setEditingLevelName] = useState(null);
   
   const [newLevelName, setNewLevelName] = useState("");
   const [newLevelPoints, setNewLevelPoints] = useState("1");
-  const [newLevelDisplayCount, setNewLevelDisplayCount] = useState(""); // Новий стейт для к-сті питань
+  const [newLevelDisplayCount, setNewLevelDisplayCount] = useState(""); 
 
   const handleConfirmDelete = () => {
     if (deleteTargetIndex !== null) {
@@ -30,19 +30,17 @@ const TestCreationMainPreview = ({ questions = [], levels = [], onAddLevel, onEd
     setIsModalOpen(true);
   };
 
-  // Відкриття форми в режимі редагування
   const handleEditLevelClick = (level) => {
     setEditingLevelName(level.name);
     setNewLevelName(level.name);
     setNewLevelPoints(String(level.points));
-    setNewLevelDisplayCount(level.displayCount ? String(level.displayCount) : "");
+    setNewLevelDisplayCount(level.questionsLimit ? String(level.questionsLimit) : "");
     setIsCreatingLevel(true);
   };
 
   const handleSaveLevel = () => {
     if (!newLevelName.trim()) return;
     
-    // Перевірка на дублікати (ігноруємо поточну назву, якщо ми її ж і редагуємо)
     const isDuplicate = levels.some(l => 
         l.name.toLowerCase() === newLevelName.trim().toLowerCase() && 
         l.name !== editingLevelName
@@ -56,14 +54,12 @@ const TestCreationMainPreview = ({ questions = [], levels = [], onAddLevel, onEd
     const levelData = { 
         name: newLevelName.trim(), 
         points: parseFloat(newLevelPoints) || 1,
-        displayCount: newLevelDisplayCount ? parseInt(newLevelDisplayCount, 10) : null
+        questionsLimit: newLevelDisplayCount ? parseInt(newLevelDisplayCount, 10) : null
     };
 
     if (editingLevelName) {
-        // Якщо редагуємо
         onEditLevel(editingLevelName, levelData);
     } else {
-        // Якщо створюємо новий
         onAddLevel(levelData);
     }
 
@@ -167,7 +163,7 @@ const TestCreationMainPreview = ({ questions = [], levels = [], onAddLevel, onEd
                       <span className="level-dot">•</span> {levelName} 
                       <span className="preview-level-points-info">
                           ({t('testCreationPreview.points', 'Балів')}: {levelData?.points} 
-                          {levelData?.displayCount ? ` | Випадкових: ${levelData.displayCount} з ${items.length}` : ''})
+                          {levelData?.questionsLimit ? ` | Випадкових: ${levelData.questionsLimit} з ${items.length}` : ''})
                       </span>
                   </div>
                   <div style={{ display: 'flex', gap: '4px' }}>

@@ -82,6 +82,7 @@ public class TestService {
         notificationService.sendSystemNotification(user.getId(), title, message);
     }
 
+
     @CacheEvict(value = "tests_list", allEntries = true)
     @Transactional
     public TestDetailResponse createTest(TestCreateRequest request, String authorEmail) {
@@ -101,15 +102,20 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
-        Set<TestLevel> levels = processTestLevels(request.getLevels(), test);
-        test.setTestLevels(levels);
-
-        validateLevelLimits(test);
-
+        
         Test savedTest = testRepository.save(test);
 
-        updateTestQuestions(savedTest, request.getQuestionIds());
+        Set<TestLevel> levels = processTestLevels(request.getLevels(), savedTest);
+        
+        testLevelRepository.saveAll(levels);
+        
+        if (savedTest.getTestLevels() == null) {
+            savedTest.setTestLevels(new HashSet<>());
+        }
+        savedTest.getTestLevels().clear();
+        savedTest.getTestLevels().addAll(levels);
 
+        updateTestQuestions(savedTest, request.getQuestionIds());
 
         return mapToDetailResponse(savedTest);
     }
@@ -153,18 +159,21 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
+        
         Set<TestLevel> updatedLevels = processTestLevels(request.getLevels(), test);
         test.getTestLevels().clear();
         test.getTestLevels().addAll(updatedLevels);
 
+        testLevelRepository.saveAll(test.getTestLevels());
+
         test.getTestQuestions().clear();
         testRepository.flush();
         updateTestQuestions(test, request.getQuestionIds());
-        validateLevelLimits(test);
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
     }
+
 
     @Caching(evict = {
         @CacheEvict(value = "test_details", key = "#testId"),

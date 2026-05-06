@@ -60,7 +60,7 @@ const TestCreationMainPage = () => {
 
   const [questionsCount, setQuestionsCount] = useState(questions.length);
 
-  // Збереження питань в локальне сховище
+  // Збереження в локальне сховище
   useEffect(() => {
     if (!isEditMode) {
       localStorage.setItem(STORAGE_QUESTIONS_KEY, JSON.stringify(questions));
@@ -68,7 +68,6 @@ const TestCreationMainPage = () => {
     }
   }, [questions, isEditMode]);
 
-  // Збереження рівнів в локальне сховище
   useEffect(() => {
     if (!isEditMode) {
       localStorage.setItem(STORAGE_LEVELS_KEY, JSON.stringify(testLevels));
@@ -92,41 +91,51 @@ const TestCreationMainPage = () => {
     }
   }, [isEditMode]);
 
-  // Завантаження існуючих питань (для режиму редагування)
+  // Завантаження існуючих питань і рівнів (для режиму редагування)
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchData = async () => {
       if (!isEditMode) return;
   
       try {
         const token = getAccessToken();
-        const { data } = await axios.get(
-          `/api/tests/${testId}/questions`,
-          {
-            headers: {
-              ...(token ? { Authorization: `Bearer ${token}` } : {})
-            }
-          }
-        );
-  
-        setQuestions(data);
-        setOriginalQuestions(data);
-        setQuestionsCount(data.length);
+        const headers = { ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+
+        // 1. Отримуємо сам тест, щоб витягти рівні (назви і ID)
+        const testRes = await axios.get(`/api/tests/${testId}`, { headers });
+        const fetchedLevels = testRes.data?.levels || [];
         
-        // Відновлюємо унікальні рівні з отриманих питань
-        const uniqueLevelsMap = new Map();
-        data.forEach(q => {
-           if (q.level && !uniqueLevelsMap.has(q.level)) {
-               uniqueLevelsMap.set(q.level, { name: q.level, points: q.points || 1 });
-           }
+        // Зберігаємо рівні в стейт фронтенду
+        const mappedLevels = fetchedLevels.map(l => ({
+           id: l.id || l.levelId,
+           name: l.name,
+           points: l.weight || 1.0,
+           questionsLimit: l.questionsLimit || '' // Ліміт питань з бекенду
+        }));
+        setTestLevels(mappedLevels);
+
+        // 2. Отримуємо питання тесту
+        const { data: questionsData } = await axios.get(`/api/tests/${testId}/questions`, { headers });
+  
+        // Мапимо levelId з бекенду назад на текстову назву рівня для відображення в UI
+        const mappedQuestions = questionsData.map(q => {
+           const lvl = mappedLevels.find(l => l.id === q.levelId);
+           return { 
+               ...q, 
+               level: lvl ? lvl.name : "", // Повертаємо текстову назву для UI
+               points: q.customWeight || q.weight || 1.0 
+           };
         });
-        setTestLevels(Array.from(uniqueLevelsMap.values()));
+
+        setQuestions(mappedQuestions);
+        setOriginalQuestions(mappedQuestions);
+        setQuestionsCount(mappedQuestions.length);
 
       } catch (e) {
-        console.error(e);
+        console.error("Помилка завантаження даних тесту:", e);
       }
     };
   
-    fetchQuestions();
+    fetchData();
   }, [isEditMode, testId]);  
 
   const [testMeta, setTestMeta] = useState(() => ({
@@ -248,7 +257,7 @@ const TestCreationMainPage = () => {
       questionText: aiQ.questionText,
       questionType: aiQ.questionType, 
       comment: aiQ.comment || "",
-      points: aiQ.weight || 1,
+      points: aiQ.customWeight || aiQ.weight || 1, // Підтримка customWeight
       level: ""
     };
 
@@ -288,9 +297,7 @@ const TestCreationMainPage = () => {
   const handleAiGenerate = async (params) => {
     try {
       setAiLoading(true);
-      
       const token = getAccessToken();
-      
       const { data } = await axios.post(
         '/api/ai/tests/generate',
         {
@@ -310,13 +317,11 @@ const TestCreationMainPage = () => {
 
       if (data && data.length > 0) {
         const newQuestions = data.map(mapAiQuestionToFrontend);
-
         setQuestions(prev => {
           const updated = [...prev, ...newQuestions];
           setQuestionsCount(updated.length);
           return updated;
         });
-
         setMode('preview'); 
       }
     } catch (e) {
@@ -335,13 +340,32 @@ const TestCreationMainPage = () => {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
   
+      // 1. Формуємо DTO тесту, ОБОВ'ЯЗКОВО додаємо levels для бекенду
       const testPayload = {
         ...testMeta,
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
+        levels: testLevels.map((lvl, index) => ({
+           id: lvl.id || null, // null, якщо це новий рівень
+           name: lvl.name,
+           weight: parseFloat(lvl.points) || 1.0,
+           orderIndex: index,
+           questionsLimit: parseInt(lvl.questionsLimit) || null // Обробка рандому
+        }))
       };
   
       let currentTestId = testId;
+      let savedLevels = [];
+
+      // 2. Зберігаємо тест і отримуємо рівні зі ЗГЕНЕРОВАНИМИ ID
+      if (isEditMode) {
+        const res = await axios.put(`/api/tests/${currentTestId}`, testPayload, { headers });
+        savedLevels = res.data?.levels || [];
+      } else {
+        const res = await axios.post(`/api/tests`, testPayload, { headers });
+        currentTestId = res.data?.testId;
+        savedLevels = res.data?.levels || [];
+      }
 
       const isValidUUID = (id) => {
         if (!id) return false;
@@ -349,14 +373,18 @@ const TestCreationMainPage = () => {
         return uuidRegex.test(id);
       };
       
+      // 3. Формуємо питання, замінюючи текстові назви рівнів на реальні levelId
       const questionsPayload = questions.map((q, i) => {
+        // Знаходимо рівень по імені в тому, що щойно повернув бекенд
+        const matchedLevel = savedLevels.find(l => l.name === q.level);
+
         const payload = {
           questionText: q.questionText,
           questionType: q.questionType,
           comment: q.comment || "",
-          weight: parseFloat(q.points) || 1.0,
+          customWeight: parseFloat(q.points) || 1.0, // Мапимо на нове поле customWeight
           orderIndex: i,
-          level: q.level || null // Додаємо рівень для бекенду
+          levelId: matchedLevel ? (matchedLevel.id || matchedLevel.levelId) : null // Ось магія!
         };
 
         if (isValidUUID(q.id)) {
@@ -374,15 +402,14 @@ const TestCreationMainPage = () => {
         return payload;
       });
   
+      // 4. Відправляємо питання на бекенд
       if (isEditMode) {
-        await axios.put(`/api/tests/${currentTestId}`, testPayload, { headers });
         await axios.put(`/api/tests/${currentTestId}/questions/bulk`, questionsPayload, { headers });
       } else {
-        const res = await axios.post(`/api/tests`, testPayload, { headers });
-        currentTestId = res.data?.testId;
         await axios.post(`/api/tests/${currentTestId}/questions/bulk`, questionsPayload, { headers });
       }
 
+      // 5. Очищення локального сховища
       const draftKeys = [
         STORAGE_META_KEY, STORAGE_QUESTIONS_KEY, STORAGE_LEVELS_KEY, 'tc_current_creator_q',
         'tc_name', 'tc_field', 'tc_level', 'tc_city', 'tc_desc', 'tc_resp',
@@ -421,7 +448,7 @@ const TestCreationMainPage = () => {
       <TestCreationMainCreator 
           ref={creatorRef} 
           globalSphere={testMeta.sphere} 
-          existingLevels={testLevels} // Передаємо рівні в Creator
+          existingLevels={testLevels}
           onImportSuccess={(newQuestions) => {
               setQuestions(prev => {
                   const updated = [...prev, ...newQuestions];
