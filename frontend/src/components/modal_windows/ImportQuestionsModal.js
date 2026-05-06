@@ -3,17 +3,35 @@ import { useTranslation } from 'react-i18next';
 import ModalMini from './ModalMini';
 import './ModalWindow.css';
 
-const ImportQuestionsModal = ({ isOpen, onClose, onImport }) => {
+// ДОДАНО: проп existingLevels
+const ImportQuestionsModal = ({ isOpen, onClose, onImport, existingLevels = [] }) => {
   const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [points, setPoints] = useState('1');
+  const [level, setLevel] = useState(""); // ДОДАНО: стейт для рівня
 
   useEffect(() => {
     if (isOpen) {
       setFile(null);
       setPoints('1');
+      setLevel(""); // Очищаємо рівень при відкритті
     }
   }, [isOpen]);
+
+  // Логіка блокування балів, якщо рівень обрано
+  const selectedLevelData = existingLevels.find(l => l.name === level);
+  const isPointsLocked = !!selectedLevelData;
+
+  const handleLevelChange = (e) => {
+    const val = e.target.value;
+    setLevel(val);
+    
+    // Якщо вибрано існуючий рівень, підтягуємо його вагу
+    const lvl = existingLevels.find(l => l.name === val);
+    if (lvl) {
+      setPoints(String(lvl.points));
+    }
+  };
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -30,11 +48,13 @@ const ImportQuestionsModal = ({ isOpen, onClose, onImport }) => {
 
   const handleSubmit = () => {
     if (!file) return;
-    onImport(file, points);
+    
+    // ДОДАНО: передаємо рівень третім параметром (і заблоковані бали, якщо треба)
+    const finalPoints = isPointsLocked ? selectedLevelData.points : points;
+    onImport(file, finalPoints, level || null); 
     onClose();
   };
 
-  // Логіка активації кнопки (аналогічно до EducationModal)
   const isSubmitDisabled = !file;
 
   return (
@@ -53,6 +73,28 @@ const ImportQuestionsModal = ({ isOpen, onClose, onImport }) => {
         <h3 className="modal-title" style={{ textAlign: 'center', fontSize: '32px', fontWeight: '700', marginBottom: '40px' }}>
           {t('testCreationCreator.importModalTitle', 'Імпорт питань')}
         </h3>
+
+        {/* НОВА СЕКЦІЯ: Вибір рівня */}
+        <div className="modal-section level-section">
+          <label className="modal-label">
+            {t('testCreationCreator.levelLabel', 'Рівень (опціонально)')}
+          </label>
+          <div className="modal-controls">
+            <select
+              value={level}
+              onChange={handleLevelChange}
+              className="points-input-mini" 
+              style={{ cursor: 'pointer', width: '100%' }}
+            >
+              <option value="">{t('testCreationCreator.noLevel', 'Без рівня')}</option>
+              {existingLevels.map((lvl, index) => (
+                <option key={index} value={lvl.name}>
+                  {lvl.name} (Балів: {lvl.points})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
         {/* Секція файлу */}
         <div className="modal-section file-section">
@@ -86,10 +128,18 @@ const ImportQuestionsModal = ({ isOpen, onClose, onImport }) => {
             <input 
               type="number" 
               step="0.1" 
-              value={points} 
+              min="0"
+              value={isPointsLocked ? selectedLevelData.points : points} 
               onChange={handlePointsChange}
-              className="points-input-mini" 
+              className={`points-input-mini ${isPointsLocked ? 'disabled-points' : ''}`}
+              disabled={isPointsLocked}
+              style={{ width: '100%' }}
             />
+            {isPointsLocked && (
+              <span style={{ display: 'block', marginTop: '4px', color: '#888', fontSize: '12px' }}>
+                Синхронізовано з рівнем
+              </span>
+            )}
           </div>
         </div>
 

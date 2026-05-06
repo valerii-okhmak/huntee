@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle, useEffect } from "react"; // useRef видалено
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import './TestCreationMainCreator.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,8 +7,7 @@ import {
   faListCheck, 
   faKeyboard, 
   faLaptopCode,
-  faImage,
-  faFileImport
+  faImage
 } from '@fortawesome/free-solid-svg-icons';
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
 import Select from 'react-select';
@@ -21,12 +20,13 @@ import ImportQuestionsModal from '../../modal_windows/ImportQuestionsModal';
 const STORAGE_DRAFT_KEY = 'tc_current_creator_q';
 const MIN_BASE_OPTIONS = 2;
 
-const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, onImportSuccess }, ref) => {
+// Приймаємо existingLevels з батьківського компонента
+const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, onImportSuccess, existingLevels = [] }, ref) => {
   const { t } = useTranslation();
 
   const [draftQ, setDraftQ] = useLocalStorage(STORAGE_DRAFT_KEY, {
-
     questionText: "",
+    questionLevel: "", 
     points: "1",
     selectedType: "regular",
     comment: "",
@@ -42,6 +42,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   });
 
   const [questionText, setQuestionText] = useState(draftQ?.questionText || "");
+  const [questionLevel, setQuestionLevel] = useState(draftQ?.questionLevel || ""); 
   const [points, setPoints] = useState(draftQ?.points || "1");
   const [selectedType, setSelectedType] = useState(draftQ?.selectedType || "regular");
   const [comment, setComment] = useState(draftQ?.comment || "");
@@ -58,18 +59,34 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   const [errors, setErrors] = useState({});
   const [questionSphere, setQuestionSphere] = useState(null);
 
-  // ДОДАНО: Стан для керування модальним вікном імпорту
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+
+  // Логіка блокування балів, якщо обрано існуючий рівень
+  const selectedLevelData = existingLevels.find(l => l.name === questionLevel);
+  const isPointsLocked = !!selectedLevelData;
+
+  const handleLevelChange = (e) => {
+    const val = e.target.value;
+    setQuestionLevel(val);
+    clearError('questionLevel');
+    
+    // Якщо вибрано рівень, беремо його вагу
+    const lvl = existingLevels.find(l => l.name === val);
+    if (lvl) {
+      setPoints(String(lvl.points));
+      clearError('points');
+    }
+  };
 
   useEffect(() => {
     setDraftQ({
-      questionText, points, selectedType, comment,
+      questionText, questionLevel, points, selectedType, comment,
       options, regularCorrect, multipleCorrect,
       openExpectedEnabled, openExpectedText,
       codeLanguage, codeMethodName, codeTemplate, codeTestCasesJSON
     });
   }, [
-    questionText, points, selectedType, comment, 
+    questionText, questionLevel, points, selectedType, comment, 
     options, regularCorrect, multipleCorrect, 
     openExpectedEnabled, openExpectedText, 
     codeLanguage, codeMethodName, codeTemplate, codeTestCasesJSON, setDraftQ
@@ -127,8 +144,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
     clearError('duplicateOptions');
   };
 
-  // ЗМІНЕНО: Тепер приймає файл та бали безпосередньо з модалки
-  const handleImportSubmit = async (file, importedPoints) => {
+  const handleImportSubmit = async (file, importedPoints, importedLevel) => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -142,13 +158,13 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
         }
       });
 
-      // Парсимо обрані користувачем бали (якщо поле порожнє, даємо 1 бал)
       const parsedPoints = parseFloat(importedPoints) || 1;
 
       const importedQuestions = response.data.map(q => ({
           ...q,
           id: `imported_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          points: parsedPoints // ДОДАНО: Присвоюємо обрану вагу кожному питанню
+          points: parsedPoints,
+          level: importedLevel 
       }));
 
       if (onImportSuccess) {
@@ -188,6 +204,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
         : JSON.stringify(q.codeAnswer?.testCases || []);
 
       setQuestionText(q.questionText || "");
+      setQuestionLevel(q.level || ""); // Завантажуємо рівень
       setComment(q.comment || "");
       setPoints(String(q.points || 1));
       setSelectedType(type);
@@ -204,6 +221,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
       setDraftQ({
         questionText: q.questionText || "",
+        questionLevel: q.level || "",
         points: String(q.points || 1),
         selectedType: type,
         comment: q.comment || "",
@@ -224,6 +242,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
     resetForm() {
       const defaultState = {
         questionText: "",
+        questionLevel: "",
         points: "1",
         selectedType: "regular",
         comment: "",
@@ -241,6 +260,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
       setDraftQ(defaultState);
 
       setQuestionText("");
+      setQuestionLevel("");
       setPoints("1");
       setSelectedType("regular");
       setComment("");
@@ -260,6 +280,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
     getCurrentQuestionAndReset() {
       const newErrors = {};
       const currentQuestionText = (questionText || "").trim();
+      const currentLevelText = (questionLevel || "").trim();
       const currentComment = (comment || "").trim();
       const currentOpenExpectedText = (openExpectedText || "").trim();
 
@@ -274,9 +295,10 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
       let payload = { 
           questionText: currentQuestionText,
+          level: currentLevelText || null, // Додаємо рівень у Payload
           comment: currentComment,
           questionType: backendType,
-          points: floatPoints,  
+          points: isPointsLocked ? selectedLevelData.points : floatPoints, // Примусово беремо бали рівня, якщо він обраний
           sphere: globalSphere === 'mixed' ? questionSphere?.value : globalSphere
       };
 
@@ -353,11 +375,12 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
   return (
     <div className='testCreationMainCreator'>
-      {/* ДОДАНО: Модальне вікно для імпорту */}
+
       <ImportQuestionsModal 
         isOpen={isImportModalOpen} 
         onClose={() => setIsImportModalOpen(false)} 
         onImport={handleImportSubmit} 
+        existingLevels={existingLevels} 
       />
 
       <div className='testCreationMainCreator__container'>
@@ -366,20 +389,13 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
             {t('testCreationCreator.chooseType')}
           </h2>
 
-          {/* ЗМІНЕНО: Тепер кнопка відкриває модалку, а прихований input видалено */}
           <button 
             className="import-btn" 
             onClick={() => setIsImportModalOpen(true)}
           >
             <div className="svg-wrapper-1">
               <div className="svg-wrapper">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                  className="icon"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" className="icon">
                   <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                 </svg>
               </div>
@@ -388,7 +404,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
           </button>
         </div>
 
-        {/* ... решта твого JSX без змін ... */}
         <div className='testCreationMainCreator__typeSelector'>
           {['regular', 'multiple', 'open', 'practical'].map(type => (
             <button
@@ -406,6 +421,26 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
         </div>
 
         <div className="testCreationMainCreator__questionField">
+          {/* Випадаючий список для Рівнів */}
+          <div className="testCreationMainCreator__questionField-header">
+            <h2 className="testCreationMainCreator__questionField-title">{t('testCreationCreator.levelLabel', 'Рівень (опціонально)')}</h2>
+          </div>
+          <div className="testCreationMainCreator__questionField-wrapper">
+            <select
+              value={questionLevel}
+              onChange={handleLevelChange}
+              className="testCreationMainCreator__questionField-input"
+              style={{ cursor: 'pointer' }}
+            >
+              <option value="">{t('testCreationCreator.noLevel', 'Без рівня')}</option>
+              {existingLevels.map((lvl, index) => (
+                <option key={index} value={lvl.name}>
+                  {lvl.name} ({t('testCreationPreview.points', 'Балів')}: {lvl.points})
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="testCreationMainCreator__questionField-header">
             <h2 className="testCreationMainCreator__questionField-title">{t('testCreationCreator.questionLabel')}</h2>
           </div>
@@ -445,11 +480,18 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
           <div className={`testCreationMainCreator__questionField-wrapper ${errors.points ? 'input-error-placeholder' : ''}`}>
             <input
               type="number" step="0.1" min="0"
-              value={points}
+              value={isPointsLocked ? selectedLevelData.points : points}
               onKeyDown={blockInvalidChar}
               onChange={handlePointsChange}
-              className="testCreationMainCreator__questionField-input"
+              className={`testCreationMainCreator__questionField-input ${isPointsLocked ? 'disabled-points' : ''}`}
+              disabled={isPointsLocked}
+              title={isPointsLocked ? "Вага синхронізована з іншими питаннями цього рівня" : ""}
             />
+            {isPointsLocked && (
+              <span style={{ marginLeft: '12px', color: '#888', fontSize: '13px', alignSelf: 'center' }}>
+                Синхронізовано з рівнем
+              </span>
+            )}
           </div>
         </div>
 

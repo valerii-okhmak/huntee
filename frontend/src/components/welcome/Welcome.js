@@ -1,17 +1,35 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Welcome.css';
-import backgroundVideo from '../../video/welcomevideo.webm'; 
 
 const Welcome = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="welcome">
-      <video className="background-video" autoPlay loop muted>
-        <source src={backgroundVideo} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      <div className="container welcome_container">
-        <p className="text">DUDE, THIS IS<br/>YOUR FUTURE</p>
+      
+      <div className="container">
+        <div className="welcome_content">
+          <h1 className="main-title">
+            <span className="title-line">ОНЛАЙН</span>
+            <span className="title-line outline-text">ТЕСТУВАННЯ</span>
+          </h1>
+          
+          <div className="action-area">
+            <p className="subtitle">
+              Платформа для створення та проходження тестів. <br />
+            </p>
+            
+            <div className="action-buttons">
+              <button className="btn primary-btn" onClick={() => navigate('/viewingtests')}>
+                Створити тест
+              </button>
+              <button className="btn secondary-btn" onClick={() => navigate('/alltests')}>
+                Знайти тести
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

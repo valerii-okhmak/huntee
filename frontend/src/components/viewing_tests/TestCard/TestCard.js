@@ -113,12 +113,6 @@ const TestCard = ({ id, title, type, location, date, time, link, candidatesCount
               <FontAwesomeIcon icon={faTrashCan} />
               <span>{t('testCard.delete')}</span>
             </button>
-            <button
-              className="testcard-action-btn btn-duplicate"
-            >
-              <FontAwesomeIcon icon={faCopy} />
-              <span>{t('testCard.duplicate')}</span>
-            </button>
           </div>
 
           <div className='testcard-bottom_row'>

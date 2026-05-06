@@ -168,7 +168,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 checked={timerType === 'none'}
                 onChange={() => {
                   setTimerType('none');
-                  setSelectedOption(0); // Оновлено на 0 замість null
+                  setSelectedOption(0);
                 }}
               />
               <div className="question-classification__label">

@@ -15,6 +15,7 @@ const STORAGE_QUESTIONS_KEY = 'tc_questions_list';
 const STORAGE_META_KEY = 'test_creation_draft';
 const STORAGE_MODE_KEY = 'tc_page_mode';
 const STORAGE_EDIT_INDEX_KEY = 'tc_editing_index';
+const STORAGE_LEVELS_KEY = 'tc_test_levels'; 
 
 const TestCreationMainPage = () => {
   const { t, i18n } = useTranslation();
@@ -26,12 +27,14 @@ const TestCreationMainPage = () => {
 
   const [mode, setMode] = useState(() => {
     if (isEditMode) return 'preview';
-    return localStorage.getItem(STORAGE_MODE_KEY) || 'create';
+    return localStorage.getItem(STORAGE_MODE_KEY) || 'preview';
   });
+  
   const [editingIndex, setEditingIndex] = useState(() => {
     const saved = localStorage.getItem(STORAGE_EDIT_INDEX_KEY);
     return saved !== null ? parseInt(saved) : null;
   });
+  
   const [originalQuestions, setOriginalQuestions] = useState([]);
   
   const [loading, setLoading] = useState(false);
@@ -43,19 +46,34 @@ const TestCreationMainPage = () => {
 
   const creatorRef = useRef(null);
 
+  // Стан для питань
   const [questions, setQuestions] = useState(() => {
     const saved = localStorage.getItem(STORAGE_QUESTIONS_KEY);
     return saved ? JSON.parse(saved) : [];
   });
 
+  // Стан для рівнів
+  const [testLevels, setTestLevels] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_LEVELS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [questionsCount, setQuestionsCount] = useState(questions.length);
 
+  // Збереження питань в локальне сховище
   useEffect(() => {
     if (!isEditMode) {
       localStorage.setItem(STORAGE_QUESTIONS_KEY, JSON.stringify(questions));
       setQuestionsCount(questions.length);
     }
   }, [questions, isEditMode]);
+
+  // Збереження рівнів в локальне сховище
+  useEffect(() => {
+    if (!isEditMode) {
+      localStorage.setItem(STORAGE_LEVELS_KEY, JSON.stringify(testLevels));
+    }
+  }, [testLevels, isEditMode]);
 
   useEffect(() => {
     if (!isEditMode) {
@@ -74,6 +92,7 @@ const TestCreationMainPage = () => {
     }
   }, [isEditMode]);
 
+  // Завантаження існуючих питань (для режиму редагування)
   useEffect(() => {
     const fetchQuestions = async () => {
       if (!isEditMode) return;
@@ -92,6 +111,16 @@ const TestCreationMainPage = () => {
         setQuestions(data);
         setOriginalQuestions(data);
         setQuestionsCount(data.length);
+        
+        // Відновлюємо унікальні рівні з отриманих питань
+        const uniqueLevelsMap = new Map();
+        data.forEach(q => {
+           if (q.level && !uniqueLevelsMap.has(q.level)) {
+               uniqueLevelsMap.set(q.level, { name: q.level, points: q.points || 1 });
+           }
+        });
+        setTestLevels(Array.from(uniqueLevelsMap.values()));
+
       } catch (e) {
         console.error(e);
       }
@@ -219,7 +248,8 @@ const TestCreationMainPage = () => {
       questionText: aiQ.questionText,
       questionType: aiQ.questionType, 
       comment: aiQ.comment || "",
-      points: aiQ.weight || 1
+      points: aiQ.weight || 1,
+      level: ""
     };
 
     if (aiQ.questionType === 'SINGLE_CHOICE' || aiQ.questionType === 'MULTIPLE_CHOICE') {
@@ -325,7 +355,8 @@ const TestCreationMainPage = () => {
           questionType: q.questionType,
           comment: q.comment || "",
           weight: parseFloat(q.points) || 1.0,
-          orderIndex: i
+          orderIndex: i,
+          level: q.level || null // Додаємо рівень для бекенду
         };
 
         if (isValidUUID(q.id)) {
@@ -353,7 +384,7 @@ const TestCreationMainPage = () => {
       }
 
       const draftKeys = [
-        STORAGE_META_KEY, STORAGE_QUESTIONS_KEY, 'tc_current_creator_q',
+        STORAGE_META_KEY, STORAGE_QUESTIONS_KEY, STORAGE_LEVELS_KEY, 'tc_current_creator_q',
         'tc_name', 'tc_field', 'tc_level', 'tc_city', 'tc_desc', 'tc_resp',
         'tc_start_date', 'tc_end_date', 'tc_time', 'tc_type', 'tc_q_sort',
         'tc_a_sort', 'tc_results'
@@ -390,6 +421,7 @@ const TestCreationMainPage = () => {
       <TestCreationMainCreator 
           ref={creatorRef} 
           globalSphere={testMeta.sphere} 
+          existingLevels={testLevels} // Передаємо рівні в Creator
           onImportSuccess={(newQuestions) => {
               setQuestions(prev => {
                   const updated = [...prev, ...newQuestions];
@@ -402,6 +434,23 @@ const TestCreationMainPage = () => {
       ) : (
         <TestCreationMainPreview
           questions={questions}
+          levels={testLevels} 
+          onAddLevel={(newLevel) => setTestLevels(prev => [...prev, newLevel])}
+          
+          onEditLevel={(oldLevelName, updatedLevel) => {
+            setTestLevels(prev => prev.map(l => l.name === oldLevelName ? updatedLevel : l));
+            
+            if (oldLevelName !== updatedLevel.name) {
+              setQuestions(prev => prev.map(q => 
+                q.level === oldLevelName ? { ...q, level: updatedLevel.name } : q
+              ));
+            }
+          }}
+
+          onDeleteLevel={(levelName) => {
+            setTestLevels(prev => prev.filter(l => l.name !== levelName));
+            setQuestions(prev => prev.map(q => q.level === levelName ? { ...q, level: "" } : q));
+          }}
           onDeleteQuestion={handleDeleteQuestion}
           onEditQuestion={handleEditStart} 
           showError={showError} 
