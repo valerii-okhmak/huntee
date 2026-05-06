@@ -429,6 +429,24 @@ const TestCreationMainPage = () => {
       setLoading(false);
     }
   };
+
+  const handleMoveQuestionToLevel = (questionIndex, newLevelName) => {
+    setQuestions(prev => {
+      const updated = [...prev];
+      updated[questionIndex] = { ...updated[questionIndex], level: newLevelName };
+      return updated;
+    });
+  };
+
+  const handleDeleteMultipleQuestions = (indexesToDelete) => {
+      const indexesSet = new Set(indexesToDelete);
+      setQuestions(prev => {
+        const updated = prev.filter((_, idx) => !indexesSet.has(idx));
+        setQuestionsCount(updated.length);
+        return updated;
+      });
+    };
+
   
   const localeDate = i18n.language === 'uk' ? 'uk-UA' : 'en-US';
 
@@ -461,6 +479,8 @@ const TestCreationMainPage = () => {
       ) : (
         <TestCreationMainPreview
           questions={questions}
+          onMoveQuestionToLevel={handleMoveQuestionToLevel}
+          onDeleteMultipleQuestions={handleDeleteMultipleQuestions}
           levels={testLevels} 
           onAddLevel={(newLevel) => setTestLevels(prev => [...prev, newLevel])}
           
