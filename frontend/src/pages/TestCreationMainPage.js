@@ -10,6 +10,7 @@ import ConfirmationTestCreateModal from '../components/modal_windows/ConfirmTest
 import AiGenerationModal from '../components/modal_windows/AiGenerationModal';
 import Loader from '../components/loader/Loader';
 import { getAccessToken } from '../utils/auth';
+import ImportQuestionsModal from '../components/modal_windows/ImportQuestionsModal';
 
 const STORAGE_QUESTIONS_KEY = 'tc_questions_list';
 const STORAGE_META_KEY = 'test_creation_draft';
@@ -44,15 +45,15 @@ const TestCreationMainPage = () => {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
 
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+
   const creatorRef = useRef(null);
 
-  // Стан для питань
   const [questions, setQuestions] = useState(() => {
     const saved = localStorage.getItem(STORAGE_QUESTIONS_KEY);
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Стан для рівнів
   const [testLevels, setTestLevels] = useState(() => {
     const saved = localStorage.getItem(STORAGE_LEVELS_KEY);
     return saved ? JSON.parse(saved) : [];
@@ -60,7 +61,6 @@ const TestCreationMainPage = () => {
 
   const [questionsCount, setQuestionsCount] = useState(questions.length);
 
-  // Збереження в локальне сховище
   useEffect(() => {
     if (!isEditMode) {
       localStorage.setItem(STORAGE_QUESTIONS_KEY, JSON.stringify(questions));
@@ -91,7 +91,6 @@ const TestCreationMainPage = () => {
     }
   }, [isEditMode]);
 
-  // Завантаження існуючих питань і рівнів (для режиму редагування)
   useEffect(() => {
     const fetchData = async () => {
       if (!isEditMode) return;
@@ -100,28 +99,24 @@ const TestCreationMainPage = () => {
         const token = getAccessToken();
         const headers = { ...(token ? { Authorization: `Bearer ${token}` } : {}) };
 
-        // 1. Отримуємо сам тест, щоб витягти рівні (назви і ID)
         const testRes = await axios.get(`/api/tests/${testId}`, { headers });
         const fetchedLevels = testRes.data?.levels || [];
         
-        // Зберігаємо рівні в стейт фронтенду
         const mappedLevels = fetchedLevels.map(l => ({
            id: l.id || l.levelId,
            name: l.name,
            points: l.weight || 1.0,
-           questionsLimit: l.questionsLimit || '' // Ліміт питань з бекенду
+           questionsLimit: l.questionsLimit || '' 
         }));
         setTestLevels(mappedLevels);
 
-        // 2. Отримуємо питання тесту
         const { data: questionsData } = await axios.get(`/api/tests/${testId}/questions`, { headers });
   
-        // Мапимо levelId з бекенду назад на текстову назву рівня для відображення в UI
         const mappedQuestions = questionsData.map(q => {
            const lvl = mappedLevels.find(l => l.id === q.levelId);
            return { 
                ...q, 
-               level: lvl ? lvl.name : "", // Повертаємо текстову назву для UI
+               level: lvl ? lvl.name : "", 
                points: q.customWeight || q.weight || 1.0 
            };
         });
@@ -257,7 +252,7 @@ const TestCreationMainPage = () => {
       questionText: aiQ.questionText,
       questionType: aiQ.questionType, 
       comment: aiQ.comment || "",
-      points: aiQ.customWeight || aiQ.weight || 1, // Підтримка customWeight
+      points: aiQ.customWeight || aiQ.weight || 1, 
       level: ""
     };
 
@@ -294,7 +289,7 @@ const TestCreationMainPage = () => {
     return questionBase;
   };
 
-  const handleAiGenerate = async (params) => {
+const handleAiGenerate = async (params) => {
     try {
       setAiLoading(true);
       const token = getAccessToken();
@@ -305,24 +300,53 @@ const TestCreationMainPage = () => {
           count: params.count,
           difficulty: params.difficulty,
           questionType: params.type,
-          language: params.language
+          language: params.language,
+          customInstructions: params.customInstructions, // Відправляємо інструкції
+          autoLevel: params.levelStrategy === 'auto'     // Кажемо ШІ придумувати рівні
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {})
-          }
-        }
+        { headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) } }
       );
 
       if (data && data.length > 0) {
-        const newQuestions = data.map(mapAiQuestionToFrontend);
+        let newLevelsToAdd = [];
+
+        const newQuestions = data.map(aiQ => {
+           const mapped = mapAiQuestionToFrontend(aiQ);
+           mapped.points = params.points; 
+
+           // Визначаємо рівень для питання на основі стратегії
+           if (params.levelStrategy === 'specific') {
+               mapped.level = params.targetLevel;
+           } else if (params.levelStrategy === 'auto') {
+               // Якщо ШІ прислав suggestedLevel, використовуємо його
+               const lvlName = aiQ.suggestedLevel || "Загальні питання";
+               mapped.level = lvlName;
+               
+               // Збираємо нові рівні, яких ще немає
+               if (!testLevels.some(l => l.name === lvlName) && !newLevelsToAdd.some(l => l.name === lvlName)) {
+                   newLevelsToAdd.push({ name: lvlName, points: params.points, questionsLimit: null });
+               }
+           } else {
+               mapped.level = ""; // Без рівня
+           }
+
+           return mapped;
+        });
+
+        // Оновлюємо рівні, якщо ШІ створив нові
+        if (newLevelsToAdd.length > 0) {
+            setTestLevels(prev => [...prev, ...newLevelsToAdd]);
+        }
+
+        // Додаємо питання
         setQuestions(prev => {
           const updated = [...prev, ...newQuestions];
           setQuestionsCount(updated.length);
           return updated;
         });
+        
         setMode('preview'); 
+        setIsAiModalOpen(false);
       }
     } catch (e) {
       console.error("AI Generation failed:", e);
@@ -340,24 +364,22 @@ const TestCreationMainPage = () => {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
   
-      // 1. Формуємо DTO тесту, ОБОВ'ЯЗКОВО додаємо levels для бекенду
       const testPayload = {
         ...testMeta,
         startTime: testMeta.startTime ? testMeta.startTime.toISOString() : null,
         endTime: testMeta.endTime ? testMeta.endTime.toISOString() : null,
         levels: testLevels.map((lvl, index) => ({
-           id: lvl.id || null, // null, якщо це новий рівень
+           id: lvl.id || null, 
            name: lvl.name,
            weight: parseFloat(lvl.points) || 1.0,
            orderIndex: index,
-           questionsLimit: parseInt(lvl.questionsLimit) || null // Обробка рандому
+           questionsLimit: parseInt(lvl.questionsLimit) || null 
         }))
       };
   
       let currentTestId = testId;
       let savedLevels = [];
 
-      // 2. Зберігаємо тест і отримуємо рівні зі ЗГЕНЕРОВАНИМИ ID
       if (isEditMode) {
         const res = await axios.put(`/api/tests/${currentTestId}`, testPayload, { headers });
         savedLevels = res.data?.levels || [];
@@ -373,18 +395,16 @@ const TestCreationMainPage = () => {
         return uuidRegex.test(id);
       };
       
-      // 3. Формуємо питання, замінюючи текстові назви рівнів на реальні levelId
       const questionsPayload = questions.map((q, i) => {
-        // Знаходимо рівень по імені в тому, що щойно повернув бекенд
         const matchedLevel = savedLevels.find(l => l.name === q.level);
 
         const payload = {
           questionText: q.questionText,
           questionType: q.questionType,
           comment: q.comment || "",
-          customWeight: parseFloat(q.points) || 1.0, // Мапимо на нове поле customWeight
+          customWeight: parseFloat(q.points) || 1.0, 
           orderIndex: i,
-          levelId: matchedLevel ? (matchedLevel.id || matchedLevel.levelId) : null // Ось магія!
+          levelId: matchedLevel ? (matchedLevel.id || matchedLevel.levelId) : null
         };
 
         if (isValidUUID(q.id)) {
@@ -402,14 +422,12 @@ const TestCreationMainPage = () => {
         return payload;
       });
   
-      // 4. Відправляємо питання на бекенд
       if (isEditMode) {
         await axios.put(`/api/tests/${currentTestId}/questions/bulk`, questionsPayload, { headers });
       } else {
         await axios.post(`/api/tests/${currentTestId}/questions/bulk`, questionsPayload, { headers });
       }
 
-      // 5. Очищення локального сховища
       const draftKeys = [
         STORAGE_META_KEY, STORAGE_QUESTIONS_KEY, STORAGE_LEVELS_KEY, 'tc_current_creator_q',
         'tc_name', 'tc_field', 'tc_level', 'tc_city', 'tc_desc', 'tc_resp',
@@ -447,6 +465,70 @@ const TestCreationMainPage = () => {
       });
     };
 
+  const handleReorderQuestions = (draggedIndices, targetLevel, targetIndex) => {
+    setQuestions(prev => {
+      const updated = [...prev];
+      
+      const draggedItems = draggedIndices.map(idx => ({
+        ...updated[idx],
+        level: targetLevel
+      }));
+
+      const remainingItems = updated.filter((_, idx) => !draggedIndices.includes(idx));
+
+      let insertIndex = remainingItems.length; 
+
+      if (targetIndex !== null) {
+          const targetQuestion = updated[targetIndex];
+          const foundIndex = remainingItems.findIndex(q => q === targetQuestion);
+          if (foundIndex !== -1) {
+              insertIndex = foundIndex;
+          }
+      }
+
+      remainingItems.splice(insertIndex, 0, ...draggedItems);
+
+      return remainingItems;
+    });
+  };
+
+  const handleImportSubmit = async (file, importedPoints, importedLevel) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const token = getAccessToken();
+      const response = await axios.post('/api/tests/import', formData, {
+        headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` }
+      });
+
+      const parsedPoints = parseFloat(importedPoints) || 1;
+      const importedQuestions = response.data.map(q => ({
+          ...q,
+          id: `imported_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          points: parsedPoints,
+          level: importedLevel 
+      }));
+
+      setQuestions(prev => {
+        const updated = [...prev, ...importedQuestions];
+        setQuestionsCount(updated.length);
+        return updated;
+      });
+      setIsImportModalOpen(false);
+    } catch (error) {
+      console.error("Помилка імпорту:", error);
+    }
+};
+
+  const handleAddQuestionFromZone = (levelName) => {
+      setMode('create');
+      setTimeout(() => {
+          if (creatorRef.current) {
+              creatorRef.current.prepareNewQuestion(levelName);
+          }
+      }, 0);
+  };
+
   
   const localeDate = i18n.language === 'uk' ? 'uk-UA' : 'en-US';
 
@@ -481,6 +563,7 @@ const TestCreationMainPage = () => {
           questions={questions}
           onMoveQuestionToLevel={handleMoveQuestionToLevel}
           onDeleteMultipleQuestions={handleDeleteMultipleQuestions}
+          onReorderQuestions={handleReorderQuestions}
           levels={testLevels} 
           onAddLevel={(newLevel) => setTestLevels(prev => [...prev, newLevel])}
           
@@ -500,6 +583,9 @@ const TestCreationMainPage = () => {
           }}
           onDeleteQuestion={handleDeleteQuestion}
           onEditQuestion={handleEditStart} 
+          onAddQuestionClick={handleAddQuestionFromZone} 
+          onOpenAiModal={() => setIsAiModalOpen(true)}  
+           onOpenImportModal={() => setIsImportModalOpen(true)} 
           showError={showError} 
         />
       )}
@@ -571,6 +657,14 @@ const TestCreationMainPage = () => {
         defaultTopic={testMeta.testName}
         defaultLevel={testMeta.level}
       />
+
+      <ImportQuestionsModal 
+          isOpen={isImportModalOpen} 
+          onClose={() => setIsImportModalOpen(false)} 
+          onImport={handleImportSubmit} 
+          existingLevels={testLevels} 
+      />
+
     </div>
   );
 };

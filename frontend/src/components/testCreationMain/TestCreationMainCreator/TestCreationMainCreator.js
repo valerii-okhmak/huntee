@@ -12,33 +12,18 @@ import {
 import TestCreationMainAnswers from "../TestCreationMainAnswers/TestCreationMainAnswers";
 import Select from 'react-select';
 import { useLocalStorage } from '../../../utils/useLocalStorage';
-import axios from 'axios';
-import { getAccessToken } from '../../../utils/auth';
-
-import ImportQuestionsModal from '../../modal_windows/ImportQuestionsModal';
 
 const STORAGE_DRAFT_KEY = 'tc_current_creator_q';
 const MIN_BASE_OPTIONS = 2;
 
-// Приймаємо existingLevels з батьківського компонента
-const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, onImportSuccess, existingLevels = [] }, ref) => {
+const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, existingLevels = [] }, ref) => {
   const { t } = useTranslation();
 
   const [draftQ, setDraftQ] = useLocalStorage(STORAGE_DRAFT_KEY, {
-    questionText: "",
-    questionLevel: "", 
-    points: "1",
-    selectedType: "regular",
-    comment: "",
-    options: ["", ""],
-    regularCorrect: null,
-    multipleCorrect: [false, false],
-    openExpectedEnabled: true,
-    openExpectedText: "",
-    codeLanguage: "java",
-    codeMethodName: "",
-    codeTemplate: "",
-    codeTestCasesJSON: '[{"args": [1, 2], "expected": 3}]'
+    questionText: "", questionLevel: "", points: "1", selectedType: "regular",
+    comment: "", options: ["", ""], regularCorrect: null, multipleCorrect: [false, false],
+    openExpectedEnabled: true, openExpectedText: "", codeLanguage: "java",
+    codeMethodName: "", codeTemplate: "", codeTestCasesJSON: '[{"args": [1, 2], "expected": 3}]'
   });
 
   const [questionText, setQuestionText] = useState(draftQ?.questionText || "");
@@ -59,9 +44,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   const [errors, setErrors] = useState({});
   const [questionSphere, setQuestionSphere] = useState(null);
 
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-
-  // Логіка блокування балів, якщо обрано існуючий рівень
   const selectedLevelData = existingLevels.find(l => l.name === questionLevel);
   const isPointsLocked = !!selectedLevelData;
 
@@ -69,8 +51,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
     const val = e.target.value;
     setQuestionLevel(val);
     clearError('questionLevel');
-    
-    // Якщо вибрано рівень, беремо його вагу
     const lvl = existingLevels.find(l => l.name === val);
     if (lvl) {
       setPoints(String(lvl.points));
@@ -81,23 +61,18 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   useEffect(() => {
     setDraftQ({
       questionText, questionLevel, points, selectedType, comment,
-      options, regularCorrect, multipleCorrect,
-      openExpectedEnabled, openExpectedText,
+      options, regularCorrect, multipleCorrect, openExpectedEnabled, openExpectedText,
       codeLanguage, codeMethodName, codeTemplate, codeTestCasesJSON
     });
   }, [
-    questionText, questionLevel, points, selectedType, comment, 
-    options, regularCorrect, multipleCorrect, 
-    openExpectedEnabled, openExpectedText, 
-    codeLanguage, codeMethodName, codeTemplate, codeTestCasesJSON, setDraftQ
+    questionText, questionLevel, points, selectedType, comment, options, regularCorrect, multipleCorrect, 
+    openExpectedEnabled, openExpectedText, codeLanguage, codeMethodName, codeTemplate, codeTestCasesJSON, setDraftQ
   ]);
 
   const fieldOptions = [
     { value: 'mixed', label: t('testCreationStart.options.mixed') },
-    { value: 'frontend', label: 'FRONTEND' },
-    { value: 'backend', label: 'BACKEND' },
-    { value: 'devops', label: 'DEVOPS' },
-    { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
+    { value: 'frontend', label: 'FRONTEND' }, { value: 'backend', label: 'BACKEND' },
+    { value: 'devops', label: 'DEVOPS' }, { value: 'sysadmin', label: 'SYSTEM ADMINISTRATION' },
     { value: 'dataanalyst', label: 'DATA ANALYST' }
   ];
 
@@ -114,20 +89,15 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
   const handlePointsChange = (e) => {
     const val = e.target.value;
     if (val === "" || /^[0-9]*\.?[0-9]*$/.test(val)) {
-      setPoints(val);
-      clearError('points');
+      setPoints(val); clearError('points');
     }
   };
 
-  const blockInvalidChar = (e) => {
-    if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault();
-  };
+  const blockInvalidChar = (e) => { if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault(); };
 
   const addOption = () => {
-    setOptions(prev => [...prev, ""]);
-    setMultipleCorrect(prev => [...prev, false]);
-    clearError('optionsCount');
-    clearError('emptyOptions');
+    setOptions(prev => [...prev, ""]); setMultipleCorrect(prev => [...prev, false]);
+    clearError('optionsCount'); clearError('emptyOptions');
   };
 
   const removeOption = (idx) => {
@@ -140,46 +110,23 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
   const updateOption = (idx, value) => {
     setOptions(prev => prev.map((opt, i) => (i === idx ? value : opt)));
-    clearError('emptyOptions');
-    clearError('duplicateOptions');
-  };
-
-  const handleImportSubmit = async (file, importedPoints, importedLevel) => {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      const token = getAccessToken();
-      
-      const response = await axios.post('/api/tests/import', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      const parsedPoints = parseFloat(importedPoints) || 1;
-
-      const importedQuestions = response.data.map(q => ({
-          ...q,
-          id: `imported_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          points: parsedPoints,
-          level: importedLevel 
-      }));
-
-      if (onImportSuccess) {
-          onImportSuccess(importedQuestions);
-      }
-
-    } catch (error) {
-      console.error("Помилка імпорту:", error);
-    }
+    clearError('emptyOptions'); clearError('duplicateOptions');
   };
 
   useImperativeHandle(ref, () => ({
+    prepareNewQuestion(levelName) {
+        this.resetForm();
+        if (levelName) {
+            setQuestionLevel(levelName);
+            const lvl = existingLevels.find(l => l.name === levelName);
+            if (lvl) {
+                setPoints(String(lvl.points));
+            }
+        }
+    },
+
     loadQuestion(q) {
       if (!q) return;
-
       let type = "regular";
       if (q.questionType === "SINGLE_CHOICE") type = "regular";
       else if (q.questionType === "MULTIPLE_CHOICE") type = "multiple";
@@ -199,12 +146,10 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
         multCorr = (q.choiceOptions || []).map(o => !!o.isCorrect);
       }
 
-      const tCases = typeof q.codeAnswer?.testCases === 'string' 
-        ? q.codeAnswer.testCases 
-        : JSON.stringify(q.codeAnswer?.testCases || []);
+      const tCases = typeof q.codeAnswer?.testCases === 'string' ? q.codeAnswer.testCases : JSON.stringify(q.codeAnswer?.testCases || []);
 
       setQuestionText(q.questionText || "");
-      setQuestionLevel(q.level || ""); // Завантажуємо рівень
+      setQuestionLevel(q.level || ""); 
       setComment(q.comment || "");
       setPoints(String(q.points || 1));
       setSelectedType(type);
@@ -218,61 +163,21 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
       setCodeTemplate(q.codeAnswer?.templateCode || "");
       setCodeTestCasesJSON(tCases);
       setQuestionSphere(fieldOptions.find(o => o.value === q.sphere) || null);
-
-      setDraftQ({
-        questionText: q.questionText || "",
-        questionLevel: q.level || "",
-        points: String(q.points || 1),
-        selectedType: type,
-        comment: q.comment || "",
-        options: finalOptions,
-        regularCorrect: regCorr,
-        multipleCorrect: multCorr,
-        openExpectedEnabled: !!q.textAnswer?.correctText,
-        openExpectedText: q.textAnswer?.correctText || "",
-        codeLanguage: q.codeAnswer?.language || "java",
-        codeMethodName: q.codeAnswer?.methodName || "",
-        codeTemplate: q.codeAnswer?.templateCode || "",
-        codeTestCasesJSON: tCases
-      });
-
       setErrors({});
     },
 
     resetForm() {
       const defaultState = {
-        questionText: "",
-        questionLevel: "",
-        points: "1",
-        selectedType: "regular",
-        comment: "",
-        options: ["", ""],
-        regularCorrect: null,
-        multipleCorrect: [false, false],
-        openExpectedEnabled: true,
-        openExpectedText: "",
-        codeLanguage: "java",
-        codeMethodName: "",
-        codeTemplate: "",
-        codeTestCasesJSON: '[{"args": [1, 2], "expected": 3}]'
+        questionText: "", questionLevel: "", points: "1", selectedType: "regular",
+        comment: "", options: ["", ""], regularCorrect: null, multipleCorrect: [false, false],
+        openExpectedEnabled: true, openExpectedText: "", codeLanguage: "java",
+        codeMethodName: "", codeTemplate: "", codeTestCasesJSON: '[{"args": [1, 2], "expected": 3}]'
       };
-
       setDraftQ(defaultState);
-
-      setQuestionText("");
-      setQuestionLevel("");
-      setPoints("1");
-      setSelectedType("regular");
-      setComment("");
-      setOptions(["", ""]);
-      setRegularCorrect(null);
-      setMultipleCorrect([false, false]);
-      setOpenExpectedEnabled(true);
-      setOpenExpectedText("");
-      setQuestionSphere(null);
-      setCodeLanguage("java");
-      setCodeMethodName("");
-      setCodeTemplate("");
+      setQuestionText(""); setQuestionLevel(""); setPoints("1"); setSelectedType("regular");
+      setComment(""); setOptions(["", ""]); setRegularCorrect(null); setMultipleCorrect([false, false]);
+      setOpenExpectedEnabled(true); setOpenExpectedText(""); setQuestionSphere(null);
+      setCodeLanguage("java"); setCodeMethodName(""); setCodeTemplate("");
       setCodeTestCasesJSON('[{"args": [1, 2], "expected": 3}]');
       setErrors({});
     },
@@ -295,43 +200,27 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
       let payload = { 
           questionText: currentQuestionText,
-          level: currentLevelText || null, // Додаємо рівень у Payload
+          level: currentLevelText || null, 
           comment: currentComment,
           questionType: backendType,
-          points: isPointsLocked ? selectedLevelData.points : floatPoints, // Примусово беремо бали рівня, якщо він обраний
+          points: isPointsLocked ? selectedLevelData.points : floatPoints, 
           sphere: globalSphere === 'mixed' ? questionSphere?.value : globalSphere
       };
 
       if (selectedType === "regular" || selectedType === "multiple") {
-        if (options.length < MIN_BASE_OPTIONS) {
-          newErrors.optionsCount = t('testCreationCreator.errors.minOptions', { count: MIN_BASE_OPTIONS });
-        }
-        if (options.some(o => !(o || "").trim())) {
-          newErrors.emptyOptions = true;
-        }
+        if (options.length < MIN_BASE_OPTIONS) newErrors.optionsCount = t('testCreationCreator.errors.minOptions', { count: MIN_BASE_OPTIONS });
+        if (options.some(o => !(o || "").trim())) newErrors.emptyOptions = true;
 
         const trimmedOptions = options.map(o => (o || "").trim());
-        const hasDuplicates = trimmedOptions.some((opt, index) => 
-          opt !== "" && trimmedOptions.indexOf(opt) !== index
-        );
-        if (hasDuplicates) {
-          newErrors.duplicateOptions = t('testCreationCreator.errors.duplicateOptions', 'Варіанти відповіді не можуть повторюватись');
-        }
+        const hasDuplicates = trimmedOptions.some((opt, index) => opt !== "" && trimmedOptions.indexOf(opt) !== index);
+        if (hasDuplicates) newErrors.duplicateOptions = t('testCreationCreator.errors.duplicateOptions', 'Варіанти відповіді не можуть повторюватись');
 
         if (selectedType === "regular") {
           if (regularCorrect === null) newErrors.correctSelection = t('testCreationCreator.errors.selectCorrect');
-          payload.choiceOptions = options.map((text, index) => ({
-              optionText: text.trim(),
-              isCorrect: index === regularCorrect,
-              orderIndex: index
-          }));
+          payload.choiceOptions = options.map((text, index) => ({ optionText: text.trim(), isCorrect: index === regularCorrect, orderIndex: index }));
         } else {
           if (!multipleCorrect.some(v => v)) newErrors.correctSelection = t('testCreationCreator.errors.selectOneCorrect');
-          payload.choiceOptions = options.map((text, index) => ({
-              optionText: text.trim(),
-              isCorrect: multipleCorrect[index],
-              orderIndex: index
-          }));
+          payload.choiceOptions = options.map((text, index) => ({ optionText: text.trim(), isCorrect: multipleCorrect[index], orderIndex: index }));
         }
       }
 
@@ -347,18 +236,9 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
          if (!currentCodeMethodName) newErrors.codeMethodName = true;
          if (!currentCodeTemplate) newErrors.codeTemplate = true;
-         try {
-             JSON.parse(currentCodeTestCases);
-         } catch (e) {
-             newErrors.codeTestCasesJSON = t('testCreationCreator.errors.invalidJson');
-         }
+         try { JSON.parse(currentCodeTestCases); } catch (e) { newErrors.codeTestCasesJSON = t('testCreationCreator.errors.invalidJson'); }
          
-         payload.codeAnswer = { 
-           language: codeLanguage || "java", 
-           methodName: currentCodeMethodName, 
-           templateCode: currentCodeTemplate, 
-           testCases: currentCodeTestCases 
-         };
+         payload.codeAnswer = { language: codeLanguage || "java", methodName: currentCodeMethodName, templateCode: currentCodeTemplate, testCases: currentCodeTestCases };
       }
 
       if (Object.keys(newErrors).length > 0) {
@@ -367,7 +247,6 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
       }
 
       this.resetForm();
-
       onQuestionsChange?.(prev => (typeof prev === 'number' ? prev + 1 : prev));
       return payload;
     }
@@ -375,33 +254,11 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
 
   return (
     <div className='testCreationMainCreator'>
-
-      <ImportQuestionsModal 
-        isOpen={isImportModalOpen} 
-        onClose={() => setIsImportModalOpen(false)} 
-        onImport={handleImportSubmit} 
-        existingLevels={existingLevels} 
-      />
-
       <div className='testCreationMainCreator__container'>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ marginBottom: '20px' }}>
           <h2 className='testCreationMainCreator__title' style={{ margin: 0 }}>
             {t('testCreationCreator.chooseType')}
           </h2>
-
-          <button 
-            className="import-btn" 
-            onClick={() => setIsImportModalOpen(true)}
-          >
-            <div className="svg-wrapper-1">
-              <div className="svg-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" className="icon">
-                  <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                </svg>
-              </div>
-            </div>
-            <span>{t('testCreationCreator.importBtnLabel')}</span>
-          </button>
         </div>
 
         <div className='testCreationMainCreator__typeSelector'>
@@ -421,22 +278,14 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
         </div>
 
         <div className="testCreationMainCreator__questionField">
-          {/* Випадаючий список для Рівнів */}
           <div className="testCreationMainCreator__questionField-header">
             <h2 className="testCreationMainCreator__questionField-title">{t('testCreationCreator.levelLabel', 'Рівень (опціонально)')}</h2>
           </div>
           <div className="testCreationMainCreator__questionField-wrapper">
-            <select
-              value={questionLevel}
-              onChange={handleLevelChange}
-              className="testCreationMainCreator__questionField-input"
-              style={{ cursor: 'pointer' }}
-            >
+            <select value={questionLevel} onChange={handleLevelChange} className="testCreationMainCreator__questionField-input" style={{ cursor: 'pointer' }}>
               <option value="">{t('testCreationCreator.noLevel', 'Без рівня')}</option>
               {existingLevels.map((lvl, index) => (
-                <option key={index} value={lvl.name}>
-                  {lvl.name} ({t('testCreationPreview.points', 'Балів')}: {lvl.points})
-                </option>
+                <option key={index} value={lvl.name}>{lvl.name} ({t('testCreationPreview.points', 'Балів')}: {lvl.points})</option>
               ))}
             </select>
           </div>
@@ -462,13 +311,8 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
               </div>
               <div className='testCreationMainCreator__questionField-wrapper'>
                 <Select
-                  options={fieldOptions}
-                  value={questionSphere}
-                  onChange={(val) => { setQuestionSphere(val); clearError('questionSphere'); }}
-                  isSearchable
-                  placeholder={t('testCreationSelectField.search')}
-                  className="testCreationMainCreator__questionField-input-field"
-                  classNamePrefix="select-field-tc__custom-select"
+                  options={fieldOptions} value={questionSphere} onChange={(val) => { setQuestionSphere(val); clearError('questionSphere'); }}
+                  isSearchable placeholder={t('testCreationSelectField.search')} className="testCreationMainCreator__questionField-input-field" classNamePrefix="select-field-tc__custom-select"
                 />
               </div>
             </>
@@ -479,53 +323,25 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, o
           </div>
           <div className={`testCreationMainCreator__questionField-wrapper ${errors.points ? 'input-error-placeholder' : ''}`}>
             <input
-              type="number" step="0.1" min="0"
-              value={isPointsLocked ? selectedLevelData.points : points}
-              onKeyDown={blockInvalidChar}
-              onChange={handlePointsChange}
+              type="number" step="0.1" min="0" value={isPointsLocked ? selectedLevelData.points : points}
+              onKeyDown={blockInvalidChar} onChange={handlePointsChange}
               className={`testCreationMainCreator__questionField-input ${isPointsLocked ? 'disabled-points' : ''}`}
-              disabled={isPointsLocked}
-              title={isPointsLocked ? "Вага синхронізована з іншими питаннями цього рівня" : ""}
+              disabled={isPointsLocked} title={isPointsLocked ? "Вага синхронізована з іншими питаннями цього рівня" : ""}
             />
-            {isPointsLocked && (
-              <span style={{ marginLeft: '12px', color: '#888', fontSize: '13px', alignSelf: 'center' }}>
-                Синхронізовано з рівнем
-              </span>
-            )}
+            {isPointsLocked && (<span style={{ marginLeft: '12px', color: '#888', fontSize: '13px', alignSelf: 'center' }}>Синхронізовано з рівнем</span>)}
           </div>
         </div>
 
         <TestCreationMainAnswers
-          selectedType={selectedType}
-          comment={comment}
-          setComment={setComment}
-          errors={errors}
-          options={options}
-          updateOption={updateOption}
-          addOption={addOption}
-          removeOption={removeOption}
-          minBase={MIN_BASE_OPTIONS}
-          regularCorrect={regularCorrect}
-          pickRegularCorrect={(idx) => { setRegularCorrect(idx); clearError('correctSelection'); }}
-          multipleCorrect={multipleCorrect}
-          toggleMultipleCorrect={(idx) => {
-            const newCorrect = [...multipleCorrect];
-            newCorrect[idx] = !newCorrect[idx];
-            setMultipleCorrect(newCorrect);
-            clearError('correctSelection');
+          selectedType={selectedType} comment={comment} setComment={setComment} errors={errors}
+          options={options} updateOption={updateOption} addOption={addOption} removeOption={removeOption} minBase={MIN_BASE_OPTIONS}
+          regularCorrect={regularCorrect} pickRegularCorrect={(idx) => { setRegularCorrect(idx); clearError('correctSelection'); }}
+          multipleCorrect={multipleCorrect} toggleMultipleCorrect={(idx) => {
+            const newCorrect = [...multipleCorrect]; newCorrect[idx] = !newCorrect[idx]; setMultipleCorrect(newCorrect); clearError('correctSelection');
           }}
-          openExpectedEnabled={openExpectedEnabled}
-          setOpenExpectedEnabled={setOpenExpectedEnabled}
-          openExpectedText={openExpectedText}
-          setOpenExpectedText={(val) => { setOpenExpectedText(val); clearError('openExpectedText'); }}
-          codeLanguage={codeLanguage}
-          setCodeLanguage={setCodeLanguage}
-          codeMethodName={codeMethodName}
-          setCodeMethodName={(val) => { setCodeMethodName(val); clearError('codeMethodName'); }}
-          codeTemplate={codeTemplate}
-          setCodeTemplate={(val) => { setCodeTemplate(val); clearError('codeTemplate'); }}
-          codeTestCasesJSON={codeTestCasesJSON}
-          setCodeTestCasesJSON={(val) => { setCodeTestCasesJSON(val); clearError('codeTestCasesJSON'); }}
+          openExpectedEnabled={openExpectedEnabled} setOpenExpectedEnabled={setOpenExpectedEnabled} openExpectedText={openExpectedText} setOpenExpectedText={(val) => { setOpenExpectedText(val); clearError('openExpectedText'); }}
+          codeLanguage={codeLanguage} setCodeLanguage={setCodeLanguage} codeMethodName={codeMethodName} setCodeMethodName={(val) => { setCodeMethodName(val); clearError('codeMethodName'); }}
+          codeTemplate={codeTemplate} setCodeTemplate={(val) => { setCodeTemplate(val); clearError('codeTemplate'); }} codeTestCasesJSON={codeTestCasesJSON} setCodeTestCasesJSON={(val) => { setCodeTestCasesJSON(val); clearError('codeTestCasesJSON'); }}
         />
 
         {(errors.optionsCount || errors.duplicateOptions || errors.correctSelection || errors.codeTestCasesJSON || errors.points) && (

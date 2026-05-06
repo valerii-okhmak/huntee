@@ -2,38 +2,9 @@ package org.dreamteam.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.dreamteam.Entity.AttemptStatus;
-import org.dreamteam.Entity.ChoiceOption;
-import org.dreamteam.Entity.CodeAnswer;
-import org.dreamteam.Entity.Question;
-import org.dreamteam.Entity.QuestionType;
-import org.dreamteam.Entity.Test;
-import org.dreamteam.Entity.TestAccessCode;
-import org.dreamteam.Entity.TestLevel;
-import org.dreamteam.Entity.TestQuestion;
-import org.dreamteam.Entity.TestRegistration;
-import org.dreamteam.Entity.TextAnswer;
-import org.dreamteam.Entity.User;
-import org.dreamteam.Entity.UserAnswer;
-import org.dreamteam.Entity.UserTestAttempt;
-import org.dreamteam.dto.CandidateDTO;
-import org.dreamteam.dto.ExportRequestDTO;
-import org.dreamteam.dto.MyTestDTO;
-import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
-import org.dreamteam.dto.TestAnalyticsDTO;
-import org.dreamteam.dto.TestCreateRequest;
-import org.dreamteam.dto.TestDetailResponse;
-import org.dreamteam.dto.TestLevelDTO;
-import org.dreamteam.dto.TestSummaryResponse;
-import org.dreamteam.dto.TestUpdateRequest;
-import org.dreamteam.repository.TestQuestionRepository;
-import org.dreamteam.repository.TestRegistrationRepository;
-import org.dreamteam.repository.QuestionRepository;
-import org.dreamteam.repository.TestAccessCodeRepository;
-import org.dreamteam.repository.TestRepository;
-import org.dreamteam.repository.TestLevelRepository;
-import org.dreamteam.repository.UserRepository;
-import org.dreamteam.repository.UserTestAttemptRepository;
+import org.dreamteam.Entity.*;
+import org.dreamteam.dto.*;
+import org.dreamteam.repository.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -41,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.dreamteam.dto.QuestionPayloadDTO;
 
 import java.time.OffsetDateTime;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.stream.Collectors;
 import java.time.Duration;
 import java.util.*;
@@ -64,6 +35,7 @@ public class TestService {
     private final ExportService exportService;
     private final TestAccessCodeRepository testAccessCodeRepository;
     private final TestLevelRepository testLevelRepository;
+    private final UserAnswerRepository userAnswerRepository; 
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
@@ -245,19 +217,11 @@ public class TestService {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
 
-        BigDecimal totalMaxScore = test.getTestQuestions().stream()
-                .map(tq -> {
-                    // ВИПРАВЛЕНО: Використовуємо твій класний метод getEffectiveWeight
-                    Double weight = tq.getQuestion().getEffectiveWeight();
-                    return BigDecimal.valueOf(weight);
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
 
         return attempts.stream()
                 .filter(a -> a.getCompletedAt() != null)
-                .map(attempt -> mapAttemptToCandidate(attempt, totalMaxScore))
+                .map(this::mapAttemptToCandidate)
                 .collect(Collectors.toList());
     }
 
@@ -266,12 +230,6 @@ public class TestService {
     public TestAnalyticsDTO getTestAnalytics(UUID testId, String authorEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
-
-        double maxPossibleScore = test.getTestQuestions().stream()
-                .map(TestQuestion::getQuestion)
-                // ВИПРАВЛЕНО: Використовуємо твій класний метод getEffectiveWeight
-                .mapToDouble(Question::getEffectiveWeight)
-                .sum();
 
         List<UserTestAttempt> allAttempts = attemptRepository.findByTest_TestId(testId);
 
@@ -288,10 +246,15 @@ public class TestService {
         double totalPercentSum = 0;
         final double PASSING_PERCENT = 60.0;
 
-        if (maxPossibleScore > 0) {
-            for (UserTestAttempt attempt : gradedAttempts) {
+        for (UserTestAttempt attempt : gradedAttempts) {
+            // Отримуємо відповіді КОНКРЕТНОЇ спроби для точного макс балу
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            double maxPossibleScore = answers.stream()
+                .mapToDouble(a -> a.getQuestion().getEffectiveWeight() != null ? a.getQuestion().getEffectiveWeight() : 1.0)
+                .sum();
+
+            if (maxPossibleScore > 0) {
                 double score = attempt.getScore().doubleValue();
-                
                 double percent = (score / maxPossibleScore) * 100.0;
                 if (percent > 100.0) percent = 100.0;
 
@@ -302,12 +265,13 @@ public class TestService {
                 } else {
                     failed++;
                 }
+            } else {
+                failed++; // Якщо макс бал 0, вважаємо не складеним
             }
         }
 
         int gradedTotal = gradedAttempts.size();
         double avgPercent = gradedTotal > 0 ? totalPercentSum / gradedTotal : 0;
-
         int totalSubmitted = gradedTotal + (int) inReviewCount;
 
         return TestAnalyticsDTO.builder()
@@ -333,14 +297,15 @@ public class TestService {
         Map<QuestionType, List<Double>> typeScores = new HashMap<>();
         
         for (UserTestAttempt attempt : completedAttempts) {
-            for (UserAnswer answer : attempt.getUserAnswers()) {
+            // ВИПРАВЛЕНО: Беремо відповіді з БД для точності
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            
+            for (UserAnswer answer : answers) {
                 QuestionType type = answer.getQuestion().getQuestionType();
-                // ВИПРАВЛЕНО: getEffectiveWeight замість getCustomWeight
-                double maxPoints = answer.getQuestion().getEffectiveWeight();
+                double maxPoints = answer.getQuestion().getEffectiveWeight() != null ? answer.getQuestion().getEffectiveWeight() : 1.0;
                 double earned = answer.getAwardedScore() != null ? answer.getAwardedScore().doubleValue() : 0.0;
                 
-                double percent = (earned / maxPoints) * 100.0;
-                
+                double percent = (maxPoints > 0) ? (earned / maxPoints) * 100.0 : 0.0;
                 typeScores.computeIfAbsent(type, k -> new ArrayList<>()).add(percent);
             }
         }
@@ -358,12 +323,12 @@ public class TestService {
         distribution.put("61-80%", 0);
         distribution.put("81-100%", 0);
 
-        // ВИПРАВЛЕНО: getEffectiveWeight замість getCustomWeight
-        double totalMaxScore = test.getTestQuestions().stream()
-                .mapToDouble(tq -> tq.getQuestion().getEffectiveWeight())
-                .sum();
-
         for (UserTestAttempt attempt : completedAttempts) {
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            double totalMaxScore = answers.stream()
+                .mapToDouble(a -> a.getQuestion().getEffectiveWeight() != null ? a.getQuestion().getEffectiveWeight() : 1.0)
+                .sum();
+            
             double score = attempt.getScore().doubleValue();
             double percent = (totalMaxScore > 0) ? (score / totalMaxScore) * 100.0 : 0;
 
@@ -377,7 +342,8 @@ public class TestService {
         Map<UUID, List<Boolean>> questionCorrectness = new HashMap<>();
         
         for (UserTestAttempt attempt : completedAttempts) {
-            for (UserAnswer ans : attempt.getUserAnswers()) {
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            for (UserAnswer ans : answers) {
                 questionCorrectness.computeIfAbsent(ans.getQuestion().getQuestionId(), k -> new ArrayList<>())
                         .add(Boolean.TRUE.equals(ans.getIsCorrect()));
             }
@@ -387,7 +353,7 @@ public class TestService {
         
         Map<UUID, Question> questionMap = test.getTestQuestions().stream()
                 .map(TestQuestion::getQuestion)
-                .collect(Collectors.toMap(Question::getQuestionId, q -> q));
+                .collect(Collectors.toMap(Question::getQuestionId, q -> q, (existing, replacement) -> existing));
 
         for (Map.Entry<UUID, List<Boolean>> entry : questionCorrectness.entrySet()) {
             long total = entry.getValue().size();
@@ -487,7 +453,6 @@ public class TestService {
                             .questionId(q.getQuestionId())
                             .questionText(q.getQuestionText())
                             .questionType(q.getQuestionType())
-                            // ВИПРАВЛЕНО: getEffectiveWeight замість getCustomWeight
                             .weight(q.getEffectiveWeight())
                             .orderIndex(tq.getOrderIndex())
                             .build();
@@ -496,8 +461,7 @@ public class TestService {
 
         List<TestLevelDTO> levelDtos = test.getTestLevels() != null 
                 ? test.getTestLevels().stream()
-                    // ВИПРАВЛЕНО: l.getId() замість l.getLevelId()
-                    .map(l -> new TestLevelDTO(l.getId(), l.getName()))
+                    .map(l -> new TestLevelDTO(l.getId(), l.getName(), l.getWeight(), l.getOrderIndex(), l.getQuestionsLimit()))
                     .collect(Collectors.toList())
                 : new ArrayList<>();
 
@@ -526,8 +490,7 @@ public class TestService {
     private TestSummaryResponse mapToSummaryResponse(Test test) {
         List<TestLevelDTO> levelDtos = test.getTestLevels() != null 
                 ? test.getTestLevels().stream()
-                    // ВИПРАВЛЕНО: l.getId() замість l.getLevelId()
-                    .map(l -> new TestLevelDTO(l.getId(), l.getName()))
+                    .map(l -> new TestLevelDTO(l.getId(), l.getName(), l.getWeight(), l.getOrderIndex(), l.getQuestionsLimit()))
                     .collect(Collectors.toList())
                 : new ArrayList<>();
 
@@ -566,9 +529,14 @@ public class TestService {
                 .build();
     }
 
-    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt, BigDecimal totalMaxScore) {
+    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt) {
         User u = attempt.getUser();
         
+        List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+        double attemptMaxScore = answers.stream()
+            .mapToDouble(a -> a.getQuestion().getEffectiveWeight() != null ? a.getQuestion().getEffectiveWeight() : 1.0)
+            .sum();
+
         String tag = testAccessCodeRepository.findByTest_TestIdAndUsedByUser_Id(attempt.getTest().getTestId(), u.getId())
                 .map(code -> code.getTag()) 
                 .orElse("-");
@@ -581,7 +549,7 @@ public class TestService {
                 .status("COMPLETED")
                 .date(attempt.getCompletedAt())
                 .score(attempt.getScore())
-                .totalMaxScore(totalMaxScore)
+                .totalMaxScore(BigDecimal.valueOf(attemptMaxScore).setScale(2, RoundingMode.HALF_UP))
                 .attemptId(attempt.getAttemptId())
                 .build();
     }
@@ -777,7 +745,6 @@ public class TestService {
         }
         test.getTestQuestions().addAll(newLinks);
     }
-
 
     private void validateLevelLimits(Test test) {
         if (test.getTestLevels() == null || test.getTestQuestions() == null) return;

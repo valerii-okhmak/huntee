@@ -9,4 +9,6 @@ public class AiQuestionRequest {
     private String difficulty;
     private String questionType; 
     private String language;
+    private String customInstructions;
+    private boolean autoLevel;
 }

@@ -2,6 +2,7 @@
   width: 100%;
   margin: 20px 0;
   font-family: inherit;
+  padding-bottom: 60px; 
 }
 
 .preview-no-questions {
@@ -17,17 +18,42 @@
 
 .preview-level-group {
   margin-bottom: 24px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .preview-level-title {
   font-weight: 700;
   font-size: 15px;
   color: #333;
-  padding: 8px 0;
-  margin-bottom: 8px;
+  padding: 12px 16px;
+  margin-bottom: 0;
+  background-color: #f8f9fa;
+  border: 1px solid #dcdcdc;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.no-level-header {
+  background-color: #fff3cd;
+}
+
+.level-title-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.level-title-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .level-dot {
@@ -37,9 +63,25 @@
 
 .preview-level-items {
   border: 1px solid #dcdcdc;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   background: #ffffff;
   overflow: hidden;
+}
+
+.preview-list-item-container {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #dcdcdc;
+  background-color: #fff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.preview-list-item-container:last-child {
+  border-bottom: none;
+}
+
+.preview-list-item-container:hover {
+  background-color: #fafafa;
 }
 
 .preview-list-item {
@@ -47,16 +89,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #dcdcdc;
-  transition: background-color 0.2s;
-}
-
-.preview-list-item:last-child {
-  border-bottom: none;
-}
-
-.preview-list-item:hover {
-  background-color: #fafafa;
+  cursor: pointer;
 }
 
 .preview-item-left {
@@ -73,26 +106,15 @@
   cursor: grab;
   padding: 4px;
 }
+.icon-drag:active {
+  cursor: grabbing;
+}
 
 .q-number {
   font-weight: 700;
   color: #333;
   font-size: 15px;
   min-width: 25px;
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  color: #555;
-  font-size: 15px;
-  cursor: pointer;
-  padding: 4px;
-  transition: color 0.2s;
-}
-
-.icon-btn:hover {
-  color: #000;
 }
 
 .q-text {
@@ -108,6 +130,20 @@
   display: flex;
   gap: 12px;
   margin-left: 16px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: #000;
 }
 
 .btn-edit-list, .btn-delete-list {
@@ -135,10 +171,87 @@
   background-color: #b83a2b;
 }
 
-.disabled-points {
-  background-color: #f5f5f5 !important;
-  color: #888 !important;
-  cursor: not-allowed;
+.question-preview-content {
+  padding: 0 16px 16px 64px; 
+  font-size: 14px;
+  color: #555;
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.q-preview-opt {
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.q-preview-opt.correct {
+  color: #28a745;
+  font-weight: 600;
+}
+.q-preview-code {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  color: #333;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  margin-top: 5px;
+}
+
+/* --- Зона швидкого додавання (Замість Jupyter) --- */
+.quick-add-zone {
+  position: relative;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(-5px);
+  z-index: 10;
+  margin: -5px 20px 0 20px;
+}
+
+.preview-level-group:hover .quick-add-zone,
+.quick-add-zone:hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quick-add-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #2b5cb8;
+  opacity: 0.15;
+  z-index: -1;
+}
+
+.quick-add-btn {
+  background: #fff;
+  border: 1px solid #2b5cb8;
+  color: #2b5cb8;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(43, 92, 184, 0.1);
+}
+
+.quick-add-btn:hover {
+  background: #2b5cb8;
+  color: #fff;
 }
 
 .preview-level-actions {
@@ -172,9 +285,11 @@
   background: #fff;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #2b5cb8; 
   flex-wrap: wrap;
   align-items: center;
+  box-shadow: 0 4px 12px rgba(43, 92, 184, 0.1);
+  margin-bottom: 15px; 
 }
 
 .preview-input-name {
@@ -242,13 +357,6 @@
   margin-right: 6px;
 }
 
-
-.level-title-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .level-checkbox, .item-checkbox {
   width: 16px;
   height: 16px;
@@ -275,31 +383,29 @@
   font-size: 16px;
 }
 
-/* Виділений елемент списку */
-.preview-list-item {
-  transition: background-color 0.2s ease;
+.preview-list-item-container.selected {
+  background-color: #f0f4ff;
+  border-color: #2b5cb8;
 }
 
-.preview-list-item.selected {
-  background-color: #f0f7ff;
-  border-color: #90c2ff;
-}
-
-/* Панель масових дій */
 .bulk-actions-panel {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #e8f0fe;
+  background-color: #f0f4ff;
   padding: 12px 20px;
   border-radius: 8px;
   margin-bottom: 20px;
-  border: 1px solid #b6d4fe;
+  border: 1px solid #2b5cb8;
+  position: sticky;
+  top: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 15px rgba(43, 92, 184, 0.15);
 }
 
 .bulk-count-text {
   font-weight: 600;
-  color: #1a73e8;
+  color: #2b5cb8;
 }
 
 .bulk-controls {
@@ -317,27 +423,33 @@
 
 .bulk-btn-move {
   padding: 8px 16px;
-  background-color: #1a73e8;
+  background-color: #2b5cb8;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .bulk-btn-move:disabled {
-  background-color: #a8c7fa;
+  background-color: #8da4d0;
   cursor: not-allowed;
 }
 
 .bulk-btn-delete {
   padding: 8px 16px;
-  background-color: #dc3545;
+  background-color: #b83a2b;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .bulk-btn-cancel {
@@ -350,5 +462,29 @@
 }
 
 .bulk-btn-cancel:hover {
-  background-color: #f8f9fa;
+  background-color: #f5f5f5;
+}
+
+/* Drag & Drop */
+.preview-level-group.drag-over {
+    background-color: rgba(43, 92, 184, 0.05); 
+    border: 2px dashed #2b5cb8;
+    border-radius: 8px;
+}
+
+.preview-list-item-container.drop-target {
+    border-top: 4px solid #2b5cb8; 
+    margin-top: 2px;
+}
+
+.drag-ghost {
+    padding: 8px 16px;
+    background-color: #2b5cb8;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: -1000px; 
+    z-index: 9999;
 }
