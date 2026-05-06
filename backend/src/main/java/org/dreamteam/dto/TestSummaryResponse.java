@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class TestSummaryResponse implements Serializable {
     private UUID testId;
     private String testName;
@@ -21,6 +23,7 @@ public class TestSummaryResponse implements Serializable {
     private String city;
     private OffsetDateTime startTime;
     private OffsetDateTime endTime;
+    private List<TestLevelDTO> levels;
     private Boolean isFixedTime;
     private String authorUsername;
     private Boolean isPrivate;

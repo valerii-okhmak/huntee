@@ -1,12 +1,14 @@
 package org.dreamteam.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import java.util.List;
-import org.dreamteam.Entity.QuestionType;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TextAnswerImportDTO {
     private String correctText;
     private Boolean isCaseSensitive;

@@ -15,19 +15,19 @@ import java.util.UUID;
 @AllArgsConstructor
 public class QuestionPayloadDTO {
     
-    private UUID id; // Буде null для нових питань
+    private UUID id;
     private String questionText;
     private QuestionType questionType;
     private String comment;
-    private Double weight;
+    private Long levelId;
+    private Double customWeight;
+    private Double effectiveWeight;
     private Integer orderIndex;
 
-    // Специфічні поля залежно від типу питання
     private List<ChoiceOptionDTO> choiceOptions;
     private TextAnswerDTO textAnswer;
     private CodeAnswerDTO codeAnswer;
 
-    // --- Вкладені DTO ---
 
     @Data
     @NoArgsConstructor

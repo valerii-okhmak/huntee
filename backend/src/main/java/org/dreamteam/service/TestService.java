@@ -9,6 +9,7 @@ import org.dreamteam.Entity.Question;
 import org.dreamteam.Entity.QuestionType;
 import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.TestAccessCode;
+import org.dreamteam.Entity.TestLevel;
 import org.dreamteam.Entity.TestQuestion;
 import org.dreamteam.Entity.TestRegistration;
 import org.dreamteam.Entity.TextAnswer;
@@ -22,6 +23,7 @@ import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
+import org.dreamteam.dto.TestLevelDTO;
 import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
 import org.dreamteam.repository.TestQuestionRepository;
@@ -29,6 +31,7 @@ import org.dreamteam.repository.TestRegistrationRepository;
 import org.dreamteam.repository.QuestionRepository;
 import org.dreamteam.repository.TestAccessCodeRepository;
 import org.dreamteam.repository.TestRepository;
+import org.dreamteam.repository.TestLevelRepository;
 import org.dreamteam.repository.UserRepository;
 import org.dreamteam.repository.UserTestAttemptRepository;
 import org.springframework.security.access.AccessDeniedException;
@@ -60,6 +63,7 @@ public class TestService {
     private final QuestionRepository questionRepository;
     private final ExportService exportService;
     private final TestAccessCodeRepository testAccessCodeRepository;
+    private final TestLevelRepository testLevelRepository;
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
@@ -97,10 +101,15 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
+        Set<TestLevel> levels = processTestLevels(request.getLevels(), test);
+        test.setTestLevels(levels);
+
+        validateLevelLimits(test);
 
         Test savedTest = testRepository.save(test);
 
         updateTestQuestions(savedTest, request.getQuestionIds());
+
 
         return mapToDetailResponse(savedTest);
     }
@@ -144,10 +153,14 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
+        Set<TestLevel> updatedLevels = processTestLevels(request.getLevels(), test);
+        test.getTestLevels().clear();
+        test.getTestLevels().addAll(updatedLevels);
 
         test.getTestQuestions().clear();
         testRepository.flush();
         updateTestQuestions(test, request.getQuestionIds());
+        validateLevelLimits(test);
 
         Test updatedTest = testRepository.save(test);
         return mapToDetailResponse(updatedTest);
@@ -225,8 +238,9 @@ public class TestService {
 
         BigDecimal totalMaxScore = test.getTestQuestions().stream()
                 .map(tq -> {
-                    Double weight = tq.getQuestion().getWeight();
-                    return BigDecimal.valueOf(weight != null ? weight : 1.0);
+                    // ВИПРАВЛЕНО: Використовуємо твій класний метод getEffectiveWeight
+                    Double weight = tq.getQuestion().getEffectiveWeight();
+                    return BigDecimal.valueOf(weight);
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -246,7 +260,8 @@ public class TestService {
 
         double maxPossibleScore = test.getTestQuestions().stream()
                 .map(TestQuestion::getQuestion)
-                .mapToDouble(Question::getWeight)
+                // ВИПРАВЛЕНО: Використовуємо твій класний метод getEffectiveWeight
+                .mapToDouble(Question::getEffectiveWeight)
                 .sum();
 
         List<UserTestAttempt> allAttempts = attemptRepository.findByTest_TestId(testId);
@@ -311,7 +326,8 @@ public class TestService {
         for (UserTestAttempt attempt : completedAttempts) {
             for (UserAnswer answer : attempt.getUserAnswers()) {
                 QuestionType type = answer.getQuestion().getQuestionType();
-                double maxPoints = answer.getQuestion().getWeight() != null ? answer.getQuestion().getWeight() : 1.0;
+                // ВИПРАВЛЕНО: getEffectiveWeight замість getCustomWeight
+                double maxPoints = answer.getQuestion().getEffectiveWeight();
                 double earned = answer.getAwardedScore() != null ? answer.getAwardedScore().doubleValue() : 0.0;
                 
                 double percent = (earned / maxPoints) * 100.0;
@@ -333,8 +349,9 @@ public class TestService {
         distribution.put("61-80%", 0);
         distribution.put("81-100%", 0);
 
+        // ВИПРАВЛЕНО: getEffectiveWeight замість getCustomWeight
         double totalMaxScore = test.getTestQuestions().stream()
-                .mapToDouble(tq -> tq.getQuestion().getWeight() != null ? tq.getQuestion().getWeight() : 1.0)
+                .mapToDouble(tq -> tq.getQuestion().getEffectiveWeight())
                 .sum();
 
         for (UserTestAttempt attempt : completedAttempts) {
@@ -461,17 +478,26 @@ public class TestService {
                             .questionId(q.getQuestionId())
                             .questionText(q.getQuestionText())
                             .questionType(q.getQuestionType())
-                            .weight(q.getWeight() != null ? q.getWeight() : 1.0)
+                            // ВИПРАВЛЕНО: getEffectiveWeight замість getCustomWeight
+                            .weight(q.getEffectiveWeight())
                             .orderIndex(tq.getOrderIndex())
                             .build();
                 })
                 .collect(Collectors.toList());
+
+        List<TestLevelDTO> levelDtos = test.getTestLevels() != null 
+                ? test.getTestLevels().stream()
+                    // ВИПРАВЛЕНО: l.getId() замість l.getLevelId()
+                    .map(l -> new TestLevelDTO(l.getId(), l.getName()))
+                    .collect(Collectors.toList())
+                : new ArrayList<>();
 
         return TestDetailResponse.builder()
                 .testId(test.getTestId())
                 .testName(test.getTestName())
                 .sphere(test.getSphere())
                 .level(test.getLevel())
+                .levels(levelDtos)
                 .city(test.getCity())
                 .vacancyDescription(test.getVacancyDescription())
                 .responsibilities(test.getResponsibilities())
@@ -489,10 +515,18 @@ public class TestService {
     }
 
     private TestSummaryResponse mapToSummaryResponse(Test test) {
+        List<TestLevelDTO> levelDtos = test.getTestLevels() != null 
+                ? test.getTestLevels().stream()
+                    // ВИПРАВЛЕНО: l.getId() замість l.getLevelId()
+                    .map(l -> new TestLevelDTO(l.getId(), l.getName()))
+                    .collect(Collectors.toList())
+                : new ArrayList<>();
+
         return TestSummaryResponse.builder()
                 .testId(test.getTestId())
                 .testName(test.getTestName())
                 .sphere(test.getSphere())
+                .levels(levelDtos)
                 .level(test.getLevel())
                 .city(test.getCity())
                 .startTime(test.getStartTime())
@@ -541,6 +575,46 @@ public class TestService {
                 .totalMaxScore(totalMaxScore)
                 .attemptId(attempt.getAttemptId())
                 .build();
+    }
+
+    private Set<TestLevel> processTestLevels(List<TestLevelDTO> levelDtos, Test test) {
+        Set<TestLevel> testLevels = new HashSet<>();
+        
+        if (levelDtos != null && !levelDtos.isEmpty()) {
+            for (TestLevelDTO dto : levelDtos) {
+                if (dto == null) {
+                    continue; 
+                }
+
+                TestLevel testLevel = null;
+
+                if (dto.getId() != null) {
+                    testLevel = testLevelRepository.findById(dto.getId()).orElse(null);
+                } 
+                
+                if (testLevel == null && dto.getName() != null && !dto.getName().trim().isEmpty()) {
+                    String trimmedName = dto.getName().trim();
+                    
+                    if (test.getTestId() != null) {
+                        testLevel = testLevelRepository.findByTest_TestIdAndNameIgnoreCase(test.getTestId(), trimmedName).orElse(null);
+                    }
+                    
+                    if (testLevel == null) {
+                        testLevel = new TestLevel();
+                        testLevel.setName(trimmedName);
+                        testLevel.setTest(test); 
+                    }
+                }
+
+                if (testLevel != null) {
+                    testLevel.setWeight(dto.getWeight());
+                    testLevel.setOrderIndex(dto.getOrderIndex());
+                    testLevel.setQuestionsLimit(dto.getQuestionsLimit()); 
+                    testLevels.add(testLevel);
+                }
+            }
+        }
+        return testLevels;
     }
 
     @Transactional(readOnly = true)
@@ -621,10 +695,20 @@ public class TestService {
 
             question.setQuestionText(dto.getQuestionText());
             question.setQuestionType(dto.getQuestionType());
-            question.setWeight(dto.getWeight() != null ? dto.getWeight() : 1.0);
+            
+            Double incomingWeight = dto.getCustomWeight() != null ? dto.getCustomWeight() : (dto.getCustomWeight() != null ? dto.getCustomWeight() : null);
+            question.setCustomWeight(incomingWeight);
+            
             question.setComment(dto.getComment());
             
-            // 1. Очищення старих відповідей (використовуємо Set як у твоєму QuestionService)
+            if (dto.getLevelId() != null) {
+                TestLevel level = testLevelRepository.findById(dto.getLevelId())
+                        .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено: " + dto.getLevelId()));
+                question.setTestLevel(level);
+            } else {
+                question.setTestLevel(null);
+            }
+            
             if (question.getChoiceOptions() != null) {
                 question.getChoiceOptions().clear();
             } else {
@@ -638,11 +722,6 @@ public class TestService {
                 question.setCodeAnswer(null);
             }
             
-            // Якщо використовуєш MatchingPair, також очищуй:
-            // if (question.getMatchingPairs() != null) question.getMatchingPairs().clear();
-            // else question.setMatchingPairs(new HashSet<>());
-
-            // 2. Наповнення новими даними залежно від типу
             if (dto.getChoiceOptions() != null && !dto.getChoiceOptions().isEmpty()) {
                 for (var optDto : dto.getChoiceOptions()) {
                     ChoiceOption option = new ChoiceOption(question, optDto.getOptionText(), optDto.getIsCorrect());
@@ -690,4 +769,29 @@ public class TestService {
         test.getTestQuestions().addAll(newLinks);
     }
 
+
+    private void validateLevelLimits(Test test) {
+        if (test.getTestLevels() == null || test.getTestQuestions() == null) return;
+
+        Map<Long, Long> questionsPerLevel = test.getTestQuestions().stream()
+            .filter(tq -> tq.getQuestion().getTestLevel() != null)
+            .collect(Collectors.groupingBy(
+                tq -> tq.getQuestion().getTestLevel().getId(),
+                Collectors.counting()
+            ));
+
+        for (TestLevel level : test.getTestLevels()) {
+            if (level.getQuestionsLimit() != null && level.getQuestionsLimit() > 0) {
+                long actualQuestionsCount = questionsPerLevel.getOrDefault(level.getId(), 0L);
+                
+                if (level.getQuestionsLimit() > actualQuestionsCount) {
+                    throw new IllegalArgumentException(
+                        "Помилка! Для рівня '" + level.getName() + 
+                        "' ви вказали показати " + level.getQuestionsLimit() + 
+                        " питань, але до рівня додано лише " + actualQuestionsCount + " питань."
+                    );
+                }
+            }
+        }
+    }
 }

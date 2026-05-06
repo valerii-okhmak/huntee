@@ -18,6 +18,7 @@ public class TestUpdateRequest {
     private String vacancyDescription;
     private String responsibilities;
     private Boolean isFixedTime;
+    private List<TestLevelDTO> levels;
     private OffsetDateTime startTime;
     private OffsetDateTime endTime;
     private Integer durationMinutes;

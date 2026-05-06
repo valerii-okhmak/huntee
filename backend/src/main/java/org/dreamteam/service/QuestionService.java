@@ -1,11 +1,9 @@
 package org.dreamteam.service;
 
 import java.io.BufferedReader;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import java.nio.charset.StandardCharsets;
-
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,8 +34,8 @@ public class QuestionService {
     private final TestRepository testRepository;
     private final TestQuestionRepository testQuestionRepository;
     private final UserRepository userRepository;
+    private final TestLevelRepository testLevelRepository;
 
-    
     @Transactional(readOnly = true)
     public List<QuestionResponse> getQuestionsByTestId(UUID testId, String userEmail) {
         Test test = testRepository.findById(testId)
@@ -56,8 +54,6 @@ public class QuestionService {
                 .map(testQuestion -> mapToQuestionResponse(testQuestion.getQuestion()))
                 .collect(Collectors.toList());
     }
-
-
 
     @Transactional
     public Question createQuestionAndLinkToTest(UUID testId, QuestionCreateRequest request, String authorEmail) {
@@ -117,14 +113,14 @@ public class QuestionService {
         User author = findUserByEmail(authorEmail);
         Question copyQuestion = new Question();
         copyQuestion.setAuthor(author);
-        copyQuestion.setWeight(originalQuestion.getWeight());
+        copyQuestion.setCustomWeight(originalQuestion.getCustomWeight());
         copyQuestion.setComment(originalQuestion.getComment());
         copyQuestion.setImageUrl(originalQuestion.getImageUrl());
         copyQuestion.setQuestionText(originalQuestion.getQuestionText());
         copyQuestion.setQuestionType(originalQuestion.getQuestionType());
         copyQuestion.setCategories(new HashSet<>(originalQuestion.getCategories()));
+        copyQuestion.setTestLevel(originalQuestion.getTestLevel()); 
         
-
         switch(originalQuestion.getQuestionType()){
             case SINGLE_CHOICE, MULTIPLE_CHOICE:
                 if (originalQuestion.getChoiceOptions() != null) {
@@ -457,16 +453,26 @@ public class QuestionService {
         question.setQuestionText(request.getQuestionText());
         question.setQuestionType(request.getQuestionType());
         question.setComment(request.getComment());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
+        question.setCustomWeight(request.getCustomWeight() != null ? request.getCustomWeight() : null);
         question.setCategories(request.getCategories() != null ? request.getCategories() : new HashSet<>());
+        if (request.getLevelId() != null) {
+            TestLevel level = testLevelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено"));
+            question.setTestLevel(level);
+        }
     }
 
     private void mapToQuestion(Question question, QuestionUpdateRequest request) {
         question.setQuestionText(request.getQuestionText());
         question.setQuestionType(request.getQuestionType());
         question.setComment(request.getComment());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : question.getWeight());
+        question.setCustomWeight(request.getCustomWeight() != null ? request.getCustomWeight() : question.getCustomWeight());
         question.setCategories(request.getCategories() != null ? request.getCategories() : question.getCategories());
+        if (request.getLevelId() != null) {
+            TestLevel level = testLevelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено"));
+            question.setTestLevel(level);
+        }
     }
 
     private QuestionResponse mapToQuestionResponse(Question question) {
@@ -475,9 +481,11 @@ public class QuestionService {
                 .questionText(question.getQuestionText())
                 .comment(question.getComment())
                 .questionType(question.getQuestionType())
-                .weight(question.getWeight())
+                .customWeight(question.getCustomWeight())
                 .authorEmail(question.getAuthor().getUsername())
-                .categories(question.getCategories());
+                .categories(question.getCategories())
+                // ВИПРАВЛЕНО: getId() замість getLevelId()
+                .levelId(question.getTestLevel() != null ? question.getTestLevel().getId() : null);
 
         switch (question.getQuestionType()) {
             case SINGLE_CHOICE, MULTIPLE_CHOICE:
