@@ -63,7 +63,7 @@ public class Test {
     @Column(name = "is_private")
     private Boolean isPrivate = false;
 
-    @OneToMany(mappedBy= "test", cascade= CascadeType.ALL, orphanRemoval= true)
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TestQuestion> testQuestions = new HashSet<>();
 
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -75,11 +75,15 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TestInvitation> testInvitations = new HashSet<>();
 
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TestAccessCode> accessCodes = new HashSet<>();
+
     @Column(name = "is_fixed_question_order")
     private Boolean isFixedQuestionOrder = true;
 
     @Column(name = "is_fixed_answer_order")
     private Boolean isFixedAnswerOrder = true;
+    
     @Column(name = "is_show_result")
     private Boolean isShowResult = true;
 

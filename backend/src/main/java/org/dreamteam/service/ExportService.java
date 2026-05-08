@@ -1,4 +1,4 @@
- package org.dreamteam.service;
+package org.dreamteam.service;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPTable;
@@ -76,6 +76,7 @@ public class ExportService {
         return switch (column) {
             case "fullName" -> (c.getFullName() != null) ? c.getFullName() : "";
             case "email" -> (c.getEmail() != null) ? c.getEmail() : "";
+            case "groupTag" -> (c.getGroupTag() != null && !c.getGroupTag().isEmpty()) ? c.getGroupTag() : "-"; // НОВА КОЛОНКА
             case "score" -> (c.getScore() != null) ? c.getScore().toString() : "N/A";
             case "status" -> (c.getStatus() != null) ? c.getStatus() : "";
             case "date" -> {

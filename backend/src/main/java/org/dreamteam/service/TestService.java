@@ -156,6 +156,23 @@ public class TestService {
     public void deleteTest(UUID testId, String userEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, userEmail);
+
+        if (test.getTestQuestions() != null) {
+            for (TestQuestion tq : test.getTestQuestions()) {
+                Question q = tq.getQuestion();
+                if (q != null && q.getTestLevel() != null) {
+                    if (q.getTestLevel().getTest().getTestId().equals(testId)) {
+                        q.setTestLevel(null);
+                        questionRepository.save(q);
+                    }
+                }
+            }
+        }
+        test.getTestQuestions().clear();
+        testRepository.flush(); 
+
+        testAccessCodeRepository.deleteByTest_TestId(testId);
+
         testRepository.delete(test);
     }
 
@@ -266,7 +283,7 @@ public class TestService {
                     failed++;
                 }
             } else {
-                failed++; // Якщо макс бал 0, вважаємо не складеним
+                failed++; 
             }
         }
 
@@ -431,6 +448,13 @@ public class TestService {
 
     public byte[] exportTestResults(UUID testId, ExportRequestDTO request, String email) throws IOException {
         List<CandidateDTO> results = getTestResults(testId, email);
+        
+        if (request.getGroupTag() != null && !request.getGroupTag().trim().isEmpty()) {
+            results = results.stream()
+                    .filter(c -> request.getGroupTag().equals(c.getGroupTag()))
+                    .collect(Collectors.toList());
+        }
+
         Test test = findTestById(testId);
 
         if ("PDF".equalsIgnoreCase(request.getFormat())) {

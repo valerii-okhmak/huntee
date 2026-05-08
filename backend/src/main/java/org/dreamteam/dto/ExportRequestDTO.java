@@ -7,4 +7,5 @@ import java.util.List;
 public class ExportRequestDTO {
     private String format;
     private List<String> columns; 
+    private String groupTag;
 }

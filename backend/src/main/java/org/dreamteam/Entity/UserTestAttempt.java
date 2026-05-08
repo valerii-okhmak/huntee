@@ -47,6 +47,9 @@ public class UserTestAttempt {
     @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserAnswer> userAnswers = new HashSet<>();
 
+    @OneToMany(mappedBy = "userTestAttempt", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ProctoringLog> proctoringLogs = new HashSet<>();
+
     public UserTestAttempt(User user, Test test) {
         this.user = user;
         this.test = test;

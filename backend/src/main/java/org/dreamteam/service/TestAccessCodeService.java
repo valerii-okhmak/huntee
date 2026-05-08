@@ -1,5 +1,8 @@
 package org.dreamteam.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty; 
+import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.dreamteam.Entity.Test;
 import org.dreamteam.Entity.TestAccessCode;
@@ -31,8 +34,35 @@ public class TestAccessCodeService {
     private static final int CODE_LENGTH = 6;
     private final SecureRandom random = new SecureRandom();
 
+    @Data
+    @Builder
+    public static class AccessCodeInfoDTO {
+        private String code;
+        private String tag;
+        
+        @JsonProperty("isUsed") 
+        private boolean isUsed;
+        
+        private String usedByEmail;
+        private String usedByName;
+    }
+
+    @Transactional(readOnly = true)
+    public List<AccessCodeInfoDTO> getTestCodes(UUID testId, String authorEmail) {
+        Test test = testRepository.findById(testId)
+                .orElseThrow(() -> new EntityNotFoundException("Test not found"));
+
+        if (!test.getUser().getEmail().equals(authorEmail)) {
+            throw new AccessDeniedException("Only the test author can view access codes");
+        }
+
+        return accessCodeRepository.findByTest_TestId(testId).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
-    public List<String> generateCodes(UUID testId, String tag, int count, String authorEmail) {
+    public List<AccessCodeInfoDTO> generateCodes(UUID testId, String tag, int count, String authorEmail) {
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException("Test not found"));
 
@@ -56,7 +86,7 @@ public class TestAccessCodeService {
         accessCodeRepository.saveAll(newCodes);
 
         return newCodes.stream()
-                .map(TestAccessCode::getCode)
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -88,5 +118,27 @@ public class TestAccessCodeService {
         }
         sb.insert(3, "-"); 
         return sb.toString();
+    }
+
+    private AccessCodeInfoDTO mapToDTO(TestAccessCode code) {
+        String email = null;
+        String name = null;
+        
+        if (code.isUsed() && code.getUsedByUser() != null) {
+            email = code.getUsedByUser().getEmail();
+            if (code.getUsedByUser().getProfile() != null) {
+                String first = code.getUsedByUser().getProfile().getFirstName();
+                String last = code.getUsedByUser().getProfile().getLastName();
+                name = (first != null ? first : "") + " " + (last != null ? last : "");
+            }
+        }
+        
+        return AccessCodeInfoDTO.builder()
+                .code(code.getCode())
+                .tag(code.getTag())
+                .isUsed(code.isUsed())
+                .usedByEmail(email)
+                .usedByName(name)
+                .build();
     }
 }
