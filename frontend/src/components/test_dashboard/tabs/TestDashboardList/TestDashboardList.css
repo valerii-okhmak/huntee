@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* --- ЗАГАЛЬНІ СТИЛИ ТА ОПИС --- */
 .testDashboard__description {
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(12px, 5vw, 20px);
     margin-bottom: 35px;
+}
+
+.testDashboard__description p {
+    white-space: pre-line; 
 }
 
 .testDashboard__quote {
@@ -27,10 +32,7 @@
     border-radius: 30px;
 }
 
-.testDashboard__description p {
-    white-space: pre-line; 
-}
-
+/* --- ПАНЕЛЬ ІНСТРУМЕНТІВ (ПОШУК, КНОПКИ) --- */
 .testDashboard__toolbar {
     display: flex;
     gap: 10px;
@@ -63,7 +65,8 @@
     flex-shrink: 0;
 }
 
-.testDashboard__message:hover {
+.testDashboard__message:hover, 
+.testDashboard__btn-analytics:hover {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     transform: translateY(-1px);
@@ -76,17 +79,11 @@
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(12px, 5vw, 20px);
     color: #363636;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.testDashboard__btn-analytics:hover {
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    transform: translateY(-1px);
 }
 
 .testDashboard__btn-invite-container {
@@ -101,7 +98,7 @@
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(12px, 5vw, 20px);
     color: #ffffff;
@@ -116,21 +113,7 @@
     color: #000000;
 }
 
-.testDashboard__cards-list {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    margin-bottom: 50px;
-}
-
-.groups-filter-tabs{
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    margin-bottom: 20px;
-    padding-bottom: 5px;
-}
-
+/* --- ФІЛЬТРИ ПО ГРУПАХ --- */
 .testDashboard__groups-filter-tabs {
     display: flex;
     flex-wrap: wrap;
@@ -171,6 +154,123 @@
     font-size: clamp(14px, 2vw, 20px);
 }
 
+/* --- СТИЛІ ДЛЯ ТАБЛИЦІ --- */
+.testDashboard__table-wrapper {
+  margin-top: 20px;
+  margin-bottom: 80px; /* ДОДАНО ВІДСТУП ДО ФУТЕРУ */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; 
+}
+
+.testDashboard__table {
+font-family: 'Montserrat', sans-serif;
+font-size: clamp(12px, 5vw, 20px);
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Всі комірки по центру за замовчуванням */
+.testDashboard__table th,
+.testDashboard__table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+  text-align: center; /* Рівномірне центрування статусів, груп та результатів */
+}
+
+.testDashboard__table th {
+  font-weight: 700;
+  color: #333;
+  background-color: #fafafa;
+}
+
+/* Перша колонка (Учасник) притиснута до лівого краю */
+.testDashboard__table th:first-child,
+.testDashboard__table td:first-child {
+  text-align: left;
+}
+
+/* Колонка Учасник (Ім'я + Email) */
+.td-participant {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.participant-name {
+  font-weight: 600;
+  color: #222;
+}
+
+.participant-email {
+  color: #777;
+  margin-top: 4px;
+  font-size: clamp(10px, 5vw, 16px);
+
+}
+
+/* Статуси */
+.status-text {
+  font-weight: 500;
+font-size: clamp(10px, 5vw, 16px);
+
+}
+.text-registered {
+  color: #555;
+}
+.text-completed {
+  color: #333;
+}
+
+/* Бейджи результатів */
+.score-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 45px;
+}
+.score-good {
+  background-color: #e6f4ea;
+  color: #1e8e3e;
+}
+.score-bad {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+/* Кнопка повідомлення */
+.action-icon-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto; /* Центруємо саму кнопку в комірці */
+}
+
+.action-icon-btn:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.table-empty-state {
+  text-align: center !important;
+  padding: 40px !important;
+  color: #888;
+  font-style: italic;
+}
+
+/* --- МЕДІА ЗАПИТИ (МОБІЛЬНІ ПРИСТРОЇ) --- */
 @media screen and (max-width: 600px) {
     .testDashboard__toolbar {
         flex-direction: column;

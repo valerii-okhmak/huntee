@@ -70,6 +70,12 @@ public class TestAccessCodeService {
             throw new AccessDeniedException("Only the test author can generate access codes");
         }
 
+        final int MAX_CODES_PER_TEST = 200;
+        
+        if (count > MAX_CODES_PER_TEST) {
+            throw new IllegalArgumentException("Ви не можете згенерувати більше 200 кодів за один раз.");
+        }
+
         List<TestAccessCode> newCodes = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             String generatedString = generateUniqueCode();
@@ -102,7 +108,7 @@ public class TestAccessCodeService {
         User student = userRepository.findByEmail(studentEmail)
                 .orElseThrow(() -> new EntityNotFoundException("Користувача не знайдено"));
 
-        testService.registerForTest(accessCode.getTest().getTestId(), studentEmail);
+        testService.registerByInviteOrCode(accessCode.getTest().getTestId(), studentEmail);
 
         accessCode.setUsed(true);
         accessCode.setUsedByUser(student);

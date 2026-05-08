@@ -5,13 +5,13 @@ import DashboardTabNavigation from '../components/test_dashboard/DashboardTabNav
 import TestDashboardList from '../components/test_dashboard/tabs/TestDashboardList/TestDashboardList';
 import TestDashboardAnalytics from '../components/test_dashboard/tabs/TestDashboardAnalytics/TestDashboardAnalytics';
 import Loader from '../components/loader/Loader';
+import { getAccessToken } from '../utils/auth'; 
 
 const TestDashboardPage = () => {
   const { id } = useParams(); 
-  const [activeTab, setActiveTab] = useState('registered');
+  const [activeTab, setActiveTab] = useState('participants');
 
-  const [results, setResults] = useState([]);
-  const [candidates, setCandidates] = useState([]);
+  const [participants, setParticipants] = useState([]); 
   const [analytics, setAnalytics] = useState(null);
   const [test, setTest] = useState(null); 
 
@@ -23,11 +23,19 @@ const TestDashboardPage = () => {
     const fetchTest = async () => {
       try {
         setTestLoading(true); 
+        const token = getAccessToken(); 
+        
         const res = await fetch(`/api/tests/${id}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`
           }
         });
+        
+        if (res.status === 401 || res.status === 403) {
+           setError('У вас немає доступу до цього дашборду');
+           return;
+        }
+        
         if (!res.ok) throw new Error('Помилка при завантаженні тесту');
         const data = await res.json();
         setTest(data);
@@ -48,26 +56,43 @@ const TestDashboardPage = () => {
       setError(null);
 
       try {
-        const headers = {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        };
+        const token = getAccessToken(); 
+        const headers = { 'Authorization': `Bearer ${token}` };
 
-        if (activeTab === 'results') {
-          const res = await fetch(`/api/tests/${id}/results`, { headers });
-          const data = await res.json();
-          setResults(data);
-        }
+        if (activeTab === 'participants') {
+          const [candidatesRes, resultsRes] = await Promise.all([
+            fetch(`/api/tests/${id}/candidates`, { headers }),
+            fetch(`/api/tests/${id}/results`, { headers })
+          ]);
 
-        if (activeTab === 'registered') {
-          const res = await fetch(`/api/tests/${id}/candidates`, { headers });
-          const data = await res.json();
-          setCandidates(data);
+          if (candidatesRes.ok && resultsRes.ok) {
+            const candidatesData = await candidatesRes.json();
+            const resultsData = await resultsRes.json();
+
+            const participantsMap = new Map();
+
+            candidatesData.forEach(candidate => {
+              participantsMap.set(candidate.userId, { ...candidate, status: 'REGISTERED' });
+            });
+
+            resultsData.forEach(result => {
+              if (participantsMap.has(result.userId)) {
+                participantsMap.set(result.userId, { ...participantsMap.get(result.userId), ...result });
+              } else {
+                participantsMap.set(result.userId, result);
+              }
+            });
+            
+            setParticipants(Array.from(participantsMap.values()));
+          }
         }
 
         if (activeTab === 'analytics') {
           const res = await fetch(`/api/tests/${id}/analytics`, { headers });
-          const data = await res.json();
-          setAnalytics(data);
+          if(res.ok) {
+              const data = await res.json();
+              setAnalytics(data);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -77,8 +102,9 @@ const TestDashboardPage = () => {
       }
     };
 
-    if (id) loadData();
-  }, [activeTab, id]);
+    if (id && test) loadData(); 
+  }, [activeTab, id, test]);
+
 
   const renderContent = () => {
     if (loading) return <Loader />;
@@ -87,20 +113,12 @@ const TestDashboardPage = () => {
       case 'analytics':
         return <TestDashboardAnalytics analytics={analytics} testId={id}/>;
 
-      case 'registered':
+      case 'participants':
         return <TestDashboardList 
-                  activeTab={activeTab} 
-                  students={candidates} 
+                  students={participants} 
                   setActiveTab={setActiveTab} 
                   testId={id}
-               />;
-
-      case 'results':
-        return <TestDashboardList 
-                  activeTab={activeTab} 
-                  students={results} 
-                  setActiveTab={setActiveTab} 
-                  testId={id}
+                  isPrivate={test.isPrivate}
                />;
 
       default:
@@ -108,13 +126,8 @@ const TestDashboardPage = () => {
     }
   };
 
-  if (testLoading) {
-      return <div className='page'><Loader /></div>;
-  }
-
-  if (!test) {
-      return <div className='page'><div className='container'>Тест не знайдено</div></div>;
-  }
+  if (testLoading) return <div className='page'><Loader /></div>;
+  if (!test) return <div className='page'><div className='container'>Тест не знайдено</div></div>;
 
   return (
     <div className='page'>

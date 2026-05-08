@@ -1,55 +1,22 @@
-import React, { useEffect, useState, useMemo } from 'react'; 
+import React, { useState, useMemo } from 'react'; 
 import { useTranslation } from 'react-i18next';
 import './TestDashboardList.css';
-import DashboardStudentCard from '../../DashboardStudentCard/DashboardStudentCard';
 import lupa from '../../../../img/search-icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import InviteParticipantsModal from '../../../modal_windows/InviteParticipantsModal';
 import SendMessageModal from '../../../modal_windows/SendMessageModal';
-import axios from 'axios';
-import { getAccessToken } from '../../../../utils/auth';
-import Loader from '../../../loader/Loader';
 
-const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
+// ЗВЕРНИ УВАГУ: Тепер ми просто приймаємо `students` у пропсах
+const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) => {
   const { t } = useTranslation();
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const [selectedGroupTag, setSelectedGroupTag] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        setLoading(true);
-        setSelectedGroupTag('ALL'); 
-        
-        const token = getAccessToken();
-        const endpoint = activeTab === 'registered' 
-          ? `/api/tests/${testId}/candidates`
-          : `/api/tests/${testId}/results`;
-        
-        const response = await axios.get(endpoint, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        setStudents(response.data);
-      } catch (err) {
-        console.error(err);
-        setError(t('testDashboardList.error'));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStudents();
-  }, [activeTab, testId, t]);
 
   const handleOpenGeneralMessage = () => {
     setSelectedStudent(null);
@@ -61,6 +28,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
     setIsMessageModalOpen(true);
   };
 
+  // Фільтрація по групах тепер працює відразу з готового пропса students
   const uniqueGroups = useMemo(() => {
     const tags = students.map(s => s.groupTag).filter(Boolean); 
     return ['ALL', ...new Set(tags)];
@@ -77,21 +45,15 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
     });
   }, [students, searchQuery, selectedGroupTag]);
 
-
-  const description = activeTab === 'registered'
-    ? t('testDashboardList.desc.registered')
-    : t('testDashboardList.desc.results');
-
-  if (loading) return <Loader />;
-  if (error) return <div className='container'>{error}</div>;
+  const description = t('testDashboardList.desc.all', 'Тут ви можете переглянути зареєстрованих учасників та їхні результати тестування...');
 
   return (
     <div className='container'>
       <div className="testDashboard__description">
         <p>{description}</p>
         <div className="testDashboard__quote">
-          <p>{t('testDashboardList.quote.line1')}</p>
-          <p>{t('testDashboardList.quote.line2')}</p>
+          <p>{t('testDashboardList.quote.line1', 'Щоб надіслати повідомлення всім студентам, натисніть кнопку повідомлення поруч з пошуком.')}</p>
+          <p>{t('testDashboardList.quote.line2', 'Щоб зв’язатися з окремим студентом, використовуйте кнопку «Повідомлення» у його рядку.')}</p>
         </div>
       </div>
 
@@ -100,16 +62,16 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
           <div className="search-container">
             <img src={lupa} alt='search' className='search_icon' />
             <input 
-            type="text" 
-            placeholder={t('testDashboardList.search')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+              type="text" 
+              placeholder={t('testDashboardList.search', 'Пошук')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           
           <button 
               className="testDashboard__message" 
-              title={t('testDashboardList.messageAll')}
+              title={t('testDashboardList.messageAll', 'Надіслати всім')}
               onClick={handleOpenGeneralMessage}
           >
             <FontAwesomeIcon icon={faEnvelope} className="header-icon" />
@@ -117,7 +79,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         </div>
 
         <button className="testDashboard__btn-analytics" onClick={() => setActiveTab('analytics')}>
-          {t('testDashboardList.viewAnalytics')}
+          {t('testDashboardList.viewAnalytics', 'Переглянути аналітику')}
         </button>
       </div>
 
@@ -126,7 +88,7 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
           className="testDashboard__btn-invite" 
           onClick={() => setIsInviteModalOpen(true)}
         >
-            {t('testDashboardList.invite')}
+            {t('testDashboardList.invite', 'Запросити учасників')}
         </button>
       </div>
 
@@ -147,27 +109,85 @@ const TestDashboardList = ({ activeTab, testId, setActiveTab }) => {
         </div>
       )}
 
-      <div className="testDashboard__cards-list">
-        {filteredStudents.length > 0 ? (
-          filteredStudents.map(student => (
-            <DashboardStudentCard 
-              key={student.userId} 
-              student={student} 
-              type={activeTab}
-              onMessageClick={handleOpenStudentMessage}
-            />
-          ))
-        ) : (
-          <div style={{textAlign: 'center', padding: '20px', color: '#777'}}>
-              {t('testDashboardList.empty')}
-          </div>
-        )}
+      {/* ТАБЛИЦЯ */}
+      <div className="testDashboard__table-wrapper">
+        <table className="testDashboard__table">
+          <thead>
+            <tr>
+              <th>{t('table.name', 'Учасник')}</th>
+              <th>{t('table.group', 'Група')}</th>
+              <th>{t('table.status', 'Статус')}</th>
+              <th>{t('table.result', 'Результат')}</th>
+              <th className="td-actions-head">{t('table.actions', 'Дії')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredStudents.length > 0 ? (
+              filteredStudents.map(student => {
+                const isCompleted = student.status === 'COMPLETED';
+
+                return (
+                  <tr key={student.userId}>
+                    {/* ІМ'Я ТА EMAIL */}
+                    <td className="td-participant">
+                      <span className="participant-name">{student.fullName}</span>
+                      <span className="participant-email">{student.email}</span>
+                    </td>
+                    
+                    {/* ГРУПА */}
+                    <td style={{ fontSize: 'clamp(10px, 5vw, 16px)' }}>
+                      {student.groupTag && student.groupTag !== '-' ? student.groupTag : '—'}
+                    </td>
+                    
+                    {/* СТАТУС */}
+                    <td>
+                      {isCompleted ? (
+                        <span className="status-text text-completed">Пройшов</span>
+                      ) : (
+                        <span className="status-text text-registered">Зареєстровано</span>
+                      )}
+                    </td>
+                    
+                    {/* РЕЗУЛЬТАТ */}
+                    <td>
+                      {isCompleted && student.score !== null && student.score !== undefined ? (
+                        <span className={`score-badge ${student.score > 0 ? 'score-good' : 'score-bad'}`}>
+                          {student.score}/{student.totalMaxScore}
+                        </span>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                    
+                    {/* ДІЇ (ТІЛЬКИ ПОВІДОМЛЕННЯ) */}
+                    <td className="td-actions">
+                      <button 
+                        className="action-icon-btn" 
+                        onClick={() => handleOpenStudentMessage(student)}
+                        title={t('testDashboardList.sendMessage', 'Надіслати повідомлення')}
+                      >
+                        <FontAwesomeIcon icon={faEnvelope} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan="5" className="table-empty-state">
+                  {t('testDashboardList.empty', 'Список порожній')}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       <InviteParticipantsModal 
         isOpen={isInviteModalOpen} 
         onClose={() => setIsInviteModalOpen(false)} 
         testId={testId} 
+        isPrivate={isPrivate}
       />
 
       <SendMessageModal

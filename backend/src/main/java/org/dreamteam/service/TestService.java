@@ -37,12 +37,30 @@ public class TestService {
     private final TestLevelRepository testLevelRepository;
     private final UserAnswerRepository userAnswerRepository; 
 
+    private static final int MAX_TESTS_PER_USER = 5;
+    private static final int MAX_QUESTIONS_PER_TEST = 500;
+
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
-        User user = findUserByEmail(userEmail);
         Test test = findTestById(testId);
 
-        if (registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), testId)) {
+        if (Boolean.TRUE.equals(test.getIsPrivate())) {
+            throw new AccessDeniedException("Цей тест є приватним. Реєстрація можлива лише за спеціальним посиланням або кодом.");
+        }
+
+        executeRegistration(test, userEmail);
+    }
+
+    @Transactional
+    public void registerByInviteOrCode(UUID testId, String userEmail) {
+        Test test = findTestById(testId);
+        executeRegistration(test, userEmail); 
+    }
+
+    private void executeRegistration(Test test, String userEmail) {
+        User user = findUserByEmail(userEmail);
+
+        if (registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), test.getTestId())) {
             throw new IllegalStateException("User is already registered for this test."); 
         }
 
@@ -54,11 +72,15 @@ public class TestService {
         notificationService.sendSystemNotification(user.getId(), title, message);
     }
 
-
     @CacheEvict(value = "tests_list", allEntries = true)
     @Transactional
     public TestDetailResponse createTest(TestCreateRequest request, String authorEmail) {
         User author = findUserByEmail(authorEmail);
+
+        int currentTestCount = testRepository.findByUser_Id(author.getId()).size();
+        if (currentTestCount >= MAX_TESTS_PER_USER) {
+            throw new IllegalStateException("Перевищено ліміт! Ви можете створити максимум " + MAX_TESTS_PER_USER + " тестів.");
+        }
 
         Test test = new Test(request.getTestName(), author);
         test.setSphere(request.getSphere());
@@ -97,19 +119,29 @@ public class TestService {
     public List<TestSummaryResponse> getAllTests() {
         return testRepository.findAll()
                 .stream()
+                .filter(test -> !Boolean.TRUE.equals(test.getIsPrivate()))
                 .map(this::mapToSummaryResponse)
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "test_details", key = "#testId")
     @Transactional(readOnly = true)
-    public TestDetailResponse getTestById(UUID testId) {
+    public TestDetailResponse getTestById(UUID testId, String userEmail) {
         Test test = findTestById(testId);
+        
+        if (Boolean.TRUE.equals(test.getIsPrivate())) {
+            User user = findUserByEmail(userEmail);
+            boolean isAuthor = test.getUser().getId().equals(user.getId());
+            boolean isRegistered = registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), testId);
+            
+            if (!isAuthor && !isRegistered) {
+                throw new AccessDeniedException("Цей тест є приватним. У вас немає доступу.");
+            }
+        }
+
         return mapToDetailResponse(test);
     }
 
     @Caching(evict = {
-        @CacheEvict(value = "test_details", key = "#testId"),
         @CacheEvict(value = "tests_list", allEntries = true)
     })
     @Transactional
@@ -148,7 +180,6 @@ public class TestService {
 
 
     @Caching(evict = {
-        @CacheEvict(value = "test_details", key = "#testId"),
         @CacheEvict(value = "test_analytics", key = "#testId"),
         @CacheEvict(value = "tests_list", allEntries = true)
     })
@@ -264,7 +295,6 @@ public class TestService {
         final double PASSING_PERCENT = 60.0;
 
         for (UserTestAttempt attempt : gradedAttempts) {
-            // Отримуємо відповіді КОНКРЕТНОЇ спроби для точного макс балу
             List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
             double maxPossibleScore = answers.stream()
                 .mapToDouble(a -> a.getQuestion().getEffectiveWeight() != null ? a.getQuestion().getEffectiveWeight() : 1.0)
@@ -314,7 +344,6 @@ public class TestService {
         Map<QuestionType, List<Double>> typeScores = new HashMap<>();
         
         for (UserTestAttempt attempt : completedAttempts) {
-            // ВИПРАВЛЕНО: Беремо відповіді з БД для точності
             List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
             
             for (UserAnswer answer : answers) {
@@ -428,6 +457,10 @@ public class TestService {
 
     private void updateTestQuestions(Test test, List<UUID> questionIds) {
         if (questionIds == null || questionIds.isEmpty()) return;
+
+        if (questionIds.size() > MAX_QUESTIONS_PER_TEST) {
+            throw new IllegalArgumentException("Перевищено ліміт! Тест не може містити більше " + MAX_QUESTIONS_PER_TEST + " питань.");
+        }
 
         List<TestQuestion> newLinks = new ArrayList<>();
 
@@ -661,6 +694,11 @@ public class TestService {
     })
     @Transactional
     public void syncTestQuestionsBulk(UUID testId, List<QuestionPayloadDTO> incomingQuestions) {
+        // 🛡️ ЗАХИСТ: Ліміт на питання при масовому додаванні/редагуванні
+        if (incomingQuestions != null && incomingQuestions.size() > MAX_QUESTIONS_PER_TEST) {
+            throw new IllegalArgumentException("Перевищено ліміт! Тест не може містити більше " + MAX_QUESTIONS_PER_TEST + " питань.");
+        }
+
         Test test = findTestById(testId);
 
         List<TestQuestion> existingLinks = testQuestionRepository.findByTest_TestId(testId);
@@ -768,30 +806,5 @@ public class TestService {
             test.setTestQuestions(new HashSet<>());
         }
         test.getTestQuestions().addAll(newLinks);
-    }
-
-    private void validateLevelLimits(Test test) {
-        if (test.getTestLevels() == null || test.getTestQuestions() == null) return;
-
-        Map<Long, Long> questionsPerLevel = test.getTestQuestions().stream()
-            .filter(tq -> tq.getQuestion().getTestLevel() != null)
-            .collect(Collectors.groupingBy(
-                tq -> tq.getQuestion().getTestLevel().getId(),
-                Collectors.counting()
-            ));
-
-        for (TestLevel level : test.getTestLevels()) {
-            if (level.getQuestionsLimit() != null && level.getQuestionsLimit() > 0) {
-                long actualQuestionsCount = questionsPerLevel.getOrDefault(level.getId(), 0L);
-                
-                if (level.getQuestionsLimit() > actualQuestionsCount) {
-                    throw new IllegalArgumentException(
-                        "Помилка! Для рівня '" + level.getName() + 
-                        "' ви вказали показати " + level.getQuestionsLimit() + 
-                        " питань, але до рівня додано лише " + actualQuestionsCount + " питань."
-                    );
-                }
-            }
-        }
     }
 }

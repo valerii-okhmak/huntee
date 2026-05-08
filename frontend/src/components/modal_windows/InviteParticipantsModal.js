@@ -5,7 +5,8 @@ import axios from "axios";
 import { getAccessToken } from "../../utils/auth";
 import "./ModalWindow.css";
 
-const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
+
+const InviteParticipantsModal = ({ isOpen, onClose, testId, isPrivate }) => {
   const { t } = useTranslation();
   
   const [inviteMethod, setInviteMethod] = useState("email"); 
@@ -16,19 +17,21 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
   const [tag, setTag] = useState("");
   const [count, setCount] = useState(30);
   
-  // Тепер тут зберігаються об'єкти {code, tag, isUsed, usedByEmail, usedByName}
   const [allCodes, setAllCodes] = useState([]); 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoadingCodes, setIsLoadingCodes] = useState(false);
 
   const testLink = `${window.location.origin}/testpage/${testId}`;
 
-  // Завантажуємо коди при відкритті вкладки кодів
   useEffect(() => {
+    if (isOpen && isPrivate && inviteMethod === "link") {
+      setInviteMethod("email");
+    }
+    
     if (isOpen && inviteMethod === "code") {
         fetchExistingCodes();
     }
-  }, [isOpen, inviteMethod, testId]);
+  }, [isOpen, inviteMethod, testId, isPrivate]);
 
   const fetchExistingCodes = async () => {
     setIsLoadingCodes(true);
@@ -104,7 +107,6 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
             { tag: tag.trim(), count: Number(count) },
             { headers: { 'Authorization': `Bearer ${token}` } }
         );
-        // Додаємо нові коди до існуючих
         setAllCodes(prev => [...response.data, ...prev]);
         setTag("");
         showMessage(t('inviteModal.codesGenerated', 'Коди успішно згенеровано!'), "success");
@@ -139,7 +141,6 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
 
   if (!isOpen) return null;
 
-  // Групуємо коди за тегами
   const groupedCodes = allCodes.reduce((acc, code) => {
       const groupTag = code.tag || "Загальні";
       if (!acc[groupTag]) acc[groupTag] = [];
@@ -160,6 +161,13 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
         
         <div className="invite-modal-text">
             <p className="modalmini-subtitle">{t('inviteModal.subtitle', 'Ви можете запросити учасників до проходження тесту зручним для вас способом:')}</p>
+            <ul className="invite-modal-list" style={{ marginLeft: '20px', marginBottom: '20px', fontSize: '14px', color: '#666' }}>
+                <li>{t('inviteModal.options.email', 'Надіслати запрошення на пошту.')}</li>
+                {!isPrivate && (
+                    <li>{t('inviteModal.options.link', 'Приєднання за посиланням.')}</li>
+                )}
+                <li>{t('inviteModal.options.code', 'Генерація та приєднання за кодами (для груп).')}</li>
+            </ul>
         </div>
 
         <div className="invite-methods">
@@ -171,13 +179,15 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
             </div>
           </label>
 
-          <label className="custom-radio">
-            <input type="radio" name="inviteMethod" checked={inviteMethod === "link"} onChange={() => setInviteMethod("link")} />
-            <span className="radio-circle-blue"></span>
-            <div className="invite-method-info">
-              <span className="modalmini-subtitle method-title">{t('inviteModal.methods.link', 'Приєднання за посиланням')}</span>
-            </div>
-          </label>
+          {!isPrivate && (
+              <label className="custom-radio">
+                <input type="radio" name="inviteMethod" checked={inviteMethod === "link"} onChange={() => setInviteMethod("link")} />
+                <span className="radio-circle-blue"></span>
+                <div className="invite-method-info">
+                  <span className="modalmini-subtitle method-title">{t('inviteModal.methods.link', 'Приєднання за посиланням')}</span>
+                </div>
+              </label>
+          )}
 
           <label className="custom-radio">
             <input type="radio" name="inviteMethod" checked={inviteMethod === "code"} onChange={() => setInviteMethod("code")} />
@@ -193,7 +203,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
                 <input type="email" className="modal-input" placeholder="example@mail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             )}
             
-            {inviteMethod === "link" && (
+            {!isPrivate && inviteMethod === "link" && (
                 <div className="modal-input invite-link-display" onClick={handleCopyLink}>{testLink}</div>
             )}
 
@@ -226,7 +236,6 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
                         </div>
                     </div>
 
-                    {/* Відображення існуючих кодів */}
                     <div style={{ marginTop: '20px' }}>
                         {isLoadingCodes ? (
                             <p style={{ textAlign: 'center', color: '#666' }}>Завантаження кодів...</p>
@@ -277,7 +286,7 @@ const InviteParticipantsModal = ({ isOpen, onClose, testId }) => {
         <div className="modalmini-buttons">
           <button className="modalmini-button modalmini-button-cancel" onClick={onClose}>{t('inviteModal.cancel', 'Скасувати')}</button>
           <button className="modalmini-button modalmini-button-submit" onClick={handleInvite} disabled={loading}>
-            {loading ? t('inviteModal.sending', 'Надсилання...') : (inviteMethod === "email" ? t('inviteModal.sendBtn', 'Надіслати інвайт') : t('inviteModal.doneBtn', 'Готово'))}
+            {loading ? t('inviteModal.sending', 'Надсилання...') : (inviteMethod === "email" ? t('inviteModal.sendBtn', 'Надіслати інвайт') : (!isPrivate && inviteMethod === "link") ? t('inviteModal.copyBtn', 'Скопіювати') : t('inviteModal.doneBtn', 'Готово'))}
           </button>
         </div>
       </div>
