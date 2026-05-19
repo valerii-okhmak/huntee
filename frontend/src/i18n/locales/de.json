@@ -25,6 +25,13 @@
     "processAndResults": "Bewertung & Ergebnisse",
     "tempUnavailable": "(Vorübergehend nicht verfügbar)"
   },
+  "welcome": {
+    "titleOnline": "ONLINE",
+    "titleTesting": "TESTEN",
+    "subtitle": "Plattform zum Erstellen und Absolvieren von Tests.",
+    "btnCreate": "Test erstellen",
+    "btnFind": "Tests finden"
+  },
   "companyBanner": {
     "titleLine1": "SIND SIE EIN",
     "titleLine2": "UNTERNEHMENSVERTRETER?",
@@ -652,42 +659,66 @@
     "text": "Dieser Test enthält: {{count}} Fragen"
   },
   "testCreationCreator": {
-    "chooseType": "Fragentyp wählen:",
-    "questionLabel": "Frage",
-    "categoryLabel": "Kategorie (optional)",
-    "pointsLabel": "Punkte für richtige Antwort:",
-    "addImage": "Bild hinzufügen",
-    "placeholders": {
-      "question": "Frage eingeben",
-      "points": "Gewichtung eingeben"
-    },
+    "chooseType": "Fragetyp auswählen",
     "types": {
-      "single": "Single Choice",
-      "multiple": "Multiple Choice",
-      "open": "Offene Antwort",
-      "practical": "Praktischer Test"
+      "single": "SINGLE CHOICE",
+      "multiple": "MULTIPLE CHOICE",
+      "open": "OFFENE FRAGE",
+      "practical": "PRAKTISCHE FRAGE"
+    },
+    "levelLabel": "Level (optional)",
+    "noLevel": "Ohne Level",
+    "questionLabel": "Frage",
+    "categoryLabel": "Kategorie",
+    "pointsLabel": "Punkte",
+    "placeholders": {
+      "question": "Geben Sie Ihre Frage ein"
     },
     "errors": {
-      "questionRequired": "Fragentext eingeben!",
-      "pointsRequired": "Gewichtung eingeben!",
-      "minOptions": "Mindestens {{count}} Optionen erforderlich",
-      "selectCorrect": "Richtige Antwort wählen",
-      "selectOneCorrect": "Mindestens eine richtige Antwort wählen",
+      "minOptions": "Mindestens {{count}} Antwortmöglichkeiten erforderlich",
+      "duplicateOptions": "Antwortmöglichkeiten dürfen sich nicht wiederholen",
+      "selectCorrect": "Wählen Sie die richtige Antwort aus",
+      "selectOneCorrect": "Wählen Sie mindestens eine richtige Antwort aus",
       "invalidJson": "Ungültiges JSON-Format",
-      "invalidPoints": "Gültige Punktzahl eingeben (z.B. 1 oder 1.5)"
+      "questionRequired": "Frage ist erforderlich",
+      "invalidPoints": "Ungültige Punkte"
     },
-    "importBtnLabel": "Der Import"
+    "syncTitle": "Die Gewichtung ist mit anderen Fragen dieses Levels synchronisiert",
+    "syncedWithLevel": "Mit Level synchronisiert"
   },
   "testCreationPreview": {
-    "noQuestions": "Keine Fragen zur Vorschau",
-    "hint": "Hinweis",
-    "correctAnswer": "Richtige Antwort",
-    "yourAnswerPlaceholder": "Ihre Antwort...",
-    "language": "Sprache",
-    "unknownType": "Unbekannter Typ",
-    "nextQuestion": "Nächste Frage",
+    "levelNamePlaceholder": "Levelname",
+    "pointsLabel": "Punkte:",
+    "limitLabel": "Limit (opt.):",
+    "allLimit": "Alle",
+    "update": "Aktualisieren",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "levelExists": "Ein Level mit diesem Namen existiert bereits!",
+    "correctAnswerLabel": "Richtige Antwort:",
+    "notSet": "Nicht festgelegt",
+    "languageLabel": "Sprache:",
+    "noTemplate": "// Keine Vorlage",
+    "previewUnavailable": "Vorschau nicht verfügbar",
+    "selectedCount": "Ausgewählt:",
+    "moveTo": "Verschieben nach...",
+    "noLevelOption": "Ohne Level",
+    "move": "Verschieben",
+    "delete": "Löschen",
+    "aiGeneration": "KI-Generierung",
+    "importFromFile": "Aus Datei importieren",
+    "createLevel": "Level erstellen",
+    "noQuestionsOrLevels": "Keine Fragen oder Level hinzugefügt",
+    "noLevel": "Fragen ohne Level",
+    "points": "Punkte",
+    "random": "Zufall",
+    "outOf": "von",
+    "dragQuestionsHere": "Fragen hierher ziehen...",
     "edit": "Bearbeiten",
-    "delete": "Löschen"
+    "addQuestion": "Frage hinzufügen",
+    "createLevelBtn": "Level erstellen",
+    "theseQuestionsCount": "diese {{count}} Fragen",
+    "questionsText": "Fragen"
   },
   "testCreationStart": {
     "labels": {

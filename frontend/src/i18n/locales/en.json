@@ -25,6 +25,13 @@
     "processAndResults": "Grading process & Results",
     "tempUnavailable": "(Temporarily unavailable)"
   },
+  "welcome": {
+    "titleOnline": "ONLINE",
+    "titleTesting": "TESTING",
+    "subtitle": "Platform for creating and taking tests.",
+    "btnCreate": "Create a test",
+    "btnFind": "Find tests"
+  },
   "companyBanner": {
     "titleLine1": "ARE YOU A COMPANY",
     "titleLine2": "REPRESENTATIVE?",
@@ -652,42 +659,66 @@
     "text": "This test contains: {{count}} questions"
   },
   "testCreationCreator": {
-    "chooseType": "Choose question type:",
-    "questionLabel": "Question",
-    "categoryLabel": "Category (optional)",
-    "pointsLabel": "Points for correct answer:",
-    "addImage": "Add Image",
-    "placeholders": {
-      "question": "Enter question",
-      "points": "Enter question weight"
-    },
+    "chooseType": "Choose question type",
     "types": {
-      "single": "Single Choice",
-      "multiple": "Multiple Choice",
-      "open": "Open Answer",
-      "practical": "Practical Test"
+      "single": "SINGLE CHOICE",
+      "multiple": "MULTIPLE CHOICE",
+      "open": "OPEN QUESTION",
+      "practical": "PRACTICAL QUESTION"
+    },
+    "levelLabel": "Level (optional)",
+    "noLevel": "No level",
+    "questionLabel": "Question",
+    "categoryLabel": "Category",
+    "pointsLabel": "Points",
+    "placeholders": {
+      "question": "Enter your question"
     },
     "errors": {
-      "questionRequired": "Enter question text!",
-      "pointsRequired": "Enter weight!",
-      "minOptions": "Must have at least {{count}} options",
-      "selectCorrect": "Select correct answer",
+      "minOptions": "Minimum {{count}} options required",
+      "duplicateOptions": "Answer options cannot be duplicated",
+      "selectCorrect": "Select the correct answer",
       "selectOneCorrect": "Select at least one correct answer",
       "invalidJson": "Invalid JSON format",
-      "invalidPoints": "Enter valid points (e.g. 1 or 1.5)"
+      "questionRequired": "Question is required",
+      "invalidPoints": "Invalid points"
     },
-      "importBtnLabel": "Import"
+    "syncTitle": "Weight is synchronized with other questions in this level",
+    "syncedWithLevel": "Synced with level"
   },
   "testCreationPreview": {
-    "noQuestions": "No questions to preview",
-    "hint": "Hint",
-    "correctAnswer": "Correct Answer",
-    "yourAnswerPlaceholder": "Your answer...",
-    "language": "Language",
-    "unknownType": "Unknown question type",
-    "nextQuestion": "Next Question",
+    "levelNamePlaceholder": "Level name",
+    "pointsLabel": "Points:",
+    "limitLabel": "Limit (opt.):",
+    "allLimit": "All",
+    "update": "Update",
+    "save": "Save",
+    "cancel": "Cancel",
+    "levelExists": "A level with this name already exists!",
+    "correctAnswerLabel": "Correct answer:",
+    "notSet": "Not set",
+    "languageLabel": "Language:",
+    "noTemplate": "// No template",
+    "previewUnavailable": "Preview unavailable",
+    "selectedCount": "Selected:",
+    "moveTo": "Move to...",
+    "noLevelOption": "No level",
+    "move": "Move",
+    "delete": "Delete",
+    "aiGeneration": "AI Generation",
+    "importFromFile": "Import from file",
+    "createLevel": "Create level",
+    "noQuestionsOrLevels": "No questions or levels added",
+    "noLevel": "Questions without level",
+    "points": "Points",
+    "random": "Random",
+    "outOf": "of",
+    "dragQuestionsHere": "Drag questions here...",
     "edit": "Edit",
-    "delete": "Delete"
+    "addQuestion": "Add question",
+    "createLevelBtn": "Create level",
+    "theseQuestionsCount": "these {{count}} questions",
+    "questionsText": "questions"
   },
   "testCreationStart": {
     "labels": {

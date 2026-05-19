@@ -25,6 +25,13 @@
     "processAndResults": "Процес оцінювання та результати",
     "tempUnavailable": "(Тимчасово не працює)"
   },
+  "welcome": {
+    "titleOnline": "ОНЛАЙН",
+    "titleTesting": "ТЕСТУВАННЯ",
+    "subtitle": "Платформа для створення та проходження тестів.",
+    "btnCreate": "Створити тест",
+    "btnFind": "Знайти тести"
+  },
   "companyBanner": {
     "titleLine1": "ВИ ПРЕДСТАВНИК",
     "titleLine2": "КОМПАНІЙ?",
@@ -653,42 +660,66 @@
     "text": "Даний тест містить: {{count}} запитань"
   },
   "testCreationCreator": {
-    "chooseType": "Оберіть тип запитання:",
-    "questionLabel": "Запитання",
-    "categoryLabel": "Категорія (необов’язково)",
-    "pointsLabel": "Кількість балів за правильну відповідь:",
-    "addImage": "Додати зображення",
-    "placeholders": {
-      "question": "Введіть запитання",
-      "points": "Введіть вагу запитання"
-    },
+    "chooseType": "Оберіть тип питання",
     "types": {
-      "single": "З однією відповіддю",
-      "multiple": "Множинний вибір",
-      "open": "Відкрита відповідь",
-      "practical": "Практичний тест"
+      "single": "ОДНА ВІДПОВІДЬ",
+      "multiple": "КІЛЬКА ВІДПОВІДЕЙ",
+      "open": "ВІДКРИТЕ ПИТАННЯ",
+      "practical": "ПРАКТИЧНЕ ПИТАННЯ"
+    },
+    "levelLabel": "Рівень (опціонально)",
+    "noLevel": "Без рівня",
+    "questionLabel": "Питання",
+    "categoryLabel": "Категорія",
+    "pointsLabel": "Бали",
+    "placeholders": {
+      "question": "Введіть питання"
     },
     "errors": {
-      "questionRequired": "Введіть текст запитання!",
-      "pointsRequired": "Введіть вагу!",
-      "minOptions": "Має бути щонайменше {{count}} варіанти",
-      "selectCorrect": "Позначте правильну відповідь",
-      "selectOneCorrect": "Позначте щонайменше одну правильну відповідь",
+      "minOptions": "Мінімум {{count}} варіанти відповіді",
+      "duplicateOptions": "Варіанти відповіді не можуть повторюватись",
+      "selectCorrect": "Оберіть правильну відповідь",
+      "selectOneCorrect": "Оберіть хоча б одну правильну відповідь",
       "invalidJson": "Невірний формат JSON",
-      "invalidPoints": "Введіть коректну кількість балів (напр. 1 або 1.5)"
+      "questionRequired": "Питання обов'язкове",
+      "invalidPoints": "Некоректна кількість балів"
     },
-    "importBtnLabel": "Імпорт"
+    "syncTitle": "Вага синхронізована з іншими питаннями цього рівня",
+    "syncedWithLevel": "Синхронізовано з рівнем"
   },
   "testCreationPreview": {
-    "noQuestions": "Немає питань для перегляду",
-    "hint": "Підказка",
-    "correctAnswer": "Правильна відповідь",
-    "yourAnswerPlaceholder": "Ваша відповідь...",
-    "language": "Мова",
-    "unknownType": "Невідомий тип питання",
-    "nextQuestion": "Наступне питання",
+    "levelNamePlaceholder": "Назва рівня",
+    "pointsLabel": "Бали:",
+    "limitLabel": "Ліміт (опц.):",
+    "allLimit": "Всі",
+    "update": "Оновити",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "levelExists": "Рівень з такою назвою вже існує!",
+    "correctAnswerLabel": "Правильна відповідь:",
+    "notSet": "Не задано",
+    "languageLabel": "Мова:",
+    "noTemplate": "// Немає шаблону",
+    "previewUnavailable": "Прев'ю недоступне",
+    "selectedCount": "Вибрано:",
+    "moveTo": "Перемістити в...",
+    "noLevelOption": "Без рівня",
+    "move": "Перемістити",
+    "delete": "Видалити",
+    "aiGeneration": "AI Генерація",
+    "importFromFile": "Імпорт з файлу",
+    "createLevel": "Створити рівень",
+    "noQuestionsOrLevels": "Немає доданих питань або рівнів",
+    "noLevel": "Питання без рівня",
+    "points": "Балів",
+    "random": "Рандом",
+    "outOf": "з",
+    "dragQuestionsHere": "Перетягніть питання сюди...",
     "edit": "Редагувати",
-    "delete": "Видалити"
+    "addQuestion": "Додати питання",
+    "createLevelBtn": "Створити рівень",
+    "theseQuestionsCount": "цих {{count}} питань",
+    "questionsText": "питань"
   },
   "testCreationStart": {
     "labels": {

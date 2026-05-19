@@ -69,6 +69,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, e
     openExpectedEnabled, openExpectedText, codeLanguage, codeMethodName, codeTemplate, codeTestCasesJSON, setDraftQ
   ]);
 
+  // Залишив оригінальні назви для категорій
   const fieldOptions = [
     { value: 'mixed', label: t('testCreationStart.options.mixed') },
     { value: 'frontend', label: 'FRONTEND' }, { value: 'backend', label: 'BACKEND' },
@@ -213,7 +214,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, e
 
         const trimmedOptions = options.map(o => (o || "").trim());
         const hasDuplicates = trimmedOptions.some((opt, index) => opt !== "" && trimmedOptions.indexOf(opt) !== index);
-        if (hasDuplicates) newErrors.duplicateOptions = t('testCreationCreator.errors.duplicateOptions', 'Варіанти відповіді не можуть повторюватись');
+        if (hasDuplicates) newErrors.duplicateOptions = t('testCreationCreator.errors.duplicateOptions');
 
         if (selectedType === "regular") {
           if (regularCorrect === null) newErrors.correctSelection = t('testCreationCreator.errors.selectCorrect');
@@ -279,13 +280,13 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, e
 
         <div className="testCreationMainCreator__questionField">
           <div className="testCreationMainCreator__questionField-header">
-            <h2 className="testCreationMainCreator__questionField-title">{t('testCreationCreator.levelLabel', 'Рівень (опціонально)')}</h2>
+            <h2 className="testCreationMainCreator__questionField-title">{t('testCreationCreator.levelLabel')}</h2>
           </div>
           <div className="testCreationMainCreator__questionField-wrapper">
             <select value={questionLevel} onChange={handleLevelChange} className="testCreationMainCreator__questionField-input" style={{ cursor: 'pointer' }}>
-              <option value="">{t('testCreationCreator.noLevel', 'Без рівня')}</option>
+              <option value="">{t('testCreationCreator.noLevel')}</option>
               {existingLevels.map((lvl, index) => (
-                <option key={index} value={lvl.name}>{lvl.name} ({t('testCreationPreview.points', 'Балів')}: {lvl.points})</option>
+                <option key={index} value={lvl.name}>{lvl.name} ({t('testCreationPreview.points')}: {lvl.points})</option>
               ))}
             </select>
           </div>
@@ -310,6 +311,7 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, e
                 <h2 className="testCreationMainCreator__questionField-title">{t('testCreationCreator.categoryLabel')}</h2>
               </div>
               <div className='testCreationMainCreator__questionField-wrapper'>
+                {/* Переконайтеся, що ключ t('testCreationSelectField.search') існує у ваших перекладах */}
                 <Select
                   options={fieldOptions} value={questionSphere} onChange={(val) => { setQuestionSphere(val); clearError('questionSphere'); }}
                   isSearchable placeholder={t('testCreationSelectField.search')} className="testCreationMainCreator__questionField-input-field" classNamePrefix="select-field-tc__custom-select"
@@ -326,9 +328,9 @@ const TestCreationMainCreator = forwardRef(({ onQuestionsChange, globalSphere, e
               type="number" step="0.1" min="0" value={isPointsLocked ? selectedLevelData.points : points}
               onKeyDown={blockInvalidChar} onChange={handlePointsChange}
               className={`testCreationMainCreator__questionField-input ${isPointsLocked ? 'disabled-points' : ''}`}
-              disabled={isPointsLocked} title={isPointsLocked ? "Вага синхронізована з іншими питаннями цього рівня" : ""}
+              disabled={isPointsLocked} title={isPointsLocked ? t('testCreationCreator.syncTitle') : ""}
             />
-            {isPointsLocked && (<span style={{ marginLeft: '12px', color: '#888', fontSize: '13px', alignSelf: 'center' }}>Синхронізовано з рівнем</span>)}
+            {isPointsLocked && (<span style={{ marginLeft: '12px', color: '#888', fontSize: '13px', alignSelf: 'center' }}>{t('testCreationCreator.syncedWithLevel')}</span>)}
           </div>
         </div>
 

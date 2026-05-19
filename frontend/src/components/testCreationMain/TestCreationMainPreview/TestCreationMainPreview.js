@@ -75,7 +75,7 @@ const TestCreationMainPreview = ({
     e.dataTransfer.setData("draggedIndices", JSON.stringify(dragIndices));
     e.dataTransfer.effectAllowed = "move";
     const dragIcon = document.createElement('div');
-    dragIcon.innerHTML = `📦 ${dragIndices.length} питань`;
+    dragIcon.innerHTML = `📦 ${dragIndices.length} ${t('testCreationPreview.questionsText')}`;
     dragIcon.className = "drag-ghost"; 
     document.body.appendChild(dragIcon);
     e.dataTransfer.setDragImage(dragIcon, 10, 10);
@@ -111,11 +111,17 @@ const TestCreationMainPreview = ({
 
   const renderLevelForm = (isEditing = false) => (
     <div className="preview-create-level-form" onClick={(e) => e.stopPropagation()}>
-        <input type="text" className="preview-input-name" placeholder={t('testCreationPreview.levelNamePlaceholder', 'Назва рівня')} value={newLevelName} onChange={e => setNewLevelName(e.target.value)} autoFocus />
-        <div className="preview-points-wrapper"><label className="preview-points-label">Бали:</label><input type="number" className="preview-input-points" step="0.1" min="0" value={newLevelPoints} onChange={e => setNewLevelPoints(e.target.value)} /></div>
-        <div className="preview-points-wrapper"><label className="preview-points-label">Ліміт (опц.):</label><input type="number" className="preview-input-points" step="1" min="1" placeholder="Всі" value={newLevelDisplayCount} onChange={e => setNewLevelDisplayCount(e.target.value)} /></div>
-        <button onClick={handleSaveLevel} className="preview-btn-save">{isEditing ? t('testCreationPreview.update', 'Оновити') : t('testCreationPreview.save', 'Зберегти')}</button>
-        <button onClick={closeAllLevelForms} className="preview-btn-cancel">{t('testCreationPreview.cancel', 'Скасувати')}</button>
+        <input type="text" className="preview-input-name" placeholder={t('testCreationPreview.levelNamePlaceholder')} value={newLevelName} onChange={e => setNewLevelName(e.target.value)} autoFocus />
+        <div className="preview-points-wrapper">
+          <label className="preview-points-label">{t('testCreationPreview.pointsLabel')}</label>
+          <input type="number" className="preview-input-points" step="0.1" min="0" value={newLevelPoints} onChange={e => setNewLevelPoints(e.target.value)} />
+        </div>
+        <div className="preview-points-wrapper">
+          <label className="preview-points-label">{t('testCreationPreview.limitLabel')}</label>
+          <input type="number" className="preview-input-points" step="1" min="1" placeholder={t('testCreationPreview.allLimit')} value={newLevelDisplayCount} onChange={e => setNewLevelDisplayCount(e.target.value)} />
+        </div>
+        <button onClick={handleSaveLevel} className="preview-btn-save">{isEditing ? t('testCreationPreview.update') : t('testCreationPreview.save')}</button>
+        <button onClick={closeAllLevelForms} className="preview-btn-cancel">{t('testCreationPreview.cancel')}</button>
     </div>
   );
 
@@ -127,7 +133,7 @@ const TestCreationMainPreview = ({
   const handleSaveLevel = () => {
     if (!newLevelName.trim()) return;
     const isDuplicate = levels.some(l => l.name.toLowerCase() === newLevelName.trim().toLowerCase() && l.name !== editingLevelName);
-    if (isDuplicate) { alert(t('testCreationPreview.levelExists', 'Рівень з такою назвою вже існує!')); return; }
+    if (isDuplicate) { alert(t('testCreationPreview.levelExists')); return; }
     const levelData = { name: newLevelName.trim(), points: parseFloat(newLevelPoints) || 1, questionsLimit: newLevelDisplayCount ? parseInt(newLevelDisplayCount, 10) : null };
     if (editingLevelName) onEditLevel(editingLevelName, levelData); else onAddLevel(levelData);
     closeAllLevelForms();
@@ -146,9 +152,9 @@ const TestCreationMainPreview = ({
         </div>
       );
     }
-    if (q.questionType === 'TEXT') return <div><b>Правильна відповідь:</b> {q.textAnswer?.correctText || 'Не задано'}</div>;
-    if (q.questionType === 'CODE') return (<div><div><b>Мова:</b> {q.codeAnswer?.language || 'java'}</div><div className="q-preview-code">{q.codeAnswer?.templateCode || '// Немає шаблону'}</div></div>);
-    return <div style={{ color: '#aaa' }}>Прев'ю недоступне</div>;
+    if (q.questionType === 'TEXT') return <div><b>{t('testCreationPreview.correctAnswerLabel')}</b> {q.textAnswer?.correctText || t('testCreationPreview.notSet')}</div>;
+    if (q.questionType === 'CODE') return (<div><div><b>{t('testCreationPreview.languageLabel')}</b> {q.codeAnswer?.language || 'java'}</div><div className="q-preview-code">{q.codeAnswer?.templateCode || t('testCreationPreview.noTemplate')}</div></div>);
+    return <div style={{ color: '#aaa' }}>{t('testCreationPreview.previewUnavailable')}</div>;
   };
 
   const groupedQuestions = {}; levels.forEach(l => { groupedQuestions[l.name] = []; }); groupedQuestions['Без рівня'] = [];
@@ -160,30 +166,30 @@ const TestCreationMainPreview = ({
         
         {selectedQuestions.size > 0 && (
           <div className="bulk-actions-panel">
-            <span className="bulk-count-text">Вибрано: {selectedQuestions.size}</span>
+            <span className="bulk-count-text">{t('testCreationPreview.selectedCount')} {selectedQuestions.size}</span>
             <div className="bulk-controls">
               <select value={targetLevelForMove} onChange={(e) => setTargetLevelForMove(e.target.value)} className="bulk-select-level">
-                <option value="" disabled>Перемістити в...</option>
-                <option value="no_level">Без рівня</option>
+                <option value="" disabled>{t('testCreationPreview.moveTo')}</option>
+                <option value="no_level">{t('testCreationPreview.noLevelOption')}</option>
                 {levels.map(l => <option key={l.name} value={l.name}>{l.name}</option>)}
               </select>
-              <button className="bulk-btn-move" onClick={handleBulkMoveAction} disabled={!targetLevelForMove}><FontAwesomeIcon icon={faFolderTree} /> {t('testCreationPreview.move', 'Перемістити')}</button>
-              <button className="bulk-btn-delete" onClick={() => setIsBulkDeleteModalOpen(true)}><FontAwesomeIcon icon={faTrashCan} /> {t('testCreationPreview.delete', 'Видалити')}</button>
-              <button className="bulk-btn-cancel" onClick={() => setSelectedQuestions(new Set())}><FontAwesomeIcon icon={faXmark} /> {t('testCreationPreview.cancel', 'Скасувати')}</button>
+              <button className="bulk-btn-move" onClick={handleBulkMoveAction} disabled={!targetLevelForMove}><FontAwesomeIcon icon={faFolderTree} /> {t('testCreationPreview.move')}</button>
+              <button className="bulk-btn-delete" onClick={() => setIsBulkDeleteModalOpen(true)}><FontAwesomeIcon icon={faTrashCan} /> {t('testCreationPreview.delete')}</button>
+              <button className="bulk-btn-cancel" onClick={() => setSelectedQuestions(new Set())}><FontAwesomeIcon icon={faXmark} /> {t('testCreationPreview.cancel')}</button>
             </div>
           </div>
         )}
 
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
             <button className="preview-add-level-btn" style={{flex: 1, textAlign: 'center', borderColor: '#8e24aa', color: '#8e24aa'}} onClick={onOpenAiModal}>
-                <FontAwesomeIcon icon={faRobot} className="icon-plus-margin" /> AI Генерація
+                <FontAwesomeIcon icon={faRobot} className="icon-plus-margin" /> {t('testCreationPreview.aiGeneration')}
             </button>
             <button className="preview-add-level-btn" style={{flex: 1, textAlign: 'center', borderColor: '#2e7d32', color: '#2e7d32'}} onClick={onOpenImportModal}>
-                <FontAwesomeIcon icon={faFileImport} className="icon-plus-margin" /> Імпорт з файлу
+                <FontAwesomeIcon icon={faFileImport} className="icon-plus-margin" /> {t('testCreationPreview.importFromFile')}
             </button>
             {!isCreatingTopLevel ? (
                 <button className="preview-add-level-btn" style={{flex: 1, textAlign: 'center'}} onClick={() => {closeAllLevelForms(); setIsCreatingTopLevel(true);}}>
-                    <FontAwesomeIcon icon={faPlus} className="icon-plus-margin" /> {t('testCreationPreview.createLevel', 'Створити рівень')}
+                    <FontAwesomeIcon icon={faPlus} className="icon-plus-margin" /> {t('testCreationPreview.createLevel')}
                 </button>
             ) : (
                 <div style={{width: '100%'}}>{renderLevelForm(false)}</div>
@@ -191,7 +197,7 @@ const TestCreationMainPreview = ({
         </div>
 
         {questions.length === 0 && levels.length === 0 && (
-            <h2 className={`preview-no-questions ${showError ? 'error' : ''}`}>{t('testCreationPreview.noQuestionsOrLevels', 'Немає доданих питань або рівнів')}</h2>
+            <h2 className={`preview-no-questions ${showError ? 'error' : ''}`}>{t('testCreationPreview.noQuestionsOrLevels')}</h2>
         )}
 
         {Object.keys(groupedQuestions).map((levelName) => {
@@ -220,8 +226,8 @@ const TestCreationMainPreview = ({
                     <div className="level-title-left">
                       {items.length > 0 && (<input type="checkbox" className="level-checkbox" checked={isAllLevelSelected} onChange={() => handleSelectLevel(items)} onClick={(e) => e.stopPropagation()} />)}
                       <button className="collapse-btn"><FontAwesomeIcon icon={isCollapsed ? faChevronRight : faChevronDown} className="collapse-icon" /></button>
-                      <span className="level-name-text">{isNoLevel ? t('testCreationPreview.noLevel', 'Питання без рівня') : levelName}</span>
-                      <span className="preview-level-points-info">({t('testCreationPreview.points', 'Балів')}: {levelData?.points || 1} {levelData?.questionsLimit ? ` | Рандом: ${levelData.questionsLimit} з ${items.length}` : ''})</span>
+                      <span className="level-name-text">{isNoLevel ? t('testCreationPreview.noLevel') : levelName}</span>
+                      <span className="preview-level-points-info">({t('testCreationPreview.points')}: {levelData?.points || 1} {levelData?.questionsLimit ? ` | ${t('testCreationPreview.random')}: ${levelData.questionsLimit} ${t('testCreationPreview.outOf')} ${items.length}` : ''})</span>
                     </div>
                     {!isNoLevel && (
                       <div className="level-title-right" onClick={(e) => e.stopPropagation()}>
@@ -235,7 +241,7 @@ const TestCreationMainPreview = ({
                 {!isCollapsed && (
                   <div className="preview-level-items">
                     {items.length === 0 ? (
-                        <div className="preview-level-empty-msg">Перетягніть питання сюди...</div>
+                        <div className="preview-level-empty-msg">{t('testCreationPreview.dragQuestionsHere')}</div>
                     ) : (
                         items.map((q) => {
                           const isExpanded = expandedQuestions.has(q.originalIndex);
@@ -255,8 +261,8 @@ const TestCreationMainPreview = ({
                                     <span className="q-text">{q.questionText}</span>
                                   </div>
                                   <div className="preview-item-right" onClick={e => e.stopPropagation()}>
-                                    <button className="btn-edit-list" onClick={() => onEditQuestion(q.originalIndex)}><FontAwesomeIcon icon={faPenToSquare} className="btn-icon-margin" /> {t('testCreationPreview.edit', 'Редагувати')}</button>
-                                    <button className="btn-delete-list" onClick={() => openDeleteModal(q.originalIndex)}><FontAwesomeIcon icon={faTrashCan} className="btn-icon-margin" /> {t('testCreationPreview.delete', 'Видалити')}</button>
+                                    <button className="btn-edit-list" onClick={() => onEditQuestion(q.originalIndex)}><FontAwesomeIcon icon={faPenToSquare} className="btn-icon-margin" /> {t('testCreationPreview.edit')}</button>
+                                    <button className="btn-delete-list" onClick={() => openDeleteModal(q.originalIndex)}><FontAwesomeIcon icon={faTrashCan} className="btn-icon-margin" /> {t('testCreationPreview.delete')}</button>
                                   </div>
                               </div>
                               {isExpanded && (<div className="question-preview-content">{renderQuestionDetails(q)}</div>)}
@@ -271,10 +277,10 @@ const TestCreationMainPreview = ({
                    <div className="quick-add-zone">
                       <div className="quick-add-line"></div>
                       <button className="quick-add-btn" onClick={() => { if(onAddQuestionClick) onAddQuestionClick(isNoLevel ? "" : levelName); }}>
-                          <FontAwesomeIcon icon={faPlus} /> Додати питання
+                          <FontAwesomeIcon icon={faPlus} /> {t('testCreationPreview.addQuestion')}
                       </button>
                       <button className="quick-add-btn" onClick={() => {closeAllLevelForms(); setCreatingLevelBelow(levelName);}}>
-                          <FontAwesomeIcon icon={faFolderTree} /> Створити рівень
+                          <FontAwesomeIcon icon={faFolderTree} /> {t('testCreationPreview.createLevelBtn')}
                       </button>
                    </div>
                 )}
@@ -289,7 +295,14 @@ const TestCreationMainPreview = ({
       </div>
 
       <ConfirmDeleteQuestionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleConfirmDelete} questionNumber={deleteTargetIndex !== null ? deleteTargetIndex + 1 : ''} />
-      <ConfirmDeleteQuestionModal isOpen={isBulkDeleteModalOpen} onClose={() => setIsBulkDeleteModalOpen(false)} onConfirm={handleConfirmBulkDelete} questionNumber={`цих ${selectedQuestions.size} питань`} />
+      
+      {/* Для масового видалення передаємо кількість питань через об'єкт i18n */}
+      <ConfirmDeleteQuestionModal 
+        isOpen={isBulkDeleteModalOpen} 
+        onClose={() => setIsBulkDeleteModalOpen(false)} 
+        onConfirm={handleConfirmBulkDelete} 
+        questionNumber={t('testCreationPreview.theseQuestionsCount', { count: selectedQuestions.size })} 
+      />
     </div>
   );
 };
