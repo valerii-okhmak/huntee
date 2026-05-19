@@ -19,6 +19,7 @@ import ConfirmTestEndModal from "../modal_windows/ConfirmTestEndModal";
 import StartTestErrorModal from "../modal_windows/StartTestErrorModal";
 import Loader from "../loader/Loader";
 
+// Перехоплення закриття вкладки (хрестиком) або оновлення сторінки (F5)
 const usePrompt = (message, when = true) => {
   useEffect(() => {
     if (!when) return;
@@ -60,9 +61,68 @@ const TestPage = ({ testType }) => {
   const answersRef = useRef({});
   const attemptDataRef = useRef(null);
   const proctoringTrackerRef = useRef(null);
+  
+  const currentRef = useRef(current);
+  useEffect(() => {
+    currentRef.current = current;
+  }, [current]);
 
+  usePrompt(t('testPage.promptMessage', 'Точно хочете вийти?'), !!attemptData);
 
-  usePrompt(t('testPage.promptMessage'), !!attemptData);
+  // --- СПІЛЬНА ФУНКЦІЯ ДЛЯ ВІДКРИТТЯ МОДАЛКИ ЗАВЕРШЕННЯ ---
+  const triggerEndModal = async () => {
+    setIsSubmitting(true);
+    try {
+        await saveAnswerToBackend(currentRef.current);
+    } catch (e) {
+    } finally {
+        setIsSubmitting(false);
+    }
+
+    const details = getUnansweredDetails();
+    setUnansweredCount(details.count);
+    setUnansweredLabels(details.labels);
+    
+    setIsConfirmModalOpen(true);
+  };
+
+  // --- ХИТРИЙ ТРЮК №2: БЛОКУЄМО І БРАУЗЕР, І ХЕДЕР ---
+  useEffect(() => {
+    if (!attemptData) return; 
+
+    // Блокуємо "Назад" у браузері
+    window.history.pushState(null, null, window.location.pathname);
+    const handlePopState = () => {
+      window.history.pushState(null, null, window.location.pathname);
+      triggerEndModal(); // Викликаємо модалку!
+    };
+
+    // Блокуємо переходи через <Link> у Хедері та інші <a>
+    const handleGlobalClick = (e) => {
+      const link = e.target.closest('a'); // Шукаємо, чи клікнули по посиланню
+      
+      if (link && link.href) {
+        // Перевіряємо, чи посилання веде з цієї сторінки
+        const isSamePage = link.href === window.location.href || link.getAttribute('href').startsWith('#');
+        
+        if (!isSamePage) {
+          e.preventDefault();   // Зупиняємо дефолтний перехід браузера
+          e.stopPropagation();  // Зупиняємо подію для React Router
+          triggerEndModal();    // Викликаємо модалку!
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    // capture: true ловить клік ДО того, як React Router його обробить!
+    document.addEventListener('click', handleGlobalClick, { capture: true });
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      document.removeEventListener('click', handleGlobalClick, { capture: true });
+    };
+  }, [attemptData]);
+  // --------------------------------------------------------------------------
 
   const handleCloseErrorModal = () => {
     setIsStartTestErrorModalOpen(false);
@@ -98,8 +158,6 @@ const TestPage = ({ testType }) => {
                  }
              );
         }
-
-
 
         if (attempt.isFixedTime && attempt.endTime) {
           const endTime = new Date(attempt.endTime).getTime();
@@ -205,7 +263,6 @@ const TestPage = ({ testType }) => {
       setSaveStatus('saved');
 
     } catch (error) {
-      // Ігнорування 400 (duplicate)
       if (error.response && error.response.status === 400) {
           console.warn("Backend error 400 (Duplicate). Treating as SUCCESS.");
           setSaveStatus('saved');
@@ -217,7 +274,6 @@ const TestPage = ({ testType }) => {
       throw error;
     }
   };
-
 
   const saveTimeoutRef = useRef(null);
 
@@ -297,23 +353,6 @@ const TestPage = ({ testType }) => {
     }
   };
 
-
-  const handleFinishButton = async () => {
-    setIsSubmitting(true);
-    try {
-        await saveAnswerToBackend(current);
-    } catch (e) {
-    } finally {
-        setIsSubmitting(false);
-    }
-
-    const details = getUnansweredDetails();
-    setUnansweredCount(details.count);
-    setUnansweredLabels(details.labels);
-    
-    setIsConfirmModalOpen(true);
-  };
-
   const confirmFinishTest = async () => {
       console.log("🔍 Confirming finish...");
       if (proctoringTrackerRef.current) {
@@ -368,7 +407,6 @@ const TestPage = ({ testType }) => {
       labels: indices.length > 0 ? ` (${indices.join(", ")})` : ""
     };
   };
-
 
   const highlightCode = (code, language) => {
     let lang = languages.js;
@@ -478,31 +516,25 @@ const TestPage = ({ testType }) => {
   const currentQuestion = attemptData.questions[current];
   const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
 
-const generatePagination = (currentIndex, totalQuestions) => {
-  const currentPage = currentIndex + 1;
+  const generatePagination = (currentIndex, totalQuestions) => {
+    const currentPage = currentIndex + 1;
 
-  if (totalQuestions <= 7) {
-    return Array.from({ length: totalQuestions }, (_, i) => i + 1);
-  }
+    if (totalQuestions <= 7) {
+      return Array.from({ length: totalQuestions }, (_, i) => i + 1);
+    }
 
-  if (currentPage <= 4) {
-    return [1, 2, 3, 4, 5, '...', totalQuestions];
-  }
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalQuestions];
+    }
 
-  if (currentPage >= totalQuestions - 3) {
-    return [1, '...', totalQuestions - 4, totalQuestions - 3, totalQuestions - 2, totalQuestions - 1, totalQuestions];
-  }
+    if (currentPage >= totalQuestions - 3) {
+      return [1, '...', totalQuestions - 4, totalQuestions - 3, totalQuestions - 2, totalQuestions - 1, totalQuestions];
+    }
 
-  return [
-    1, 
-    '...', 
-    currentPage - 1, 
-    currentPage, 
-    currentPage + 1, 
-    '...', 
-    totalQuestions
-  ];
-};
+    return [
+      1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalQuestions
+    ];
+  };
 
   const totalQuestions = attemptData.questions.length;
   const paginationItems = generatePagination(current, totalQuestions);
@@ -567,7 +599,7 @@ const generatePagination = (currentIndex, totalQuestions) => {
           ) : (
             <button 
                 className="next-button finish-button" 
-                onClick={handleFinishButton} 
+                onClick={triggerEndModal} 
                 disabled={isSubmitting}
             >
               {isSubmitting ? t('testPage.status.processing') : t('testPage.buttons.finish')}

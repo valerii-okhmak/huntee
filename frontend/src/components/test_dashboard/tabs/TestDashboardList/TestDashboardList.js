@@ -1,13 +1,15 @@
 import React, { useState, useMemo } from 'react'; 
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom'; 
 import './TestDashboardList.css';
 import lupa from '../../../../img/search-icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'; 
 import InviteParticipantsModal from '../../../modal_windows/InviteParticipantsModal';
 import SendMessageModal from '../../../modal_windows/SendMessageModal';
 
-// ЗВЕРНИ УВАГУ: Тепер ми просто приймаємо `students` у пропсах
 const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) => {
   const { t } = useTranslation();
   
@@ -17,6 +19,9 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
 
   const [selectedGroupTag, setSelectedGroupTag] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // СТАН ДЛЯ СОРТУВАННЯ ТАБЛИЦІ
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const handleOpenGeneralMessage = () => {
     setSelectedStudent(null);
@@ -28,24 +33,86 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
     setIsMessageModalOpen(true);
   };
 
-  // Фільтрація по групах тепер працює відразу з готового пропса students
   const uniqueGroups = useMemo(() => {
     const tags = students.map(s => s.groupTag).filter(Boolean); 
     return ['ALL', ...new Set(tags)];
   }, [students]);
 
-  const filteredStudents = useMemo(() => {
-    return students.filter(student => {
+  // ФУНКЦІЯ ЗМІНИ СОРТУВАННЯ ПРИ КЛІКУ НА ЗАГОЛОВОК
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // ФІЛЬТРАЦІЯ ТА СОРТУВАННЯ
+  const processedStudents = useMemo(() => {
+    // 1. Спочатку фільтруємо по пошуку та групі
+    let filtered = students.filter(student => {
       const matchesSearch = student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             student.email?.toLowerCase().includes(searchQuery.toLowerCase());
-      
       const matchesGroup = selectedGroupTag === 'ALL' || student.groupTag === selectedGroupTag;
-      
       return matchesSearch && matchesGroup;
     });
-  }, [students, searchQuery, selectedGroupTag]);
+
+    // 2. Потім сортуємо
+    if (sortConfig.key) {
+      filtered.sort((a, b) => {
+        // Сортування по імені
+        if (sortConfig.key === 'name') {
+          const nameA = a.fullName || '';
+          const nameB = b.fullName || '';
+          return sortConfig.direction === 'asc' 
+            ? nameA.localeCompare(nameB) 
+            : nameB.localeCompare(nameA);
+        }
+        // Сортування по статусу
+        if (sortConfig.key === 'status') {
+          // Вага статусів для сортування: 1 - Зареєстрований, 2 - В процесі, 3 - Завершив
+          const statusWeight = { 'COMPLETED': 3, 'IN_PROGRESS': 2, 'STARTED': 2, 'REGISTERED': 1 };
+          const weightA = statusWeight[a.status] || 0;
+          const weightB = statusWeight[b.status] || 0;
+          return sortConfig.direction === 'asc' ? weightA - weightB : weightB - weightA;
+        }
+        // Сортування по результату (балах)
+        if (sortConfig.key === 'result') {
+          // Вираховуємо відсоток успішності. Якщо не завершив - рахуємо як -1
+          const scoreA = (a.status === 'COMPLETED' && a.score !== null) ? (a.score / (a.totalMaxScore || 1)) : -1;
+          const scoreB = (b.status === 'COMPLETED' && b.score !== null) ? (b.score / (b.totalMaxScore || 1)) : -1;
+          return sortConfig.direction === 'asc' ? scoreA - scoreB : scoreB - scoreA;
+        }
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [students, searchQuery, selectedGroupTag, sortConfig]);
 
   const description = t('testDashboardList.desc.all', 'Тут ви можете переглянути зареєстрованих учасників та їхні результати тестування...');
+
+  const getStatusInfo = (status) => {
+    if (status === 'COMPLETED') {
+      return { text: t('status.completed', 'Завершено'), className: 'text-completed' };
+    }
+    if (status === 'IN_PROGRESS' || status === 'STARTED') {
+      return { text: t('status.inProgress', 'Проходить'), className: 'text-in-progress' };
+    }
+    return { text: t('status.registered', 'Зареєструвався'), className: 'text-registered' };
+  };
+
+  const getSortIcon = (key) => {
+    const isActive = sortConfig.key === key;
+    const isAsc = isActive && sortConfig.direction === 'asc';
+
+    return (
+      <FontAwesomeIcon 
+        icon={faCaretDown} 
+        className={`sort-triangle ${isActive ? 'sort-active' : ''} ${isAsc ? 'sort-up' : ''}`} 
+      />
+    );
+  };
 
   return (
     <div className='container'>
@@ -109,57 +176,63 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
         </div>
       )}
 
-      {/* ТАБЛИЦЯ */}
+      {/* ТАБЛИЦЯ ІЗ СОРТУВАННЯМ У ЗАГОЛОВКАХ */}
       <div className="testDashboard__table-wrapper">
         <table className="testDashboard__table">
           <thead>
             <tr>
-              <th>{t('table.name', 'Учасник')}</th>
+              <th onClick={() => requestSort('name')} className="sortable-header" style={{textAlign: 'left'}}>
+                {t('table.name', 'Учасник')} {getSortIcon('name')}
+              </th>
               <th>{t('table.group', 'Група')}</th>
-              <th>{t('table.status', 'Статус')}</th>
-              <th>{t('table.result', 'Результат')}</th>
+              <th onClick={() => requestSort('status')} className="sortable-header">
+                {t('table.status', 'Статус')} {getSortIcon('status')}
+              </th>
+              <th onClick={() => requestSort('result')} className="sortable-header">
+                {t('table.result', 'Результат')} {getSortIcon('result')}
+              </th>
               <th className="td-actions-head">{t('table.actions', 'Дії')}</th>
             </tr>
           </thead>
           <tbody>
-            {filteredStudents.length > 0 ? (
-              filteredStudents.map(student => {
+            {processedStudents.length > 0 ? (
+              processedStudents.map(student => {
                 const isCompleted = student.status === 'COMPLETED';
+                const statusData = getStatusInfo(student.status);
 
                 return (
                   <tr key={student.userId}>
-                    {/* ІМ'Я ТА EMAIL */}
                     <td className="td-participant">
-                      <span className="participant-name">{student.fullName}</span>
+                      <span className="participant-name">
+                        <Link to={`/profile/${student.userId}`} className="dashboard-profile-link" target="_blank">
+                          {student.fullName}
+                        </Link>
+                      </span>
                       <span className="participant-email">{student.email}</span>
                     </td>
                     
-                    {/* ГРУПА */}
                     <td style={{ fontSize: 'clamp(10px, 5vw, 16px)' }}>
                       {student.groupTag && student.groupTag !== '-' ? student.groupTag : '—'}
                     </td>
                     
-                    {/* СТАТУС */}
                     <td>
-                      {isCompleted ? (
-                        <span className="status-text text-completed">Пройшов</span>
-                      ) : (
-                        <span className="status-text text-registered">Зареєстровано</span>
-                      )}
+                      <span className={`status-text ${statusData.className}`}>
+                        {statusData.text}
+                      </span>
                     </td>
                     
-                    {/* РЕЗУЛЬТАТ */}
                     <td>
                       {isCompleted && student.score !== null && student.score !== undefined ? (
-                        <span className={`score-badge ${student.score > 0 ? 'score-good' : 'score-bad'}`}>
-                          {student.score}/{student.totalMaxScore}
-                        </span>
+                        <Link to={`/testreview/${student.attemptId}`} className="dashboard-result-link">
+                          <span className={`score-badge ${student.score > 0 ? 'score-good' : 'score-bad'}`}>
+                            {student.score}/{student.totalMaxScore}
+                          </span>
+                        </Link>
                       ) : (
                         '—'
                       )}
                     </td>
                     
-                    {/* ДІЇ (ТІЛЬКИ ПОВІДОМЛЕННЯ) */}
                     <td className="td-actions">
                       <button 
                         className="action-icon-btn" 
@@ -194,7 +267,7 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
         isOpen={isMessageModalOpen}
         onClose={() => setIsMessageModalOpen(false)}
         student={selectedStudent}
-        allStudents={filteredStudents} 
+        allStudents={processedStudents} 
       />
     </div>
   )

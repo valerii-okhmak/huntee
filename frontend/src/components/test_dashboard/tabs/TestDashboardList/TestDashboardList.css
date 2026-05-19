@@ -270,6 +270,77 @@ font-size: clamp(10px, 5vw, 16px);
   font-style: italic;
 }
 
+/* Посилання на профіль юзера */
+.dashboard-profile-link {
+  color: #000000;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dashboard-profile-link:hover {
+  text-decoration: underline;
+}
+
+/* Статус "Проходить" (Помаранчевий) */
+.text-in-progress {
+  color: #f29900;
+  font-weight: 600;
+}
+
+/* Посилання на результат тесту */
+.dashboard-result-link {
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-result-link:hover .score-badge {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: scale(1.05); /* Злегка збільшується при наведенні */
+  cursor: pointer;
+}
+
+/* Клікабельні заголовки таблиці */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+  background-color: #f0f0f0 !important;
+}
+
+/* --- АНІМОВАНИЙ ТРИКУТНИК СОРТУВАННЯ --- */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+  background-color: #f0f0f0 !important;
+}
+
+.sort-triangle {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #ccc; /* Сірий колір, коли не активний */
+  transition: transform 0.3s ease, color 0.3s ease; /* Плавна анімація повороту і кольору */
+}
+
+/* Коли колонка активна, трикутник стає чорним */
+.sort-triangle.sort-active {
+  color: #000;
+}
+
+/* Клас для розвороту трикутника вверх */
+.sort-triangle.sort-up {
+  transform: rotate(180deg);
+}
+
+
+
 /* --- МЕДІА ЗАПИТИ (МОБІЛЬНІ ПРИСТРОЇ) --- */
 @media screen and (max-width: 600px) {
     .testDashboard__toolbar {
