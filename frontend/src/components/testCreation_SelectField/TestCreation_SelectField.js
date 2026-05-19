@@ -13,7 +13,21 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
   const [menuDateOpen, setMenuDateOpen] = useState(true);
   const [bigMenuOpen, setBigMenuOpen] = useState(false);
   const [classification, setClassification] = useState('none');
-  const [timerType, setTimerType] = useState('none');
+  
+  const [timerType, setTimerType] = useState(() => {
+      const initialTime = Number(selectedOption) || 0;
+      return initialTime > 0 ? 'fixed' : 'none';
+  });
+
+  useEffect(() => {
+      if (type === 'time') {
+          const currentTime = Number(selectedOption) || 0;
+          if (currentTime > 0 && timerType === 'none') {
+              setTimerType('fixed');
+          }
+      }
+  }, [selectedOption, type, timerType]);
+
 
   useEffect(() => {
     moment.locale(i18n.language === 'uk' ? 'uk' : 'en');
@@ -154,7 +168,7 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 checked={timerType === 'none'}
                 onChange={() => {
                   setTimerType('none');
-                  setSelectedOption(null);
+                  setSelectedOption(0);
                 }}
               />
               <div className="question-classification__label">
@@ -170,7 +184,8 @@ const TestCreation_SelectField = ({ type, selectedOption, setSelectedOption, fie
                 checked={timerType === 'fixed'}
                 onChange={() => {
                   setTimerType('fixed');
-                  setSelectedOption(0);
+                  // Не скидаємо опцію, якщо там вже є час (наприклад після F5)
+                  if (!selectedOption) setSelectedOption(0);
                 }}
               />
               <div className="question-classification__label">

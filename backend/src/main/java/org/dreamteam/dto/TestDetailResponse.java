@@ -1,15 +1,22 @@
 package org.dreamteam.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.dreamteam.Entity.QuestionType;
+
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
-public class TestDetailResponse {
+@NoArgsConstructor 
+@AllArgsConstructor
+public class TestDetailResponse implements Serializable {
     
     private UUID testId;
     private String testName;
@@ -29,10 +36,14 @@ public class TestDetailResponse {
     private Boolean isFixedQuestionOrder;
     private Boolean isFixedAnswerOrder;
     private Boolean isShowResult;
+    private List<TestLevelDTO> levels;
 
+    
     @Data
     @Builder
-    public static class QuestionSummary {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuestionSummary implements Serializable {
         private UUID questionId;
         private String questionText;
         private QuestionType questionType;

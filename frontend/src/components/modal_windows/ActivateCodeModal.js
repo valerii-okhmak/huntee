@@ -1,25 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ModalMini from './ModalMini'; 
 import { getAccessToken } from '../../utils/auth';
+import './ModalWindow.css'; 
 
 const ActivateCodeModal = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [accessCode, setAccessCode] = useState("");
+  const [codeValues, setCodeValues] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
+  
+  const inputRefs = useRef([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCodeValues(Array(6).fill(""));
+      setMessage({ text: "", type: "" });
+      setTimeout(() => inputRefs.current[0]?.focus(), 100);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleActivate = async () => {
-    if (!accessCode.trim()) {
-      setMessage({ text: t('activateCodeModal.emptyCodeError'), type: 'error' });
+  const handleChange = (index, e) => {
+    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""); 
+    if (!value && e.target.value !== "") return; 
+
+    const newCodeValues = [...codeValues];
+    newCodeValues[index] = value.slice(-1);
+    setCodeValues(newCodeValues);
+
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace') {
+      if (!codeValues[index] && index > 0) {
+        const newCodeValues = [...codeValues];
+        newCodeValues[index - 1] = "";
+        setCodeValues(newCodeValues);
+        inputRefs.current[index - 1]?.focus();
+      } else {
+        const newCodeValues = [...codeValues];
+        newCodeValues[index] = "";
+        setCodeValues(newCodeValues);
+      }
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    } else if (e.key === 'ArrowRight' && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 6);
+
+    if (!pastedText) return;
+
+    const newCodeValues = [...codeValues];
+    for (let i = 0; i < 6; i++) {
+      newCodeValues[i] = pastedText[i] || "";
+    }
+    setCodeValues(newCodeValues);
+
+    const focusIndex = Math.min(pastedText.length, 5);
+    inputRefs.current[focusIndex]?.focus();
+  };
+
+const handleActivate = async () => {
+    const rawCode = codeValues.join("");
+
+    if (rawCode.length < 6) {
+      setMessage({ text: t('activateCodeModal.emptyCodeError', 'Введіть код повністю'), type: 'error' });
       return;
     }
+
+    const fullCode = `${rawCode.slice(0, 3)}-${rawCode.slice(3)}`;
 
     setLoading(true);
     setMessage({ text: "", type: "" });
@@ -28,13 +94,13 @@ const ActivateCodeModal = ({ isOpen, onClose }) => {
       const token = getAccessToken();
       const response = await axios.post(
         '/api/codes/activate', 
-        { code: accessCode.trim().toUpperCase() }, 
+        { code: fullCode },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
       const testId = response.data.testId;
       
-      setMessage({ text: t('activateCodeModal.success'), type: 'success' });
+      setMessage({ text: t('activateCodeModal.success', 'Успішно! Перенаправлення...'), type: 'success' });
       
       setTimeout(() => {
         onClose();
@@ -42,7 +108,7 @@ const ActivateCodeModal = ({ isOpen, onClose }) => {
       }, 1000);
 
     } catch (err) {
-      const errorMsg = err.response?.data || t('activateCodeModal.defaultError');
+      const errorMsg = err.response?.data || t('activateCodeModal.defaultError', 'Помилка активації');
       setMessage({ text: errorMsg, type: 'error' });
     } finally {
       setLoading(false);
@@ -60,15 +126,23 @@ const ActivateCodeModal = ({ isOpen, onClose }) => {
       <div className="invite-modal">
         <h3 className="modalmini-title">{t('activateCodeModal.title')}</h3>
         
-        <div className="invite-input-container" style={{ marginTop: '15px' }}>
-          <input 
-            type="text" 
-            className="modal-input code-input"
-            style={{ textTransform: 'uppercase', fontFamily: 'monospace', fontSize: '16px', letterSpacing: '1px' }}
-            placeholder={t('activateCodeModal.placeholder')}
-            value={accessCode}
-            onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
-          />
+        <div className="segmented-input-wrapper">
+          {codeValues.map((val, index) => (
+            <React.Fragment key={index}>
+              <input
+                ref={(el) => (inputRefs.current[index] = el)}
+                type="text"
+                maxLength="1"
+                className="segmented-input-cell"
+                value={val}
+                onChange={(e) => handleChange(index, e)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                onPaste={handlePaste}
+                autoComplete="off"
+              />
+              {index === 2 && <span className="segmented-input-separator">-</span>}
+            </React.Fragment>
+          ))}
         </div>
 
         {message.text && (
@@ -77,15 +151,15 @@ const ActivateCodeModal = ({ isOpen, onClose }) => {
           </p>
         )}
 
-        <div className="modalmini-buttons" style={{ marginTop: '20px' }}>
-          <button className="modalmini-button modalmini-button-cancel" onClick={onClose}>
+        <div className="modalmini-buttons">
+          <button className="modalmini-button modalmini-button-cancel" onClick={onClose} disabled={loading}>
             {t('activateCodeModal.cancel')}
           </button>
 
           <button
             className="modalmini-button modalmini-button-submit"
             onClick={handleActivate}
-            disabled={loading}
+            disabled={loading || codeValues.join("").length < 6}
           >
             {loading ? '...' : t('activateCodeModal.submitBtn')}
           </button>

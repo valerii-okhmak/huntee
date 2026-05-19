@@ -1,175 +1,307 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import './TestCreationMainPreview.css';
 import ConfirmDeleteQuestionModal from "../../modal_windows/ConfirmDeleteQuestionModal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons'; 
+import { faPenToSquare, faTrashCan, faBars, faPlus, faChevronDown, faChevronRight, faFolderTree, faXmark, faCheck, faCircle, faRobot, faFileImport } from '@fortawesome/free-solid-svg-icons'; 
 
-const TestCreationMainPreview = ({ questions = [], onDeleteQuestion, onEditQuestion, showError }) => {
+const TestCreationMainPreview = ({ 
+  questions = [], levels = [], onAddLevel, onEditLevel, onDeleteLevel, 
+  onDeleteQuestion, onEditQuestion, onReorderQuestions, onDeleteMultipleQuestions, 
+  onAddQuestionClick, onOpenAiModal, onOpenImportModal, showError 
+}) => {
   const { t } = useTranslation();
-  const [current, setCurrent] = useState(0);
+  
+  const [isCreatingTopLevel, setIsCreatingTopLevel] = useState(false);
+  const [creatingLevelBelow, setCreatingLevelBelow] = useState(null);
+  const [editingLevelName, setEditingLevelName] = useState(null);
+  
+  const [newLevelName, setNewLevelName] = useState("");
+  const [newLevelPoints, setNewLevelPoints] = useState("1");
+  const [newLevelDisplayCount, setNewLevelDisplayCount] = useState("");
+  
+  const [collapsedLevels, setCollapsedLevels] = useState(new Set());
+  const [expandedQuestions, setExpandedQuestions] = useState(new Set());
+
+  const [deleteTargetIndex, setDeleteTargetIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (questions.length === 0) {
-      setCurrent(0);
-    } else {
-      setCurrent(prev => Math.min(Math.max(prev, 0), questions.length - 1));
-    }
-  }, [questions]);
+  const [selectedQuestions, setSelectedQuestions] = useState(new Set()); 
+  const [targetLevelForMove, setTargetLevelForMove] = useState("");
 
-  const handleConfirmDelete = () => {
-    if (questions.length === 0) return;
-    onDeleteQuestion(current);
-    if (current === questions.length - 1 && current > 0) {
-      setCurrent(prev => prev - 1);
-    }
-    setIsModalOpen(false);
+  const [dragOverLevel, setDragOverLevel] = useState(null);
+  const [dragOverQuestion, setDragOverQuestion] = useState(null);
+
+  const toggleLevelCollapse = (e, levelName) => {
+    e.stopPropagation();
+    setCollapsedLevels(prev => { const newSet = new Set(prev); newSet.has(levelName) ? newSet.delete(levelName) : newSet.add(levelName); return newSet; });
   };
 
-  const safeIndex = Math.min(Math.max(current, 0), questions.length - 1);
-  const q = questions[safeIndex];
-
-  const renderQuestion = (q) => {
-    if (!q) return null;
-    
-    const commentBlock = q.comment ? (
-      <div className="preview-comment-block">
-        <small className="preview-comment-hint">{t('testCreationPreview.hint')}:</small>
-        <p className="preview-comment-text">{q.comment}</p>
-      </div>
-    ) : null;
-
-    switch (q.questionType) {
-      case "SINGLE_CHOICE":
-        return (
-          <>
-            <div className="choices">
-              {(q.choiceOptions || []).map((opt, i) => (
-                <label className="custom-radio" key={i}>
-                  <input className="choices-input" type="radio" disabled checked={opt.isCorrect} />
-                  <span className="radio-circle-blue" />
-                  {opt.optionText}
-                </label>
-              ))}
-            </div>
-            {commentBlock}
-          </>
-        );
-      case "MULTIPLE_CHOICE":
-        return (
-          <>
-            <div className="choices">
-              {(q.choiceOptions || []).map((opt, i) => (
-                <label className="custom-checkbox" key={i}>
-                  <input className="choices-input" type="checkbox" disabled checked={opt.isCorrect} />
-                  <span className="checkbox-square-blue" />
-                  {opt.optionText}
-                </label>
-              ))}
-            </div>
-            {commentBlock}
-          </>
-        );
-      case "TEXT":
-        return (
-          <>
-            <textarea rows="4" placeholder={t('testCreationPreview.yourAnswerPlaceholder')} disabled className="preview-textarea" />
-            <div className="preview-text-answer-correct">
-              <small>{t('testCreationPreview.correctAnswer')}: <strong>{q.textAnswer?.correctText}</strong></small>
-            </div>
-            {commentBlock}
-          </>
-        );
-      case "CODE":
-        return (
-          <div className="code-block">
-            <div className="preview-code-block">
-              <div className="preview-code-lang">{t('testCreationPreview.language')}: {q.codeAnswer?.language}</div>
-              <pre className="preview-code-pre">{q.codeAnswer?.templateCode || "// Код"}</pre>
-            </div>
-            {commentBlock}
-          </div>
-        );
-      default:
-        return <div className="preview-unknown-type">{t('testCreationPreview.unknownType')}</div>;
-    }
+  const toggleQuestionExpand = (index) => {
+    setExpandedQuestions(prev => { const newSet = new Set(prev); newSet.has(index) ? newSet.delete(index) : newSet.add(index); return newSet; });
   };
 
-  if (!questions.length) {
-    return (
-      <div className="testCreationMainPreview">
-        <div className='container'>
-          <div className="test-container">
-            <h2 className={`question preview-no-questions ${showError ? 'error' : ''}`}>
-              {t('testCreationPreview.noQuestions')}
-            </h2>
-          </div>
+  const closeAllLevelForms = () => {
+    setIsCreatingTopLevel(false); setCreatingLevelBelow(null); setEditingLevelName(null);
+    setNewLevelName(""); setNewLevelPoints("1"); setNewLevelDisplayCount("");
+  };
+
+  const handleSelectQuestion = (originalIndex) => {
+    setSelectedQuestions(prev => { const newSet = new Set(prev); newSet.has(originalIndex) ? newSet.delete(originalIndex) : newSet.add(originalIndex); return newSet; });
+  };
+
+  const handleSelectLevel = (levelQuestions) => {
+    const allIds = levelQuestions.map(q => q.originalIndex);
+    const areAllSelected = allIds.length > 0 && allIds.every(id => selectedQuestions.has(id));
+    setSelectedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (areAllSelected) allIds.forEach(id => newSet.delete(id)); else allIds.forEach(id => newSet.add(id));
+      return newSet;
+    });
+  };
+
+  const handleBulkMoveAction = () => {
+    if (selectedQuestions.size === 0 || !targetLevelForMove) return;
+    const newLevel = targetLevelForMove === 'no_level' ? "" : targetLevelForMove;
+    if (onReorderQuestions) onReorderQuestions(Array.from(selectedQuestions), newLevel, null);
+    setSelectedQuestions(new Set()); setTargetLevelForMove("");
+  };
+
+  const handleDragStart = (e, index) => {
+    setExpandedQuestions(prev => { const newSet = new Set(prev); newSet.delete(index); return newSet; });
+    let dragIndices = selectedQuestions.has(index) ? Array.from(selectedQuestions) : [index];
+    if(!selectedQuestions.has(index)) setSelectedQuestions(new Set([index])); 
+    e.dataTransfer.setData("draggedIndices", JSON.stringify(dragIndices));
+    e.dataTransfer.effectAllowed = "move";
+    const dragIcon = document.createElement('div');
+    dragIcon.innerHTML = `📦 ${dragIndices.length} ${t('testCreationPreview.questionsText')}`;
+    dragIcon.className = "drag-ghost"; 
+    document.body.appendChild(dragIcon);
+    e.dataTransfer.setDragImage(dragIcon, 10, 10);
+    setTimeout(() => document.body.removeChild(dragIcon), 0);
+  };
+
+  const handleDragOverLevel = (e, levelName) => { e.preventDefault(); setDragOverLevel(levelName); setDragOverQuestion(null); };
+  const handleDragOverQuestion = (e, qIndex) => { e.preventDefault(); e.stopPropagation(); setDragOverLevel(null); setDragOverQuestion(qIndex); };
+
+  const handleDropOnLevel = (e, targetLevelName) => {
+    e.preventDefault(); e.stopPropagation(); setDragOverLevel(null); setDragOverQuestion(null);
+    const indicesStr = e.dataTransfer.getData("draggedIndices"); if(!indicesStr) return;
+    const newLevel = targetLevelName === 'Без рівня' ? "" : targetLevelName;
+    if(onReorderQuestions) onReorderQuestions(JSON.parse(indicesStr), newLevel, null);
+    setSelectedQuestions(new Set());
+  };
+
+  const handleDropOnQuestion = (e, targetIndex, targetLevelName) => {
+    e.preventDefault(); e.stopPropagation(); setDragOverLevel(null); setDragOverQuestion(null);
+    const indicesStr = e.dataTransfer.getData("draggedIndices"); if(!indicesStr) return;
+    const newLevel = targetLevelName === 'Без рівня' ? "" : targetLevelName;
+    if(onReorderQuestions) onReorderQuestions(JSON.parse(indicesStr), newLevel, targetIndex);
+    setSelectedQuestions(new Set());
+  };
+
+  const openDeleteModal = (index) => { setDeleteTargetIndex(index); setIsModalOpen(true); };
+  const handleConfirmDelete = () => { if (deleteTargetIndex !== null) onDeleteQuestion(deleteTargetIndex); setIsModalOpen(false); };
+  const handleConfirmBulkDelete = () => {
+    const idsToDelete = Array.from(selectedQuestions).sort((a, b) => b - a);
+    if(onDeleteMultipleQuestions) onDeleteMultipleQuestions(idsToDelete); else idsToDelete.forEach(id => onDeleteQuestion(id));
+    setSelectedQuestions(new Set()); setIsBulkDeleteModalOpen(false);
+  };
+
+  const renderLevelForm = (isEditing = false) => (
+    <div className="preview-create-level-form" onClick={(e) => e.stopPropagation()}>
+        <input type="text" className="preview-input-name" placeholder={t('testCreationPreview.levelNamePlaceholder')} value={newLevelName} onChange={e => setNewLevelName(e.target.value)} autoFocus />
+        <div className="preview-points-wrapper">
+          <label className="preview-points-label">{t('testCreationPreview.pointsLabel')}</label>
+          <input type="number" className="preview-input-points" step="0.1" min="0" value={newLevelPoints} onChange={e => setNewLevelPoints(e.target.value)} />
         </div>
-      </div>
-    );
-  }
+        <div className="preview-points-wrapper">
+          <label className="preview-points-label">{t('testCreationPreview.limitLabel')}</label>
+          <input type="number" className="preview-input-points" step="1" min="1" placeholder={t('testCreationPreview.allLimit')} value={newLevelDisplayCount} onChange={e => setNewLevelDisplayCount(e.target.value)} />
+        </div>
+        <button onClick={handleSaveLevel} className="preview-btn-save">{isEditing ? t('testCreationPreview.update') : t('testCreationPreview.save')}</button>
+        <button onClick={closeAllLevelForms} className="preview-btn-cancel">{t('testCreationPreview.cancel')}</button>
+    </div>
+  );
 
-  return (
-    <div className="testCreationMainPreview">
-      <div className='container'>
-        <div className="test-container">
-          <h2 className="question">
-            <span className="preview-question-number">#{safeIndex + 1}</span>
-            {q.questionText} 
-          </h2>
-          
-          <div className="answer">{renderQuestion(q)}</div>
+  const handleEditLevelClick = (level) => {
+    closeAllLevelForms(); setEditingLevelName(level.name); setNewLevelName(level.name);
+    setNewLevelPoints(String(level.points)); setNewLevelDisplayCount(level.questionsLimit ? String(level.questionsLimit) : "");
+  };
 
-          <div className="test-buttons">
-            
-            <div className="testcard-buttons">
-                <button
-                  className="testcard-action-btn btn-edit"
-                  onClick={() => onEditQuestion(safeIndex)}
-                >
-                  <FontAwesomeIcon icon={faPenToSquare} />
-                  <span>{t('testCreationPreview.edit')}</span>
-                </button>
+  const handleSaveLevel = () => {
+    if (!newLevelName.trim()) return;
+    const isDuplicate = levels.some(l => l.name.toLowerCase() === newLevelName.trim().toLowerCase() && l.name !== editingLevelName);
+    if (isDuplicate) { alert(t('testCreationPreview.levelExists')); return; }
+    const levelData = { name: newLevelName.trim(), points: parseFloat(newLevelPoints) || 1, questionsLimit: newLevelDisplayCount ? parseInt(newLevelDisplayCount, 10) : null };
+    if (editingLevelName) onEditLevel(editingLevelName, levelData); else onAddLevel(levelData);
+    closeAllLevelForms();
+  };
 
-                <button
-                  className="testcard-action-btn btn-delete"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faTrashCan} />
-                  <span>{t('testCreationPreview.delete')}</span>
-                </button>
+  const renderQuestionDetails = (q) => {
+    if (q.questionType === 'SINGLE_CHOICE' || q.questionType === 'MULTIPLE_CHOICE') {
+      return (
+        <div className="q-preview-options">
+          {q.choiceOptions?.map((opt, i) => (
+            <div key={i} className={`q-preview-opt ${opt.isCorrect ? 'correct' : ''}`}>
+              <FontAwesomeIcon icon={opt.isCorrect ? faCheck : faCircle} style={{ color: opt.isCorrect ? '#28a745' : '#ccc', width: '14px' }} />
+              <span>{opt.optionText}</span>
             </div>
-
-            <button
-              className="next-button"
-              disabled={safeIndex >= questions.length - 1}
-              onClick={() => setCurrent(prev => prev + 1)}
-            >
-              {t('testCreationPreview.nextQuestion')}
-            </button>
-
-          </div>
-        </div>
-
-        <div className="Num">
-          {questions.map((_, i) => (
-            <button 
-              key={i} 
-              onClick={() => setCurrent(i)} 
-              className={i === safeIndex ? "active" : ""}
-            >
-              {i + 1}
-            </button>
           ))}
         </div>
+      );
+    }
+    if (q.questionType === 'TEXT') return <div><b>{t('testCreationPreview.correctAnswerLabel')}</b> {q.textAnswer?.correctText || t('testCreationPreview.notSet')}</div>;
+    if (q.questionType === 'CODE') return (<div><div><b>{t('testCreationPreview.languageLabel')}</b> {q.codeAnswer?.language || 'java'}</div><div className="q-preview-code">{q.codeAnswer?.templateCode || t('testCreationPreview.noTemplate')}</div></div>);
+    return <div style={{ color: '#aaa' }}>{t('testCreationPreview.previewUnavailable')}</div>;
+  };
+
+  const groupedQuestions = {}; levels.forEach(l => { groupedQuestions[l.name] = []; }); groupedQuestions['Без рівня'] = [];
+  questions.forEach((q, index) => { const lvlName = q.level && levels.some(l => l.name === q.level) ? q.level : 'Без рівня'; groupedQuestions[lvlName].push({ ...q, originalIndex: index }); });
+
+  return (
+    <div className="testCreationMainPreview" onDragLeave={() => {setDragOverLevel(null); setDragOverQuestion(null)}}>
+      <div className='container'>
+        
+        {selectedQuestions.size > 0 && (
+          <div className="bulk-actions-panel">
+            <span className="bulk-count-text">{t('testCreationPreview.selectedCount')} {selectedQuestions.size}</span>
+            <div className="bulk-controls">
+              <select value={targetLevelForMove} onChange={(e) => setTargetLevelForMove(e.target.value)} className="bulk-select-level">
+                <option value="" disabled>{t('testCreationPreview.moveTo')}</option>
+                <option value="no_level">{t('testCreationPreview.noLevelOption')}</option>
+                {levels.map(l => <option key={l.name} value={l.name}>{l.name}</option>)}
+              </select>
+              <button className="bulk-btn-move" onClick={handleBulkMoveAction} disabled={!targetLevelForMove}><FontAwesomeIcon icon={faFolderTree} /> {t('testCreationPreview.move')}</button>
+              <button className="bulk-btn-delete" onClick={() => setIsBulkDeleteModalOpen(true)}><FontAwesomeIcon icon={faTrashCan} /> {t('testCreationPreview.delete')}</button>
+              <button className="bulk-btn-cancel" onClick={() => setSelectedQuestions(new Set())}><FontAwesomeIcon icon={faXmark} /> {t('testCreationPreview.cancel')}</button>
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <button className="preview-add-level-btn" style={{flex: 1, textAlign: 'center', borderColor: '#8e24aa', color: '#8e24aa'}} onClick={onOpenAiModal}>
+                <FontAwesomeIcon icon={faRobot} className="icon-plus-margin" /> {t('testCreationPreview.aiGeneration')}
+            </button>
+            <button className="preview-add-level-btn" style={{flex: 1, textAlign: 'center', borderColor: '#2e7d32', color: '#2e7d32'}} onClick={onOpenImportModal}>
+                <FontAwesomeIcon icon={faFileImport} className="icon-plus-margin" /> {t('testCreationPreview.importFromFile')}
+            </button>
+            {!isCreatingTopLevel ? (
+                <button className="preview-add-level-btn" style={{flex: 1, textAlign: 'center'}} onClick={() => {closeAllLevelForms(); setIsCreatingTopLevel(true);}}>
+                    <FontAwesomeIcon icon={faPlus} className="icon-plus-margin" /> {t('testCreationPreview.createLevel')}
+                </button>
+            ) : (
+                <div style={{width: '100%'}}>{renderLevelForm(false)}</div>
+            )}
+        </div>
+
+        {questions.length === 0 && levels.length === 0 && (
+            <h2 className={`preview-no-questions ${showError ? 'error' : ''}`}>{t('testCreationPreview.noQuestionsOrLevels')}</h2>
+        )}
+
+        {Object.keys(groupedQuestions).map((levelName) => {
+          const items = groupedQuestions[levelName];
+          const isNoLevel = levelName === 'Без рівня';
+          const isCollapsed = collapsedLevels.has(levelName);
+          if (isNoLevel && items.length === 0 && levels.length > 0) return null;
+
+          const levelData = levels.find(l => l.name === levelName);
+          const isAllLevelSelected = items.length > 0 && items.every(q => selectedQuestions.has(q.originalIndex));
+          const isCurrentlyEditingThis = editingLevelName === levelName && !isNoLevel;
+
+          return (
+            <React.Fragment key={levelName}>
+              <div 
+                className={`preview-level-group ${dragOverLevel === levelName ? 'drag-over' : ''}`}
+                onDragOver={(e) => handleDragOverLevel(e, levelName)}
+                onDrop={(e) => handleDropOnLevel(e, levelName)}
+              >
+                {isCurrentlyEditingThis ? (
+                    <div style={{padding: '10px', background: '#fff', border: '1px solid #dcdcdc', borderRadius: '8px 8px 0 0'}}>
+                      {renderLevelForm(true)}
+                    </div>
+                ) : (
+                  <div className={`preview-level-title ${isNoLevel ? 'no-level-header' : ''}`} onClick={(e) => toggleLevelCollapse(e, levelName)}>
+                    <div className="level-title-left">
+                      {items.length > 0 && (<input type="checkbox" className="level-checkbox" checked={isAllLevelSelected} onChange={() => handleSelectLevel(items)} onClick={(e) => e.stopPropagation()} />)}
+                      <button className="collapse-btn"><FontAwesomeIcon icon={isCollapsed ? faChevronRight : faChevronDown} className="collapse-icon" /></button>
+                      <span className="level-name-text">{isNoLevel ? t('testCreationPreview.noLevel') : levelName}</span>
+                      <span className="preview-level-points-info">({t('testCreationPreview.points')}: {levelData?.points || 1} {levelData?.questionsLimit ? ` | ${t('testCreationPreview.random')}: ${levelData.questionsLimit} ${t('testCreationPreview.outOf')} ${items.length}` : ''})</span>
+                    </div>
+                    {!isNoLevel && (
+                      <div className="level-title-right" onClick={(e) => e.stopPropagation()}>
+                          <button className="icon-btn" onClick={() => handleEditLevelClick(levelData)}><FontAwesomeIcon icon={faPenToSquare} /></button>
+                          <button className="icon-btn" onClick={() => onDeleteLevel(levelName)}><FontAwesomeIcon icon={faTrashCan} /></button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!isCollapsed && (
+                  <div className="preview-level-items">
+                    {items.length === 0 ? (
+                        <div className="preview-level-empty-msg">{t('testCreationPreview.dragQuestionsHere')}</div>
+                    ) : (
+                        items.map((q) => {
+                          const isExpanded = expandedQuestions.has(q.originalIndex);
+                          const isSelected = selectedQuestions.has(q.originalIndex);
+                          
+                          return (
+                            <div 
+                              key={q.originalIndex} 
+                              className={`preview-list-item-container ${isSelected ? 'selected' : ''} ${dragOverQuestion === q.originalIndex ? 'drop-target' : ''}`}
+                              draggable onDragStart={(e) => handleDragStart(e, q.originalIndex)} onDragOver={(e) => handleDragOverQuestion(e, levelName, q.originalIndex)} onDrop={(e) => handleDropOnQuestion(e, q.originalIndex, levelName)}
+                            >
+                              <div className="preview-list-item" onClick={() => toggleQuestionExpand(q.originalIndex)}>
+                                  <div className="preview-item-left">
+                                    <input type="checkbox" className="item-checkbox" checked={isSelected} onChange={() => handleSelectQuestion(q.originalIndex)} onClick={(e) => e.stopPropagation()} />
+                                    <FontAwesomeIcon icon={faBars} className="icon-drag" style={{cursor: 'grab'}} />
+                                    <span className="q-number">#{q.originalIndex + 1}</span>
+                                    <span className="q-text">{q.questionText}</span>
+                                  </div>
+                                  <div className="preview-item-right" onClick={e => e.stopPropagation()}>
+                                    <button className="btn-edit-list" onClick={() => onEditQuestion(q.originalIndex)}><FontAwesomeIcon icon={faPenToSquare} className="btn-icon-margin" /> {t('testCreationPreview.edit')}</button>
+                                    <button className="btn-delete-list" onClick={() => openDeleteModal(q.originalIndex)}><FontAwesomeIcon icon={faTrashCan} className="btn-icon-margin" /> {t('testCreationPreview.delete')}</button>
+                                  </div>
+                              </div>
+                              {isExpanded && (<div className="question-preview-content">{renderQuestionDetails(q)}</div>)}
+                            </div>
+                          );
+                        })
+                    )}
+                  </div>
+                )}
+                
+                {!isCollapsed && (
+                   <div className="quick-add-zone">
+                      <div className="quick-add-line"></div>
+                      <button className="quick-add-btn" onClick={() => { if(onAddQuestionClick) onAddQuestionClick(isNoLevel ? "" : levelName); }}>
+                          <FontAwesomeIcon icon={faPlus} /> {t('testCreationPreview.addQuestion')}
+                      </button>
+                      <button className="quick-add-btn" onClick={() => {closeAllLevelForms(); setCreatingLevelBelow(levelName);}}>
+                          <FontAwesomeIcon icon={faFolderTree} /> {t('testCreationPreview.createLevelBtn')}
+                      </button>
+                   </div>
+                )}
+              </div>
+
+              {creatingLevelBelow === levelName && (
+                  <div style={{marginBottom: '24px'}}>{renderLevelForm(false)}</div>
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
 
-      <ConfirmDeleteQuestionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        questionNumber={safeIndex + 1}
+      <ConfirmDeleteQuestionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleConfirmDelete} questionNumber={deleteTargetIndex !== null ? deleteTargetIndex + 1 : ''} />
+      
+      {/* Для масового видалення передаємо кількість питань через об'єкт i18n */}
+      <ConfirmDeleteQuestionModal 
+        isOpen={isBulkDeleteModalOpen} 
+        onClose={() => setIsBulkDeleteModalOpen(false)} 
+        onConfirm={handleConfirmBulkDelete} 
+        questionNumber={t('testCreationPreview.theseQuestionsCount', { count: selectedQuestions.size })} 
       />
     </div>
   );

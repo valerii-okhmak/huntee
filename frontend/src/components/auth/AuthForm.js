@@ -143,7 +143,9 @@ const AuthForm = () => {
           </div>
         </div>
 
-        <div className="horizontal-line-auth"></div>
+      <div className="social-login-divider">
+        <span>{t('authForm.socialLoginDivider')}</span>
+      </div>
 
         <div className="bottom-part-auth">
           <SocialLogin setError={(msg) => setErrors({ ...errors, general: msg })} />

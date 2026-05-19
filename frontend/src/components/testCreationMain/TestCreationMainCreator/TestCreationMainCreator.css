@@ -177,6 +177,67 @@
     font-weight: 700;
 }
 
+.import-btn {
+  position: relative; 
+  font-family: inherit;
+  font-size: clamp(12px, 2vw, 20px);
+  background: #212121;
+  color: white;
+  fill: rgb(155, 153, 153);
+  padding: 8px 16px 8px 44px; 
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  overflow: hidden; 
+}
+
+.import-btn .svg-wrapper-1 {
+  position: absolute;
+  left: 12px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+}
+
+.import-btn svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  transition: fill 0.3s ease-in-out;
+}
+
+.import-btn span {
+  display: block;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.import-btn:hover {
+  background: #000;
+}
+
+.import-btn:hover .svg-wrapper-1 {
+  left: 50%;
+  transform: translateX(-50%) scale(1.2);
+}
+
+.import-btn:hover svg {
+  fill: #fff;
+}
+
+.import-btn:hover span {
+  opacity: 0;
+}
+
+.import-btn:active {
+  transform: scale(0.95);
+}
+
 /* Адаптивність */
 @media screen and (max-width: 768px) {
     .testCreationMainCreator__questionField-wrapper {

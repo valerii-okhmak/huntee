@@ -17,6 +17,8 @@ const ViewingTests = () => {
   const [selectedFields, setSelectedFields] = useState([]); 
   const [selectedDataFilter, setSelectedDataFilter] = useState('Всі тести'); 
 
+  const MAX_TESTS = 5;
+
   useEffect(() => {
     const fetchMyTests = async () => {
       try {
@@ -46,7 +48,7 @@ const ViewingTests = () => {
                 date: dateStr,
                 time: timeStr,
                 candidatesCount: t.candidatesCount || 0,
-                status: t.status, // Очікуємо "Active", "Scheduled", "Closed"
+                status: t.status, 
                 link: `/test/${t.id || t.testId}/dashboard`
             };
         });
@@ -62,7 +64,6 @@ const ViewingTests = () => {
     fetchMyTests();
   }, []);
 
-  // ОНОВЛЕНО: Підрахунок для 3-х статусів
   const stats = useMemo(() => {
     return {
       total: tests.length,
@@ -72,7 +73,6 @@ const ViewingTests = () => {
     };
   }, [tests]);
 
-  // ОНОВЛЕНО: Логіка фільтрації
   const filteredTests = useMemo(() => {
     return tests.filter(test => {
       const matchesSearch = test.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -107,6 +107,8 @@ const ViewingTests = () => {
     setTests(prevTests => prevTests.filter(test => test.id !== id));
   };
 
+  const isLimitReached = stats.total >= MAX_TESTS;
+
   return (
     <div className="viewing-tests-page container">
       <div className="viewing-tests-left-side">
@@ -122,9 +124,22 @@ const ViewingTests = () => {
         </div>
       </div>
       <div className="viewing-tests-right-side">
+        
         <div className="viewing-tests-add-test-button-container">
-          <AddTestsButton />
+          <div className={`add-button-wrapper ${isLimitReached ? 'disabled-wrapper' : ''}`}>
+            <div className={`tests-limit-counter ${isLimitReached ? 'limit-reached' : ''}`}>
+              <strong>{stats.total}/{MAX_TESTS}</strong>
+            </div>
+            <AddTestsButton disabled={isLimitReached} />
+          </div>
+
+          {isLimitReached && (
+            <p className="limit-warning-text">
+              Ви досягли ліміту! Видаліть старі тести, щоб створити нові.
+            </p>
+          )}
         </div>
+
         <div className="viewing-tests-filters-section">
           <OurDataFilter 
             selected={selectedDataFilter} 

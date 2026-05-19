@@ -2,48 +2,22 @@ package org.dreamteam.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-
-import org.dreamteam.Entity.AttemptStatus;
-import org.dreamteam.Entity.Question;
-import org.dreamteam.Entity.QuestionType;
-import org.dreamteam.Entity.Test;
-import org.dreamteam.Entity.TestQuestion;
-import org.dreamteam.Entity.TestRegistration;
-import org.dreamteam.Entity.User;
-import org.dreamteam.Entity.UserAnswer;
-import org.dreamteam.Entity.UserTestAttempt;
-import org.dreamteam.dto.CandidateDTO;
-import org.dreamteam.dto.ExportRequestDTO;
-import org.dreamteam.dto.MyTestDTO;
-import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
-import org.dreamteam.dto.TestAnalyticsDTO;
-import org.dreamteam.dto.TestCreateRequest;
-import org.dreamteam.dto.TestDetailResponse;
-import org.dreamteam.dto.TestSummaryResponse;
-import org.dreamteam.dto.TestUpdateRequest;
-import org.dreamteam.repository.TestQuestionRepository;
-import org.dreamteam.repository.TestRegistrationRepository;
-import org.dreamteam.repository.QuestionRepository;
-import org.dreamteam.repository.TestRepository;
-import org.dreamteam.repository.UserRepository;
-import org.dreamteam.repository.UserTestAttemptRepository;
+import org.dreamteam.Entity.*;
+import org.dreamteam.dto.*;
+import org.dreamteam.repository.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+
 import java.time.OffsetDateTime;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.UUID;
+import java.math.RoundingMode;
 import java.util.stream.Collectors;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import org.dreamteam.Entity.UserAnswer;
 import java.time.Duration;
 import java.util.*;
 
@@ -59,14 +33,34 @@ public class TestService {
     private final NotificationService notificationService;
     private final QuestionRepository questionRepository;
     private final ExportService exportService;
+    private final TestAccessCodeRepository testAccessCodeRepository;
+    private final TestLevelRepository testLevelRepository;
+    private final UserAnswerRepository userAnswerRepository; 
 
+    private static final int MAX_TESTS_PER_USER = 5;
+    private static final int MAX_QUESTIONS_PER_TEST = 500;
 
     @Transactional
     public void registerForTest(UUID testId, String userEmail) {
-        User user = findUserByEmail(userEmail);
         Test test = findTestById(testId);
 
-        if (registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), testId)) {
+        if (Boolean.TRUE.equals(test.getIsPrivate())) {
+            throw new AccessDeniedException("Цей тест є приватним. Реєстрація можлива лише за спеціальним посиланням або кодом.");
+        }
+
+        executeRegistration(test, userEmail);
+    }
+
+    @Transactional
+    public void registerByInviteOrCode(UUID testId, String userEmail) {
+        Test test = findTestById(testId);
+        executeRegistration(test, userEmail); 
+    }
+
+    private void executeRegistration(Test test, String userEmail) {
+        User user = findUserByEmail(userEmail);
+
+        if (registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), test.getTestId())) {
             throw new IllegalStateException("User is already registered for this test."); 
         }
 
@@ -78,9 +72,15 @@ public class TestService {
         notificationService.sendSystemNotification(user.getId(), title, message);
     }
 
+    @CacheEvict(value = "tests_list", allEntries = true)
     @Transactional
     public TestDetailResponse createTest(TestCreateRequest request, String authorEmail) {
         User author = findUserByEmail(authorEmail);
+
+        int currentTestCount = testRepository.findByUser_Id(author.getId()).size();
+        if (currentTestCount >= MAX_TESTS_PER_USER) {
+            throw new IllegalStateException("Перевищено ліміт! Ви можете створити максимум " + MAX_TESTS_PER_USER + " тестів.");
+        }
 
         Test test = new Test(request.getTestName(), author);
         test.setSphere(request.getSphere());
@@ -96,28 +96,54 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
-
+        
         Test savedTest = testRepository.save(test);
+
+        Set<TestLevel> levels = processTestLevels(request.getLevels(), savedTest);
+        
+        testLevelRepository.saveAll(levels);
+        
+        if (savedTest.getTestLevels() == null) {
+            savedTest.setTestLevels(new HashSet<>());
+        }
+        savedTest.getTestLevels().clear();
+        savedTest.getTestLevels().addAll(levels);
 
         updateTestQuestions(savedTest, request.getQuestionIds());
 
         return mapToDetailResponse(savedTest);
     }
 
+    @Cacheable(value = "tests_list")
     @Transactional(readOnly = true)
     public List<TestSummaryResponse> getAllTests() {
         return testRepository.findAll()
                 .stream()
+                .filter(test -> !Boolean.TRUE.equals(test.getIsPrivate()))
                 .map(this::mapToSummaryResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public TestDetailResponse getTestById(UUID testId) {
+    public TestDetailResponse getTestById(UUID testId, String userEmail) {
         Test test = findTestById(testId);
+        
+        if (Boolean.TRUE.equals(test.getIsPrivate())) {
+            User user = findUserByEmail(userEmail);
+            boolean isAuthor = test.getUser().getId().equals(user.getId());
+            boolean isRegistered = registrationRepository.existsByUser_IdAndTest_TestId(user.getId(), testId);
+            
+            if (!isAuthor && !isRegistered) {
+                throw new AccessDeniedException("Цей тест є приватним. У вас немає доступу.");
+            }
+        }
+
         return mapToDetailResponse(test);
     }
 
+    @Caching(evict = {
+        @CacheEvict(value = "tests_list", allEntries = true)
+    })
     @Transactional
     public TestDetailResponse updateTest(UUID testId, TestUpdateRequest request, String userEmail) {
         Test test = findTestById(testId);
@@ -137,6 +163,12 @@ public class TestService {
         test.setIsFixedQuestionOrder(request.getIsFixedQuestionOrder());
         test.setIsFixedAnswerOrder(request.getIsFixedAnswerOrder());
         test.setIsShowResult(request.getIsShowResult());
+        
+        Set<TestLevel> updatedLevels = processTestLevels(request.getLevels(), test);
+        test.getTestLevels().clear();
+        test.getTestLevels().addAll(updatedLevels);
+
+        testLevelRepository.saveAll(test.getTestLevels());
 
         test.getTestQuestions().clear();
         testRepository.flush();
@@ -146,10 +178,32 @@ public class TestService {
         return mapToDetailResponse(updatedTest);
     }
 
+
+    @Caching(evict = {
+        @CacheEvict(value = "test_analytics", key = "#testId"),
+        @CacheEvict(value = "tests_list", allEntries = true)
+    })
     @Transactional
     public void deleteTest(UUID testId, String userEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, userEmail);
+
+        if (test.getTestQuestions() != null) {
+            for (TestQuestion tq : test.getTestQuestions()) {
+                Question q = tq.getQuestion();
+                if (q != null && q.getTestLevel() != null) {
+                    if (q.getTestLevel().getTest().getTestId().equals(testId)) {
+                        q.setTestLevel(null);
+                        questionRepository.save(q);
+                    }
+                }
+            }
+        }
+        test.getTestQuestions().clear();
+        testRepository.flush(); 
+
+        testAccessCodeRepository.deleteByTest_TestId(testId);
+
         testRepository.delete(test);
     }
 
@@ -178,7 +232,6 @@ public class TestService {
         User user = findUserByEmail(userEmail);
         List<TestRegistration> registrations = registrationRepository.findByUser_Id(user.getId());
         
-
         return registrations.stream().map(reg -> {
             Test test = reg.getTest();
             String timeStatus = calculateTestStatus(test);
@@ -191,7 +244,6 @@ public class TestService {
                     .startTime(test.getStartTime())
                     .status("Registered")
                     .statusTest(timeStatus) 
-
                     .build();
         }).collect(Collectors.toList());
     }
@@ -213,30 +265,19 @@ public class TestService {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
 
-        BigDecimal totalMaxScore = test.getTestQuestions().stream()
-                .map(tq -> {
-                    Double weight = tq.getQuestion().getWeight();
-                    return BigDecimal.valueOf(weight != null ? weight : 1.0);
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         List<UserTestAttempt> attempts = attemptRepository.findByTest_TestId(testId);
 
         return attempts.stream()
                 .filter(a -> a.getCompletedAt() != null)
-                .map(attempt -> mapAttemptToCandidate(attempt, totalMaxScore))
+                .map(this::mapAttemptToCandidate)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "test_analytics", key = "#testId")
     @Transactional(readOnly = true)
     public TestAnalyticsDTO getTestAnalytics(UUID testId, String authorEmail) {
         Test test = findTestById(testId);
         checkTestOwnership(test, authorEmail);
-
-        double maxPossibleScore = test.getTestQuestions().stream()
-                .map(TestQuestion::getQuestion)
-                .mapToDouble(Question::getWeight)
-                .sum();
 
         List<UserTestAttempt> allAttempts = attemptRepository.findByTest_TestId(testId);
 
@@ -253,10 +294,14 @@ public class TestService {
         double totalPercentSum = 0;
         final double PASSING_PERCENT = 60.0;
 
-        if (maxPossibleScore > 0) {
-            for (UserTestAttempt attempt : gradedAttempts) {
+        for (UserTestAttempt attempt : gradedAttempts) {
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            double maxPossibleScore = answers.stream()
+                .mapToDouble(a -> a.getQuestion().getEffectiveWeight() != null ? a.getQuestion().getEffectiveWeight() : 1.0)
+                .sum();
+
+            if (maxPossibleScore > 0) {
                 double score = attempt.getScore().doubleValue();
-                
                 double percent = (score / maxPossibleScore) * 100.0;
                 if (percent > 100.0) percent = 100.0;
 
@@ -267,12 +312,13 @@ public class TestService {
                 } else {
                     failed++;
                 }
+            } else {
+                failed++; 
             }
         }
 
         int gradedTotal = gradedAttempts.size();
         double avgPercent = gradedTotal > 0 ? totalPercentSum / gradedTotal : 0;
-
         int totalSubmitted = gradedTotal + (int) inReviewCount;
 
         return TestAnalyticsDTO.builder()
@@ -298,13 +344,14 @@ public class TestService {
         Map<QuestionType, List<Double>> typeScores = new HashMap<>();
         
         for (UserTestAttempt attempt : completedAttempts) {
-            for (UserAnswer answer : attempt.getUserAnswers()) {
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            
+            for (UserAnswer answer : answers) {
                 QuestionType type = answer.getQuestion().getQuestionType();
-                double maxPoints = answer.getQuestion().getWeight() != null ? answer.getQuestion().getWeight() : 1.0;
+                double maxPoints = answer.getQuestion().getEffectiveWeight() != null ? answer.getQuestion().getEffectiveWeight() : 1.0;
                 double earned = answer.getAwardedScore() != null ? answer.getAwardedScore().doubleValue() : 0.0;
                 
-                double percent = (earned / maxPoints) * 100.0;
-                
+                double percent = (maxPoints > 0) ? (earned / maxPoints) * 100.0 : 0.0;
                 typeScores.computeIfAbsent(type, k -> new ArrayList<>()).add(percent);
             }
         }
@@ -322,11 +369,12 @@ public class TestService {
         distribution.put("61-80%", 0);
         distribution.put("81-100%", 0);
 
-        double totalMaxScore = test.getTestQuestions().stream()
-                .mapToDouble(tq -> tq.getQuestion().getWeight() != null ? tq.getQuestion().getWeight() : 1.0)
-                .sum();
-
         for (UserTestAttempt attempt : completedAttempts) {
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            double totalMaxScore = answers.stream()
+                .mapToDouble(a -> a.getQuestion().getEffectiveWeight() != null ? a.getQuestion().getEffectiveWeight() : 1.0)
+                .sum();
+            
             double score = attempt.getScore().doubleValue();
             double percent = (totalMaxScore > 0) ? (score / totalMaxScore) * 100.0 : 0;
 
@@ -340,7 +388,8 @@ public class TestService {
         Map<UUID, List<Boolean>> questionCorrectness = new HashMap<>();
         
         for (UserTestAttempt attempt : completedAttempts) {
-            for (UserAnswer ans : attempt.getUserAnswers()) {
+            List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+            for (UserAnswer ans : answers) {
                 questionCorrectness.computeIfAbsent(ans.getQuestion().getQuestionId(), k -> new ArrayList<>())
                         .add(Boolean.TRUE.equals(ans.getIsCorrect()));
             }
@@ -350,7 +399,7 @@ public class TestService {
         
         Map<UUID, Question> questionMap = test.getTestQuestions().stream()
                 .map(TestQuestion::getQuestion)
-                .collect(Collectors.toMap(Question::getQuestionId, q -> q));
+                .collect(Collectors.toMap(Question::getQuestionId, q -> q, (existing, replacement) -> existing));
 
         for (Map.Entry<UUID, List<Boolean>> entry : questionCorrectness.entrySet()) {
             long total = entry.getValue().size();
@@ -392,7 +441,6 @@ public class TestService {
                 .build();
     }
 
-
     private String calculateTestStatus(Test test) {
         OffsetDateTime now = OffsetDateTime.now();
 
@@ -409,6 +457,10 @@ public class TestService {
 
     private void updateTestQuestions(Test test, List<UUID> questionIds) {
         if (questionIds == null || questionIds.isEmpty()) return;
+
+        if (questionIds.size() > MAX_QUESTIONS_PER_TEST) {
+            throw new IllegalArgumentException("Перевищено ліміт! Тест не може містити більше " + MAX_QUESTIONS_PER_TEST + " питань.");
+        }
 
         List<TestQuestion> newLinks = new ArrayList<>();
 
@@ -429,6 +481,13 @@ public class TestService {
 
     public byte[] exportTestResults(UUID testId, ExportRequestDTO request, String email) throws IOException {
         List<CandidateDTO> results = getTestResults(testId, email);
+        
+        if (request.getGroupTag() != null && !request.getGroupTag().trim().isEmpty()) {
+            results = results.stream()
+                    .filter(c -> request.getGroupTag().equals(c.getGroupTag()))
+                    .collect(Collectors.toList());
+        }
+
         Test test = findTestById(testId);
 
         if ("PDF".equalsIgnoreCase(request.getFormat())) {
@@ -438,7 +497,6 @@ public class TestService {
         }
     }
     
-
     private TestDetailResponse mapToDetailResponse(Test test) {
         List<TestQuestion> testQuestions = testQuestionRepository.findByTest_TestId(test.getTestId());
 
@@ -452,17 +510,24 @@ public class TestService {
                             .questionId(q.getQuestionId())
                             .questionText(q.getQuestionText())
                             .questionType(q.getQuestionType())
-                            .weight(q.getWeight() != null ? q.getWeight() : 1.0)
+                            .weight(q.getEffectiveWeight())
                             .orderIndex(tq.getOrderIndex())
                             .build();
                 })
                 .collect(Collectors.toList());
+
+        List<TestLevelDTO> levelDtos = test.getTestLevels() != null 
+                ? test.getTestLevels().stream()
+                    .map(l -> new TestLevelDTO(l.getId(), l.getName(), l.getWeight(), l.getOrderIndex(), l.getQuestionsLimit()))
+                    .collect(Collectors.toList())
+                : new ArrayList<>();
 
         return TestDetailResponse.builder()
                 .testId(test.getTestId())
                 .testName(test.getTestName())
                 .sphere(test.getSphere())
                 .level(test.getLevel())
+                .levels(levelDtos)
                 .city(test.getCity())
                 .vacancyDescription(test.getVacancyDescription())
                 .responsibilities(test.getResponsibilities())
@@ -480,10 +545,17 @@ public class TestService {
     }
 
     private TestSummaryResponse mapToSummaryResponse(Test test) {
+        List<TestLevelDTO> levelDtos = test.getTestLevels() != null 
+                ? test.getTestLevels().stream()
+                    .map(l -> new TestLevelDTO(l.getId(), l.getName(), l.getWeight(), l.getOrderIndex(), l.getQuestionsLimit()))
+                    .collect(Collectors.toList())
+                : new ArrayList<>();
+
         return TestSummaryResponse.builder()
                 .testId(test.getTestId())
                 .testName(test.getTestName())
                 .sphere(test.getSphere())
+                .levels(levelDtos)
                 .level(test.getLevel())
                 .city(test.getCity())
                 .startTime(test.getStartTime())
@@ -497,30 +569,91 @@ public class TestService {
 
     private CandidateDTO mapRegistrationToCandidate(TestRegistration reg) {
         User u = reg.getUser();
+        
+        String tag = testAccessCodeRepository.findByTest_TestIdAndUsedByUser_Id(reg.getTest().getTestId(), u.getId())
+                .map(code -> code.getTag())
+                .orElse("-");
+
         return CandidateDTO.builder()
                 .userId(u.getId())
                 .fullName(getFullName(u))
                 .email(u.getEmail())
                 .profileImageUrl(getAvatarUrl(u))
+                .groupTag(tag) 
                 .status("REGISTERED")
                 .date(reg.getRegisteredAt())
                 .score(null)
                 .build();
     }
 
-    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt, BigDecimal totalMaxScore) {
+    private CandidateDTO mapAttemptToCandidate(UserTestAttempt attempt) {
         User u = attempt.getUser();
+        
+        List<UserAnswer> answers = userAnswerRepository.findByAttempt_AttemptId(attempt.getAttemptId());
+        double attemptMaxScore = answers.stream()
+            .mapToDouble(a -> a.getQuestion().getEffectiveWeight() != null ? a.getQuestion().getEffectiveWeight() : 1.0)
+            .sum();
+
+        String tag = testAccessCodeRepository.findByTest_TestIdAndUsedByUser_Id(attempt.getTest().getTestId(), u.getId())
+                .map(code -> code.getTag()) 
+                .orElse("-");
+
         return CandidateDTO.builder()
                 .userId(u.getId())
                 .fullName(getFullName(u))
                 .email(u.getEmail())
-                .profileImageUrl(getAvatarUrl(u))
+                .groupTag(tag) 
                 .status("COMPLETED")
                 .date(attempt.getCompletedAt())
                 .score(attempt.getScore())
-                .totalMaxScore(totalMaxScore)
+                .totalMaxScore(BigDecimal.valueOf(attemptMaxScore).setScale(2, RoundingMode.HALF_UP))
                 .attemptId(attempt.getAttemptId())
                 .build();
+    }
+
+    private Set<TestLevel> processTestLevels(List<TestLevelDTO> levelDtos, Test test) {
+        Set<TestLevel> testLevels = new HashSet<>();
+        
+        if (levelDtos != null && !levelDtos.isEmpty()) {
+            for (TestLevelDTO dto : levelDtos) {
+                if (dto == null) {
+                    continue; 
+                }
+
+                TestLevel testLevel = null;
+
+                if (dto.getId() != null) {
+                    testLevel = testLevelRepository.findById(dto.getId()).orElse(null);
+                } 
+                
+                if (testLevel == null && dto.getName() != null && !dto.getName().trim().isEmpty()) {
+                    String trimmedName = dto.getName().trim();
+                    
+                    if (test.getTestId() != null) {
+                        testLevel = testLevelRepository.findByTest_TestIdAndNameIgnoreCase(test.getTestId(), trimmedName).orElse(null);
+                    }
+                    
+                    if (testLevel == null) {
+                        testLevel = new TestLevel();
+                        testLevel.setName(trimmedName);
+                        testLevel.setTest(test); 
+                    }
+                }
+
+                if (testLevel != null) {
+                    testLevel.setWeight(dto.getWeight());
+                    testLevel.setOrderIndex(dto.getOrderIndex());
+                    testLevel.setQuestionsLimit(dto.getQuestionsLimit()); 
+                    testLevels.add(testLevel);
+                }
+            }
+        }
+        return testLevels;
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getTestGroups(UUID testId) {
+        return testAccessCodeRepository.findUniqueTagsByTestId(testId);
     }
 
     private Test findTestById(UUID testId) {
@@ -553,5 +686,125 @@ public class TestService {
             return user.getProfile().getProfileImageUrl();
         }
         return null;
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "test_details", key = "#testId"),
+        @CacheEvict(value = "test_analytics", key = "#testId")
+    })
+    @Transactional
+    public void syncTestQuestionsBulk(UUID testId, List<QuestionPayloadDTO> incomingQuestions) {
+        // 🛡️ ЗАХИСТ: Ліміт на питання при масовому додаванні/редагуванні
+        if (incomingQuestions != null && incomingQuestions.size() > MAX_QUESTIONS_PER_TEST) {
+            throw new IllegalArgumentException("Перевищено ліміт! Тест не може містити більше " + MAX_QUESTIONS_PER_TEST + " питань.");
+        }
+
+        Test test = findTestById(testId);
+
+        List<TestQuestion> existingLinks = testQuestionRepository.findByTest_TestId(testId);
+        
+        Set<UUID> incomingIds = incomingQuestions.stream()
+                .map(QuestionPayloadDTO::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        List<TestQuestion> linksToDelete = existingLinks.stream()
+                .filter(link -> !incomingIds.contains(link.getQuestion().getQuestionId()))
+                .collect(Collectors.toList());
+        
+        if (test.getTestQuestions() != null) {
+            test.getTestQuestions().removeAll(linksToDelete);
+        }
+        testQuestionRepository.deleteAll(linksToDelete);
+        testRepository.flush();
+
+        List<Question> questionsToSave = new ArrayList<>();
+        
+        for (int i = 0; i < incomingQuestions.size(); i++) {
+            QuestionPayloadDTO dto = incomingQuestions.get(i);
+            Question question;
+
+            if (dto.getId() != null) {
+                question = questionRepository.findById(dto.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("Question not found: " + dto.getId()));
+            } else {
+                question = new Question();
+                question.setAuthor(test.getUser());
+            }
+
+            question.setQuestionText(dto.getQuestionText());
+            question.setQuestionType(dto.getQuestionType());
+            
+            Double incomingWeight = dto.getCustomWeight() != null ? dto.getCustomWeight() : (dto.getCustomWeight() != null ? dto.getCustomWeight() : null);
+            question.setCustomWeight(incomingWeight);
+            
+            question.setComment(dto.getComment());
+            
+            if (dto.getLevelId() != null) {
+                TestLevel level = testLevelRepository.findById(dto.getLevelId())
+                        .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено: " + dto.getLevelId()));
+                question.setTestLevel(level);
+            } else {
+                question.setTestLevel(null);
+            }
+            
+            if (question.getChoiceOptions() != null) {
+                question.getChoiceOptions().clear();
+            } else {
+                question.setChoiceOptions(new HashSet<>());
+            }
+            
+            if (question.getTextAnswer() != null) {
+                question.setTextAnswer(null);
+            }
+            if (question.getCodeAnswer() != null) {
+                question.setCodeAnswer(null);
+            }
+            
+            if (dto.getChoiceOptions() != null && !dto.getChoiceOptions().isEmpty()) {
+                for (var optDto : dto.getChoiceOptions()) {
+                    ChoiceOption option = new ChoiceOption(question, optDto.getOptionText(), optDto.getIsCorrect());
+                    question.getChoiceOptions().add(option);
+                }
+            }
+
+            if (dto.getTextAnswer() != null) {
+                TextAnswer textAnswer = new TextAnswer(question, dto.getTextAnswer().getCorrectText(), dto.getTextAnswer().getIsCaseSensitive());
+                question.setTextAnswer(textAnswer);
+            }
+
+            if (dto.getCodeAnswer() != null) {
+                CodeAnswer codeAnswer = new CodeAnswer(
+                    question, 
+                    dto.getCodeAnswer().getTemplateCode(), 
+                    dto.getCodeAnswer().getTestCases(),
+                    dto.getCodeAnswer().getLanguage(),
+                    dto.getCodeAnswer().getMethodName()
+                );
+                question.setCodeAnswer(codeAnswer);
+            }
+
+            questionsToSave.add(question);
+        }
+
+        List<Question> savedQuestions = questionRepository.saveAll(questionsToSave);
+
+        List<TestQuestion> newLinks = new ArrayList<>();
+        for (int i = 0; i < savedQuestions.size(); i++) {
+            Question savedQ = savedQuestions.get(i);
+            
+            TestQuestion link = testQuestionRepository.findByTestAndQuestion(test, savedQ)
+                    .orElse(new TestQuestion(test, savedQ, i));
+            
+            link.setOrderIndex(i); 
+            newLinks.add(link);
+        }
+
+        testQuestionRepository.saveAll(newLinks);
+        
+        if (test.getTestQuestions() == null) {
+            test.setTestQuestions(new HashSet<>());
+        }
+        test.getTestQuestions().addAll(newLinks);
     }
 }

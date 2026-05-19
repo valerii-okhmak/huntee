@@ -2,21 +2,20 @@
 
 .testDashboard__tabs-nav {
     display: flex;
-    gap: 30px; 
+    gap: clamp(10px, 5vw, 30px); 
     border-bottom: 1px solid #000000; 
-    margin-top: 30px;
-    margin-bottom: 24px; 
-    padding-top: 10px;
+    width: 75%;
+    margin: 30px auto 24px auto;
 }
 
 .testDashboard__tabs-nav button {
     background: none;
     border: none;
     font-family: 'Montserrat', sans-serif;
-    font-size: 20px;
+    font-size: clamp(12px, 3vw, 20px);
     font-weight: 700; 
     color: #000000; 
-    padding: 0 0 12px 0; 
+    padding-bottom: 8px;
     cursor: pointer;
     position: relative;
     transition: color 0.2s ease;
@@ -30,12 +29,34 @@
     color: #0084FF !important; 
 }
 
-.testDashboard__tabs-active::after {
+.testDashboard__tabs-nav button::after {
     content: '';
     position: absolute;
-    bottom: -1px; 
-    left: 0;
-    width: 100%;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
     height: 3px;
     background-color: #0084FF;
+    border-radius: 4px 4px 0 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+}
+
+.testDashboard__tabs-nav button:hover::after {
+    width: 40%;
+    background-color: #b3d9ff;
+}
+
+.testDashboard__tabs-nav button.testDashboard__tabs-active::after {
+    width: 100%;
+    background-color: #0084FF;
+}
+
+@media (max-width: 578px) {
+    .testDashboard__tabs-nav {
+        width: 100%;
+        padding: 0 15px;
+        gap: 0;
+        justify-content: space-around;
+    }
 }

@@ -1,11 +1,9 @@
 package org.dreamteam.service;
 
 import java.io.BufferedReader;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import java.nio.charset.StandardCharsets;
-
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,8 +34,8 @@ public class QuestionService {
     private final TestRepository testRepository;
     private final TestQuestionRepository testQuestionRepository;
     private final UserRepository userRepository;
+    private final TestLevelRepository testLevelRepository;
 
-    
     @Transactional(readOnly = true)
     public List<QuestionResponse> getQuestionsByTestId(UUID testId, String userEmail) {
         Test test = testRepository.findById(testId)
@@ -57,8 +55,6 @@ public class QuestionService {
                 .collect(Collectors.toList());
     }
 
-
-
     @Transactional
     public Question createQuestionAndLinkToTest(UUID testId, QuestionCreateRequest request, String authorEmail) {
         
@@ -71,10 +67,9 @@ public class QuestionService {
         
         User author = findUserByEmail(authorEmail);
 
-        Question question = new Question(request.getQuestionText(), request.getQuestionType(), author);
-        question.setComment(request.getComment());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
-        
+        Question question = new Question();
+        question.setAuthor(author);
+        mapToQuestion(question, request);
         processQuestionAnswers(question, request);
 
         Question savedQuestion = questionRepository.save(question);
@@ -92,22 +87,78 @@ public class QuestionService {
         return mapToQuestionResponse(question);
     }
 
+    @Transactional(readOnly = true)
+    public List<QuestionResponse> getAllQuestionsByAuthor(String authorEmail) {
+        List<Question> questions = questionRepository.findAllByAuthor_Email(authorEmail);
+        return questions.stream()
+                .map(this::mapToQuestionResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public QuestionResponse updateQuestion(UUID questionId, QuestionUpdateRequest request, String authorEmail) {
         Question question = findQuestionById(questionId);
         checkQuestionOwnership(question, authorEmail);
-
-        question.setQuestionText(request.getQuestionText());
-        question.setComment(request.getComment());
-        question.setQuestionType(request.getQuestionType());
-        question.setWeight(request.getWeight() != null ? request.getWeight() : question.getWeight());
-        question.setQuestionText(request.getQuestionText());
-        
+        mapToQuestion(question, request);
         clearExistingAnswers(question);
         processQuestionAnswers(question, request);
 
         Question updatedQuestion = questionRepository.save(question);
         return mapToQuestionResponse(updatedQuestion);
+    }
+ 
+    @Transactional
+    public QuestionResponse duplicateQuestion(UUID questionId, String authorEmail){
+        Question originalQuestion = findQuestionById(questionId);
+        User author = findUserByEmail(authorEmail);
+        Question copyQuestion = new Question();
+        copyQuestion.setAuthor(author);
+        copyQuestion.setCustomWeight(originalQuestion.getCustomWeight());
+        copyQuestion.setComment(originalQuestion.getComment());
+        copyQuestion.setImageUrl(originalQuestion.getImageUrl());
+        copyQuestion.setQuestionText(originalQuestion.getQuestionText());
+        copyQuestion.setQuestionType(originalQuestion.getQuestionType());
+        copyQuestion.setCategories(new HashSet<>(originalQuestion.getCategories()));
+        copyQuestion.setTestLevel(originalQuestion.getTestLevel()); 
+        
+        switch(originalQuestion.getQuestionType()){
+            case SINGLE_CHOICE, MULTIPLE_CHOICE:
+                if (originalQuestion.getChoiceOptions() != null) {
+                    Set<ChoiceOption> clonedOptions = originalQuestion.getChoiceOptions().stream()
+                            .map(o -> new ChoiceOption(copyQuestion, o.getOptionText(), o.isCorrect()))
+                            .collect(Collectors.toSet());
+                    copyQuestion.setChoiceOptions(clonedOptions);
+                }
+                break;
+            
+            case TEXT:
+                TextAnswer originalText = originalQuestion.getTextAnswer();
+                if (originalText != null){
+                    copyQuestion.setTextAnswer(new TextAnswer(copyQuestion, originalText.getCorrectText(), originalText.isCaseSensitive()));
+                }
+                break;
+            
+            case MATCHING:
+                if (originalQuestion.getMatchingPairs() != null) {
+                    Set<MatchingPair> clonedPairs = originalQuestion.getMatchingPairs().stream()
+                            .map(p -> new MatchingPair(copyQuestion, p.getPrompt(), p.getAnswer()))
+                            .collect(Collectors.toSet());
+                    copyQuestion.setMatchingPairs(clonedPairs);
+                }
+                break;
+            
+            case CODE:
+                CodeAnswer oldCode = originalQuestion.getCodeAnswer();
+                if (oldCode != null) {
+                    copyQuestion.setCodeAnswer(new CodeAnswer(
+                            copyQuestion, oldCode.getTemplateCode(), oldCode.getTestCases(), 
+                            oldCode.getLanguage(), oldCode.getMethodName()
+                    ));
+                }
+                break;
+        }
+        Question savedQuestion = questionRepository.save(copyQuestion);
+        return mapToQuestionResponse(savedQuestion);
     }
 
     @Transactional
@@ -269,11 +320,8 @@ public class QuestionService {
         for(QuestionCreateRequest request : questionRequests){
             validateQuestionRequest(request);
             Question question = new Question();
-            question.setQuestionText(request.getQuestionText());
-            question.setQuestionType(request.getQuestionType());
-            question.setComment(request.getComment());
             question.setAuthor(author);
-            question.setWeight(request.getWeight() != null ? request.getWeight() : 1.0);
+            mapToQuestion(question, request);
             processQuestionAnswers(question, request);
             questionsToSave.add(question);
         }
@@ -401,14 +449,43 @@ public class QuestionService {
         }
     }
 
+    private void mapToQuestion(Question question, QuestionCreateRequest request) {
+        question.setQuestionText(request.getQuestionText());
+        question.setQuestionType(request.getQuestionType());
+        question.setComment(request.getComment());
+        question.setCustomWeight(request.getCustomWeight() != null ? request.getCustomWeight() : null);
+        question.setCategories(request.getCategories() != null ? request.getCategories() : new HashSet<>());
+        if (request.getLevelId() != null) {
+            TestLevel level = testLevelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено"));
+            question.setTestLevel(level);
+        }
+    }
+
+    private void mapToQuestion(Question question, QuestionUpdateRequest request) {
+        question.setQuestionText(request.getQuestionText());
+        question.setQuestionType(request.getQuestionType());
+        question.setComment(request.getComment());
+        question.setCustomWeight(request.getCustomWeight() != null ? request.getCustomWeight() : question.getCustomWeight());
+        question.setCategories(request.getCategories() != null ? request.getCategories() : question.getCategories());
+        if (request.getLevelId() != null) {
+            TestLevel level = testLevelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new EntityNotFoundException("Рівень не знайдено"));
+            question.setTestLevel(level);
+        }
+    }
+
     private QuestionResponse mapToQuestionResponse(Question question) {
         QuestionResponse.QuestionResponseBuilder builder = QuestionResponse.builder()
                 .questionId(question.getQuestionId())
                 .questionText(question.getQuestionText())
                 .comment(question.getComment())
                 .questionType(question.getQuestionType())
-                .weight(question.getWeight())
-                .authorEmail(question.getAuthor().getUsername());
+                .customWeight(question.getCustomWeight())
+                .authorEmail(question.getAuthor().getUsername())
+                .categories(question.getCategories())
+                // ВИПРАВЛЕНО: getId() замість getLevelId()
+                .levelId(question.getTestLevel() != null ? question.getTestLevel().getId() : null);
 
         switch (question.getQuestionType()) {
             case SINGLE_CHOICE, MULTIPLE_CHOICE:

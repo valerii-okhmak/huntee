@@ -1,144 +1,490 @@
 .testCreationMainPreview {
-    margin-top: 50px;
-}
-
-/* === СТИЛІ ДЛЯ КОНТЕНТУ ПИТАНЬ === */
-.preview-comment-block {
-    margin-top: 15px;
-    padding: 10px;
-    background: #f9f9f9;
-    border-radius: 5px;
-    border-left: 4px solid #007bff;
-}
-
-.preview-comment-hint {
-    font-weight: bold;
-    color: #555;
-}
-
-.preview-comment-text {
-    margin: 0;
-    font-size: 14px;
-}
-
-.preview-text-answer-correct {
-    margin-top: 10px;
-    color: #28a745;
-}
-
-.preview-code-block {
-    background: #ffffff;
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 5px;
-    font-family: monospace;
-}
-
-.preview-code-lang {
-    margin-bottom: 10px;
-    color: #007bff;
-    font-weight: bold;
-}
-
-.preview-code-pre {
-    white-space: pre-wrap;
-    margin: 0;
-}
-
-.preview-unknown-type {
-    color: red;
+  width: 100%;
+  margin: 20px 0;
+  font-family: inherit;
+  padding-bottom: 60px; 
 }
 
 .preview-no-questions {
-    transition: color 0.3s ease;
+  text-align: center;
+  color: #666;
+  padding: 40px;
+  font-size: 18px;
 }
 
 .preview-no-questions.error {
-    color: #dc3545;
+  color: red;
 }
 
-.preview-question-number {
-    color: #888;
-    margin-right: 10px;
+.preview-level-group {
+  margin-bottom: 24px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-/* === КНОПКИ ВНИЗУ КАРТКИ === */
-.test-buttons {
-    display: flex;
-    align-items: center; /* Вирівнює кнопки по одній горизонтальній лінії */
-    justify-content: space-between; /* Розносить по краях */
-    margin-top: 45px; /* ЗБІЛЬШЕНО: відштовхує кнопки від відповідей вниз */
-    flex-wrap: wrap;
-    gap: 15px;
-    width: 100%;
+.preview-level-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: #333;
+  padding: 12px 16px;
+  margin-bottom: 0;
+  background-color: #f8f9fa;
+  border: 1px solid #dcdcdc;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* Скидання глобальних відступів, щоб права кнопка не стрибала */
-.test-buttons .next-button {
-    margin: 0 !important; 
+.no-level-header {
+  background-color: #fff3cd;
 }
 
-.testcard-buttons {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 12px;
-    margin: 0;
-    width: auto;
+.level-title-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.testcard-action-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 8px 18px;
-    font-size: 15px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2); 
-    transition: transform 0.1s ease, filter 0.2s ease, background-color 0.2s ease;
-    margin: 0; /* Гарантуємо, що немає зайвих відступів */
+.level-title-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.testcard-action-btn:active {
-    transform: scale(0.96);
+.level-dot {
+  color: #8da4d0;
+  font-size: 18px;
 }
 
-.btn-edit {
-    background-color: #1657b8;
-    color: #ffffff;
+.preview-level-items {
+  border: 1px solid #dcdcdc;
+  border-radius: 0 0 8px 8px;
+  background: #ffffff;
+  overflow: hidden;
 }
 
-.btn-edit:hover {
-    background-color: #0f3d82; 
+.preview-list-item-container {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #dcdcdc;
+  background-color: #fff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.btn-delete {
-    background-color: #ba2a14; 
-    color: #ffffff;
+.preview-list-item-container:last-child {
+  border-bottom: none;
 }
 
-.btn-delete:hover {
-    background-color: #91200f;
+.preview-list-item-container:hover {
+  background-color: #fafafa;
 }
 
-/* === АДАПТИВНІСТЬ === */
-@media screen and (max-width: 600px) {
-    .test-buttons {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .testcard-buttons {
-        justify-content: space-between;
-        width: 100%;
-    }
+.preview-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+}
 
-    .testcard-action-btn {
-        flex: 1;
-    }
+.preview-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.icon-drag {
+  color: #999;
+  font-size: 16px;
+  cursor: grab;
+  padding: 4px;
+}
+.icon-drag:active {
+  cursor: grabbing;
+}
+
+.q-number {
+  font-weight: 700;
+  color: #333;
+  font-size: 15px;
+  min-width: 25px;
+}
+
+.q-text {
+  font-size: 15px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 8px;
+}
+
+.preview-item-right {
+  display: flex;
+  gap: 12px;
+  margin-left: 16px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: #000;
+}
+
+.btn-edit-list, .btn-delete-list {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.btn-edit-list:hover, .btn-delete-list:hover {
+  opacity: 0.85;
+}
+
+.btn-edit-list {
+  background-color: #2b5cb8;
+}
+
+.btn-delete-list {
+  background-color: #b83a2b;
+}
+
+.question-preview-content {
+  padding: 0 16px 16px 64px; 
+  font-size: 14px;
+  color: #555;
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.q-preview-opt {
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.q-preview-opt.correct {
+  color: #28a745;
+  font-weight: 600;
+}
+.q-preview-code {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  color: #333;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  margin-top: 5px;
+}
+
+/* --- Зона швидкого додавання (Замість Jupyter) --- */
+.quick-add-zone {
+  position: relative;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(-5px);
+  z-index: 10;
+  margin: -5px 20px 0 20px;
+}
+
+.preview-level-group:hover .quick-add-zone,
+.quick-add-zone:hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quick-add-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #2b5cb8;
+  opacity: 0.15;
+  z-index: -1;
+}
+
+.quick-add-btn {
+  background: #fff;
+  border: 1px solid #2b5cb8;
+  color: #2b5cb8;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(43, 92, 184, 0.1);
+}
+
+.quick-add-btn:hover {
+  background: #2b5cb8;
+  color: #fff;
+}
+
+.preview-level-actions {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.preview-add-level-btn {
+  background-color: #ffffff;
+  border: 1px dashed #2b5cb8;
+  color: #2b5cb8;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preview-add-level-btn:hover {
+  background-color: #f0f4ff;
+}
+
+.icon-plus-margin {
+  margin-right: 8px;
+}
+
+.preview-create-level-form {
+  display: flex;
+  gap: 12px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #2b5cb8; 
+  flex-wrap: wrap;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(43, 92, 184, 0.1);
+  margin-bottom: 15px; 
+}
+
+.preview-input-name {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  flex: 1;
+  min-width: 200px;
+  outline: none;
+}
+
+.preview-points-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preview-points-label {
+  font-size: 14px;
+  color: #555;
+}
+
+.preview-input-points {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 80px;
+  outline: none;
+}
+
+.preview-btn-save {
+  padding: 8px 16px;
+  background: #2b5cb8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.preview-btn-cancel {
+  padding: 8px 16px;
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.preview-level-points-info {
+  color: #888;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.preview-level-empty-msg {
+  padding: 24px 16px;
+  color: #888;
+  text-align: center;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.btn-icon-margin {
+  margin-right: 6px;
+}
+
+.level-checkbox, .item-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse-btn:hover {
+  color: #000;
+}
+
+.level-name-text {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.preview-list-item-container.selected {
+  background-color: #f0f4ff;
+  border-color: #2b5cb8;
+}
+
+.bulk-actions-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f4ff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #2b5cb8;
+  position: sticky;
+  top: 10px;
+  z-index: 100;
+  box-shadow: 0 4px 15px rgba(43, 92, 184, 0.15);
+}
+
+.bulk-count-text {
+  font-weight: 600;
+  color: #2b5cb8;
+}
+
+.bulk-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.bulk-select-level {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.bulk-btn-move {
+  padding: 8px 16px;
+  background-color: #2b5cb8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bulk-btn-move:disabled {
+  background-color: #8da4d0;
+  cursor: not-allowed;
+}
+
+.bulk-btn-delete {
+  padding: 8px 16px;
+  background-color: #b83a2b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bulk-btn-cancel {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.bulk-btn-cancel:hover {
+  background-color: #f5f5f5;
+}
+
+/* Drag & Drop */
+.preview-level-group.drag-over {
+    background-color: rgba(43, 92, 184, 0.05); 
+    border: 2px dashed #2b5cb8;
+    border-radius: 8px;
+}
+
+.preview-list-item-container.drop-target {
+    border-top: 4px solid #2b5cb8; 
+    margin-top: 2px;
+}
+
+.drag-ghost {
+    padding: 8px 16px;
+    background-color: #2b5cb8;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: -1000px; 
+    z-index: 9999;
 }

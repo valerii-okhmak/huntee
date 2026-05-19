@@ -17,10 +17,13 @@ import GeneralTestInfoHeader from '../../components/GeneralTestInfoHeader/Genera
 import TestReviewGrading from '../../components/TestReviewGrading/TestReviewGrading';
 import TestReviewQuestions from '../../components/TestReviewQuestions/TestReviewQuestions';
 
+const STORAGE_ANSWERS_KEY = 'trial_test_answers';
+const STORAGE_END_TIME_KEY = 'trial_test_end_time';
+const STORAGE_CURRENT_INDEX_KEY = 'trial_test_current_index'; // Новий ключ
+
 const getMockAttemptData = (t) => ({
   testName: t('trialTest.testName'),
   isFixedTime: true,
-  endTime: new Date(new Date().getTime() + 15 * 60000).toISOString(), 
   questions: [
     {
       questionId: "q1",
@@ -64,18 +67,52 @@ const getMockAttemptData = (t) => ({
 const TrialTest = ({ testType }) => { 
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const mockAttemptData = getMockAttemptData(t);
 
-  const [current, setCurrent] = useState(0); 
-  const [answers, setAnswers] = useState({}); 
+  // --- 1. Ініціалізація відповідей ---
+  const [answers, setAnswers] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_ANSWERS_KEY);
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  // --- 2. Ініціалізація поточного запитання ---
+  const [current, setCurrent] = useState(() => {
+    const savedIndex = localStorage.getItem(STORAGE_CURRENT_INDEX_KEY);
+    return savedIndex ? parseInt(savedIndex, 10) : 0;
+  });
+
+  // --- 3. Логіка таймера ---
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const savedEndTime = localStorage.getItem(STORAGE_END_TIME_KEY);
+    const now = new Date().getTime();
+
+    if (savedEndTime) {
+      const remaining = Math.floor((parseInt(savedEndTime) - now) / 1000);
+      return remaining > 0 ? remaining : 0;
+    } else {
+      const duration = 15 * 60; 
+      const newEndTime = now + duration * 1000;
+      localStorage.setItem(STORAGE_END_TIME_KEY, newEndTime.toString());
+      return duration;
+    }
+  });
+
   const [outputMap, setOutputMap] = useState({}); 
-  const [timeLeft, setTimeLeft] = useState(15 * 60);
-  
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [resultData, setResultData] = useState(null);
 
-  const mockAttemptData = getMockAttemptData(t);  
+  // --- Ефект для збереження відповідей ---
+  useEffect(() => {
+    localStorage.setItem(STORAGE_ANSWERS_KEY, JSON.stringify(answers));
+  }, [answers]);
 
+  // --- Ефект для збереження поточного індексу ---
+  useEffect(() => {
+    localStorage.setItem(STORAGE_CURRENT_INDEX_KEY, current.toString());
+  }, [current]);
+
+  // --- Ефект таймера ---
   useEffect(() => {
     if (timeLeft <= 0 && !isFinished) {
         finishTrialTest(); 
@@ -84,10 +121,18 @@ const TrialTest = ({ testType }) => {
     if (isFinished) return;
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      setTimeLeft((prev) => {
+        const nextTime = prev - 1;
+        if (nextTime <= 0) {
+          clearInterval(timer);
+          return 0;
+        }
+        return nextTime;
+      });
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [timeLeft, isFinished]);
+  }, [isFinished]);
 
   const formatTime = (sec) => {
     if (sec < 0) sec = 0;
@@ -132,6 +177,12 @@ const TrialTest = ({ testType }) => {
     setIsConfirmModalOpen(true);
   };
 
+  const clearStorage = () => {
+    localStorage.removeItem(STORAGE_ANSWERS_KEY);
+    localStorage.removeItem(STORAGE_END_TIME_KEY);
+    localStorage.removeItem(STORAGE_CURRENT_INDEX_KEY);
+  };
+
   const finishTrialTest = () => {
       setIsConfirmModalOpen(false);
       
@@ -165,32 +216,24 @@ const TrialTest = ({ testType }) => {
 
           if (isCorrect) totalScore += 1;
 
-          const optionsList = (q.choiceOptions || q.options || []).map(opt => ({
+          const optionsList = (q.choiceOptions || []).map(opt => ({
               ...opt,
               id: opt.optionId || opt.id,       
               text: opt.optionText || opt.text  
           }));
 
-          let finalCorrectAnswers = [];
-          if (q.questionType === "SINGLE_CHOICE") finalCorrectAnswers = [q.correctAnswer];
-          if (q.questionType === "MULTIPLE_CHOICE") finalCorrectAnswers = q.correctAnswers;
-
           return {
               questionId: q.questionId,
               type: q.questionType, 
               questionText: q.questionText,
-              
               options: optionsList,
               selectedOptionIds: selectedOptionIds,
               correctOptionIds: correctOptionIds,
-              
               userAnswer: userAnswer || "",
               correctAnswer: q.correctAnswerText,
-              
               language: q.codeLanguage,
               userCode: userAnswer || "",
               testCases: isCorrect ? t('trialTest.results.passed') : t('trialTest.results.failed'),
-              
               isCorrect: isCorrect,
               weight: 1.0,
               comment: isCorrect ? t('trialTest.results.commentSuccess') : t('trialTest.results.commentFail')
@@ -204,6 +247,7 @@ const TrialTest = ({ testType }) => {
           questions: gradedQuestions
       });
 
+      clearStorage();
       setIsFinished(true); 
   };
 
@@ -271,7 +315,7 @@ const TrialTest = ({ testType }) => {
             value={answer || ""}
             onChange={(e) => handleAnswerChange(q.questionId, e.target.value)}
             placeholder={t('testPage.placeholder') || "Введіть вашу відповідь..."}
-            style={{width: '100%', padding: '10px', marginTop: '10px', borderRadius: '5px', border: '1px solid #ccc'}}
+            style={{width: '100%', padding: '10px', marginTop: '10px', borderRadius: '5px', border: '1px solid #ccc', resize: 'none'}}
           />
         );
 
@@ -308,22 +352,9 @@ const TrialTest = ({ testType }) => {
   if (isFinished && resultData) {
       return (
           <div className="page" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
-              <GeneralTestInfoHeader
-                  title={resultData.testName}
-                  name={resultData.candidateName}
-              />
-
-              <TestReviewGrading 
-                  score={resultData.score} 
-                  totalMaxScore={resultData.totalMaxScore} 
-                  isPending={false} 
-              />
-
-              <TestReviewQuestions 
-                  questionsLink={resultData.questions} 
-                  isGradingMode={false} 
-                  onGrade={() => {}} 
-              />
+              <GeneralTestInfoHeader title={resultData.testName} />
+              <TestReviewGrading score={resultData.score} totalMaxScore={resultData.totalMaxScore} isPending={false} />
+              <TestReviewQuestions questionsLink={resultData.questions} isGradingMode={false} onGrade={() => {}} />
           </div>
       );
   }
@@ -342,15 +373,15 @@ const TrialTest = ({ testType }) => {
           
           <div className="timer-box">
             <div className="time">
-                <span className="time-val">{h}</span>
+                <span className="time-val">{String(h).padStart(2, '0')}</span>
                 <span className="time-label">{t('testPage.timer.hours') || "год"}</span>
             </div>
             <div className="time">
-                <span className="time-val">{m}</span>
+                <span className="time-val">{String(m).padStart(2, '0')}</span>
                 <span className="time-label">{t('testPage.timer.minutes') || "хв"}</span>
             </div>
             <div className="time">
-                <span className="time-val">{s}</span>
+                <span className="time-val">{String(s).padStart(2, '0')}</span>
                 <span className="time-label">{t('testPage.timer.seconds') || "сек"}</span>
             </div>
           </div>

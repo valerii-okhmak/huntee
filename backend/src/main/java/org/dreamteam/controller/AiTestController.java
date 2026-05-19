@@ -28,7 +28,9 @@ public class AiTestController {
                 count,
                 request.getDifficulty(),
                 request.getQuestionType(),
-                request.getLanguage()
+                request.getLanguage(), 
+                request.getCustomInstructions(), 
+                request.isAutoLevel()
         );
 
         return ResponseEntity.ok(response.getQuestions());

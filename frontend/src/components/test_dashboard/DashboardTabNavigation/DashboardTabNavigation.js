@@ -4,19 +4,18 @@ import './DashboardTabNavigation.css';
 
 const DashboardTabNavigation = ({ activeTab, setActiveTab }) => {
     const { t } = useTranslation();
-    const tabNames = ['registered', 'results', 'analytics'];
+    const tabNames = ['participants', 'analytics'];
 
     const getTabLabel = (name) => {
         switch (name) {
-          case 'registered': return t('dashboardTabNavigation.registered');
-          case 'results': return t('dashboardTabNavigation.results');
+          case 'participants': return t('dashboardTabNavigation.registered');
           case 'analytics': return t('dashboardTabNavigation.analytics');
           default: return '';
         }
     };
 
   return (
-    <nav className="container testDashboard__tabs-nav">
+    <nav className="testDashboard__tabs-nav">
       {tabNames.map((tab) => (
         <button
           key={tab}

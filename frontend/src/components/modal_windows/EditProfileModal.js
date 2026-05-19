@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Modal from './Modal';
 import axios from 'axios';
 import { getAccessToken } from '../../utils/auth';
+import './ModalWindow.css';
 
 const DEFAULT_AVATAR = '/img/avatar.png'; 
 
@@ -34,12 +35,10 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
 
   const uploadAvatar = async () => {
     if (!selectedAvatarFile) return;
-
     try {
       const token = getAccessToken();
       const formData = new FormData();
       formData.append('file', selectedAvatarFile);
-
       await axios.post(`/api/profile/upload-avatar`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -47,42 +46,36 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
         },
       });
     } catch (error) {
-      console.error('Помилка завантаження аватара:', error.response?.data || error.message);
+      console.error('Помилка завантаження аватара:', error);
     }
   };
 
   const updateData = async () => {
     try {
       const token = getAccessToken();
+      const headers = { 'Authorization': `Bearer ${token}` };
 
-      if (firstName) {
-        await axios.patch(`/api/profile/first-name`, { firstName }, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+      const promises = [];
+      if (firstName !== profileData?.firstName) {
+        promises.push(axios.patch(`/api/profile/first-name`, { firstName }, { headers }));
       }
-
-      if (lastName) {
-        await axios.patch(`/api/profile/last-name`, { lastName }, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+      if (lastName !== profileData?.lastName) {
+        promises.push(axios.patch(`/api/profile/last-name`, { lastName }, { headers }));
       }
-
-      if (birthDate) {
-        await axios.patch(`/api/profile/birth-date`, { birthDate }, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+      if (birthDate !== profileData?.birthDate) {
+        promises.push(axios.patch(`/api/profile/birth-date`, { birthDate }, { headers }));
       }
-
+      
+      await Promise.all(promises);
       await uploadAvatar();
 
       fetchProfile && fetchProfile();
       onClose();
     } catch (error) {
-      console.error('Помилка оновлення профілю:', error.response?.data || error.message);
+      console.error('Помилка оновлення профілю:', error);
     }
   };
 
-  // Кнопка активна, якщо хоча б одне поле змінилось або обрано аватар
   const isSaveDisabled =
     firstName === (profileData?.firstName || '') &&
     lastName === (profileData?.lastName || '') &&
@@ -91,90 +84,82 @@ const EditProfileModal = ({ isOpen, onClose, profileData, fetchProfile }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-
-      <button className="modal-close" onClick={onClose} aria-label={t('editProfileModal.close')}>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M14.2548 4.75488C14.5282 4.48152 14.9717 4.48152 15.2451 4.75488C15.5184 5.02825 15.5184 5.47175 15.2451 5.74512L10.9902 10L15.2451 14.2549C15.5184 14.5283 15.5184 14.9717 15.2451 15.2451C14.9717 15.5184 14.5282 15.5184 14.2548 15.2451L10 10.9902L5.74512 15.2451C5.47175 15.5184 5.02825 15.5184 4.75488 15.2451C4.48146 14.9717 4.48146 14.5283 4.75488 14.2549L9.00977 10L4.75488 5.74512C4.48146 5.47175 4.48146 5.02825 4.75488 4.75488C5.02825 4.48152 5.47175 4.48152 5.74512 4.75488L10 9.00977L14.2548 4.75488Z"/>
-        </svg>
-      </button>
-
-      <h3 className="modal-title">{t('editProfileModal.title')}</h3>
-
-      <div className="modal-photo-section">
-        <div className="change-photo-container">
-          <img
-            src={avatarPreview}
-            alt="Аватар"
-            className="profile-avatar"
-            style={{
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '1px solid #ccc',
-            }}
-          />
+      <div className="ep-modern-content">
+        
+        <div className="ep-modern-header">
+          <h2 className="ep-modern-title">{t('editProfileModal.title', 'Особисті дані')}</h2>
+          <button className="modal-close" onClick={onClose} aria-label={t('inviteModal.close', 'Закрити')}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M14.2548 4.75488C14.5282 4.48152 14.9717 4.48152 15.2451 4.75488C15.5184 5.02825 15.5184 5.47175 15.2451 5.74512L10.9902 10L15.2451 14.2549C15.5184 14.5283 15.5184 14.9717 15.2451 15.2451C14.9717 15.5184 14.5282 15.5184 14.2548 15.2451L10 10.9902L5.74512 15.2451C5.47175 15.5184 5.02825 15.5184 4.75488 15.2451C4.48146 14.9717 4.48146 14.5283 4.75488 14.2549L9.00977 10L4.75488 5.74512C4.48146 5.47175 4.48146 5.02825 4.75488 4.75488C5.02825 4.48152 5.47175 4.48152 5.74512 4.75488L10 9.00977L14.2548 4.75488Z" />
+            </svg>
+          </button>
         </div>
-        <input
-          type="file"
-          id="avatarUpload"
-          accept="image/*"
-          onChange={handleAvatarChange}
-          className="hidden-file-input"
-        />
-        <label htmlFor="avatarUpload" className="modal-photo-link">
-          {t('editProfileModal.changePhoto')}
-        </label>
-      </div>
 
-      <div className="full-width-line"></div>
+        <p className="ep-modern-subtitle">Оновіть своє фото та особисту інформацію.</p>
 
-      <div className="modal-info-section">
-        <label className="modal-label-subinfo">{t('editProfileModal.firstName')}</label>
-        <input
-          type="text"
-          className="modal-info-input"
-          placeholder={t('editProfileModal.placeholders.firstName')}
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-      </div>
+        <div className="ep-modern-avatar-section">
+          <input
+            type="file"
+            id="avatarUpload"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            className="ep-modern-hidden-input"
+          />
+          <label htmlFor="avatarUpload" className="ep-modern-avatar-label">
+            <img src={avatarPreview} alt="Аватар" className="ep-modern-avatar-img" />
+            <div className="ep-modern-avatar-overlay">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>Змінити</span>
+            </div>
+          </label>
+        </div>
 
-      <div className="full-width-line"></div>
+        <div className="ep-modern-form">
+          <div className="ep-modern-form-row">
+            <div className="ep-modern-input-group">
+              <label>{t('editProfileModal.firstName', "Ім'я")}</label>
+              <input
+                type="text"
+                placeholder={t('editProfileModal.placeholders.firstName', "Введіть ім'я")}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </div>
 
-      <div className="modal-info-section">
-        <label className="modal-label-subinfo">{t('editProfileModal.lastName')}</label>
-        <input
-          type="text"
-          className="modal-info-input"
-          placeholder={t('editProfileModal.placeholders.lastName')}
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-      </div>
+            <div className="ep-modern-input-group">
+              <label>{t('editProfileModal.lastName', 'Прізвище')}</label>
+              <input
+                type="text"
+                placeholder={t('editProfileModal.placeholders.lastName', 'Введіть прізвище')}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>
+          </div>
 
-      <div className="full-width-line"></div>
+          <div className="ep-modern-input-group">
+            <label>{t('editProfileModal.birthDate', 'Дата народження')}</label>
+            <input
+              type="date"
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+            />
+          </div>
+        </div>
 
-      <div className="modal-info-section">
-        <label className="modal-label-subinfo">{t('editProfileModal.birthDate')}</label>
-        <input
-          type="date"
-          className="modal-info-input modal-calendar"
-          value={birthDate}
-          onChange={(e) => setBirthDate(e.target.value)}
-        />
-      </div>
+        <div className="ep-modern-footer">
+          <button
+            className={`ep-modern-save-btn ${isSaveDisabled ? "disabled" : ""}`}
+            disabled={isSaveDisabled}
+            onClick={() => !isSaveDisabled && updateData()}
+          >
+            {t('editProfileModal.save', 'Зберегти зміни')}
+          </button>
+        </div>
 
-      <div className="full-width-line"></div>
-
-      <div className="modal-buttons">
-        <button
-          className={`modal-button modal-button-submit ${isSaveDisabled ? "disabled" : "active"}`}
-          disabled={isSaveDisabled}
-          onClick={() => !isSaveDisabled && updateData()}
-        >
-          {t('editProfileModal.save')}
-        </button>
       </div>
     </Modal>
   );

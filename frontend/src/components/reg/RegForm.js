@@ -365,7 +365,9 @@ const RegForm = () => {
           </div>
         </div>
 
-        <div className="horizontal-line-reg"></div>
+      <div className="social-login-divider">
+        <span>{t('regForm.socialLoginDivider')}</span>
+      </div>
 
         <div className="bottom-part-reg">
           <SocialLogin setError={(msg) => setErrors((prev) => ({ ...prev, general: msg }))} />

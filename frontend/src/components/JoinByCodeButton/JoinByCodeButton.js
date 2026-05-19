@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ActivateCodeModal from '../modal_windows/ActivateCodeModal'; 
+import './JoinByCodeButton.css'; 
 
 const JoinByCodeButton = ({ customStyle, customClass = "black-btn" }) => {
   const { t } = useTranslation();
@@ -9,16 +10,9 @@ const JoinByCodeButton = ({ customStyle, customClass = "black-btn" }) => {
   return (
     <>
       <button 
-        className={customClass} 
+        className={`join-by-code-btn ${customClass}`.trim()} 
         onClick={() => setIsActivateModalOpen(true)}
-        style={{ 
-            whiteSpace: 'nowrap', 
-            fontFamily: 'Montserrat, sans-serif',
-            color: 'white',
-            fontSize: 'clamp(14px, 2vw, 20px)',
-            fontWeight: 700, 
-            ...customStyle 
-        }}
+        style={customStyle} 
       >
         {t('testsBlock.joinByCode')}
       </button>

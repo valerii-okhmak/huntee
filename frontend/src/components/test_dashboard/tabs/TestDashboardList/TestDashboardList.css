@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* --- ЗАГАЛЬНІ СТИЛИ ТА ОПИС --- */
 .testDashboard__description {
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(12px, 5vw, 20px);
     margin-bottom: 35px;
+}
+
+.testDashboard__description p {
+    white-space: pre-line; 
 }
 
 .testDashboard__quote {
@@ -27,18 +32,25 @@
     border-radius: 30px;
 }
 
-.testDashboard__description p {
-    white-space: pre-line; 
-}
-
-
+/* --- ПАНЕЛЬ ІНСТРУМЕНТІВ (ПОШУК, КНОПКИ) --- */
 .testDashboard__toolbar {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
     align-items: stretch;
+    flex-wrap: wrap;
 }
 
+.testDashboard__search-message-group {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    min-width: 350px;
+}
+
+.search-container {
+    flex: 1;
+}
 
 .testDashboard__message {
     background-color: #FFFBFB;
@@ -50,8 +62,11 @@
     cursor: pointer;
     transition: 0.2s;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
 }
-.testDashboard__message:hover {
+
+.testDashboard__message:hover, 
+.testDashboard__btn-analytics:hover {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     transform: translateY(-1px);
@@ -64,19 +79,14 @@
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(12px, 5vw, 20px);
     color: #363636;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
-.testDashboard__btn-analytics:hover {
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    transform: translateY(-1px);
-}
 
-.testDashboard__btn-invite-container{
+.testDashboard__btn-invite-container {
     display: flex;
     justify-content: flex-end;
 }
@@ -88,13 +98,14 @@
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
     font-family: 'Montserrat', sans-serif;
     font-size: clamp(12px, 5vw, 20px);
     color: #ffffff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     margin-bottom: 24px;
 }
+
 .testDashboard__btn-invite:hover {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
@@ -102,10 +113,259 @@
     color: #000000;
 }
 
-
-.testDashboard__cards-list {
+/* --- ФІЛЬТРИ ПО ГРУПАХ --- */
+.testDashboard__groups-filter-tabs {
     display: flex;
-    flex-direction: column;
-    gap: 30px;
-    margin-bottom: 50px;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.testDashboard__group-btn {
+    padding: clamp(8px, 2vw, 10px) clamp(14px, 3vw, 20px);
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(14px, 2vw, 20px);
+    transition: all 0.2s ease;
+}
+
+.testDashboard__group-btn:hover {
+    background: #f5f5f5;
+}
+
+.testDashboard__group-btn--active {
+    border: 2px solid #000;
+    background: #000;
+    color: #fff;
+}
+
+.testDashboard__group-btn--active:hover {
+    background: #222;
+}
+
+.testDashboard__group-btn-count {
+    opacity: 0.7;
+    margin-left: 6px;
+    font-size: clamp(14px, 2vw, 20px);
+}
+
+/* --- СТИЛІ ДЛЯ ТАБЛИЦІ --- */
+.testDashboard__table-wrapper {
+  margin-top: 20px;
+  margin-bottom: 80px; /* ДОДАНО ВІДСТУП ДО ФУТЕРУ */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; 
+}
+
+.testDashboard__table {
+font-family: 'Montserrat', sans-serif;
+font-size: clamp(12px, 5vw, 20px);
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Всі комірки по центру за замовчуванням */
+.testDashboard__table th,
+.testDashboard__table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+  text-align: center; /* Рівномірне центрування статусів, груп та результатів */
+}
+
+.testDashboard__table th {
+  font-weight: 700;
+  color: #333;
+  background-color: #fafafa;
+}
+
+/* Перша колонка (Учасник) притиснута до лівого краю */
+.testDashboard__table th:first-child,
+.testDashboard__table td:first-child {
+  text-align: left;
+}
+
+/* Колонка Учасник (Ім'я + Email) */
+.td-participant {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.participant-name {
+  font-weight: 600;
+  color: #222;
+}
+
+.participant-email {
+  color: #777;
+  margin-top: 4px;
+  font-size: clamp(10px, 5vw, 16px);
+
+}
+
+/* Статуси */
+.status-text {
+  font-weight: 500;
+font-size: clamp(10px, 5vw, 16px);
+
+}
+.text-registered {
+  color: #555;
+}
+.text-completed {
+  color: #333;
+}
+
+/* Бейджи результатів */
+.score-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 45px;
+}
+.score-good {
+  background-color: #e6f4ea;
+  color: #1e8e3e;
+}
+.score-bad {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+/* Кнопка повідомлення */
+.action-icon-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto; /* Центруємо саму кнопку в комірці */
+}
+
+.action-icon-btn:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.table-empty-state {
+  text-align: center !important;
+  padding: 40px !important;
+  color: #888;
+  font-style: italic;
+}
+
+/* Посилання на профіль юзера */
+.dashboard-profile-link {
+  color: #000000;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dashboard-profile-link:hover {
+  text-decoration: underline;
+}
+
+/* Статус "Проходить" (Помаранчевий) */
+.text-in-progress {
+  color: #f29900;
+  font-weight: 600;
+}
+
+/* Посилання на результат тесту */
+.dashboard-result-link {
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-result-link:hover .score-badge {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: scale(1.05); /* Злегка збільшується при наведенні */
+  cursor: pointer;
+}
+
+/* Клікабельні заголовки таблиці */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+  background-color: #f0f0f0 !important;
+}
+
+/* --- АНІМОВАНИЙ ТРИКУТНИК СОРТУВАННЯ --- */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+  background-color: #f0f0f0 !important;
+}
+
+.sort-triangle {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #ccc; /* Сірий колір, коли не активний */
+  transition: transform 0.3s ease, color 0.3s ease; /* Плавна анімація повороту і кольору */
+}
+
+/* Коли колонка активна, трикутник стає чорним */
+.sort-triangle.sort-active {
+  color: #000;
+}
+
+/* Клас для розвороту трикутника вверх */
+.sort-triangle.sort-up {
+  transform: rotate(180deg);
+}
+
+
+
+/* --- МЕДІА ЗАПИТИ (МОБІЛЬНІ ПРИСТРОЇ) --- */
+@media screen and (max-width: 600px) {
+    .testDashboard__toolbar {
+        flex-direction: column;
+    }
+
+    .testDashboard__search-message-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .testDashboard__message {
+        padding: 0 25px; 
+    }
+
+    .testDashboard__btn-analytics {
+        width: 100%;
+        text-align: center;
+    }
+
+    .testDashboard__btn-invite-container {
+        justify-content: stretch;
+    }
+
+    .testDashboard__btn-invite {
+        width: 100%;
+    }
 }

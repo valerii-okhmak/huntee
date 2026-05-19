@@ -33,41 +33,57 @@ const TestCreationMainAnswers = ({
 }) => {
   const { t } = useTranslation();
 
- const renderChoiceRow = (i, control) => {
-    const isOptionEmptyError = errors.emptyOptions && !options[i].trim();
+  const renderChoiceRow = (i, control) => {
+    const currentText = typeof options[i] === 'string' ? options[i].trim() : "";
+    const isOptionEmptyError = errors.emptyOptions && !currentText;
+
+    // Шукаємо, чи є поточний рядок дублікатом (логічно)
+    const isActualDuplicate = currentText !== "" && 
+      options.some((opt, index) => {
+        const optText = typeof opt === 'string' ? opt.trim() : "";
+        return index !== i && optText === currentText;
+      });
+
+    // ЗМІНА ТУТ: Показуємо візуальну помилку ТІЛЬКИ якщо вона передана в об'єкті errors (після сабміту)
+    const showDuplicateError = isActualDuplicate && errors.duplicateOptions;
+
+    const hasErrorClass = isOptionEmptyError || showDuplicateError;
 
     return (
-      <div key={i} className="testCreationMainCreatorAnswers__option">
-        
-        <label className="testCreationMainCreatorAnswers__control">
-           {control}
-        </label>
+      <div key={i} style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: '10px' }}>
+        <div className="testCreationMainCreatorAnswers__option">
+          
+          <label className="testCreationMainCreatorAnswers__control">
+             {control}
+          </label>
 
-        <div className={`testCreationMainCreatorAnswers__input-wrapper ${isOptionEmptyError ? 'input-error-placeholder' : ''}`}>
-          <input
-            type="text"
-            placeholder={isOptionEmptyError ? t('testCreationAnswers.errors.fillOption') : t('testCreationAnswers.placeholders.option')}
-            className="testCreationMainCreatorAnswers__input"
-            value={options[i]}
-            onChange={e => updateOption(i, e.target.value)}
-          />
+          <div className={`testCreationMainCreatorAnswers__input-wrapper ${hasErrorClass ? 'input-error-placeholder' : ''}`}>
+            <input
+              type="text"
+              placeholder={isOptionEmptyError ? t('testCreationAnswers.errors.fillOption') : t('testCreationAnswers.placeholders.option')}
+              className="testCreationMainCreatorAnswers__input"
+              value={options[i]}
+              onChange={e => updateOption(i, e.target.value)}
+            />
 
-          <div className="testCreationMainCreatorAnswers__btns">
-            <button className="testCreationMainCreator__icon-btn" title={t('testCreationAnswers.addImage')}>
-              <FontAwesomeIcon icon={faImage} />
-            </button>
-            {i >= minBase && (
-              <button
-                type="button"
-                className="testCreationMainCreatorAnswers__btn-remove"
-                title={t('testCreationAnswers.removeOption')}
-                onClick={() => removeOption(i)}
-              >
-                ✕
+            <div className="testCreationMainCreatorAnswers__btns">
+              <button className="testCreationMainCreator__icon-btn" title={t('testCreationAnswers.addImage')}>
+                <FontAwesomeIcon icon={faImage} />
               </button>
-            )}
+              {i >= minBase && (
+                <button
+                  type="button"
+                  className="testCreationMainCreatorAnswers__btn-remove"
+                  title={t('testCreationAnswers.removeOption')}
+                  onClick={() => removeOption(i)}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
         </div>
+        
       </div>
     );
   };

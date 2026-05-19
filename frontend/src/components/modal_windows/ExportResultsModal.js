@@ -2,19 +2,29 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ModalMini from './ModalMini';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileExcel, faFilePdf, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faFileExcel, faFilePdf, faCheck, faUsers } from "@fortawesome/free-solid-svg-icons";
 
-const ExportResultsModal = ({ isOpen, onClose, onExport, loading }) => {
+const ExportResultsModal = ({ isOpen, onClose, onExport, loading, availableGroups = [] }) => {
     const { t } = useTranslation();
     const [format, setFormat] = useState('EXCEL');
+    const [selectedGroup, setSelectedGroup] = useState('ALL'); 
+    
     const [columns, setColumns] = useState({
-        fullName: true, email: true, score: true, status: true, date: true
+        fullName: true, email: true, groupTag: true, score: true, status: true, date: true
     });
 
     const handleExportClick = () => {
         const selectedColumns = Object.keys(columns).filter(key => columns[key]);
-        if (selectedColumns.length === 0) return;
-        onExport({ format, columns: selectedColumns });
+        if (selectedColumns.length === 0) {
+            alert("Оберіть хоча б одну колонку для експорту!");
+            return;
+        }
+        
+        onExport({ 
+            format, 
+            columns: selectedColumns,
+            groupTag: selectedGroup === 'ALL' ? null : selectedGroup
+        });
     };
 
     if (!isOpen) return null;
@@ -28,11 +38,24 @@ const ExportResultsModal = ({ isOpen, onClose, onExport, loading }) => {
             </button>
             
             <div className="invite-modal export-compact">
-                <h3 className="modalmini-title">{t('exportModal.title')}</h3>
-                <p className="modalmini-subtitle">{t('exportModal.subtitle')}</p>
+                <h3 className="modalmini-title">{t('exportModal.title', 'Експорт результатів')}</h3>
+                <p className="modalmini-subtitle">{t('exportModal.subtitle', 'Налаштуйте параметри завантаження')}</p>
+
+                <div className="export-format-wrapper" style={{ marginBottom: '15px' }}>
+                    <label className="modal-text">{t('exportModal.groupLabel', 'Оберіть групу')}</label>
+                    <div className="select-with-icon">
+                        <FontAwesomeIcon icon={faUsers} className="format-icon" style={{color: '#1a73e8'}} />
+                        <select className="modal-select" value={selectedGroup} onChange={e => setSelectedGroup(e.target.value)} disabled={loading}>
+                            <option value="ALL">Всі групи та учасники</option>
+                            {availableGroups.map((group, idx) => (
+                                <option key={idx} value={group}>Група: {group}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
 
                 <div className="export-format-wrapper">
-                    <label className="modal-text">{t('exportModal.formatLabel')}</label>
+                    <label className="modal-text">{t('exportModal.formatLabel', 'Формат файлу')}</label>
                     <div className="select-with-icon">
                         <FontAwesomeIcon 
                             icon={format === 'EXCEL' ? faFileExcel : faFilePdf} 
@@ -46,7 +69,7 @@ const ExportResultsModal = ({ isOpen, onClose, onExport, loading }) => {
                 </div>
 
                 <div className="export-columns-wrapper">
-                    <label className="modal-text">{t('exportModal.columnsLabel')}</label>
+                    <label className="modal-text">{t('exportModal.columnsLabel', 'Колонки для експорту')}</label>
                     <div className="export-grid-compact">
                         {Object.keys(columns).map(col => (
                             <div 
@@ -57,7 +80,7 @@ const ExportResultsModal = ({ isOpen, onClose, onExport, loading }) => {
                                 <div className={`mini-checkbox ${columns[col] ? 'checked' : ''}`}>
                                     {columns[col] && <FontAwesomeIcon icon={faCheck} />}
                                 </div>
-                                <span>{t(`exportModal.columns.${col}`)}</span>
+                                <span>{t(`exportModal.columns.${col}`, col === 'groupTag' ? 'Група (Тег)' : col)}</span>
                             </div>
                         ))}
                     </div>
@@ -65,10 +88,10 @@ const ExportResultsModal = ({ isOpen, onClose, onExport, loading }) => {
 
                 <div className="modalmini-buttons">
                     <button className="modalmini-button modalmini-button-cancel" onClick={onClose} disabled={loading}>
-                        {t('common.cancel')}
+                        {t('common.cancel', 'Скасувати')}
                     </button>
-                    <button className="modalmini-button modalmini-button-submit" onClick={handleExportClick} disabled={loading}>
-                        {loading ? t('common.loading') : t('exportModal.button')}
+                    <button className="modalmini-button modalmini-button-submit" onClick={handleExportClick} disabled={loading} style={{backgroundColor: '#28a745', borderColor: '#28a745', color: '#fff'}}>
+                        {loading ? t('common.loading', 'Завантаження...') : t('exportModal.button', 'Експортувати')}
                     </button>
                 </div>
             </div>

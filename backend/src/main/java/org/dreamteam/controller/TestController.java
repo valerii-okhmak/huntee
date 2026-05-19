@@ -7,13 +7,16 @@ import org.springframework.http.MediaType;
 import org.dreamteam.dto.CandidateDTO;
 import org.dreamteam.dto.ExportRequestDTO;
 import org.dreamteam.dto.MyTestDTO;
+import org.dreamteam.dto.QuestionImportDTO;
 import org.dreamteam.dto.TestAdvancedAnalyticsDTO;
 import org.dreamteam.dto.TestAnalyticsDTO;
 import org.dreamteam.dto.TestCreateRequest;
 import org.dreamteam.dto.TestDetailResponse;
 import org.dreamteam.dto.TestSummaryResponse;
 import org.dreamteam.dto.TestUpdateRequest;
+import org.dreamteam.service.QuestionImportService;
 import org.dreamteam.service.TestService;
+import org.dreamteam.dto.QuestionPayloadDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,9 +29,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,9 +41,11 @@ import java.util.UUID;
 @RequestMapping("/api/tests")
 @RequiredArgsConstructor
 @Tag(name = "Test Controller", description = "API для керування тестами (CRUD)")
-
 public class TestController {
+    
     private final TestService testService;
+    private final QuestionImportService questionImportService;
+
     @Operation(summary = "Створити новий тест")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тест успішно створено (повертає деталі тесту)"),
@@ -47,7 +53,6 @@ public class TestController {
         @ApiResponse(responseCode = "401", description = "Неавторизований (потрібен токен)")
     })
     @SecurityRequirement(name = "bearerAuth")
-    
     @PostMapping
     public ResponseEntity<TestDetailResponse> createTest(
         @RequestBody TestCreateRequest request,
@@ -63,7 +68,6 @@ public class TestController {
         @ApiResponse(responseCode = "401", description = "Неавторизований")
     })
     @SecurityRequirement(name = "bearerAuth")
-
     @GetMapping
     public ResponseEntity <List<TestSummaryResponse>> getAllTests() {
         List<TestSummaryResponse> tests = testService.getAllTests();
@@ -74,17 +78,19 @@ public class TestController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Тест знайдено"),
         @ApiResponse(responseCode = "401", description = "Неавторизований"),
+        @ApiResponse(responseCode = "403", description = "Доступ заборонено (приватний тест)"),
         @ApiResponse(responseCode = "404", description = "Тест з таким ID не знайдено")
     })
     @SecurityRequirement(name = "bearerAuth")
-
     @GetMapping("/{id}")
     public ResponseEntity<TestDetailResponse> getTestById(
         @Parameter(description = "ID тесту, який потрібно знайти")
-        @PathVariable UUID id) {
-            TestDetailResponse test = testService.getTestById(id);
+        @PathVariable UUID id,
+        @AuthenticationPrincipal UserDetails userDetails) { 
+            String email = (userDetails != null) ? userDetails.getUsername() : null;
+            TestDetailResponse test = testService.getTestById(id, email);
             return ResponseEntity.ok(test);
-        }
+    }
     
     @Operation(summary = "Оновити тест")
     @ApiResponses(value = {
@@ -93,7 +99,6 @@ public class TestController {
         @ApiResponse(responseCode = "403", description = "Доступ заборонено (ви не автор)"),
         @ApiResponse(responseCode = "404", description = "Тест з таким ID не знайдено")
     })
-
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
     public ResponseEntity<TestDetailResponse> updateTest(
@@ -104,7 +109,7 @@ public class TestController {
                 String userEmail = userDetails.getUsername();
                 TestDetailResponse updatedTest = testService.updateTest(id, request, userEmail);
                 return ResponseEntity.ok(updatedTest);
-            }
+    }
     
     @Operation(summary = "Видалити тест")
     @ApiResponses(value = {
@@ -127,28 +132,38 @@ public class TestController {
     }
 
     @PostMapping("/{id}/register")
-        public ResponseEntity<?> registerForTest(
-                @PathVariable UUID id,
-                @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> registerForTest(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails) throws AccessDeniedException {
+        
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            testService.registerForTest(id, userDetails.getUsername());
+            return ResponseEntity.ok().build(); 
             
-            try {
-                testService.registerForTest(id, userDetails.getUsername());
-                return ResponseEntity.ok().build(); 
-                
-            } catch (IllegalStateException e) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-           }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @GetMapping("/created") 
     public ResponseEntity<List<MyTestDTO>> getCreatedTests(
             @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         return ResponseEntity.ok(testService.getCreatedTests(userDetails.getUsername()));
     }
 
     @GetMapping("/my") 
     public ResponseEntity<List<MyTestDTO>> getMyTests(
             @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         return ResponseEntity.ok(testService.getMyCandidateTests(userDetails.getUsername()));
     }
 
@@ -158,6 +173,7 @@ public class TestController {
     public ResponseEntity<List<CandidateDTO>> getRegisteredCandidates(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(testService.getRegisteredCandidates(id, userDetails.getUsername()));
     }
 
@@ -167,6 +183,7 @@ public class TestController {
     public ResponseEntity<List<CandidateDTO>> getTestResults(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(testService.getTestResults(id, userDetails.getUsername()));
     }
 
@@ -176,7 +193,18 @@ public class TestController {
     public ResponseEntity<TestAnalyticsDTO> getTestAnalytics(
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(testService.getTestAnalytics(id, userDetails.getUsername()));
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<List<QuestionImportDTO>> importQuestions(@RequestParam("file") MultipartFile file) {
+        try {
+            List<QuestionImportDTO> importedQuestions = questionImportService.parseImportFile(file);
+            return ResponseEntity.ok(importedQuestions);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build(); 
+        }
     }
 
     @Operation(summary = "Експортувати результати тесту (Excel/PDF)")
@@ -211,9 +239,24 @@ public class TestController {
     public ResponseEntity<TestAdvancedAnalyticsDTO> getAdvancedAnalytics(
             @PathVariable UUID testId,
             @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.ok(testService.getAdvancedAnalytics(testId, userDetails.getUsername()));
     }
+
+    @GetMapping("/{testId}/groups")
+    public ResponseEntity<List<String>> getTestGroups(@PathVariable UUID testId) {
+        return ResponseEntity.ok(testService.getTestGroups(testId));
+    }
+
+    @PostMapping("/{testId}/questions/bulk")
+    public ResponseEntity<Void> createQuestionsBulk(@PathVariable UUID testId, @RequestBody List<QuestionPayloadDTO> questions) {
+        testService.syncTestQuestionsBulk(testId, questions);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{testId}/questions/bulk")
+    public ResponseEntity<Void> updateQuestionsBulk(@PathVariable UUID testId, @RequestBody List<QuestionPayloadDTO> questions) {
+        testService.syncTestQuestionsBulk(testId, questions);
+        return ResponseEntity.ok().build();
+    }
 }
-
-
-

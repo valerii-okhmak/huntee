@@ -13,11 +13,13 @@ import "prismjs/components/prism-csharp";
 import "prismjs/themes/prism.css"; 
 
 import { getAccessToken } from "../../utils/auth";
+import ProctoringTracker from "../../utils/ProctoringTracker";
 import "./FullTest.css";
 import ConfirmTestEndModal from "../modal_windows/ConfirmTestEndModal";
 import StartTestErrorModal from "../modal_windows/StartTestErrorModal";
 import Loader from "../loader/Loader";
 
+// Перехоплення закриття вкладки (хрестиком) або оновлення сторінки (F5)
 const usePrompt = (message, when = true) => {
   useEffect(() => {
     if (!when) return;
@@ -35,6 +37,7 @@ const TestPage = ({ testType }) => {
   const { t } = useTranslation();
   const { testId } = useParams(); 
   const navigate = useNavigate();
+  const getLocalKey = (tId) => `test_progress_${tId}`;
 
   const [attemptData, setAttemptData] = useState(null); 
   const [current, setCurrent] = useState(0); 
@@ -57,8 +60,69 @@ const TestPage = ({ testType }) => {
 
   const answersRef = useRef({});
   const attemptDataRef = useRef(null);
+  const proctoringTrackerRef = useRef(null);
+  
+  const currentRef = useRef(current);
+  useEffect(() => {
+    currentRef.current = current;
+  }, [current]);
 
-  usePrompt(t('testPage.promptMessage'), !!attemptData);
+  usePrompt(t('testPage.promptMessage', 'Точно хочете вийти?'), !!attemptData);
+
+  // --- СПІЛЬНА ФУНКЦІЯ ДЛЯ ВІДКРИТТЯ МОДАЛКИ ЗАВЕРШЕННЯ ---
+  const triggerEndModal = async () => {
+    setIsSubmitting(true);
+    try {
+        await saveAnswerToBackend(currentRef.current);
+    } catch (e) {
+    } finally {
+        setIsSubmitting(false);
+    }
+
+    const details = getUnansweredDetails();
+    setUnansweredCount(details.count);
+    setUnansweredLabels(details.labels);
+    
+    setIsConfirmModalOpen(true);
+  };
+
+  // --- ХИТРИЙ ТРЮК №2: БЛОКУЄМО І БРАУЗЕР, І ХЕДЕР ---
+  useEffect(() => {
+    if (!attemptData) return; 
+
+    // Блокуємо "Назад" у браузері
+    window.history.pushState(null, null, window.location.pathname);
+    const handlePopState = () => {
+      window.history.pushState(null, null, window.location.pathname);
+      triggerEndModal(); // Викликаємо модалку!
+    };
+
+    // Блокуємо переходи через <Link> у Хедері та інші <a>
+    const handleGlobalClick = (e) => {
+      const link = e.target.closest('a'); // Шукаємо, чи клікнули по посиланню
+      
+      if (link && link.href) {
+        // Перевіряємо, чи посилання веде з цієї сторінки
+        const isSamePage = link.href === window.location.href || link.getAttribute('href').startsWith('#');
+        
+        if (!isSamePage) {
+          e.preventDefault();   // Зупиняємо дефолтний перехід браузера
+          e.stopPropagation();  // Зупиняємо подію для React Router
+          triggerEndModal();    // Викликаємо модалку!
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    // capture: true ловить клік ДО того, як React Router його обробить!
+    document.addEventListener('click', handleGlobalClick, { capture: true });
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      document.removeEventListener('click', handleGlobalClick, { capture: true });
+    };
+  }, [attemptData]);
+  // --------------------------------------------------------------------------
 
   const handleCloseErrorModal = () => {
     setIsStartTestErrorModalOpen(false);
@@ -67,7 +131,7 @@ const TestPage = ({ testType }) => {
 
   useEffect(() => {
     const startTest = async () => {
-      console.log(`🔍 Starting test ID: ${testId}`);
+      console.log(`Starting test ID: ${testId}`);
       try {
         const token = getAccessToken();
         const response = await axios.post(
@@ -86,6 +150,15 @@ const TestPage = ({ testType }) => {
              return;
         }
 
+        if (!proctoringTrackerRef.current) {
+             proctoringTrackerRef.current = new ProctoringTracker(
+                 attempt.attemptId, 
+                 (type, desc) => {
+                     console.log(`Увага! Зафіксовано порушення: ${desc}. Ця дія записана.`);
+                 }
+             );
+        }
+
         if (attempt.isFixedTime && attempt.endTime) {
           const endTime = new Date(attempt.endTime).getTime();
           const now = new Date().getTime();
@@ -95,6 +168,14 @@ const TestPage = ({ testType }) => {
           setTimeLeft(null); 
         }
         setLoading(false);
+
+        const savedProgress = localStorage.getItem(getLocalKey(testId));
+        if (savedProgress) {
+            const parsed = JSON.parse(savedProgress);
+            setAnswers(parsed);
+            answersRef.current = parsed;
+            console.log("🔄 Progress restored from LocalStorage");
+        }
 
       } catch (error) {
         console.error("🔍 Start Error:", error);
@@ -109,21 +190,36 @@ const TestPage = ({ testType }) => {
     };
 
     if (testId) startTest();
+    return () => {
+      if (proctoringTrackerRef.current) {
+        proctoringTrackerRef.current.stop();
+        proctoringTrackerRef.current = null;
+      }
+    };
   }, [testId, navigate, t]);
 
   // --- ТАЙМЕР ---
   useEffect(() => {
-    if (timeLeft === null) return;
-    if (timeLeft <= 0) {
+    if (!attemptData || !attemptData.isFixedTime || !attemptData.endTime) return;
+
+    const endTimeMs = new Date(attemptData.endTime).getTime();
+
+    const timer = setInterval(() => {
+      const nowMs = new Date().getTime();
+      const secondsRemaining = Math.floor((endTimeMs - nowMs) / 1000);
+
+      if (secondsRemaining <= 0) {
+        clearInterval(timer);
+        setTimeLeft(0);
         console.log("🔍 Time limit reached!");
         finishTestForce(); 
-        return;
-    }
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      } else {
+        setTimeLeft(secondsRemaining);
+      }
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [attemptData]);
 
   const formatTime = (sec) => {
     if (sec < 0) sec = 0;
@@ -167,7 +263,6 @@ const TestPage = ({ testType }) => {
       setSaveStatus('saved');
 
     } catch (error) {
-      // Ігнорування 400 (duplicate)
       if (error.response && error.response.status === 400) {
           console.warn("Backend error 400 (Duplicate). Treating as SUCCESS.");
           setSaveStatus('saved');
@@ -180,13 +275,30 @@ const TestPage = ({ testType }) => {
     }
   };
 
+  const saveTimeoutRef = useRef(null);
 
   const handleAnswerChange = (questionId, value) => {
     setAnswers(prev => {
-        const newState = { ...prev, [questionId]: value };
-        answersRef.current = newState;
-        return newState;
+      const newState = { ...prev, [questionId]: value };
+      answersRef.current = newState;
+      
+      const currentQuestion = attemptData.questions[current];
+      
+      if (currentQuestion.questionType.includes('CHOICE')) {
+          localStorage.setItem(getLocalKey(testId), JSON.stringify(newState));
+      } else {
+          if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+          
+          saveTimeoutRef.current = setTimeout(() => {
+              localStorage.setItem(getLocalKey(testId), JSON.stringify(newState));
+              console.log("💾 Auto-saved to LocalStorage after 3s pause");
+          }, 3000);
+      }
+      
+      return newState;
     });
+    
+    setSaveStatus('unsaved'); 
   };
 
   const handleNext = async () => {
@@ -241,25 +353,12 @@ const TestPage = ({ testType }) => {
     }
   };
 
-
-  const handleFinishButton = async () => {
-    setIsSubmitting(true);
-    try {
-        await saveAnswerToBackend(current);
-    } catch (e) {
-    } finally {
-        setIsSubmitting(false);
-    }
-
-    const details = getUnansweredDetails();
-    setUnansweredCount(details.count);
-    setUnansweredLabels(details.labels);
-    
-    setIsConfirmModalOpen(true);
-  };
-
   const confirmFinishTest = async () => {
       console.log("🔍 Confirming finish...");
+      if (proctoringTrackerRef.current) {
+          proctoringTrackerRef.current.stop();
+          proctoringTrackerRef.current = null;
+      }
       try {
         const token = getAccessToken();
         const currentAttemptId = attemptDataRef.current.attemptId;
@@ -271,6 +370,7 @@ const TestPage = ({ testType }) => {
         );
         
         console.log("🔍 Finish SUCCESS. Data:", response.data);
+        localStorage.removeItem(getLocalKey(testId)); 
         
         const redirectId = response.data?.attemptId || currentAttemptId;
 
@@ -307,7 +407,6 @@ const TestPage = ({ testType }) => {
       labels: indices.length > 0 ? ` (${indices.join(", ")})` : ""
     };
   };
-
 
   const highlightCode = (code, language) => {
     let lang = languages.js;
@@ -417,6 +516,29 @@ const TestPage = ({ testType }) => {
   const currentQuestion = attemptData.questions[current];
   const { h, m, s } = timeLeft !== null ? formatTime(timeLeft) : { h:0, m:0, s:0 };
 
+  const generatePagination = (currentIndex, totalQuestions) => {
+    const currentPage = currentIndex + 1;
+
+    if (totalQuestions <= 7) {
+      return Array.from({ length: totalQuestions }, (_, i) => i + 1);
+    }
+
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalQuestions];
+    }
+
+    if (currentPage >= totalQuestions - 3) {
+      return [1, '...', totalQuestions - 4, totalQuestions - 3, totalQuestions - 2, totalQuestions - 1, totalQuestions];
+    }
+
+    return [
+      1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalQuestions
+    ];
+  };
+
+  const totalQuestions = attemptData.questions.length;
+  const paginationItems = generatePagination(current, totalQuestions);
+
   return (
     <div className={`FullTest ${testType === "softskills" ? 'FullTest-gradient' : 'FullTest-regular'}`} style={{userSelect: 'none'}}>
       
@@ -443,14 +565,14 @@ const TestPage = ({ testType }) => {
       }
 
       <div className={`Num ${testType === "softskills" ? 'Num-bg' : 'Num-regular'}`}>
-        {attemptData.questions.map((_, i) => (
+        {paginationItems.map((item, index) => (
           <button
-            key={i}
-            onClick={() => handleJumpToQuestion(i)}
-            className={i === current ? "active" : ""}
-            disabled={isSubmitting} 
+            key={index}
+            onClick={() => item !== '...' && handleJumpToQuestion(item - 1)}
+            className={item === current + 1 ? "active" : ""}
+            disabled={isSubmitting || item === '...'} 
           >
-            {i + 1}
+            {item}
           </button>
         ))}
       </div>
@@ -477,7 +599,7 @@ const TestPage = ({ testType }) => {
           ) : (
             <button 
                 className="next-button finish-button" 
-                onClick={handleFinishButton} 
+                onClick={triggerEndModal} 
                 disabled={isSubmitting}
             >
               {isSubmitting ? t('testPage.status.processing') : t('testPage.buttons.finish')}

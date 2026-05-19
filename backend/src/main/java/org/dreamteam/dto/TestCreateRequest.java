@@ -25,4 +25,5 @@ public class TestCreateRequest {
     private Boolean isFixedAnswerOrder;
     private Boolean isShowResult;
     private List<UUID> questionIds;
+    private List<TestLevelDTO> levels;
 }

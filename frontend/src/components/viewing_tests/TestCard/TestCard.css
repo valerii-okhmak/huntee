@@ -134,6 +134,7 @@
 .testcard-date {
     display: flex;
     align-items: center;
+    gap: 8px;
 }
 
 .testcard-time {

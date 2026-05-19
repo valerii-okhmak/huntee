@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 .viewing-tests-page {
     display: flex;
     flex-direction: row;
@@ -23,6 +26,22 @@
     flex-direction: column;
     gap: clamp(15px, 3vw, 25px);
     min-width: 0;
+}
+
+.add-button-wrapper{
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    align-items: center;
+
+}
+
+.tests-limit-counter{
+    font-family: 'Montserrat', sans-serif;
+    color: #000000;
+    font-size: clamp(30px, 1.5vw, 40px);
+    font-weight: 800;
+
 }
 
 /* --- АДАПТАЦІЯ ДЛЯ ПЛАНШЕТІВ ТА МОБІЛЬНИХ (до 992px) --- */

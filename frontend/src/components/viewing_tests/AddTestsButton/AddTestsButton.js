@@ -6,7 +6,7 @@ import './AddTestsButton.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
-const AddTestsButton = () => {
+const AddTestsButton = ({disabled}) => {
   const { t } = useTranslation();
   const navigate = useNavigate(); 
 
@@ -15,7 +15,7 @@ const AddTestsButton = () => {
   };
 
   return (
-    <button className="add-tests-button-block" onClick={handleClick}> 
+    <button className="add-tests-button-block" onClick={handleClick} disabled={disabled}> 
       <FontAwesomeIcon icon={faFileCirclePlus} className="addtestbtn" />
       <span className="add-tests-button-text">{t('addTestsButton.text')}</span>
     </button>

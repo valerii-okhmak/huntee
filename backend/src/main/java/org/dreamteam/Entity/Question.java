@@ -58,12 +58,34 @@ public class Question {
     @OneToMany(mappedBy= "question", cascade= CascadeType.ALL, orphanRemoval=true, fetch= FetchType.LAZY)
     private Set <TestQuestion> testQuestions = new HashSet<>();
 
-    @Column(name = "weight", nullable = false)
-    private Double weight = 1.0;
+    @Column(name = "custom_weight") 
+    private Double customWeight;
 
-    public Question(String questionText, QuestionType questionType, User author) {
-        this.questionText = questionText;
-        this.questionType = questionType;
-        this.author = author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "level_id")
+    private TestLevel testLevel;
+
+    @Column(name = "level_id", insertable = false, updatable = false)
+    private Long levelId;
+
+    @ElementCollection(targetClass = QuestionCategory.class, fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "question_categories",
+            joinColumns = @JoinColumn(name = "question_id") 
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category_name", nullable = false)
+    private Set <QuestionCategory> categories = new HashSet<>();
+
+    public Double getEffectiveWeight() {
+        if (this.customWeight != null) {
+            return this.customWeight;
+        }
+
+        if (this.testLevel != null && this.testLevel.getWeight() != null) {
+            return this.testLevel.getWeight();
+        }
+
+        return 1.0;
     }
 }
