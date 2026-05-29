@@ -1,17 +1,17 @@
 import React, { useState, useMemo } from 'react'; 
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 import './TestDashboardList.css';
 import lupa from '../../../../img/search-icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'; 
+import { faCaretDown, faSort, faSortUp, faSortDown, faEye } from '@fortawesome/free-solid-svg-icons'; 
 import InviteParticipantsModal from '../../../modal_windows/InviteParticipantsModal';
 import SendMessageModal from '../../../modal_windows/SendMessageModal';
 
 const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate(); 
   
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
@@ -20,7 +20,6 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
   const [selectedGroupTag, setSelectedGroupTag] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   
-  // СТАН ДЛЯ СОРТУВАННЯ ТАБЛИЦІ
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const handleOpenGeneralMessage = () => {
@@ -38,7 +37,6 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
     return ['ALL', ...new Set(tags)];
   }, [students]);
 
-  // ФУНКЦІЯ ЗМІНИ СОРТУВАННЯ ПРИ КЛІКУ НА ЗАГОЛОВОК
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -47,9 +45,7 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
     setSortConfig({ key, direction });
   };
 
-  // ФІЛЬТРАЦІЯ ТА СОРТУВАННЯ
   const processedStudents = useMemo(() => {
-    // 1. Спочатку фільтруємо по пошуку та групі
     let filtered = students.filter(student => {
       const matchesSearch = student.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             student.email?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -57,10 +53,8 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
       return matchesSearch && matchesGroup;
     });
 
-    // 2. Потім сортуємо
     if (sortConfig.key) {
       filtered.sort((a, b) => {
-        // Сортування по імені
         if (sortConfig.key === 'name') {
           const nameA = a.fullName || '';
           const nameB = b.fullName || '';
@@ -68,17 +62,13 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
             ? nameA.localeCompare(nameB) 
             : nameB.localeCompare(nameA);
         }
-        // Сортування по статусу
         if (sortConfig.key === 'status') {
-          // Вага статусів для сортування: 1 - Зареєстрований, 2 - В процесі, 3 - Завершив
           const statusWeight = { 'COMPLETED': 3, 'IN_PROGRESS': 2, 'STARTED': 2, 'REGISTERED': 1 };
           const weightA = statusWeight[a.status] || 0;
           const weightB = statusWeight[b.status] || 0;
           return sortConfig.direction === 'asc' ? weightA - weightB : weightB - weightA;
         }
-        // Сортування по результату (балах)
         if (sortConfig.key === 'result') {
-          // Вираховуємо відсоток успішності. Якщо не завершив - рахуємо як -1
           const scoreA = (a.status === 'COMPLETED' && a.score !== null) ? (a.score / (a.totalMaxScore || 1)) : -1;
           const scoreB = (b.status === 'COMPLETED' && b.score !== null) ? (b.score / (b.totalMaxScore || 1)) : -1;
           return sortConfig.direction === 'asc' ? scoreA - scoreB : scoreB - scoreA;
@@ -234,6 +224,16 @@ const TestDashboardList = ({ students = [], testId, setActiveTab, isPrivate }) =
                     </td>
                     
                     <td className="td-actions">
+                      {isCompleted && (
+                        <button 
+                          className="action-icon-btn action-review-blink" 
+                          onClick={() => navigate(`/testreview/${student.attemptId}`)}
+                          title={t('testDashboardList.viewReview', 'Переглянути/Оцінити')}
+                        >
+                          <FontAwesomeIcon icon={faEye} />
+                        </button>
+                      )}
+                      
                       <button 
                         className="action-icon-btn" 
                         onClick={() => handleOpenStudentMessage(student)}

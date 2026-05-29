@@ -339,9 +339,25 @@ font-size: clamp(10px, 5vw, 16px);
   transform: rotate(180deg);
 }
 
+@keyframes pulse-attention {
+  0% { transform: scale(1); opacity: 1; color: #6c5ce7; }
+  50% { transform: scale(1.15); opacity: 0.8; color: #a29bfe; }
+  100% { transform: scale(1); opacity: 1; color: #6c5ce7; }
+}
 
+.action-review-blink {
+  color: #6c5ce7; 
+  animation: pulse-attention 1.5s infinite ease-in-out;
+  margin-right: 10px; 
+  transition: all 0.3s ease;
+}
 
-/* --- МЕДІА ЗАПИТИ (МОБІЛЬНІ ПРИСТРОЇ) --- */
+.action-review-blink:hover {
+  animation: none;
+  color: #4834d4;
+  transform: scale(1.1);
+}
+
 @media screen and (max-width: 600px) {
     .testDashboard__toolbar {
         flex-direction: column;
